@@ -1,0 +1,56 @@
+{
+  "version": "1.0.0",
+  "colors": {
+    "background": "#FBF8F3",
+    "surface": "#FFFFFF",
+    "surfaceSoft": "#F5EEE6",
+    "textPrimary": "#25173E",
+    "textMuted": "#6D617D",
+    "line": "#E9DDCE",
+    "primary": "#4C2A91",
+    "primaryStrong": "#6B42E6",
+    "gold": "#C89338",
+    "success": "#12AD62",
+    "danger": "#C23B53"
+  },
+  "radiusDp": {
+    "xs": 8,
+    "sm": 12,
+    "md": 16,
+    "lg": 22,
+    "xl": 28,
+    "pill": 999
+  },
+  "spacingDp": {
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "xxl": 32
+  },
+  "touch": {
+    "minimumTargetDp": 48
+  },
+  "typography": {
+    "uiFontAssetId": "ASSET-FONT-SANS-PRIMARY",
+    "reportSerifAssetId": "ASSET-FONT-SERIF-REPORT",
+    "symbolFallbackAssetId": "ASSET-FONT-SYMBOL-FALLBACK",
+    "scale": {
+      "captionSp": 12,
+      "bodySmallSp": 14,
+      "bodySp": 16,
+      "titleSmallSp": 18,
+      "titleSp": 22,
+      "headlineSp": 28,
+      "displaySp": 34
+    }
+  },
+  "elevation": {
+    "card": "soft",
+    "floating": "medium"
+  },
+  "navigation": {
+    "items": ["TODAY", "TOOLS", "RECORDS", "PROFILE"]
+  }
+}
