@@ -1,0 +1,28 @@
+name: UI Information Architecture
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/UI_INFORMATION_ARCHITECTURE.md'
+      - 'tools/ui/validate_information_architecture.py'
+      - '.github/workflows/ui-information-architecture.yml'
+  pull_request:
+    paths:
+      - 'docs/UI_INFORMATION_ARCHITECTURE.md'
+      - 'tools/ui/validate_information_architecture.py'
+      - '.github/workflows/ui-information-architecture.yml'
+  workflow_dispatch:
+
+jobs:
+  validate-ui-architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate UI information architecture
+        run: python tools/ui/validate_information_architecture.py
