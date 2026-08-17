@@ -1,14 +1,107 @@
 screen_id,state_id,reference_version,reference_path,sha256,approval_status,source,notes
-SCR-TODAY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Ana Bugün ekranı; mevcut konsept referansı ancak gerçek dosya repoya alınıp onaylandığında APPROVED yapılır
-SCR-TOOLS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Araçlar ana merkezi; Bugün-Araçlar-Kayıtlar-Profil navigasyon sözleşmesine uymalı
+SCR-TODAY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Ana Bugün ekranı
+SCR-TOOLS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Araçlar ana merkezi
 SCR-RECORDS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Kayıtlar ana merkezi
 SCR-PROFILE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Profil ana ekranı
+SCR-ASTROLOGY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
 SCR-WESTERN-INPUT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Batı doğum bilgileri giriş ekranı
 SCR-WESTERN-CHART-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Batı natal harita ekranı
+SCR-WESTERN-PLACEMENTS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-WESTERN-ASPECTS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-WESTERN-HOUSES-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-WESTERN-TECH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-WESTERN-INTERP-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TRANSIT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TRANSIT-TIMELINE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-SYNASTRY-SELECT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-SYNASTRY-RESULT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-COMPOSITE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-DAVISON-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-SOLAR-RETURN-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LUNAR-RETURN-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PROGRESSIONS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-SOLAR-ARC-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PROFECTIONS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-WESTERN-SETTINGS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-INPUT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
 SCR-VEDIC-D1-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Vedik D1/Rasi ekranı
-SCR-PYTHAGOREAN-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Numeroloji ana sonuç ekranı
+SCR-VEDIC-D9-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-VARGAS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-DASHA-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-DASHA-DETAIL-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-GOCHARA-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-PANCHANGA-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-STRENGTH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-VEDIC-SETTINGS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CHINESE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BAZI-INPUT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BAZI-PILLARS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BAZI-ELEMENTS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BAZI-TENGODS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BAZI-LUCK-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
 SCR-PLANETARY-HOURS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Gezegen Saatleri ekranı
+SCR-PLANETARY-HOURS-NOTIFY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-NUMEROLOGY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-NUMEROLOGY-INPUT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PYTHAGOREAN-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Numeroloji Pythagorean sonuç ekranı
+SCR-CHALDEAN-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LOSHU-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-NUM-PERIODS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-NUM-TIMELINE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-NUM-COMPAT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
 SCR-SPIRITUAL-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Spiritüel ana ekranı
+SCR-TAROT-DAILY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TAROT-THREE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TAROT-SESSION-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-INTENTION-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-GRATITUDE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-DREAM-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-MEDITATION-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BREATH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-GROWTH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-GOALS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-HABITS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CHECKIN-AM-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CHECKIN-PM-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-WEEKLY-REVIEW-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LIFE-WHEEL-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-MOOD-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TODAY-EFFECTS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TODAY-MESSAGE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TODAY-WEEK-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TODAY-MONTH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-TODAY-YEAR-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PROFILES-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PROFILE-DETAIL-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
 SCR-CLIENTS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Danışanlarım çalışma alanı
-SCR-PDF-PREVIEW-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,PDF önizleme ekranı
+SCR-CLIENT-NEW-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CLIENT-DETAIL-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CONSULT-PREP-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CONSULT-LIVE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-CONSULT-HISTORY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PRO-PRESETS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PRO-LIBRARY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PRO-SHARE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LEARNING-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
 SCR-SETTINGS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,Ayarlar ekranı
+SCR-LANGUAGE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-NOTIFICATIONS-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PRIVACY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-APP-LOCK-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PREMIUM-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BACKUP-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BACKUP-IMPORT-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-BACKUP-PREVIEW-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PDF-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PDF-BUILDER-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-PDF-PREVIEW-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,PDF önizleme ekranı
+SCR-SPLASH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-ONBOARD-LANGUAGE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-ONBOARD-INTRO-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-ONBOARD-PROFILE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LOCATION-SEARCH-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LOCATION-DISAMBIG-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-LOCATION-MANUAL-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-STATE-OFFLINE-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-STATE-ERROR-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
+SCR-STATE-EMPTY-001,DEFAULT,v1,,,PENDING,USER_APPROVAL_REQUIRED,UI bilgi mimarisindeki ekran; gerçek referans dosyası ve açık onay gelene kadar PENDING
