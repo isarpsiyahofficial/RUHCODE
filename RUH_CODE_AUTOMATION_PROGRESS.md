@@ -9,14 +9,15 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - Requirement tooling 1.442 benzersiz RC ID, deterministic classification, task/evidence sözleşmesi ve DONE-kanıt kapısını doğruluyor.
 - Faz 1 kısmen ilerledi; AKİLES referans/runtime sınırı belgelendi. Binary ZIP gerektiren exact hash ve dataset dönüştürme işleri açık.
 - Faz 2 temel bilgi mimarisi tamamlandı; `Bugün · Araçlar · Kayıtlar · Profil`, alt araç ağaçları, SCREEN-ID ve temel ACTION-ID sözleşmesi CI ile doğrulandı.
-- Faz 3 UI reference/action/asset **altyapısı** bu turda oluşturuldu.
-- `docs/UI_REFERENCE_CONTRACT.md` eklendi; RC-1429/1430/1431/1438/1439/1440/1441 için statik asset, dinamik geometri, referans görsel, action ve accessibility sözleşmesi bağlandı.
-- `ui/reference_manifest.csv` eklendi. Mevcut konsept ekranlar bilinçli olarak `PENDING`; gerçek dosya + SHA-256 + açık onay olmadan `APPROVED` yapılamaz.
-- `ui/action_registry.csv` eklendi; dört ana navigasyon, Araçlar ana kategorileri, Astroloji giriş yolları, Kayıtlar ve Profil/PDF temel aksiyonları makine-okunabilir hale getirildi.
-- `ui/asset_manifest.csv` eklendi; logo, zodiac/planet glyph, mandala/lotus, genel ikon ve Tarot assetleri `PENDING` olarak izleniyor. Lisans/provenance doğrulanmadan APPROVED olamaz.
-- `tools/ui/validate_ui_contracts.py` eklendi; duplicate/unknown SCREEN-ID, duplicate ACTION-ID, hedefi olmayan action, APPROVED referans/asset path+hash eksikliği, asset license/provenance eksikliği ve hash mismatch durumlarını engelliyor.
-- `.github/workflows/ui-contracts.yml` eklendi.
-- GitHub Actions `UI Contracts` run #1 exact commit `f150fd67322545171a5fa476e6712984113dcc16` üzerinde **success** ile tamamlandı.
+- Faz 3 UI reference/action/asset altyapısı kurulmuş durumda ve bu turda kapsama sertleştirildi.
+- UI bilgi mimarisindeki **106 benzersiz SCREEN-ID'nin tamamı** `ui/reference_manifest.csv` içine alındı. Hepsi gerçek dosya + SHA-256 + açık onay gelene kadar bilinçli olarak `PENDING`.
+- Eksik SCREEN-ID artık yalnız raporlanmıyor; `tools/ui/validate_ui_contracts.py` bunu CI hatası yapıyor. Dolayısıyla reference-manifest structural coverage artık **106/106** olmak zorunda.
+- `ui/action_registry.csv` 19 temel aksiyondan **67 aksiyona** genişletildi.
+- Bugün, Araçlar, Astroloji, Batı giriş/chart, Vedik giriş/D1, Numeroloji, Gezegen Saatleri, Kayıtlar, Danışanlar, Profil, Ayarlar, Backup, PDF ve PDF Preview için öncelikli action-source coverage bağlandı.
+- Validator 18 öncelikli action-source ekranının tamamında action coverage zorunlu kılıyor.
+- Her action için accessibility etiketi sözleşmesi doğrulanıyor.
+- Exact commit `ebf49aa8608c7dd61f1a05bdf08d68436da8a876` üzerinde `UI Contracts` run `32063203702` **success** ile tamamlandı.
+- Aynı exact commit üzerinde `Requirements Contract` run `32063203699` **success** ile tamamlandı.
 
 ## Kanıtlanmış tamamlanan Faz 0
 
@@ -42,9 +43,9 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] SCREEN-ID sözleşmesi.
 - [x] Temel ACTION-ID sözleşmesi.
 - [x] UI IA CI kapısı.
-- [ ] Bütün ekran içi mikro aksiyonların exhaustive ACTION-ID envanteri, her ekranın onaylı referansı üretildikçe genişletilecek.
+- [ ] Bütün ekran içi mikro aksiyonların exhaustive ACTION-ID envanteri henüz tamamlanmadı; referans ekran/state sözleşmeleri ilerledikçe genişletilecek.
 
-## Faz 3 — bu turdaki kanıtlanmış ilerleme
+## Faz 3 — kanıtlanmış ilerleme
 
 - [x] UI referans manifest formatı oluşturuldu.
 - [x] UI action registry formatı oluşturuldu.
@@ -53,21 +54,24 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] APPROVED asset için repository path + SHA-256 + license + provenance zorunlu hale getirildi.
 - [x] Static geometry ile calculation-data'ya bağlı dynamic geometry ayrımı bağlayıcı sözleşmeye yazıldı.
 - [x] Dört ana navigation action'ı registry/CI ile zorunlu hale getirildi.
-- [x] UI contract validator CI'da yeşil geçti.
-- [ ] Bütün SCREEN-ID'ler için referans görseller repository'ye henüz eklenmedi.
-- [ ] PENDING referansların kullanıcı/design onayı alınmadan APPROVED yapılmayacak.
-- [ ] Mevcut konsept görsellerin kaynak dosyaları GitHub repository içinde bulunmadığı için hash'li onay verilemedi.
-- [ ] SCREEN-ID başına bütün mikro-action envanteri referans ekranlarla beraber tamamlanacak.
+- [x] **Bütün 106 SCREEN-ID reference manifest tarafından takip ediliyor.**
+- [x] Eksik SCREEN-ID reference coverage CI failure haline getirildi.
+- [x] Öncelikli 18 ekran için action-source coverage CI failure haline getirildi.
+- [x] Action registry 67 açık action contract'a genişletildi.
+- [x] UI Contracts exact commit `ebf49aa8608c7dd61f1a05bdf08d68436da8a876` üzerinde yeşil geçti.
+- [ ] 106 referansın hiçbiri henüz gerçek onaylı dosya + hash olmadığı için APPROVED değil; PENDING olması bilinçli ve doğru.
+- [ ] Default dışındaki FREE/PRO/EMPTY/ERROR/OFFLINE/LOCKED gibi ekran-state referansları henüz exhaustive manifestte değil.
+- [ ] SCREEN-ID başına bütün mikro-action envanteri henüz exhaustive değil.
 - [ ] Logo/zodiac/planet/mandala/lotus/icon/Tarot gerçek asset dosyaları ve lisans/provenance henüz mevcut değil.
 
 ## Sıradaki çalışma
 
-1. Faz 3'te SCREEN-ID coverage üreticisi/validator'ı ekle: IA'daki ekranlar ile referans manifest kapsamını sayısal raporla ve eksik ekranları açıkça listele; PENDING'in DONE olmadığını koru.
-2. Referans dosyaları mevcut değilse tasarım dosyası uydurup APPROVED yapma. Bunun yerine ekran spec/state sözleşmelerini genişlet.
-3. Exhaustive action registry'yi Today, Tools, Western Input/Chart, Vedic D1, Numerology, Planetary Hours, Clients, PDF ve Settings referans ekranlarından başlayarak genişlet.
+1. Faz 3'te `state manifest` sözleşmesini ekle: hangi ekranların DEFAULT dışında FREE/PRO/EMPTY/ERROR/OFFLINE/LOCKED state referansı gerektirdiğini makine-okunabilir hale getir.
+2. Reference validator'a zorunlu state coverage kontrolü ekle; state dosyaları gerçek görsel ve açık onay gelene kadar PENDING kalmalı.
+3. Action registry'yi onboarding/location, Western alt ekranlar, transit/synastry, Vedic detaylar, BaZi, spiritüel ve kişisel gelişim yollarında genişlet.
 4. Statik assetler gerçek dosya/lisans/provenance olmadan APPROVED yapılmasın.
-5. Faz 1 binary blocker devam ediyorsa açık bırak ve Faz 3/4 altyapısında ilerle.
+5. Faz 1 binary blocker devam ediyorsa açık bırak ve Faz 3/4 sözleşme altyapısında ilerle.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi doğrulandı; Faz 3'ün manifest/CI altyapısı yeşil fakat referans görsel ve gerçek asset üretim/onay kapsamı tamamlanmadı. Production uygulama kodlamasına başlanmadı.
+**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi doğrulandı. Faz 3'te bütün 106 ekran artık manifest tarafından izleniyor ve öncelikli action coverage CI ile zorunlu; fakat gerçek referans görseller, ekran-state kapsamı ve gerçek statik assetler henüz tamamlanmadı. Production uygulama kodlamasına başlanmadı.
