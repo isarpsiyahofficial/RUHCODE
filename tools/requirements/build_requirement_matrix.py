@@ -3,6 +3,8 @@ from pathlib import Path
 import csv
 import re
 
+from classify_requirements import classify
+
 ROOT = Path(__file__).resolve().parents[2]
 FILES = [ROOT / 'RUH_CODE_MASTER_SARTNAME.md', ROOT / 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md']
 STATE = ROOT / 'requirements' / 'requirement_state.csv'
@@ -56,7 +58,14 @@ with OUT.open('w', encoding='utf-8', newline='') as handle:
     writer = csv.DictWriter(handle, fieldnames=columns, lineterminator='\n')
     writer.writeheader()
     for number, source, text in items:
+        auto_tags, auto_evidence = classify(number, text)
         current = overrides.get(number, {})
+        tags = current.get('tags', '').strip() or auto_tags
+        evidence_required = current.get('evidence_required', '').strip() or auto_evidence
+        if tags in {'', 'UNCLASSIFIED'}:
+            raise SystemExit(f'Unclassified requirement: RC-{number:04d}')
+        if evidence_required in {'', 'TBD'}:
+            raise SystemExit(f'Undefined evidence contract: RC-{number:04d}')
         writer.writerow({
             'rc_id': f'RC-{number:04d}',
             'requirement_number': number,
@@ -64,10 +73,10 @@ with OUT.open('w', encoding='utf-8', newline='') as handle:
             'requirement_text': text,
             'status': current.get('status', 'NOT_STARTED'),
             'task_ids': current.get('task_ids', f'TASK-RC-{number:04d}'),
-            'tags': current.get('tags', 'UNCLASSIFIED'),
-            'evidence_required': current.get('evidence_required', 'TBD'),
+            'tags': tags,
+            'evidence_required': evidence_required,
             'evidence_links': current.get('evidence_links', ''),
             'notes': current.get('notes', ''),
         })
 
-print(f'OK: wrote {len(items)} rows to {OUT.relative_to(ROOT)}; state overrides={len(overrides)}')
+print(f'OK: wrote {len(items)} classified rows to {OUT.relative_to(ROOT)}; state overrides={len(overrides)}')
