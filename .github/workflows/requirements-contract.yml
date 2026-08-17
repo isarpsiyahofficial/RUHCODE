@@ -1,0 +1,42 @@
+name: Requirements Contract
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate-requirements:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate RC sequence
+        run: python tools/requirements/validate_requirements.py
+      - name: Build traceability matrix
+        run: python tools/requirements/build_requirement_matrix.py
+      - name: Validate matrix contract
+        shell: python
+        run: |
+          import csv
+          from pathlib import Path
+          path = Path('requirements/requirement_matrix.csv')
+          rows = list(csv.DictReader(path.open(encoding='utf-8', newline='')))
+          ids = [r['rc_id'] for r in rows]
+          expected = [f'RC-{i:04d}' for i in range(1, 1443)]
+          assert len(rows) == 1442, len(rows)
+          assert ids == expected
+          assert len(set(ids)) == 1442
+          valid = {'NOT_STARTED','IMPLEMENTED','TESTED','VERIFIED','DONE'}
+          for row in rows:
+              assert row['status'] in valid, row
+              assert row['task_ids'].strip(), row['rc_id']
+              if row['status'] == 'DONE':
+                  assert row['evidence_required'].strip() not in {'', 'TBD'}, row['rc_id']
+                  assert row['evidence_links'].strip(), row['rc_id']
+          print('OK: 1,442-row traceability contract validated')
