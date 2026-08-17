@@ -6,63 +6,68 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 - MASTER kapsamı: `RC-0001 → RC-1442`.
 - Faz 0 tamamlandı ve CI ile kanıtlandı.
-- `tools/requirements/validate_requirements.py` tam 1.442 sıralı/benzersiz RC sözleşmesini doğruluyor.
-- `tools/requirements/classify_requirements.py` bütün requirement'ları deterministik olarak `CALC / CONTENT / UI / I18N / OFFLINE / ENTITLEMENT / BACKUP / PDF / SECURITY / A11Y / PERF / RELEASE` sınıflarına ayırıyor.
-- `tools/requirements/build_requirement_matrix.py` her RC için task ID, durum, tag ve gerekli kanıt türünü üretiyor; `UNCLASSIFIED` veya `TBD` kanıt sözleşmesine izin vermiyor.
-- `requirements/requirement_state.csv` yalnız gerçek ilerleme override'ları için kalıcı state deposu olarak korunuyor.
-- `.github/workflows/requirements-contract.yml` 1.442 satırın sınıflandırıldığını ve DONE durumunun kanıt linki olmadan kullanılamadığını kontrol ediyor.
-- GitHub Actions `Requirements Contract` run #7 exact commit `d1c006950f6d5d5566331996bfcf43b99dd8316b` üzerinde başarıyla geçti.
-- Faz 1 kısmen ilerledi.
-- `docs/AKILES_REFERENCE_CONTRACT.md` oluşturuldu; AKİLES'ten doğrulama amacıyla taşınabilecek hesaplama davranışları ile Ruh Code runtime'a taşınmayacak Cloudflare/D1/R2/admin/web katmanları ayrıldı.
-- Faz 2 temel bilgi mimarisi oluşturuldu.
-- `docs/UI_INFORMATION_ARCHITECTURE.md` dört ana navigasyonu (`Bugün · Araçlar · Kayıtlar · Profil`), Astroloji/Numeroloji/Spiritüel/Kişisel Gelişim alt ağaçlarını, profesyonel kayıt alanını, SCREEN-ID'leri ve temel ACTION-ID sözleşmesini tanımlıyor.
-- `tools/ui/validate_information_architecture.py` aynı SCREEN-ID'nin iki farklı route'a bağlanmasını, eksik ana navigation/action sözleşmesini ve action hedefi olmayan ekran referansını engelliyor.
-- `.github/workflows/ui-information-architecture.yml` eklendi.
-- İlk UI IA CI çalışması duplicate-reference validator hatasını yakaladı; validator düzeltildi.
-- GitHub Actions `UI Information Architecture` run #2 exact commit `73c7851b1c6cac5244e61c804087b53d5aa84a21` üzerinde başarıyla geçti.
+- Requirement tooling 1.442 benzersiz RC ID, deterministic classification, task/evidence sözleşmesi ve DONE-kanıt kapısını doğruluyor.
+- Faz 1 kısmen ilerledi; AKİLES referans/runtime sınırı belgelendi. Binary ZIP gerektiren exact hash ve dataset dönüştürme işleri açık.
+- Faz 2 temel bilgi mimarisi tamamlandı; `Bugün · Araçlar · Kayıtlar · Profil`, alt araç ağaçları, SCREEN-ID ve temel ACTION-ID sözleşmesi CI ile doğrulandı.
+- Faz 3 UI reference/action/asset **altyapısı** bu turda oluşturuldu.
+- `docs/UI_REFERENCE_CONTRACT.md` eklendi; RC-1429/1430/1431/1438/1439/1440/1441 için statik asset, dinamik geometri, referans görsel, action ve accessibility sözleşmesi bağlandı.
+- `ui/reference_manifest.csv` eklendi. Mevcut konsept ekranlar bilinçli olarak `PENDING`; gerçek dosya + SHA-256 + açık onay olmadan `APPROVED` yapılamaz.
+- `ui/action_registry.csv` eklendi; dört ana navigasyon, Araçlar ana kategorileri, Astroloji giriş yolları, Kayıtlar ve Profil/PDF temel aksiyonları makine-okunabilir hale getirildi.
+- `ui/asset_manifest.csv` eklendi; logo, zodiac/planet glyph, mandala/lotus, genel ikon ve Tarot assetleri `PENDING` olarak izleniyor. Lisans/provenance doğrulanmadan APPROVED olamaz.
+- `tools/ui/validate_ui_contracts.py` eklendi; duplicate/unknown SCREEN-ID, duplicate ACTION-ID, hedefi olmayan action, APPROVED referans/asset path+hash eksikliği, asset license/provenance eksikliği ve hash mismatch durumlarını engelliyor.
+- `.github/workflows/ui-contracts.yml` eklendi.
+- GitHub Actions `UI Contracts` run #1 exact commit `f150fd67322545171a5fa476e6712984113dcc16` üzerinde **success** ile tamamlandı.
 
-## Faz 0 — kanıtlanmış tamamlanan görevler
+## Kanıtlanmış tamamlanan Faz 0
 
-- [x] `RC-0001 → RC-1442` için tek makine üretimli Requirement Traceability Matrix altyapısı oluşturuldu.
-- [x] Matrix sözleşmesinin tam 1.442 benzersiz RC ID içermesi CI ile doğrulandı.
-- [x] Eksik RC ID olduğunda validator/CI başarısız olacak.
-- [x] Duplicate RC ID olduğunda validator/CI başarısız olacak.
-- [x] Her RC için `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE` durum sözleşmesi oluşturuldu.
-- [x] Her RC için varsayılan benzersiz `TASK-RC-xxxx` eşlemesi oluşturuldu.
-- [x] CALC / CONTENT / UI / I18N / OFFLINE / ENTITLEMENT / BACKUP / PDF / SECURITY / A11Y / PERF / RELEASE etiketleme politikaları tamamlandı.
-- [x] Her RC için gerekli kanıt türü deterministik olarak tanımlandı.
-- [x] `UNCLASSIFIED` ve `TBD` evidence CI tarafından yasaklandı.
-- [x] Kanıt bağlantısı bulunmayan bir RC'nin `DONE` olmasını engelleyen sözleşme korundu.
+- [x] RC-0001→RC-1442 exact sıra/benzersizlik sözleşmesi.
+- [x] Requirement state sözleşmesi.
+- [x] Task/evidence eşlemesi.
+- [x] CALC/CONTENT/UI/I18N/OFFLINE/ENTITLEMENT/BACKUP/PDF/SECURITY/A11Y/PERF/RELEASE sınıflandırması.
+- [x] Kanıtsız DONE yasağı.
 
-## Faz 1 — mevcut ilerleme
+## Faz 1 — açık kalanlar
 
-- [x] AKİLES'in Ruh Code için referans rolü tanımlandı; doğrudan runtime kopyası olmayacağı kilitlendi.
-- [x] Taşınabilecek doğrulama davranışları belirlendi: global konum, koordinat, IANA timezone, tarihsel saat dönüşümü, Lahiri, Whole Sign, graha, Rahu/Ketu, Nakshatra/pada, saat bilinmiyor davranışı ve calculation/content ayrımı.
-- [x] Ruh Code runtime'a taşınmayacak web altyapısı belirlendi: Cloudflare Worker, D1, R2, admin, SEO/sitemap, ürün satış akışları, web medya/yedekleme bindingleri.
-- [x] Lisansı doğrulanmamış AKİLES dependency/veri setlerinin runtime'a otomatik taşınması yasaklandı.
-- [ ] AKİLES V96 Final 28 ZIP binary paketi aktif çalışma alanında bulunmadığı için exact SHA-256 manifesti çıkarılamadı.
-- [ ] Exact aktif JS/CSS/ephemeris/timezone dosya envanteri ZIP yeniden erişilebilir olduğunda çıkarılacak.
-- [ ] 25.000+ Vedik doğrulama dataseti fiziksel referans test formatına dönüştürülecek.
-- [ ] 6.400+ planetary-hour dataseti fiziksel referans test formatına dönüştürülecek.
+- [x] AKİLES referans rolü ve runtime sınırı.
+- [x] Taşınabilecek doğrulama davranışları belirlendi.
+- [x] Cloudflare/D1/R2/admin/web alanlarının Ruh Code runtime'a taşınmaması kilitlendi.
+- [ ] AKİLES V96 Final 28 ZIP exact SHA-256 manifesti — binary paket aktif repository/workspace içinde yok.
+- [ ] Exact aktif JS/CSS/ephemeris/timezone dosya envanteri — ZIP gerekir.
+- [ ] 25.000+ Vedik dataset fiziksel reference-test formatı — ZIP/dataset gerekir.
+- [ ] 6.400+ planetary-hour dataset fiziksel reference-test formatı — ZIP/dataset gerekir.
 
-## Faz 2 — mevcut ilerleme
+## Faz 2 — durum
 
-- [x] Ana navigasyon `Bugün · Araçlar · Kayıtlar · Profil` olarak sözleşmeye bağlandı.
-- [x] Belirsiz `Hesapla` ana navigasyonundan vazgeçildi.
-- [x] Araçlar altında Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim ayrımı tanımlandı.
-- [x] Astroloji altında Batı / Vedik / Çin / BaZi / Gezegen Saatleri yolları açık tanımlandı.
-- [x] Numeroloji alt yolları tanımlandı.
-- [x] Kayıtlar altında Profillerim / Danışanlarım ayrımı tanımlandı.
-- [x] Profesyonel çalışma alanı ana alt navigasyonu kalabalıklaştırmadan Kayıtlar içine yerleştirildi.
-- [x] Ana ve alt ekranlar için benzersiz SCREEN-ID sözleşmesi oluşturuldu.
-- [x] Temel dokunulabilir navigasyonlar için ACTION-ID sözleşmesi oluşturuldu.
-- [x] UI bilgi mimarisi CI kapısı yeşil.
-- [ ] Bütün ekran içi mikro aksiyonların exhaustive ACTION-ID envanteri Faz 3 referans ekranlarıyla birlikte genişletilecek.
+- [x] Ana navigasyon ve alt bilgi mimarisi.
+- [x] SCREEN-ID sözleşmesi.
+- [x] Temel ACTION-ID sözleşmesi.
+- [x] UI IA CI kapısı.
+- [ ] Bütün ekran içi mikro aksiyonların exhaustive ACTION-ID envanteri, her ekranın onaylı referansı üretildikçe genişletilecek.
+
+## Faz 3 — bu turdaki kanıtlanmış ilerleme
+
+- [x] UI referans manifest formatı oluşturuldu.
+- [x] UI action registry formatı oluşturuldu.
+- [x] Static asset manifest formatı oluşturuldu.
+- [x] APPROVED referans için repository path + SHA-256 zorunlu hale getirildi.
+- [x] APPROVED asset için repository path + SHA-256 + license + provenance zorunlu hale getirildi.
+- [x] Static geometry ile calculation-data'ya bağlı dynamic geometry ayrımı bağlayıcı sözleşmeye yazıldı.
+- [x] Dört ana navigation action'ı registry/CI ile zorunlu hale getirildi.
+- [x] UI contract validator CI'da yeşil geçti.
+- [ ] Bütün SCREEN-ID'ler için referans görseller repository'ye henüz eklenmedi.
+- [ ] PENDING referansların kullanıcı/design onayı alınmadan APPROVED yapılmayacak.
+- [ ] Mevcut konsept görsellerin kaynak dosyaları GitHub repository içinde bulunmadığı için hash'li onay verilemedi.
+- [ ] SCREEN-ID başına bütün mikro-action envanteri referans ekranlarla beraber tamamlanacak.
+- [ ] Logo/zodiac/planet/mandala/lotus/icon/Tarot gerçek asset dosyaları ve lisans/provenance henüz mevcut değil.
 
 ## Sıradaki çalışma
 
-AKİLES ZIP erişilebilir değilse Faz 1'in binary gerektiren dört maddesini açık bırak. Faz 2'de exhaustive mikro-action registry için altyapıyı genişlet ve Faz 3 için referans görsel manifest/specification yapısını kur. Onaylı UI görselleri repository'ye eklendikçe SCREEN-ID + asset hash + state eşlemesini CI ile zorunlu hale getir.
+1. Faz 3'te SCREEN-ID coverage üreticisi/validator'ı ekle: IA'daki ekranlar ile referans manifest kapsamını sayısal raporla ve eksik ekranları açıkça listele; PENDING'in DONE olmadığını koru.
+2. Referans dosyaları mevcut değilse tasarım dosyası uydurup APPROVED yapma. Bunun yerine ekran spec/state sözleşmelerini genişlet.
+3. Exhaustive action registry'yi Today, Tools, Western Input/Chart, Vedic D1, Numerology, Planetary Hours, Clients, PDF ve Settings referans ekranlarından başlayarak genişlet.
+4. Statik assetler gerçek dosya/lisans/provenance olmadan APPROVED yapılmasın.
+5. Faz 1 binary blocker devam ediyorsa açık bırak ve Faz 3/4 altyapısında ilerle.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi CI ile doğrulandı. Production uygulama kodlamasına başlanmadı.
+**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi doğrulandı; Faz 3'ün manifest/CI altyapısı yeşil fakat referans görsel ve gerçek asset üretim/onay kapsamı tamamlanmadı. Production uygulama kodlamasına başlanmadı.
