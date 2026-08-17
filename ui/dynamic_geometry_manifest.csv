@@ -1,0 +1,15 @@
+geometry_id,category,source_screen_id,calculation_source,renderer_contract,golden_required,status,notes
+GEOM-WESTERN-NATAL-WHEEL,WESTERN_CHART,SCR-WESTERN-CHART-001,WesternNatalSnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,360-degree zodiac wheel house cusps angles and planet positions
+GEOM-WESTERN-ASPECT-LINES,WESTERN_ASPECTS,SCR-WESTERN-CHART-001,WesternAspectSet,DETERMINISTIC_VECTOR,true,SPECIFIED,Aspect lines must use exact aspect objects and orb classes
+GEOM-WESTERN-TRANSIT-OVERLAY,WESTERN_TRANSIT,SCR-TRANSIT-001,TransitSnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,Natal and transit positions must share the same degree coordinate system
+GEOM-WESTERN-SYNASTRY-WHEEL,WESTERN_SYNASTRY,SCR-SYNASTRY-RESULT-001,SynastrySnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,Two-profile ring geometry and inter-chart aspects
+GEOM-WESTERN-COMPOSITE-WHEEL,WESTERN_COMPOSITE,SCR-COMPOSITE-001,CompositeSnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,Composite positions rendered from calculated midpoint result
+GEOM-VEDIC-D1,VEDIC_CHART,SCR-VEDIC-D1-001,VedicD1Snapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,D1 Rasi chart cells and graha placements
+GEOM-VEDIC-D9,VEDIC_CHART,SCR-VEDIC-D9-001,VedicD9Snapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,D9 Navamsa chart cells and graha placements
+GEOM-VEDIC-VARGA,VEDIC_CHART,SCR-VEDIC-VARGAS-001,VedicVargaSnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,Selected varga chart must be generated from selected divisional data
+GEOM-BAZI-PILLARS,BAZI_GRID,SCR-BAZI-PILLARS-001,BaZiPillarsSnapshot,DETERMINISTIC_LAYOUT,true,SPECIFIED,Four Pillars heavenly stems earthly branches and hidden stems
+GEOM-BAZI-ELEMENTS,BAZI_VISUAL,SCR-BAZI-ELEMENTS-001,BaZiElementBalance,DETERMINISTIC_VECTOR,true,SPECIFIED,Five Elements visualization must use calculated element weights
+GEOM-NUMEROLOGY-LOSHU,NUMEROLOGY_GRID,SCR-LOSHU-001,LoShuSnapshot,DETERMINISTIC_LAYOUT,true,SPECIFIED,Lo Shu cells must be populated from calculation output
+GEOM-NUMEROLOGY-PYTHAGOREAN,NUMEROLOGY_VISUAL,SCR-PYTHAGOREAN-001,PythagoreanSnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,Number visualization must use calculation result not decorative random values
+GEOM-PDF-WESTERN-WHEEL,PDF_VECTOR,SCR-PDF-PREVIEW-001,WesternNatalSnapshot,SHARED_CALCULATION_VECTOR,true,SPECIFIED,PDF and UI must render the same western calculation snapshot
+GEOM-PDF-VEDIC-CHART,PDF_VECTOR,SCR-PDF-PREVIEW-001,VedicChartSnapshot,SHARED_CALCULATION_VECTOR,true,SPECIFIED,PDF and UI must render the same Vedic calculation snapshot
