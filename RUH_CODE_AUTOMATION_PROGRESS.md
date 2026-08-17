@@ -10,10 +10,16 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - `tools/requirements/classify_requirements.py` bütün requirement'ları deterministik olarak `CALC / CONTENT / UI / I18N / OFFLINE / ENTITLEMENT / BACKUP / PDF / SECURITY / A11Y / PERF / RELEASE` sınıflarına ayırıyor.
 - `tools/requirements/build_requirement_matrix.py` her RC için task ID, durum, tag ve gerekli kanıt türünü üretiyor; `UNCLASSIFIED` veya `TBD` kanıt sözleşmesine izin vermiyor.
 - `requirements/requirement_state.csv` yalnız gerçek ilerleme override'ları için kalıcı state deposu olarak korunuyor.
-- `.github/workflows/requirements-contract.yml` bütün tag sınıflarının kullanıldığını, tag dışına çıkılmadığını, 1.442 satırın sınıflandırıldığını ve DONE durumunun kanıt linki olmadan kullanılamadığını kontrol ediyor.
-- GitHub Actions `Requirements Contract` run #7, exact commit `d1c006950f6d5d5566331996bfcf43b99dd8316b` üzerinde başarıyla geçti.
-- Faz 1 başlatıldı.
+- `.github/workflows/requirements-contract.yml` 1.442 satırın sınıflandırıldığını ve DONE durumunun kanıt linki olmadan kullanılamadığını kontrol ediyor.
+- GitHub Actions `Requirements Contract` run #7 exact commit `d1c006950f6d5d5566331996bfcf43b99dd8316b` üzerinde başarıyla geçti.
+- Faz 1 kısmen ilerledi.
 - `docs/AKILES_REFERENCE_CONTRACT.md` oluşturuldu; AKİLES'ten doğrulama amacıyla taşınabilecek hesaplama davranışları ile Ruh Code runtime'a taşınmayacak Cloudflare/D1/R2/admin/web katmanları ayrıldı.
+- Faz 2 temel bilgi mimarisi oluşturuldu.
+- `docs/UI_INFORMATION_ARCHITECTURE.md` dört ana navigasyonu (`Bugün · Araçlar · Kayıtlar · Profil`), Astroloji/Numeroloji/Spiritüel/Kişisel Gelişim alt ağaçlarını, profesyonel kayıt alanını, SCREEN-ID'leri ve temel ACTION-ID sözleşmesini tanımlıyor.
+- `tools/ui/validate_information_architecture.py` aynı SCREEN-ID'nin iki farklı route'a bağlanmasını, eksik ana navigation/action sözleşmesini ve action hedefi olmayan ekran referansını engelliyor.
+- `.github/workflows/ui-information-architecture.yml` eklendi.
+- İlk UI IA CI çalışması duplicate-reference validator hatasını yakaladı; validator düzeltildi.
+- GitHub Actions `UI Information Architecture` run #2 exact commit `73c7851b1c6cac5244e61c804087b53d5aa84a21` üzerinde başarıyla geçti.
 
 ## Faz 0 — kanıtlanmış tamamlanan görevler
 
@@ -23,18 +29,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Duplicate RC ID olduğunda validator/CI başarısız olacak.
 - [x] Her RC için `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE` durum sözleşmesi oluşturuldu.
 - [x] Her RC için varsayılan benzersiz `TASK-RC-xxxx` eşlemesi oluşturuldu.
-- [x] CALC etiketleme politikası tamamlandı.
-- [x] CONTENT etiketleme politikası tamamlandı.
-- [x] UI etiketleme politikası tamamlandı.
-- [x] I18N etiketleme politikası tamamlandı.
-- [x] OFFLINE etiketleme politikası tamamlandı.
-- [x] ENTITLEMENT etiketleme politikası tamamlandı.
-- [x] BACKUP etiketleme politikası tamamlandı.
-- [x] PDF etiketleme politikası tamamlandı.
-- [x] SECURITY etiketleme politikası tamamlandı.
-- [x] A11Y etiketleme politikası tamamlandı.
-- [x] PERF etiketleme politikası tamamlandı.
-- [x] RELEASE etiketleme politikası tamamlandı.
+- [x] CALC / CONTENT / UI / I18N / OFFLINE / ENTITLEMENT / BACKUP / PDF / SECURITY / A11Y / PERF / RELEASE etiketleme politikaları tamamlandı.
 - [x] Her RC için gerekli kanıt türü deterministik olarak tanımlandı.
 - [x] `UNCLASSIFIED` ve `TBD` evidence CI tarafından yasaklandı.
 - [x] Kanıt bağlantısı bulunmayan bir RC'nin `DONE` olmasını engelleyen sözleşme korundu.
@@ -50,10 +45,24 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [ ] 25.000+ Vedik doğrulama dataseti fiziksel referans test formatına dönüştürülecek.
 - [ ] 6.400+ planetary-hour dataseti fiziksel referans test formatına dönüştürülecek.
 
+## Faz 2 — mevcut ilerleme
+
+- [x] Ana navigasyon `Bugün · Araçlar · Kayıtlar · Profil` olarak sözleşmeye bağlandı.
+- [x] Belirsiz `Hesapla` ana navigasyonundan vazgeçildi.
+- [x] Araçlar altında Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim ayrımı tanımlandı.
+- [x] Astroloji altında Batı / Vedik / Çin / BaZi / Gezegen Saatleri yolları açık tanımlandı.
+- [x] Numeroloji alt yolları tanımlandı.
+- [x] Kayıtlar altında Profillerim / Danışanlarım ayrımı tanımlandı.
+- [x] Profesyonel çalışma alanı ana alt navigasyonu kalabalıklaştırmadan Kayıtlar içine yerleştirildi.
+- [x] Ana ve alt ekranlar için benzersiz SCREEN-ID sözleşmesi oluşturuldu.
+- [x] Temel dokunulabilir navigasyonlar için ACTION-ID sözleşmesi oluşturuldu.
+- [x] UI bilgi mimarisi CI kapısı yeşil.
+- [ ] Bütün ekran içi mikro aksiyonların exhaustive ACTION-ID envanteri Faz 3 referans ekranlarıyla birlikte genişletilecek.
+
 ## Sıradaki çalışma
 
-Önce Faz 1'de erişilebilir kaynaklarla yapılabilen manifest/test-format altyapısını hazırlamaya devam et. AKİLES ZIP erişilebilir değilse Faz 1'in binary gerektirmeyen sözleşme işlerini tamamla ve ardından Faz 2 UI bilgi mimarisi için route/SCREEN-ID/action sözleşmesi iskeletini oluştur. ZIP yeniden erişilebilir olduğunda hash/envanter/dataset çıkarımına geri dön.
+AKİLES ZIP erişilebilir değilse Faz 1'in binary gerektiren dört maddesini açık bırak. Faz 2'de exhaustive mikro-action registry için altyapıyı genişlet ve Faz 3 için referans görsel manifest/specification yapısını kur. Onaylı UI görselleri repository'ye eklendikçe SCREEN-ID + asset hash + state eşlemesini CI ile zorunlu hale getir.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmen ilerledi. Uygulama production kodlamasına başlanmadı.
+**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi CI ile doğrulandı. Production uygulama kodlamasına başlanmadı.
