@@ -9,15 +9,17 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - Requirement tooling 1.442 benzersiz RC ID, deterministic classification, task/evidence sözleşmesi ve DONE-kanıt kapısını doğruluyor.
 - Faz 1 kısmen ilerledi; AKİLES referans/runtime sınırı belgelendi. Binary ZIP gerektiren exact hash ve dataset dönüştürme işleri açık.
 - Faz 2 temel bilgi mimarisi tamamlandı; `Bugün · Araçlar · Kayıtlar · Profil`, alt araç ağaçları, SCREEN-ID ve temel ACTION-ID sözleşmesi CI ile doğrulandı.
-- Faz 3 UI reference/action/asset altyapısı kurulmuş durumda ve bu turda kapsama sertleştirildi.
+- Faz 3 UI reference/action/asset altyapısı kurulmuş durumda ve bu turda hem ekran kapsamı hem zorunlu state kapsamı sertleştirildi.
 - UI bilgi mimarisindeki **106 benzersiz SCREEN-ID'nin tamamı** `ui/reference_manifest.csv` içine alındı. Hepsi gerçek dosya + SHA-256 + açık onay gelene kadar bilinçli olarak `PENDING`.
-- Eksik SCREEN-ID artık yalnız raporlanmıyor; `tools/ui/validate_ui_contracts.py` bunu CI hatası yapıyor. Dolayısıyla reference-manifest structural coverage artık **106/106** olmak zorunda.
-- `ui/action_registry.csv` 19 temel aksiyondan **67 aksiyona** genişletildi.
+- Eksik SCREEN-ID artık CI hatası; structural reference coverage **106/106** olmak zorunda.
+- `ui/action_registry.csv` **67 açık action contract** içeriyor.
 - Bugün, Araçlar, Astroloji, Batı giriş/chart, Vedik giriş/D1, Numeroloji, Gezegen Saatleri, Kayıtlar, Danışanlar, Profil, Ayarlar, Backup, PDF ve PDF Preview için öncelikli action-source coverage bağlandı.
-- Validator 18 öncelikli action-source ekranının tamamında action coverage zorunlu kılıyor.
-- Her action için accessibility etiketi sözleşmesi doğrulanıyor.
-- Exact commit `ebf49aa8608c7dd61f1a05bdf08d68436da8a876` üzerinde `UI Contracts` run `32063203702` **success** ile tamamlandı.
-- Aynı exact commit üzerinde `Requirements Contract` run `32063203699` **success** ile tamamlandı.
+- `ui/state_reference_manifest.csv` eklendi ve **33 zorunlu ekran-state** sözleşmesi oluşturuldu.
+- Free/PRO/OFFLINE/FREE_LOCKED/TEMP_UNLOCKED/UNKNOWN_BIRTH_TIME/VALIDATION_ERROR/PARTIAL_UNKNOWN_TIME/POLAR_UNAVAILABLE/EMPTY/ERROR gibi kritik state'ler makine-okunabilir biçimde izleniyor.
+- State referansları gerçek görsel + SHA-256 + açık onay olmadan APPROVED yapılamıyor; şu an doğru şekilde `PENDING`.
+- `tools/ui/validate_ui_contracts.py` eksik 106-screen coverage, eksik 33-state coverage ve eksik 18-priority action-source coverage durumlarında CI'ı kırıyor.
+- Exact commit `ebf49aa8608c7dd61f1a05bdf08d68436da8a876` üzerinde `UI Contracts` run `32063203702` ve `Requirements Contract` run `32063203699` **success**.
+- Exact commit `a6950aa5541fe6cbe1f313874d9e8b71c3983c3e` üzerinde `UI Contracts` job `95489466281` **success**; mandatory UI state coverage validator adımı geçti.
 
 ## Kanıtlanmış tamamlanan Faz 0
 
@@ -58,20 +60,21 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Eksik SCREEN-ID reference coverage CI failure haline getirildi.
 - [x] Öncelikli 18 ekran için action-source coverage CI failure haline getirildi.
 - [x] Action registry 67 açık action contract'a genişletildi.
-- [x] UI Contracts exact commit `ebf49aa8608c7dd61f1a05bdf08d68436da8a876` üzerinde yeşil geçti.
-- [ ] 106 referansın hiçbiri henüz gerçek onaylı dosya + hash olmadığı için APPROVED değil; PENDING olması bilinçli ve doğru.
-- [ ] Default dışındaki FREE/PRO/EMPTY/ERROR/OFFLINE/LOCKED gibi ekran-state referansları henüz exhaustive manifestte değil.
+- [x] **33 zorunlu Free/PRO/offline/error/unknown-time state state manifest tarafından takip ediliyor.**
+- [x] Eksik zorunlu state coverage CI failure haline getirildi.
+- [x] Mandatory state validator exact commit `a6950aa5541fe6cbe1f313874d9e8b71c3983c3e` üzerinde yeşil geçti.
+- [ ] 106 base referans ve 33 state referansı henüz gerçek onaylı dosya + hash olmadığı için APPROVED değil; PENDING olması bilinçli ve doğru.
 - [ ] SCREEN-ID başına bütün mikro-action envanteri henüz exhaustive değil.
 - [ ] Logo/zodiac/planet/mandala/lotus/icon/Tarot gerçek asset dosyaları ve lisans/provenance henüz mevcut değil.
 
 ## Sıradaki çalışma
 
-1. Faz 3'te `state manifest` sözleşmesini ekle: hangi ekranların DEFAULT dışında FREE/PRO/EMPTY/ERROR/OFFLINE/LOCKED state referansı gerektirdiğini makine-okunabilir hale getir.
-2. Reference validator'a zorunlu state coverage kontrolü ekle; state dosyaları gerçek görsel ve açık onay gelene kadar PENDING kalmalı.
-3. Action registry'yi onboarding/location, Western alt ekranlar, transit/synastry, Vedic detaylar, BaZi, spiritüel ve kişisel gelişim yollarında genişlet.
-4. Statik assetler gerçek dosya/lisans/provenance olmadan APPROVED yapılmasın.
+1. Action registry'yi onboarding/location, Western alt ekranlar, transit/synastry, Vedic detaylar, BaZi, spiritüel ve kişisel gelişim yollarında genişlet.
+2. `ACTION-ID` kapsamını ekran başına ölçen coverage raporu üret ve hedeflenen navigation/form ekranlarında sıfır action olmasını CI hatası yap.
+3. UI asset sözleşmesini `static decorative` ve `dynamic calculation geometry` sınıfları için ayrı manifest/renderer-contract seviyesine sertleştir.
+4. Gerçek statik assetler repository'ye girene kadar APPROVED yapma; lisans/provenance zorunlu kalmalı.
 5. Faz 1 binary blocker devam ediyorsa açık bırak ve Faz 3/4 sözleşme altyapısında ilerle.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi doğrulandı. Faz 3'te bütün 106 ekran artık manifest tarafından izleniyor ve öncelikli action coverage CI ile zorunlu; fakat gerçek referans görseller, ekran-state kapsamı ve gerçek statik assetler henüz tamamlanmadı. Production uygulama kodlamasına başlanmadı.
+**FINAL DEĞİL.** Faz 0 tamamlandı; Faz 1 kısmi; Faz 2 temel bilgi mimarisi doğrulandı. Faz 3'te 106/106 ekran, 33 zorunlu state ve 18 öncelikli action-source artık CI tarafından zorunlu tutuluyor; fakat gerçek referans görseller, exhaustive mikro-action kapsamı ve gerçek statik assetler henüz tamamlanmadı. Production uygulama kodlamasına başlanmadı.
