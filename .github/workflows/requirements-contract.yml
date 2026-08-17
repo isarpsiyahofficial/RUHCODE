@@ -18,6 +18,8 @@ jobs:
           python-version: '3.12'
       - name: Validate RC sequence
         run: python tools/requirements/validate_requirements.py
+      - name: Validate classification policy
+        run: python tools/requirements/classify_requirements.py
       - name: Build traceability matrix
         run: python tools/requirements/build_requirement_matrix.py
       - name: Validate matrix contract
@@ -33,10 +35,17 @@ jobs:
           assert ids == expected
           assert len(set(ids)) == 1442
           valid = {'NOT_STARTED','IMPLEMENTED','TESTED','VERIFIED','DONE'}
+          allowed_tags = {'CALC','CONTENT','UI','I18N','OFFLINE','ENTITLEMENT','BACKUP','PDF','SECURITY','A11Y','PERF','RELEASE'}
+          observed_tags = set()
           for row in rows:
               assert row['status'] in valid, row
               assert row['task_ids'].strip(), row['rc_id']
+              assert row['tags'].strip() not in {'', 'UNCLASSIFIED'}, row['rc_id']
+              tags = set(row['tags'].split('|'))
+              assert tags <= allowed_tags, (row['rc_id'], tags - allowed_tags)
+              observed_tags |= tags
+              assert row['evidence_required'].strip() not in {'', 'TBD'}, row['rc_id']
               if row['status'] == 'DONE':
-                  assert row['evidence_required'].strip() not in {'', 'TBD'}, row['rc_id']
                   assert row['evidence_links'].strip(), row['rc_id']
-          print('OK: 1,442-row traceability contract validated')
+          assert observed_tags == allowed_tags, (observed_tags, allowed_tags - observed_tags)
+          print('OK: 1,442-row classified traceability contract validated')
