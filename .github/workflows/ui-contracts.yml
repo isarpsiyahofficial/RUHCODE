@@ -16,6 +16,8 @@ jobs:
           python-version: '3.12'
       - name: Validate UI contracts
         run: python tools/ui/validate_ui_contracts.py
+      - name: Validate static asset contracts
+        run: python tools/ui/validate_static_assets.py
       - name: Build action coverage report
         run: python tools/ui/report_action_coverage.py
       - name: Upload action coverage report
