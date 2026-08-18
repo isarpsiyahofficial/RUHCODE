@@ -1,0 +1,16 @@
+name: Solar Events Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  solar-events-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate solar event contract
+        run: python tools/astronomy/validate_solar_events_contract.py
