@@ -20,8 +20,17 @@ REQUIRED_FILES = {
         'SqfliteLocalDatabase', 'PRAGMA integrity_check', 'app_meta', 'records',
         '_SqfliteTransaction', 'ConflictAlgorithm.replace'
     ),
+    'lib/src/data/local/core_model_codecs.dart': (
+        'profileToMap', 'profileFromMap', 'clientToMap', 'clientFromMap',
+        'calculationManifestToMap', 'calculationManifestFromMap',
+        'consultationToMap', 'consultationFromMap', 'noteToMap', 'noteFromMap'
+    ),
     'test/data/local/sqflite_local_database_test.dart': (
         'sqfliteFfiInit', 'rolls back', 'integrity', 'inMemoryDatabasePath'
+    ),
+    'test/data/local/core_model_codecs_test.dart': (
+        'profile round trip', 'client round trip', 'calculation manifest round trip',
+        'consultation and note round trips'
     ),
     'lib/src/calculation_core/calculation_engine.dart': ('CalculationEngine', 'CalculationResult'),
     'lib/src/interpretation/interpretation_engine.dart': ('InterpretationEngine',),
@@ -49,5 +58,5 @@ if errors:
     sys.exit(1)
 
 print(f'Phase 5 architecture contract OK: {len(REQUIRED_FILES)} files checked')
-print('SQLite adapter/test/Flutter quality gates are structurally present.')
+print('SQLite adapter/tests, persistence codecs and Flutter quality gates are structurally present.')
 print('NOTE: structural validation is not a substitute for a green Flutter Quality workflow or Android release proof.')
