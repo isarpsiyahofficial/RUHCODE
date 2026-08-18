@@ -29,6 +29,10 @@ try:
         'sourceEngineId',
         'sourceEngineVersion',
         'resultId',
+        'DailySnapshotAssembler',
+        'factorOrder',
+        'Duplicate daily factor kind is not allowed',
+        'DailySnapshot generation time must be UTC',
     ):
         assert token in core, f'missing DailySnapshot contract token: {token}'
 
@@ -40,10 +44,13 @@ try:
         'leap day has its own exact snapshot identity',
         'snapshot can exist without inventing unavailable factor results',
         'factor references retain source engine provenance',
+        'assembler applies deterministic factor order',
+        'assembler rejects duplicate factor kinds',
+        'assembler rejects empty provenance and non-UTC generation time',
     ):
         assert token in tests, f'missing DailySnapshot test contract: {token}'
 except AssertionError as exc:
     print(f'daily snapshot contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('daily snapshot contract OK: exact date/profile/location/timezone/version identity and factor provenance are present')
+print('daily snapshot contract OK: exact identity, provenance, UTC generation, uniqueness and deterministic factor ordering are present')
