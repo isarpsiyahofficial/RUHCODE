@@ -1,0 +1,16 @@
+name: Daily Snapshot Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  daily-snapshot-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate DailySnapshot identity contract
+        run: python tools/time/validate_daily_snapshot_contract.py
