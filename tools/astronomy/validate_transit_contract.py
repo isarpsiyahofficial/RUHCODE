@@ -18,6 +18,17 @@ if data.get('contract') != 'transit_runtime' or data.get('zodiac') != 'tropical'
     raise SystemExit('invalid transit contract metadata')
 if data.get('supportedAspects') != ['conjunction', 'sextile', 'square', 'trine', 'opposition']:
     raise SystemExit('transit contract must contain the five required major aspects')
+if data.get('supportedPhases') != ['applying', 'exact', 'separating', 'indeterminate']:
+    raise SystemExit('transit contract must expose applying/exact/separating/indeterminate phases')
+phase = data.get('phaseClassification') or {}
+if phase.get('usesEphemerisLongitudeSpeed') is not True:
+    raise SystemExit('transit phase classification must use ephemeris longitude speed')
+if phase.get('networkLookupRequired') is not False:
+    raise SystemExit('transit phase classification must remain offline')
+if phase.get('exactPhasePrecedence') is not True:
+    raise SystemExit('exact phase must take precedence over applying/separating')
+if phase.get('stationaryNonExactPhase') != 'indeterminate':
+    raise SystemExit('stationary non-exact aspects must be indeterminate')
 if data.get('dailySnapshotBinding') is not True:
     raise SystemExit('transits must be bound to DailySnapshot')
 if data.get('requiresExactTtEphemeris') is not True:
@@ -32,14 +43,28 @@ if data.get('independentAccuracySuiteDone') is not False:
 engine_text = engine.read_text(encoding='utf-8')
 for token in (
     'TransitAspectType',
+    'TransitAspectPhase',
     'TransitAspectOrbPolicy',
+    '_classifyPhase',
     '_smallestAngularSeparation',
+    'longitudeSpeedDegreesPerDay',
     'ephemeris.stateAt',
     'orbDegrees',
     'List<TransitAspectMatch>.unmodifiable',
 ):
     if token not in engine_text:
         raise SystemExit(f'transit engine missing token: {token}')
+
+test_text = engine_test.read_text(encoding='utf-8')
+for token in (
+    'TransitAspectPhase.applying',
+    'TransitAspectPhase.exact',
+    'TransitAspectPhase.separating',
+    'TransitAspectPhase.indeterminate',
+    'retrograde motion can make an aspect applying',
+):
+    if token not in test_text:
+        raise SystemExit(f'transit phase test missing token: {token}')
 
 factor_text = factor.read_text(encoding='utf-8')
 for token in (
