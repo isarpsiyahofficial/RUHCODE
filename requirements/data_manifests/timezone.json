@@ -1,0 +1,13 @@
+{
+  "dataset_id": "iana-tzdb",
+  "runtime_package": "timezone",
+  "runtime_package_version": "0.11.1",
+  "database_variant": "latest_all",
+  "iana_version": "2025c",
+  "offline": true,
+  "supported_civil_year_min": 1890,
+  "supported_civil_year_max": 2110,
+  "license": "BSD-2-Clause",
+  "source": "https://pub.dev/packages/timezone",
+  "integrity_policy": "The locked package version and generated dependency lock must be verified in clean-checkout CI; release metadata must record the package and IANA database versions."
+}
