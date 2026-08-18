@@ -89,4 +89,91 @@ void main() {
     expect(snapshot.isEmpty, isFalse);
     expect(snapshot.factors.single.sourceEngineId, 'planetary-hours');
   });
+
+  test('assembler applies deterministic factor order', () {
+    final snapshot = DailySnapshotAssembler.assemble(
+      identity: identity(),
+      generatedAtUtc: DateTime.utc(2026, 8, 16, 9),
+      factors: const <DailyFactorReference>[
+        DailyFactorReference(
+          kind: DailyFactorKind.personalDay,
+          sourceEngineId: 'personal-day',
+          sourceEngineVersion: '1',
+          resultId: 'pd:4',
+        ),
+        DailyFactorReference(
+          kind: DailyFactorKind.moonSign,
+          sourceEngineId: 'moon-sign',
+          sourceEngineVersion: '1',
+          resultId: 'moon:taurus',
+        ),
+        DailyFactorReference(
+          kind: DailyFactorKind.planetaryHour,
+          sourceEngineId: 'planetary-hours',
+          sourceEngineVersion: '1',
+          resultId: 'ph:venus',
+        ),
+      ],
+    );
+
+    expect(
+      snapshot.factors.map((factor) => factor.kind).toList(),
+      <DailyFactorKind>[
+        DailyFactorKind.moonSign,
+        DailyFactorKind.planetaryHour,
+        DailyFactorKind.personalDay,
+      ],
+    );
+  });
+
+  test('assembler rejects duplicate factor kinds', () {
+    expect(
+      () => DailySnapshotAssembler.assemble(
+        identity: identity(),
+        generatedAtUtc: DateTime.utc(2026, 8, 16, 9),
+        factors: const <DailyFactorReference>[
+          DailyFactorReference(
+            kind: DailyFactorKind.personalDay,
+            sourceEngineId: 'personal-day',
+            sourceEngineVersion: '1',
+            resultId: 'pd:4',
+          ),
+          DailyFactorReference(
+            kind: DailyFactorKind.personalDay,
+            sourceEngineId: 'personal-day',
+            sourceEngineVersion: '1',
+            resultId: 'pd:22',
+          ),
+        ],
+      ),
+      throwsStateError,
+    );
+  });
+
+  test('assembler rejects empty provenance and non-UTC generation time', () {
+    expect(
+      () => DailySnapshotAssembler.assemble(
+        identity: identity(),
+        generatedAtUtc: DateTime(2026, 8, 16, 9),
+        factors: const <DailyFactorReference>[],
+      ),
+      throwsArgumentError,
+    );
+
+    expect(
+      () => DailySnapshotAssembler.assemble(
+        identity: identity(),
+        generatedAtUtc: DateTime.utc(2026, 8, 16, 9),
+        factors: const <DailyFactorReference>[
+          DailyFactorReference(
+            kind: DailyFactorKind.moonPhase,
+            sourceEngineId: '',
+            sourceEngineVersion: '1',
+            resultId: 'phase:new',
+          ),
+        ],
+      ),
+      throwsStateError,
+    );
+  });
 }
