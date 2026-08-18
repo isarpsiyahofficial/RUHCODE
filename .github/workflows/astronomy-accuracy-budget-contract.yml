@@ -1,0 +1,20 @@
+name: Astronomy Accuracy Budget Contract
+
+on:
+  push:
+    paths:
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - 'tools/astronomy/validate_accuracy_budget_contract.py'
+      - '.github/workflows/astronomy-accuracy-budget-contract.yml'
+  pull_request:
+    paths:
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - 'tools/astronomy/validate_accuracy_budget_contract.py'
+      - '.github/workflows/astronomy-accuracy-budget-contract.yml'
+
+jobs:
+  astronomy-accuracy-budget-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tools/astronomy/validate_accuracy_budget_contract.py
