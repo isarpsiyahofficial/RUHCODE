@@ -1,0 +1,28 @@
+{
+  "catalog_id": "daily-messages",
+  "format_version": 1,
+  "lookup_key": "YYYY-MM-DD|locale",
+  "locales": ["tr", "en"],
+  "initial_coverage_start": "2026-01-01",
+  "initial_coverage_end": "2036-12-31",
+  "initial_days": 4018,
+  "initial_records_per_locale": 4018,
+  "initial_total_records": 8036,
+  "required_leap_dates": ["2028-02-29", "2032-02-29", "2036-02-29"],
+  "rolling_release_horizon_years": 10,
+  "runtime_ai_generation_allowed": false,
+  "random_fallback_allowed": false,
+  "machine_translation_between_tr_en_allowed": false,
+  "required_fields": ["date", "locale", "title", "teaser", "full_text", "theme_tag"],
+  "quality_gates": [
+    "exact_date_locale_uniqueness",
+    "no_missing_dates",
+    "non_empty_fields",
+    "exact_duplicate_detection",
+    "near_duplicate_review",
+    "repetitive_opening_pattern_review",
+    "unsafe_certainty_review",
+    "tr_en_independent_editorial_review"
+  ],
+  "status": "SCHEMA_READY_CONTENT_NOT_POPULATED"
+}
