@@ -1,0 +1,44 @@
+{
+  "contract": "astronomy_accuracy_budgets",
+  "status": "acceptance-targets-not-yet-proven",
+  "units": {
+    "angular": "degrees",
+    "time": "seconds"
+  },
+  "budgets": {
+    "sunGeocentricLongitudeMaxAbsErrorDegrees": 0.01,
+    "moonGeocentricLongitudeMaxAbsErrorDegrees": 0.02,
+    "planetGeocentricLongitudeMaxAbsErrorDegrees": 0.02,
+    "nodeLongitudeMaxAbsErrorDegrees": 0.02,
+    "ascendantLongitudeMaxAbsErrorDegrees": 0.05,
+    "mcLongitudeMaxAbsErrorDegrees": 0.05,
+    "houseCuspLongitudeMaxAbsErrorDegrees": 0.05,
+    "sunriseSunsetMaxAbsErrorSeconds": 60,
+    "planetaryHourBoundaryMaxAbsErrorSeconds": 60
+  },
+  "boundaryRules": {
+    "signBoundary": "classification must be derived from unrounded longitude; display rounding may not change classification",
+    "houseBoundary": "classification must be derived from unrounded cusp/longitude values",
+    "nakshatraBoundary": "classification must use unrounded sidereal longitude",
+    "padaBoundary": "classification must use unrounded sidereal longitude",
+    "aspectOrb": "matching must use unrounded angular separation"
+  },
+  "evidenceRequired": {
+    "independentReferenceDataset": true,
+    "physicalPackagedRuntimeDataset": true,
+    "sourceVersionAndChecksum": true,
+    "boundaryCases": true,
+    "crossTimezoneCases": true,
+    "crossLatitudeCases": true,
+    "supportedDateRangeCases": true
+  },
+  "prohibitedAcceptance": [
+    "rounded-display-value comparison",
+    "self-reference against the same algorithm implementation",
+    "single-city-only evidence",
+    "single-year-only evidence",
+    "manual approximate visual acceptance"
+  ],
+  "proven": false,
+  "note": "These are engineering acceptance budgets. They are not evidence that the current runtime meets them. The contract remains NOT_DONE until independent physical golden datasets prove every applicable budget."
+}
