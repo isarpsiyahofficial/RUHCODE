@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "contract": "RUH-TIME-SCALES-UTC-TAI-TT-001",
+  "runtimePolicy": {
+    "pre1972Utc": "reject-until-pre1972-time-scale-model-is-approved",
+    "futureBeyondBulletinCoverage": "reject-no-silent-latest-offset-assumption",
+    "leapSecondLabel235960": "not-representable-by-dart-datetime",
+    "ttMinusTaiSeconds": 32.184
+  },
+  "builtInLeapSecondKnowledge": {
+    "validFromUtc": "1972-01-01T00:00:00Z",
+    "validUntilUtcExclusive": "2027-07-01T00:00:00Z",
+    "latestTaiMinusUtcSeconds": 37,
+    "latestEffectiveFromUtc": "2017-01-01T00:00:00Z",
+    "segmentCount": 28
+  },
+  "references": [
+    {
+      "authority": "IAU SOFA",
+      "title": "SOFA Time Scale and Calendar Tools",
+      "url": "https://www.iausofa.org/cookbooks",
+      "use": "UTC, TAI and TT are distinct time scales; UTC leap seconds require explicit handling."
+    },
+    {
+      "authority": "USNO Astronomical Applications",
+      "title": "Terrestrial Time (TT)",
+      "url": "https://aa.usno.navy.mil/faq/TT",
+      "use": "TT = TAI + 32.184 seconds exactly; J2000 TT/TAI/UTC epoch reference."
+    },
+    {
+      "authority": "IERS Earth Orientation Center",
+      "title": "Bulletin C 72",
+      "url": "https://datacenter.iers.org/data/html/bulletinc-072.html",
+      "use": "No leap second at end of December 2026; UTC-TAI remains -37 seconds from 2017-01-01 until further notice."
+    }
+  ]
+}
