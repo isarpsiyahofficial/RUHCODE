@@ -1,0 +1,20 @@
+{
+  "contract": "transit_runtime",
+  "zodiac": "tropical",
+  "supportedAspects": ["conjunction", "sextile", "square", "trine", "opposition"],
+  "defaultOrbsDegrees": {
+    "conjunction": 3,
+    "sextile": 2,
+    "square": 3,
+    "trine": 3,
+    "opposition": 3
+  },
+  "dailySnapshotBinding": true,
+  "deterministicOrdering": ["orb", "transitBody", "natalBody", "aspect"],
+  "requiresExactTtEphemeris": true,
+  "networkFallbackAllowed": false,
+  "nearestDateFallbackAllowed": false,
+  "physicalEphemerisDatasetDone": false,
+  "independentAccuracySuiteDone": false,
+  "note": "Source-level transit aspect matching is present. DONE remains blocked until packaged physical ephemeris data and independent accuracy evidence exist."
+}
