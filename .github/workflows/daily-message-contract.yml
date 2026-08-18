@@ -1,0 +1,18 @@
+name: Daily Message Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  daily-message-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate daily message structural contract
+        run: python tools/content/validate_daily_message_contract.py
+      - name: Test daily message catalog auditor
+        run: python tools/content/test_validate_daily_message_catalog.py
