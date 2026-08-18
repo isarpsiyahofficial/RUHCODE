@@ -2,12 +2,15 @@
   "dataset_id": "ruh-code-city-catalog",
   "source_provider": "GeoNames",
   "source_page": "https://download.geonames.org/export/dump/",
-  "source_artifacts": [
+  "required_source_artifacts": [
     "cities500.zip",
-    "alternateNamesV2.zip",
     "admin1CodesASCII.txt",
     "countryInfo.txt"
   ],
+  "optional_enrichment_artifacts": [
+    "alternateNamesV2.zip"
+  ],
+  "alias_policy": "The default mobile catalog uses the alternatenames field already present in cities500.zip. alternateNamesV2.zip is optional and may be used when language-tagged alias enrichment is explicitly required; it must not become a runtime dependency.",
   "license": "CC-BY-4.0",
   "attribution_required": true,
   "commercial_use_allowed": true,
