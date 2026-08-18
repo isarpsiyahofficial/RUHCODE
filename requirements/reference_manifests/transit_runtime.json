@@ -2,12 +2,20 @@
   "contract": "transit_runtime",
   "zodiac": "tropical",
   "supportedAspects": ["conjunction", "sextile", "square", "trine", "opposition"],
+  "supportedPhases": ["applying", "exact", "separating", "indeterminate"],
   "defaultOrbsDegrees": {
     "conjunction": 3,
     "sextile": 2,
     "square": 3,
     "trine": 3,
     "opposition": 3
+  },
+  "phaseClassification": {
+    "usesEphemerisLongitudeSpeed": true,
+    "networkLookupRequired": false,
+    "futureStateApproximation": "linearized_from_exact_state_speed",
+    "exactPhasePrecedence": true,
+    "stationaryNonExactPhase": "indeterminate"
   },
   "dailySnapshotBinding": true,
   "deterministicOrdering": ["orb", "transitBody", "natalBody", "aspect"],
@@ -16,5 +24,5 @@
   "nearestDateFallbackAllowed": false,
   "physicalEphemerisDatasetDone": false,
   "independentAccuracySuiteDone": false,
-  "note": "Source-level transit aspect matching is present. DONE remains blocked until packaged physical ephemeris data and independent accuracy evidence exist."
+  "note": "Source-level transit aspect matching and applying/exact/separating phase classification are present. DONE remains blocked until packaged physical ephemeris data and independent accuracy evidence exist."
 }
