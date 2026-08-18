@@ -52,6 +52,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Moon phase factor strict ephemeris üstünden bağlı.
 - [x] Tropical Moon sign factor strict ephemeris üstünden bağlı.
 - [x] Pythagorean Personal Day factor strict `CivilDate` üstünden bağlı.
+- [x] Merkezi `DailySnapshotAssembler` eklendi; faktör sırası deterministik, duplicate factor kind yasak, boş provenance yasak ve generation timestamp UTC olmak zorunda.
 
 ### Personal Day — son tur
 - [x] `PythagoreanPersonalDayEngine` eklendi.
@@ -66,6 +67,15 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Policy result identity içine yazılıyor; farklı policy sonuçları cache/identity seviyesinde karışmıyor.
 - [x] `personal_day_runtime.json` manifesti, structural validator ve ayrı `Personal Day Contract` workflow’u eklendi.
 - [ ] Exact commit Flutter/Actions SUCCESS kanıtı gelmeden DONE değil.
+
+### Snapshot assembly — son tur
+- [x] Faktörler canonical sırada toplanıyor: Moon Sign → Moon Phase → Transit → Planetary Hour → Personal Day → Vedik indicator.
+- [x] Aynı factor kind iki kere eklenemiyor.
+- [x] `sourceEngineId`, `sourceEngineVersion` ve `resultId` boş olamıyor.
+- [x] `generatedAtUtc` local DateTime olamıyor.
+- [x] Sonuç faktör listesi unmodifiable olarak snapshot’a giriyor.
+- [x] Daily Snapshot Contract validator/test sözleşmesi bu kurallarla güçlendirildi.
+- [ ] Exact workflow SUCCESS olmadan DONE değil.
 
 ### Açık / DONE değil
 - [ ] Moon phase/sign physical ephemeris + independent accuracy kanıtı.
@@ -127,6 +137,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - Moon phase source/test/manifest/validator/workflow commit’i: `aa5981065513982b74775e5b5e739505e03807ba`.
 - Tropical Moon sign source/test/manifest/validator/workflow commit’i: `5cf93b4dcc6719c1117414182fc57eb5f3b8f226`.
 - Personal Day source/test/manifest/validator/workflow commit’i: `8886ab7b709c3343238a601982189bd539f845b7`.
+- DailySnapshot assembler/source/test/validator son commit zinciri: `ccb7eefec98cfe1e65e991c8bd3f609c0554b6fb` → `963078b464e889d4e1d86a1043c03df024de55ed` → `a0645e5068393085861748d8f60801c3e0316087`.
 - Personal Day 1990-05-19 doğum / 2026-08-16 hedef hesabı bağımsız arithmetic kontrolünde single-digit `4`, master-preserving `22`; 2027-08-16 single-digit `5` verdi.
 - Combined-status endpoint exact commit için check listesi göstermedi; SUCCESS kanıtı uydurulmadı.
 - Automation runtime içinde Flutter/Dart executable yok; Flutter testleri yerelde çalıştırılamadı.
@@ -134,7 +145,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 ## Sıradaki çalışma
 
-1. Latest exact commit üzerinde Personal Day + Moon Phase + Moon Sign + Flutter Quality + astronomy contract sonuçlarını doğrula; kırmızıları aynı turda düzelt.
+1. Latest exact commit üzerinde Personal Day + Daily Snapshot + Moon Phase + Moon Sign + Flutter Quality + astronomy contract sonuçlarını doğrula; kırmızıları aynı turda düzelt.
 2. Packaged/versioned IERS EOP/UT1−UTC dataset loader + checksum zincirini fiziksel veriye bağla.
 3. Ticari yeniden dağıtıma uygun offline ephemeris dataset stratejisini kesinleştir.
 4. Transit motoru için natal-target aspect contract ve DailySnapshot provenance bağlantısını kur.
@@ -146,4 +157,4 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 ## Final durumu
 
-**FINAL DEĞİL.** DailySnapshot artık planetary hour + Moon phase + tropical Moon sign + Pythagorean Personal Day source-level faktörlerine sahip; fiziksel ephemeris/EOP verileri, exact CI kanıtları, gerçek city/message datasetleri, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
+**FINAL DEĞİL.** DailySnapshot artık planetary hour + Moon phase + tropical Moon sign + Pythagorean Personal Day source-level faktörlerine ve deterministic assembly contract’ına sahip; fiziksel ephemeris/EOP verileri, exact CI kanıtları, gerçek city/message datasetleri, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
