@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "contract": "RUH-SIDEREAL-TIME-001",
+  "model": "USNO approximate Greenwich Mean Sidereal Time",
+  "inputs": ["JD_UT1", "JD_TT"],
+  "output": "GMST hours normalized to [0,24)",
+  "reference": {
+    "authority": "USNO Astronomical Applications",
+    "title": "Computing Approximate Sidereal Time",
+    "url": "https://aa.usno.navy.mil/faq/GAST"
+  },
+  "formulaCoefficients": {
+    "constantHours": 6.697375,
+    "daysUt": 0.065707485828,
+    "utHours": 1.0027379,
+    "ttCenturies": 0.0854103,
+    "ttCenturiesSquared": 0.0000258
+  },
+  "policy": {
+    "utcIsNotUt1": true,
+    "ttAndUt1InputsRemainExplicit": true,
+    "approximateFormulaMustNotBeRelabeledAsHighPrecisionApparentSiderealTime": true
+  }
+}
