@@ -1,0 +1,50 @@
+name: Astronomy Golden Runner Contract
+
+on:
+  push:
+    paths:
+      - 'docs/astronomy/accuracy_golden_dataset.schema.json'
+      - 'tools/astronomy/run_accuracy_golden.py'
+      - 'tools/astronomy/test_accuracy_golden_runner.py'
+      - '.github/workflows/astronomy-golden-runner-contract.yml'
+  pull_request:
+    paths:
+      - 'docs/astronomy/accuracy_golden_dataset.schema.json'
+      - 'tools/astronomy/run_accuracy_golden.py'
+      - 'tools/astronomy/test_accuracy_golden_runner.py'
+      - '.github/workflows/astronomy-golden-runner-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile runner
+        run: python -m py_compile tools/astronomy/run_accuracy_golden.py tools/astronomy/test_accuracy_golden_runner.py
+      - name: Runner self-test
+        run: python tools/astronomy/test_accuracy_golden_runner.py
+      - name: Contract guard
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          schema = json.loads(Path('docs/astronomy/accuracy_golden_dataset.schema.json').read_text())
+          metrics = schema['properties']['records']['items']['properties']['metric']['enum']
+          required = {
+              'sun_longitude_deg','moon_longitude_deg','planet_longitude_deg','node_longitude_deg',
+              'ascendant_deg','mc_deg','house_cusp_deg','sunrise_seconds','sunset_seconds',
+              'planetary_hour_boundary_seconds'
+          }
+          assert set(metrics) == required
+          text = Path('tools/astronomy/run_accuracy_golden.py').read_text()
+          assert 'UNVERIFIED' in text
+          assert '--require-actual' in text
+          assert 'SOURCE_SHA_MISMATCH' in text
+          print('astronomy golden runner contract: PASS')
+          PY
