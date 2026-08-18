@@ -93,7 +93,8 @@ def parse_alternate_names(lines: list[str]) -> dict[str, set[str]]:
     return result
 
 
-def parse_cities(lines: list[str], alternate_names: dict[str, set[str]]) -> list[City]:
+def parse_cities(lines: list[str], alternate_names: dict[str, set[str]] | None = None) -> list[City]:
+    enriched = alternate_names or {}
     result: list[City] = []
     for line in lines:
         fields = line.split('\t')
@@ -103,7 +104,7 @@ def parse_cities(lines: list[str], alternate_names: dict[str, set[str]]) -> list
         name = fields[1]
         ascii_name = fields[2]
         inline_alternates = {value.strip() for value in fields[3].split(',') if value.strip()}
-        aliases = set(alternate_names.get(geoname_id, set()))
+        aliases = set(enriched.get(geoname_id, set()))
         aliases.update(inline_alternates)
         aliases.discard(name)
         aliases.discard(ascii_name)
@@ -126,7 +127,9 @@ def parse_cities(lines: list[str], alternate_names: dict[str, set[str]]) -> list
 def build(args: argparse.Namespace) -> dict[str, object]:
     countries = parse_countries(read_text(args.country_info))
     admin1 = parse_admin1(read_text(args.admin1))
-    alternate_names = parse_alternate_names(read_zip_text(args.alternate_names))
+    alternate_names: dict[str, set[str]] = {}
+    if args.alternate_names is not None:
+        alternate_names = parse_alternate_names(read_zip_text(args.alternate_names))
     cities = parse_cities(read_zip_text(args.cities), alternate_names)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -163,17 +166,21 @@ def build(args: argparse.Namespace) -> dict[str, object]:
                 }
             )
 
+    source_hashes = {
+        args.cities.name: sha256(args.cities),
+        args.admin1.name: sha256(args.admin1),
+        args.country_info.name: sha256(args.country_info),
+    }
+    if args.alternate_names is not None:
+        source_hashes[args.alternate_names.name] = sha256(args.alternate_names)
+
     manifest = {
         'format_version': 1,
         'record_count': len(cities),
         'output_file': args.output.name,
         'output_sha256': sha256(args.output),
-        'sources': {
-            args.cities.name: sha256(args.cities),
-            args.alternate_names.name: sha256(args.alternate_names),
-            args.admin1.name: sha256(args.admin1),
-            args.country_info.name: sha256(args.country_info),
-        },
+        'alternate_names_enrichment': args.alternate_names is not None,
+        'sources': source_hashes,
     }
     args.output_manifest.parent.mkdir(parents=True, exist_ok=True)
     args.output_manifest.write_text(
@@ -186,7 +193,7 @@ def build(args: argparse.Namespace) -> dict[str, object]:
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description='Build deterministic offline Ruh Code city catalog from GeoNames files.')
     result.add_argument('--cities', required=True, type=Path)
-    result.add_argument('--alternate-names', required=True, type=Path)
+    result.add_argument('--alternate-names', type=Path, help='Optional alternateNamesV2.zip enrichment. cities500 inline aliases are sufficient for default search.')
     result.add_argument('--admin1', required=True, type=Path)
     result.add_argument('--country-info', required=True, type=Path)
     result.add_argument('--output', required=True, type=Path)
