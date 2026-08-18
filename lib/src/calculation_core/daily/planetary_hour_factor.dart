@@ -1,4 +1,5 @@
 import '../planetary_hours/planetary_hours.dart';
+import '../time/civil_calendar.dart';
 import 'daily_snapshot.dart';
 
 final class PlanetaryHourDailyFactor {
@@ -20,7 +21,7 @@ final class PlanetaryHourDailyFactor {
       throw ArgumentError.value(utcInstant, 'utcInstant', 'Expected UTC.');
     }
 
-    for (final date in <dynamic>[
+    for (final date in <CivilDate>[
       identity.civilDate.addDays(-1),
       identity.civilDate,
     ]) {
@@ -32,7 +33,6 @@ final class PlanetaryHourDailyFactor {
       if (!result.isAvailable) continue;
       for (final slot in result.slots) {
         if (!_contains(slot, utcInstant)) continue;
-        final ruler = slot.ruler.name;
         return DailyFactorReference(
           kind: DailyFactorKind.planetaryHour,
           sourceEngineId: engineId,
@@ -41,7 +41,7 @@ final class PlanetaryHourDailyFactor {
             'ph',
             result.date.isoKey,
             slot.index.toString().padLeft(2, '0'),
-            ruler,
+            slot.ruler.name,
             slot.startUtc.toIso8601String(),
             slot.endUtc.toIso8601String(),
           ].join('|'),
