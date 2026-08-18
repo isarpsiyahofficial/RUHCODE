@@ -12,5 +12,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
       - name: Validate UT1 earth orientation contract
         run: python tools/time/validate_earth_orientation_contract.py
+      - name: Test EOP contracts
+        run: flutter test test/calculation_core/earth_orientation_test.dart test/calculation_core/bundled_earth_orientation_test.dart
