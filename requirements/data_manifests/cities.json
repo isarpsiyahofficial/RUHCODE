@@ -2,20 +2,25 @@
   "dataset_id": "ruh-code-city-catalog",
   "source_provider": "GeoNames",
   "source_page": "https://download.geonames.org/export/dump/",
+  "source_license_page": "https://download.geonames.org/export/dump/",
+  "license": "CC-BY-4.0",
+  "license_verified_at_utc": "2026-08-18T21:53:00Z",
+  "source_listing_verified_at_utc": "2026-08-18T21:53:00Z",
+  "source_listing_observed_modified_date": "2026-08-18",
+  "attribution_required": true,
+  "commercial_use_allowed": true,
+  "runtime_network_required": false,
   "required_source_artifacts": [
     "cities500.zip",
     "admin1CodesASCII.txt",
-    "countryInfo.txt"
+    "countryInfo.txt",
+    "readme.txt"
   ],
   "optional_enrichment_artifacts": [
     "alternateNamesV2.zip"
   ],
   "alias_policy": "The default mobile catalog uses the alternatenames field already present in cities500.zip. alternateNamesV2.zip is optional and may be used when language-tagged alias enrichment is explicitly required; it must not become a runtime dependency.",
-  "license": "CC-BY-4.0",
-  "attribution_required": true,
-  "commercial_use_allowed": true,
-  "runtime_network_required": false,
-  "build_strategy": "Generate a compact indexed UTF-8 catalog at build/release preparation time, then bundle the generated catalog in the application.",
+  "build_strategy": "Download a dated GeoNames source snapshot during controlled release preparation, record SHA-256 for every source artifact, generate a compact indexed UTF-8 catalog, record the generated catalog SHA-256, then bundle only the generated runtime catalog plus required attribution metadata in the application.",
   "required_fields": [
     "stable_id",
     "canonical_name",
@@ -27,6 +32,16 @@
     "iana_timezone_id",
     "aliases"
   ],
-  "integrity_policy": "The exact downloaded source artifacts and generated catalog must receive SHA-256 values before a release can mark the city dataset requirement DONE.",
+  "release_evidence_required": {
+    "source_artifact_sha256": true,
+    "generated_catalog_sha256": true,
+    "record_count": true,
+    "unique_stable_ids": true,
+    "valid_iana_timezone_ids": true,
+    "attribution_text_bundled": true,
+    "source_snapshot_date_recorded": true
+  },
+  "attribution_text": "Geographical data © GeoNames, licensed under CC BY 4.0.",
+  "integrity_policy": "The exact downloaded source artifacts and generated catalog must receive SHA-256 values before a release can mark the city dataset requirement DONE. A web listing observation alone is not physical artifact evidence.",
   "status": "SOURCE_SELECTED_NOT_BUNDLED"
 }
