@@ -51,11 +51,25 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Planetary-hour factor gerçek motor üstünden bağlı.
 - [x] Moon phase factor strict ephemeris üstünden bağlı.
 - [x] Tropical Moon sign factor strict ephemeris üstünden bağlı.
+- [x] Pythagorean Personal Day factor strict `CivilDate` üstünden bağlı.
+
+### Personal Day — son tur
+- [x] `PythagoreanPersonalDayEngine` eklendi.
+- [x] Explicit `singleDigit` ve `preserveMasterNumbers` reduction policy eklendi.
+- [x] Master-number seti `11/22/33` sözleşmeye bağlandı.
+- [x] Universal Year → Personal Year → Personal Month → Personal Day zinciri deterministik ve locale/network bağımsız.
+- [x] 16.08.2026 örneği single-digit policy ile `Personal Day 4`.
+- [x] 16.08.2027 aynı doğum verisiyle bağımsız yeniden hesaplanıp `Personal Day 5`.
+- [x] 16.08.2026 master-number policy ile final `22` korunuyor.
+- [x] 29.02.2028 leap-day test vakası mevcut.
+- [x] `PersonalDayDailyFactor`, `DailyFactorKind.personalDay` provenance reference üretiyor.
+- [x] Policy result identity içine yazılıyor; farklı policy sonuçları cache/identity seviyesinde karışmıyor.
+- [x] `personal_day_runtime.json` manifesti, structural validator ve ayrı `Personal Day Contract` workflow’u eklendi.
+- [ ] Exact commit Flutter/Actions SUCCESS kanıtı gelmeden DONE değil.
 
 ### Açık / DONE değil
 - [ ] Moon phase/sign physical ephemeris + independent accuracy kanıtı.
 - [ ] Transit gerçek motor bağlantısı.
-- [ ] Personal Day gerçek motor bağlantısı.
 - [ ] Vedik günlük faktörler gerçek motor bağlantısı.
 - [ ] Exact Flutter Quality SUCCESS kanıtı.
 
@@ -78,26 +92,16 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Strict `EphemerisProvider`: Sun/Moon/planets/nodes; TT coverage + provenance + checksum sözleşmesi; network/nearest-date/zero fallback yok.
 - [x] Deterministic solar events + polar unavailable.
 - [x] 12 gündüz + 12 gece planetary-hours motoru.
+- [x] Moon phase engine + DailySnapshot factor.
+- [x] Tropical Moon sign engine + DailySnapshot factor.
 
-### Moon phase
-- [x] Phase angle = normalize(Moon longitude − Sun longitude).
-- [x] Illuminated fraction = `(1 − cos(angle))/2`.
-- [x] 8 deterministic phase bin.
-- [x] Exact jdTt + same source/version provenance zorunlu.
-- [x] Canonical phase, wraparound ve mixed-provenance unit testleri.
-- [x] DailySnapshot binding + manifest + validator + `Moon Phase Contract` workflow.
-- [ ] Physical licensed ephemeris ve independent accuracy suite açık.
-
-### Tropical Moon sign — son tur
-- [x] `MoonSignEngine` eklendi.
-- [x] Tropical zodiac 12 adet sabit 30° segment olarak explicit.
-- [x] `[0,30)=Aries ... [330,360)=Pisces` boundary policy.
-- [x] 0°, 29.999999°, 30°, 180°, 359.999999° boundary testleri.
-- [x] Exact TT Moon ephemeris sample zorunlu.
-- [x] `degreeWithinSign` ve source/version provenance result’a taşınıyor.
-- [x] `MoonSignDailyFactor` DailySnapshot’a bağlandı.
-- [x] `moon_sign_runtime.json`, validator ve `Moon Sign Contract` workflow’u eklendi.
-- [ ] Physical ephemeris ve independent accuracy suite olmadan DONE değil.
+### Açık kalan ana işler
+- [ ] Latest exact commit üzerinde Flutter Quality ve bütün astronomy/numerology contract SUCCESS kanıtları.
+- [ ] Packaged/versioned offline EOP/UT1−UTC dataset + coverage + checksum.
+- [ ] Pre-1972 Delta-T/time-scale yaklaşımı.
+- [ ] Fiziksel, ticari yeniden dağıtıma uygun ephemeris runtime dataset/lisans/version/checksum.
+- [ ] Gerçek Sun/Moon/planet/node runtime state doğrulaması.
+- [ ] Hard accuracy budgets + bağımsız golden cross-check.
 
 ## Gezegen Saatleri
 
@@ -106,15 +110,6 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Polar fake sonuç yerine unavailable.
 - [x] DailySnapshot entegrasyonu.
 - [ ] AKİLES 6.400+ physical golden dataset, global cross-check, local UI/notification ve exact workflow SUCCESS açık.
-
-## Faz 8 açık kalan ana işler
-
-- [ ] Latest exact commit üzerinde Flutter Quality ve bütün astronomy contract SUCCESS kanıtları.
-- [ ] Packaged/versioned offline EOP/UT1−UTC dataset + coverage + checksum.
-- [ ] Pre-1972 Delta-T/time-scale yaklaşımı.
-- [ ] Fiziksel, ticari yeniden dağıtıma uygun ephemeris runtime dataset/lisans/version/checksum.
-- [ ] Gerçek Sun/Moon/planet/node runtime state doğrulaması.
-- [ ] Hard accuracy budgets + bağımsız golden cross-check.
 
 ## UI reference durumu
 
@@ -131,16 +126,18 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 - Moon phase source/test/manifest/validator/workflow commit’i: `aa5981065513982b74775e5b5e739505e03807ba`.
 - Tropical Moon sign source/test/manifest/validator/workflow commit’i: `5cf93b4dcc6719c1117414182fc57eb5f3b8f226`.
-- Combined-status endpoint yeni commitlerde check listesi göstermedi; SUCCESS kanıtı uydurulmadı.
-- Automation runtime içinde Flutter/Dart executable yok; testler yerelde çalıştırılamadı.
+- Personal Day source/test/manifest/validator/workflow commit’i: `8886ab7b709c3343238a601982189bd539f845b7`.
+- Personal Day 1990-05-19 doğum / 2026-08-16 hedef hesabı bağımsız arithmetic kontrolünde single-digit `4`, master-preserving `22`; 2027-08-16 single-digit `5` verdi.
+- Combined-status endpoint exact commit için check listesi göstermedi; SUCCESS kanıtı uydurulmadı.
+- Automation runtime içinde Flutter/Dart executable yok; Flutter testleri yerelde çalıştırılamadı.
 - Requirement state, CI/evidence gelmediği için yapay biçimde yükseltilmedi.
 
 ## Sıradaki çalışma
 
-1. Latest exact commit üzerinde Moon Phase + Moon Sign + Flutter Quality + astronomy contract sonuçlarını doğrula; kırmızıları aynı turda düzelt.
+1. Latest exact commit üzerinde Personal Day + Moon Phase + Moon Sign + Flutter Quality + astronomy contract sonuçlarını doğrula; kırmızıları aynı turda düzelt.
 2. Packaged/versioned IERS EOP/UT1−UTC dataset loader + checksum zincirini fiziksel veriye bağla.
 3. Ticari yeniden dağıtıma uygun offline ephemeris dataset stratejisini kesinleştir.
-4. Personal Day için açık Pythagorean reduction/master-number sözleşmesi oluşturup DailySnapshot’a bağla.
+4. Transit motoru için natal-target aspect contract ve DailySnapshot provenance bağlantısını kur.
 5. Gerçek GeoNames compact catalog + timezone-ID toplu integrity testini tamamla.
 6. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
 7. Standard Flutter Android/iOS platformlarını yalnız gerçek Flutter generator ile üret.
@@ -149,4 +146,4 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 ## Final durumu
 
-**FINAL DEĞİL.** DailySnapshot artık planetary hour + Moon phase + tropical Moon sign source-level faktörlerine sahip; fiziksel ephemeris/EOP verileri, exact CI kanıtları, gerçek city/message datasetleri, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
+**FINAL DEĞİL.** DailySnapshot artık planetary hour + Moon phase + tropical Moon sign + Pythagorean Personal Day source-level faktörlerine sahip; fiziksel ephemeris/EOP verileri, exact CI kanıtları, gerçek city/message datasetleri, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
