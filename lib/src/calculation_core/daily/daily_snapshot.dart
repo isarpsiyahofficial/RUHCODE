@@ -94,3 +94,65 @@ final class DailySnapshot {
 
   bool get isEmpty => factors.isEmpty;
 }
+
+abstract final class DailySnapshotAssembler {
+  static const List<DailyFactorKind> factorOrder = <DailyFactorKind>[
+    DailyFactorKind.moonSign,
+    DailyFactorKind.moonPhase,
+    DailyFactorKind.transit,
+    DailyFactorKind.planetaryHour,
+    DailyFactorKind.personalDay,
+    DailyFactorKind.vedicIndicator,
+  ];
+
+  static DailySnapshot assemble({
+    required DailySnapshotIdentity identity,
+    required DateTime generatedAtUtc,
+    required Iterable<DailyFactorReference> factors,
+  }) {
+    if (!generatedAtUtc.isUtc) {
+      throw ArgumentError.value(
+        generatedAtUtc,
+        'generatedAtUtc',
+        'DailySnapshot generation time must be UTC.',
+      );
+    }
+
+    final byKind = <DailyFactorKind, DailyFactorReference>{};
+    for (final factor in factors) {
+      _validateFactor(factor);
+      if (byKind.containsKey(factor.kind)) {
+        throw StateError(
+          'Duplicate daily factor kind is not allowed: ${factor.kind.name}',
+        );
+      }
+      byKind[factor.kind] = factor;
+    }
+
+    final ordered = <DailyFactorReference>[];
+    for (final kind in factorOrder) {
+      final factor = byKind[kind];
+      if (factor != null) {
+        ordered.add(factor);
+      }
+    }
+
+    return DailySnapshot(
+      identity: identity,
+      generatedAtUtc: generatedAtUtc,
+      factors: List<DailyFactorReference>.unmodifiable(ordered),
+    );
+  }
+
+  static void _validateFactor(DailyFactorReference factor) {
+    if (factor.sourceEngineId.trim().isEmpty) {
+      throw StateError('Daily factor sourceEngineId must not be empty.');
+    }
+    if (factor.sourceEngineVersion.trim().isEmpty) {
+      throw StateError('Daily factor sourceEngineVersion must not be empty.');
+    }
+    if (factor.resultId.trim().isEmpty) {
+      throw StateError('Daily factor resultId must not be empty.');
+    }
+  }
+}
