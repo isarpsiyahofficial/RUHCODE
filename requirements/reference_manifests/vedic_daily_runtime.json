@@ -1,0 +1,23 @@
+{
+  "contract_id": "vedic-daily-runtime-v1",
+  "status": "SOURCE_LEVEL_NOT_PROVEN",
+  "proven": false,
+  "requirements": {
+    "sidereal_conversion": "tropical longitude minus explicit ayanamsha, normalized to [0,360)",
+    "nakshatra_count": 27,
+    "pada_per_nakshatra": 4,
+    "tithi_count": 30,
+    "tithi_span_degrees": 12.0,
+    "paksha_policy": "tithi 1..15 = shukla; 16..30 = krishna",
+    "daily_snapshot_factor_kind": "vedicIndicator",
+    "ephemeris_provenance_required": true,
+    "ayanamsha_provenance_required": true,
+    "runtime_network_required": false,
+    "silent_fallback_forbidden": true
+  },
+  "blocked_evidence": [
+    "physical offline Sun/Moon ephemeris artifact with checksum",
+    "production Lahiri/Chitrapaksha ayanamsha implementation and independent reference evidence",
+    "exact Flutter/CI success on the release candidate"
+  ]
+}
