@@ -1,0 +1,32 @@
+{
+  "contract": "planetary-hours-runtime-v1",
+  "runtimePolicy": {
+    "offlineOnly": true,
+    "dayBoundary": "sunrise-to-sunset",
+    "nightBoundary": "sunset-to-next-sunrise",
+    "daySegments": 12,
+    "nightSegments": 12,
+    "apparentSolarThresholdDegrees": -0.83333333333333,
+    "weekdayRulerDerivedFromCivilCalendar": true,
+    "chaldeanOrder": ["saturn", "jupiter", "mars", "sun", "venus", "mercury", "moon"],
+    "timezoneAppliedOutsideSolarCore": true,
+    "polarFakeTimesForbidden": true,
+    "serverRequired": false
+  },
+  "weekdayRulers": {
+    "monday": "moon",
+    "tuesday": "mars",
+    "wednesday": "mercury",
+    "thursday": "jupiter",
+    "friday": "venus",
+    "saturday": "saturn",
+    "sunday": "sun"
+  },
+  "validation": {
+    "twentyFourContiguousSlotsRequired": true,
+    "equalDaySubdivisionRequired": true,
+    "equalNightSubdivisionRequired": true,
+    "polarUnavailableStateRequired": true,
+    "akilesPhysical6400GoldenDataset": "NOT_DONE"
+  }
+}
