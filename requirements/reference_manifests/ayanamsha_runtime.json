@@ -1,0 +1,31 @@
+{
+  "contract_id": "ayanamsha-runtime-v1",
+  "status": "SOURCE_LEVEL_NOT_PROVEN",
+  "proven": false,
+  "required_mode": "Lahiri/Chitrapaksha",
+  "runtime_network_required": false,
+  "provider_contract": {
+    "time_scale": "TT Julian Day",
+    "source_id_required": true,
+    "source_version_required": true,
+    "data_sha256_required": true,
+    "strictly_increasing_samples_required": true,
+    "coverage_extrapolation_allowed": false,
+    "non_finite_values_allowed": false,
+    "interpolation_inside_coverage_allowed": true
+  },
+  "release_evidence_required": [
+    "physical versioned Lahiri/Chitrapaksha source or independently verified generated table",
+    "exact SHA-256 for bundled production ayanamsha artifact",
+    "coverage includes every supported runtime date where Vedik results are advertised",
+    "independent golden reference comparison across ordinary and boundary dates",
+    "exact Flutter/CI success on release candidate"
+  ],
+  "forbidden_shortcuts": [
+    "hard-coded single ayanamsha degree for all dates",
+    "silent extrapolation beyond bundled coverage",
+    "caller-supplied unversioned arbitrary ayanamsha in production path",
+    "network lookup required for normal calculation",
+    "marking this contract proven using fixture samples"
+  ]
+}
