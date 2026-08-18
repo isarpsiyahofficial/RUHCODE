@@ -20,6 +20,14 @@ REQUIRED_FILES = {
         'SqfliteLocalDatabase', 'PRAGMA integrity_check', 'app_meta', 'records',
         '_SqfliteTransaction', 'ConflictAlgorithm.replace'
     ),
+    'lib/src/data/local/json_record_repository.dart': (
+        'JsonRecordRepository', 'save', 'findById', 'deleteById', 'replaceAtomically'
+    ),
+    'lib/src/data/local/core_repositories.dart': (
+        'CoreRepositories', 'profiles', 'clients', 'calculationManifests', 'consultations',
+        'notes', 'journalEntries', 'goals', 'habits', 'tarotSessions',
+        'professionalPresets', 'interpretationTemplates'
+    ),
     'lib/src/data/local/core_model_codecs.dart': (
         'profileToMap', 'profileFromMap', 'clientToMap', 'clientFromMap',
         'calculationManifestToMap', 'calculationManifestFromMap',
@@ -39,6 +47,11 @@ REQUIRED_FILES = {
         'consultation and note round trips', 'journal, goal and habit round trips',
         'tarot and professional preset round trips',
         'interpretation entitlement and backup manifest round trips'
+    ),
+    'test/data/json_record_repository_test.dart': (
+        'save find and delete use transactional storage',
+        'atomic replace moves an entity to a new id in one transaction',
+        'failed atomic replace rolls the delete back'
     ),
     'lib/src/calculation_core/calculation_engine.dart': ('CalculationEngine', 'CalculationResult'),
     'lib/src/interpretation/interpretation_engine.dart': ('InterpretationEngine',),
@@ -66,5 +79,5 @@ if errors:
     sys.exit(1)
 
 print(f'Phase 5 architecture contract OK: {len(REQUIRED_FILES)} files checked')
-print('SQLite adapter/tests, complete core-model codecs and Flutter quality gates are structurally present.')
+print('SQLite adapter, transactional typed repositories, complete core-model codecs and Flutter quality gates are structurally present.')
 print('NOTE: structural validation is not a substitute for a green Flutter Quality workflow or Android release proof.')
