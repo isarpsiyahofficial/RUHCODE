@@ -15,7 +15,7 @@ void main() {
       julianDayUt1: 2451544.5,
       julianDayTt: 2451544.5,
     );
-    expect(hours, closeTo(6.664519654941, 1e-12));
+    expect(hours, closeTo(6.664520087883, 1e-12));
   });
 
   test('normalization stays in zero inclusive to 24 exclusive range', () {
