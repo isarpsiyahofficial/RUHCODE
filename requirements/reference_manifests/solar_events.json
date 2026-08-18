@@ -1,0 +1,32 @@
+{
+  "contract": "solar-events-v1",
+  "runtimePolicy": {
+    "offlineOnly": true,
+    "apparentSunriseZenithDegrees": 90.83333333333333,
+    "longitudeConvention": "east-positive",
+    "outputBasis": "minutes-from-00:00-UTC",
+    "timezoneAppliedOutsideSolarCore": true,
+    "polarDayNightMustBeExplicit": true,
+    "fakeEventTimesForbidden": true
+  },
+  "reference": {
+    "organization": "NOAA Global Monitoring Laboratory",
+    "method": "Meeus-based NOAA/GML Solar Calculator equations",
+    "calculationDetails": "https://gml.noaa.gov/grad/solcalc/calcdetails.html",
+    "newYork2026Table": "https://gml.noaa.gov/grad/solcalc/table.php?lat=40.72&lon=-74.02&year=2026",
+    "goldenCase": {
+      "date": "2026-08-01",
+      "latitude": 40.72,
+      "longitude": -74.02,
+      "localSunrise": "05:53",
+      "timezoneOffset": "-04:00",
+      "expectedUtcMinutes": 593,
+      "toleranceMinutes": 1
+    }
+  },
+  "limitations": {
+    "noaaCalculatorActivelyMaintained": false,
+    "role": "independent regression reference for the solar-event sub-engine, not the final planetary ephemeris provider",
+    "finalAccuracyBudgetStillRequired": true
+  }
+}
