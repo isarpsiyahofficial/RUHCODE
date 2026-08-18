@@ -10,7 +10,7 @@ final class SqfliteLocalDatabase implements LocalDatabase {
     DatabaseFactory? databaseFactory,
     String? databasePath,
     this.targetSchemaVersion = 1,
-  })  : _databaseFactory = databaseFactory ?? databaseFactorySqflite,
+  })  : _databaseFactory = databaseFactory ?? databaseFactorySqflitePlugin,
         _databasePath = databasePath;
 
   final DatabaseFactory _databaseFactory;
@@ -80,11 +80,15 @@ final class SqfliteLocalDatabase implements LocalDatabase {
 
   @override
   Future<void> migrate({required int fromVersion, required int toVersion}) async {
-    if (fromVersion < 1 || toVersion < fromVersion || toVersion > targetSchemaVersion) {
+    if (fromVersion < 1 ||
+        toVersion < fromVersion ||
+        toVersion > targetSchemaVersion) {
       throw ArgumentError('Unsupported migration $fromVersion -> $toVersion');
     }
     if (fromVersion == toVersion) return;
-    await _db.transaction((txn) => _migrateDatabase(txn, fromVersion, toVersion));
+    await _db.transaction(
+      (txn) => _migrateDatabase(txn, fromVersion, toVersion),
+    );
   }
 
   static Future<void> _createSchemaV1(DatabaseExecutor db) async {
