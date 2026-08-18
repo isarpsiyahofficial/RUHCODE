@@ -24,5 +24,13 @@
     "unsafe_certainty_review",
     "tr_en_independent_editorial_review"
   ],
-  "status": "SCHEMA_READY_CONTENT_NOT_POPULATED"
+  "quality_thresholds": {
+    "near_duplicate_similarity": 0.90,
+    "near_duplicate_min_shared_tokens": 4,
+    "near_duplicate_max_token_document_ratio": 0.08,
+    "repetitive_opening_max_uses": 19,
+    "fail_on_near_duplicate": true,
+    "fail_on_unsafe_certainty": true
+  },
+  "status": "SCHEMA_AND_QA_READY_CONTENT_NOT_POPULATED"
 }
