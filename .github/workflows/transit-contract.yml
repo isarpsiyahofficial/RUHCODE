@@ -1,0 +1,32 @@
+name: Transit Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/transits/transit_aspects.dart'
+      - 'lib/src/calculation_core/daily/transit_factor.dart'
+      - 'test/calculation_core/transit_aspects_test.dart'
+      - 'test/calculation_core/transit_daily_factor_test.dart'
+      - 'requirements/reference_manifests/transit_runtime.json'
+      - 'tools/astronomy/validate_transit_contract.py'
+      - '.github/workflows/transit-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/transits/transit_aspects.dart'
+      - 'lib/src/calculation_core/daily/transit_factor.dart'
+      - 'test/calculation_core/transit_aspects_test.dart'
+      - 'test/calculation_core/transit_daily_factor_test.dart'
+      - 'requirements/reference_manifests/transit_runtime.json'
+      - 'tools/astronomy/validate_transit_contract.py'
+
+jobs:
+  transit-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: python tools/astronomy/validate_transit_contract.py
+      - run: flutter test test/calculation_core/transit_aspects_test.dart test/calculation_core/transit_daily_factor_test.dart
