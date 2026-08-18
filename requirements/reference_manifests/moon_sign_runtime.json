@@ -1,0 +1,14 @@
+{
+  "contract": "moon_sign_runtime",
+  "version": 1,
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "zodiac": "tropical",
+  "signWidthDegrees": 30,
+  "signOrder": ["aries","taurus","gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"],
+  "runtimeSource": "EphemerisProvider Moon geocentric ecliptic longitude at exact TT instant",
+  "boundaryPolicy": "[0,30)=Aries ... [330,360)=Pisces",
+  "dailySnapshotBinding": true,
+  "physicalEphemerisDatasetDone": false,
+  "finalAccuracyCrossCheckDone": false,
+  "note": "Tropical Moon-sign mapping is implemented, but final DONE remains blocked on the real packaged ephemeris dataset and independent accuracy suite."
+}
