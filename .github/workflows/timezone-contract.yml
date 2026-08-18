@@ -1,0 +1,16 @@
+name: Timezone Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  timezone-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate bundled timezone contract
+        run: python tools/time/validate_timezone_contract.py
