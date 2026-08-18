@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ruh_code/src/calculation_core/vedic/ayanamsha.dart';
 import 'package:ruh_code/src/calculation_core/vedic/vedic_daily_indicators.dart';
 
 void main() {
@@ -43,6 +44,58 @@ void main() {
     final result = calculate(sun: 10, moon: 5, ayanamsha: 24);
     expect(result.siderealSunLongitudeDegrees, closeTo(346, 1e-12));
     expect(result.siderealMoonLongitudeDegrees, closeTo(341, 1e-12));
+  });
+
+  test('provider path binds TT instant and ayanamsha provenance', () {
+    const sha = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+    final provider = TabulatedAyanamshaProvider(
+      sourceId: 'lahiri-independent-fixture',
+      sourceVersion: 'fixture-v1',
+      dataSha256: sha,
+      samples: const [
+        AyanamshaSample(julianDayTt: 2451545.0, degrees: 24.0),
+        AyanamshaSample(julianDayTt: 2451546.0, degrees: 24.01),
+      ],
+    );
+
+    final result = VedicDailyIndicatorsEngine.calculateWithProvider(
+      julianDayTt: 2451545.5,
+      tropicalSunLongitudeDegrees: 10,
+      tropicalMoonLongitudeDegrees: 5,
+      sourceId: 'test-ephemeris',
+      sourceVersion: '1',
+      ayanamshaProvider: provider,
+    );
+
+    expect(result.siderealSunLongitudeDegrees, closeTo(345.995, 1e-12));
+    expect(result.siderealMoonLongitudeDegrees, closeTo(340.995, 1e-12));
+    expect(result.ayanamshaId, 'lahiri-independent-fixture');
+    expect(result.ayanamshaVersion, 'fixture-v1');
+  });
+
+  test('provider path refuses ayanamsha extrapolation', () {
+    const sha = 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc';
+    final provider = TabulatedAyanamshaProvider(
+      sourceId: 'source',
+      sourceVersion: '1',
+      dataSha256: sha,
+      samples: const [
+        AyanamshaSample(julianDayTt: 2451545.0, degrees: 24.0),
+        AyanamshaSample(julianDayTt: 2451546.0, degrees: 24.01),
+      ],
+    );
+
+    expect(
+      () => VedicDailyIndicatorsEngine.calculateWithProvider(
+        julianDayTt: 2451544.9,
+        tropicalSunLongitudeDegrees: 10,
+        tropicalMoonLongitudeDegrees: 5,
+        sourceId: 'test-ephemeris',
+        sourceVersion: '1',
+        ayanamshaProvider: provider,
+      ),
+      throwsRangeError,
+    );
   });
 
   test('tithi uses 12 degree elongation with paksha boundary', () {
