@@ -1,0 +1,36 @@
+{
+  "contract": "ephemeris-runtime-v1",
+  "requiredBodies": [
+    "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
+    "uranus", "neptune", "pluto", "meanNode", "trueNode"
+  ],
+  "runtimePolicy": {
+    "offlineOnly": true,
+    "ttJulianDayInputRequired": true,
+    "versionedSourceRequired": true,
+    "sha256Required": true,
+    "coverageCheckRequired": true,
+    "networkFallbackForbidden": true,
+    "nearestDateFallbackForbidden": true,
+    "zeroPositionFallbackForbidden": true,
+    "retrogradeDerivedFromSignedLongitudeSpeed": true,
+    "supportedApplicationTarget": "1890-2110"
+  },
+  "licensingPolicy": {
+    "runtimeDatasetMustPermitCommercialRedistribution": true,
+    "paidRuntimeApiForbidden": true,
+    "referenceOnlySourcesMustNotBeAssumedRedistributable": true
+  },
+  "pendingRuntimeDataset": {
+    "status": "NOT_DONE",
+    "reason": "A legally redistributable, versioned, checksummed offline planetary ephemeris covering the full application target has not yet been physically committed and cross-validated.",
+    "mustNotMarkDoneUntil": [
+      "physical dataset exists",
+      "license inventory is recorded",
+      "coverage is verified",
+      "SHA-256 is verified",
+      "independent golden cross-check passes",
+      "hard per-output accuracy budgets are defined and pass"
+    ]
+  }
+}
