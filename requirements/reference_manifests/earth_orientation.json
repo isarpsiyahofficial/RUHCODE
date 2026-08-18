@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "contract": "RUH-EARTH-ORIENTATION-001",
+  "runtimePolicy": {
+    "ut1MinusUtcRequired": true,
+    "utcMustNotSilentlySubstituteForUt1": true,
+    "offlineVersionedProviderRequired": true,
+    "outOfCoverageBehavior": "reject",
+    "absoluteUt1MinusUtcLimitSeconds": 0.9,
+    "provenanceRequired": ["sourceId", "dataVersion"]
+  },
+  "reference": {
+    "authority": "IERS",
+    "title": "Earth orientation / UT1-UTC definitions",
+    "urls": [
+      "https://www.iers.org/iers/en/service/glossary/functions/glossary/L",
+      "https://maia.usno.navy.mil/information/eo-values"
+    ]
+  },
+  "pendingRuntimeData": {
+    "status": "NOT_DONE",
+    "required": "Packaged versioned EOP/UT1-UTC dataset with coverage and checksum manifest",
+    "networkDependencyAllowedInCalculationCore": false
+  }
+}
