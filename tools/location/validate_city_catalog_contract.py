@@ -51,6 +51,7 @@ try:
         'stable_id',
         'iana_timezone_id',
         'output_sha256',
+        'alternate_names_enrichment',
         'sources',
     ):
         assert token in builder, f'missing builder contract token: {token}'
@@ -68,11 +69,16 @@ try:
     assert manifest['license'] == 'CC-BY-4.0'
     assert manifest['attribution_required'] is True
     assert manifest['runtime_network_required'] is False
-    assert 'cities500.zip' in manifest['source_artifacts']
-    assert 'alternateNamesV2.zip' in manifest['source_artifacts']
+    required = manifest['required_source_artifacts']
+    optional = manifest['optional_enrichment_artifacts']
+    assert 'cities500.zip' in required
+    assert 'admin1CodesASCII.txt' in required
+    assert 'countryInfo.txt' in required
+    assert 'alternateNamesV2.zip' not in required
+    assert 'alternateNamesV2.zip' in optional
     assert manifest['status'] == 'SOURCE_SELECTED_NOT_BUNDLED'
 except (AssertionError, KeyError, json.JSONDecodeError) as exc:
     print(f'city catalog contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('city catalog contract OK: offline schema, alias search, deterministic SHA-256 builder, disambiguation and licensed source contract present')
+print('city catalog contract OK: offline schema, compact required source set, optional alias enrichment, deterministic SHA-256 builder and disambiguation are present')
