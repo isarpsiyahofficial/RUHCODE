@@ -1,0 +1,29 @@
+{
+  "dataset_id": "ruh-code-city-catalog",
+  "source_provider": "GeoNames",
+  "source_page": "https://download.geonames.org/export/dump/",
+  "source_artifacts": [
+    "cities500.zip",
+    "alternateNamesV2.zip",
+    "admin1CodesASCII.txt",
+    "countryInfo.txt"
+  ],
+  "license": "CC-BY-4.0",
+  "attribution_required": true,
+  "commercial_use_allowed": true,
+  "runtime_network_required": false,
+  "build_strategy": "Generate a compact indexed UTF-8 catalog at build/release preparation time, then bundle the generated catalog in the application.",
+  "required_fields": [
+    "stable_id",
+    "canonical_name",
+    "country_code",
+    "country_name",
+    "admin_area",
+    "latitude",
+    "longitude",
+    "iana_timezone_id",
+    "aliases"
+  ],
+  "integrity_policy": "The exact downloaded source artifacts and generated catalog must receive SHA-256 values before a release can mark the city dataset requirement DONE.",
+  "status": "SOURCE_SELECTED_NOT_BUNDLED"
+}
