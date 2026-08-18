@@ -1,0 +1,21 @@
+name: Ayanamsha Runtime Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ayanamsha-runtime-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate ayanamsha runtime contract
+        run: python tools/astronomy/validate_ayanamsha_runtime.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test ayanamsha provider and Vedic binding
+        run: flutter test test/calculation_core/ayanamsha_test.dart test/calculation_core/vedic_daily_indicators_test.dart
