@@ -65,7 +65,7 @@ final class CityCatalog {
 
   List<CitySearchResult> search(String query, {int limit = 30}) {
     if (limit <= 0) {
-      throw RangeError.range(limit, 1, null, 'limit');
+      throw ArgumentError.value(limit, 'limit', 'Must be greater than zero.');
     }
     final normalizedQuery = normalizeCitySearchText(query);
     if (normalizedQuery.isEmpty) return const <CitySearchResult>[];
@@ -125,7 +125,7 @@ String normalizeCitySearchText(String value) {
   for (final rune in lower.runes) {
     final char = String.fromCharCode(rune);
     final replacement = switch (char) {
-      'ı' || 'i' || 'İ' => 'i',
+      'ı' || 'i' => 'i',
       'ş' => 's',
       'ç' => 'c',
       'ğ' => 'g',
