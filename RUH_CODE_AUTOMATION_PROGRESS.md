@@ -70,7 +70,6 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [ ] `Timezone Contract` latest exact commit SUCCESS kanıtı alınmalı.
 - [ ] Dependency lock/checksum clean-checkout release zincirine bağlanmalı.
 - [ ] Timezone dataset gerçek release hash/integrity kanıtı henüz yok.
-- [ ] DailySnapshot’ın Moon/transit/planetary-hour/numerology faktörleri henüz yok; yalnız doğru günlük tarih partition temeli mevcut.
 
 ## Faz 7 — lokal şehir/koordinat/timezone katalog temeli
 
@@ -82,25 +81,77 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Alias araması canonical display adını değiştirmeden çalışacak şekilde test edildi.
 - [x] Aynı isimli `Springfield` kayıtlarının admin-area/country ile ayrı kalması test edildi.
 - [x] Coordinate range ve duplicate ID reddi mevcut.
-- [x] `requirements/data_manifests/cities.json` kaynak/lisans/offline-generation sözleşmesi eklendi.
-- [x] `City Catalog Contract` structural CI workflow’u eklendi.
+- [x] GeoNames kaynak/lisans/offline-generation sözleşmesi `requirements/data_manifests/cities.json` içinde mevcut.
+- [x] `tools/location/build_city_catalog.py` kaynak ZIP/TXT dosyalarından deterministic UTF-8 katalog üretir.
+- [x] Builder kaynak artifact SHA-256 ve generated catalog SHA-256 değerlerini output manifestine yazar.
+- [x] Builder için deterministic fixture testi ve invalid-ZIP testi mevcut.
+- [x] `City Catalog Contract` structural CI workflow’u builder testini de çalıştıracak şekilde genişletildi.
 
 ### Açık / DONE değil
 
-- [ ] Gerçek şehir dataset dosyaları henüz repository’ye üretilip bundle edilmedi.
-- [ ] Kaynak artifact SHA-256 değerleri henüz kaydedilmedi.
-- [ ] Generated catalog SHA-256 henüz yok.
+- [ ] Gerçek GeoNames şehir dataset dosyaları henüz repository’ye üretilip bundle edilmedi.
+- [ ] Gerçek kaynak artifact SHA-256 değerleri henüz kaydedilmedi.
+- [ ] Gerçek generated catalog SHA-256 henüz yok.
 - [ ] Attribution ekranı/metni henüz UI’a bağlanmadı.
 - [ ] Büyük katalog search/performance testi henüz yok.
 - [ ] Gerçek katalog timezone ID’lerinin bundled IANA database’e karşı toplu doğrulaması henüz yok.
 - [ ] City Catalog Contract ve Flutter Quality latest exact commit SUCCESS kanıtı alınmalı.
 
+## DailySnapshot kimlik/cache temeli
+
+### Uygulanmış / source-level
+
+- [x] `DailySnapshotIdentity` profile + exact civil date + IANA timezone + coordinate + engineVersion + timezoneDatabaseVersion alanlarıyla eklendi.
+- [x] Cache key aynı gün/ay farklı yıl arasında farklıdır.
+- [x] Timezone, profile, location, engine version ve timezone database version cache identity’nin parçasıdır.
+- [x] Leap-day snapshot key testi mevcut.
+- [x] Daily factor sonuçları uydurulmuyor; yalnız ilgili source engine/result provenance referansı tutuluyor.
+- [x] `Daily Snapshot Contract` structural CI kapısı eklendi.
+
+### Açık / DONE değil
+
+- [ ] Moon sign/phase gerçek astronomik motor sonucu olarak bağlanmalı.
+- [ ] Transit faktörleri gerçek Batı motorundan gelmeli.
+- [ ] Planetary hour faktörü gerçek planetary-hours motorundan gelmeli.
+- [ ] Personal Day gerçek numeroloji motorundan gelmeli.
+- [ ] Vedik günlük göstergeler gerçek Vedik motorundan gelmeli.
+- [ ] DailySnapshot Dart testleri Flutter Quality’de SUCCESS kanıtı almalı.
+
+## Günün Mesajı — exact-date stok sistemi
+
+### Uygulanmış / source-level
+
+- [x] `DailyMessageEntry` exact `CivilDate + locale` modeli eklendi.
+- [x] `DailyMessageCatalog` lookup key `YYYY-MM-DD|locale`; random fallback yok.
+- [x] Aynı exact date+locale duplicate kaydı runtime catalog tarafından reddediliyor.
+- [x] Eksik exact date fallback yerine açık missing-state üretir.
+- [x] 2028-02-29 exact TR/EN lookup testi mevcut.
+- [x] Yalnız TR/EN locale sözleşmesi runtime modelde korunuyor.
+- [x] Boş title/teaser/fullText/themeTag reddediliyor.
+- [x] `requirements/content_manifests/daily_messages.json` başlangıç hedefini 2026-01-01→2036-12-31 = 4.018 gün ve 8.036 TR+EN kayıt olarak kilitliyor.
+- [x] Manifest 2028/2032/2036 leap-date zorunluluğunu ve her release’de en az 10 yıllık rolling horizon politikasını içeriyor.
+- [x] Runtime AI üretimi, random fallback ve TR↔EN machine translation manifestte yasak.
+- [x] `tools/content/validate_daily_message_catalog.py` gelecekteki gerçek kataloğu exact key, missing/duplicate date, non-empty fields, exact duplicate text, repeated openings, leap dates ve SHA-256 açısından denetleyecek.
+- [x] Catalog auditor için küçük leap-date fixture testleri eklendi.
+- [x] `Daily Message Contract` structural CI kapısı eklendi.
+
+### Açık / DONE değil
+
+- [ ] 4.018 Türkçe günlük mesajın gerçek editoryal içeriği henüz yok.
+- [ ] 4.018 İngilizce günlük mesajın bağımsız gerçek editoryal içeriği henüz yok.
+- [ ] Toplam 8.036 kaydın gerçek catalog dosyası henüz yok.
+- [ ] Near-duplicate semantic review otomasyonu/manual editorial QA henüz tamamlanmadı.
+- [ ] Tekrarlayan yapay kalıp yoğunluğu için nihai kalite eşiği henüz gerçek katalog üzerinde çalıştırılmadı.
+- [ ] Unsafe certainty / etik içerik incelemesi gerçek katalog üzerinde yapılmadı.
+- [ ] Rolling 10-year release-horizon kontrolü gerçek release pipeline’a bağlanmadı.
+- [ ] Daily Message Contract ve Flutter Quality latest exact commit SUCCESS kanıtı alınmalı.
+
 ## UI reference dosyaları
 
 - Aktif automation workspace içinde önceki tasarım turundan 9 adet 863×1822 PNG hâlâ mevcut: Bugün, Batı giriş, Batı chart, Vedik, Numeroloji, Spiritüel, Danışanlar, Ayarlar ve PDF önizleme.
-- PNG SHA-256 değerleri local olarak çıkarıldı ancak binary dosyalar henüz repository’ye bağlanmadı; bu nedenle `ui/reference_manifest.csv` satırları APPROVED yapılmadı.
-- Gezegen Saatleri reference PNG’si aktif `/mnt/data` setinde bulunmuyor; yeniden üretim/onay gerekecek.
-- Kullanıcının açık UI şartı gereği gerçek uygulama ekranları reference asset olmadan “benzer” kabul edilmeyecek.
+- Eski PNG’ler alt menüde artık yasaklanan `Hesapla` öğesini içerdiği için güncel şartnameye göre APPROVED değildir; repository’ye authoritative reference olarak bağlanmayacak.
+- Gezegen Saatleri güncel reference PNG’si aktif `/mnt/data` setinde bulunmuyor.
+- Kullanıcının açık UI şartı gereği gerçek uygulama ekranları güncel reference asset olmadan “benzer” kabul edilmeyecek.
 
 ## Faz 1 — binary blocker
 
@@ -108,17 +159,18 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [ ] Exact aktif JS/CSS/ephemeris/timezone envanteri — ZIP gerekir.
 - [ ] 25.000+ Vedik dataset fiziksel reference-test formatı — ZIP/dataset gerekir.
 - [ ] 6.400+ planetary-hour dataset fiziksel reference-test formatı — ZIP/dataset gerekir.
+- [x] File Library’deki AKİLES V96 uygulama raporu referans davranışları (global yer, IANA timezone, historical conversion, Lahiri, Whole Sign, Rahu/Ketu, Nakshatra/pada, unknown-time) teyit etmek için bulundu; ancak binary/golden dataset yerine geçmedi.
 
 ## Sıradaki çalışma
 
-1. Latest exact commit üzerinde `Flutter Quality`, `Timezone Contract`, `City Catalog Contract`, `Architecture Contract`, `UI Contracts` ve `Requirements Contract` sonucunu doğrula; kırmızıysa aynı turda log/kod hatasını düzelt.
-2. Gerçek şehir dataset generator/importer aracını ekle; source checksum + generated checksum manifestini üretilebilir hale getir.
-3. City catalog timezone IDs × bundled IANA toplu integrity testini ekle.
-4. DailySnapshot modelini date partition üzerine kur; astronomik faktörler calculation core tamamlanmadan uydurulmayacak.
+1. Latest exact commit üzerinde `Flutter Quality`, `Timezone Contract`, `City Catalog Contract`, `Daily Snapshot Contract`, `Daily Message Contract`, `Architecture Contract`, `UI Contracts` ve `Requirements Contract` sonucunu doğrula; kırmızıysa aynı turda log/kod hatasını düzelt.
+2. Gerçek şehir dataset source artifact’lerini güvenli biçimde alıp builder ile katalog + gerçek SHA-256 manifest üret; timezone IDs × bundled IANA toplu integrity testini ekle.
+3. Günün Mesajı için gerçek 8.036 kayıt üretim/editoryal QA çalışma zincirini kur; içerik dolmadan catalog requirement’larını DONE yapma.
+4. Ortak astronomik calculation core’a geçmeden önce AKİLES binary/golden blocker’ı yeniden ara; bulunmazsa bağımsız doğrulanabilir astronomik referans dataset stratejisini oluştur.
 5. Standard Flutter Android/iOS platform klasörlerini yalnız gerçek Flutter generator ile üret; elle sahte generated proje oluşturma.
-6. UI reference PNG’lerini repository binary asset olarak bağlayabildiğimiz yolda ekran-ID/hash manifestine işle; açık kullanıcı onayı olmadan APPROVED yapma.
-7. Faz 1 binary blocker sürüyorsa açık bırak; golden dataset iddiası yapma.
+6. Güncel `Bugün · Araçlar · Kayıtlar · Profil` UI referansları üretilebilir hale geldiğinde yeni PNG/SVG referanslarını SCREEN-ID/hash manifestine bağla; eski `Hesapla` görsellerini onaylama.
+7. Requirement state’e yalnız gerçek workflow/test/evidence kanıtı alınan RC’leri yükselt; source-level iş için DONE yazma.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Bu turda timezone/DST çözümleme, günlük timezone-aware date partition, typed transactional repository registry/testleri ve offline city-search çekirdeği ilerletildi. Bunların gerçek Flutter/Actions SUCCESS kanıtları, gerçek bundled şehir verisi, astronomik motorlar, UI reference assetleri ve diğer master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
+**FINAL DEĞİL.** Bu tura kadar timezone/DST çözümleme, timezone-aware daily-date partition, typed transactional persistence, offline city-search + deterministic dataset builder, DailySnapshot identity/provenance ve exact-date Günün Mesajı catalog/auditor altyapısı repository’ye işlendi. Gerçek CI SUCCESS kanıtları, gerçek şehir/message datasetleri, astronomik motorlar, güncel UI reference assetleri ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
