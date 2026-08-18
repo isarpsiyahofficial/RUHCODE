@@ -14,3 +14,5 @@ jobs:
           python-version: '3.12'
       - name: Validate offline city catalog contract
         run: python tools/location/validate_city_catalog_contract.py
+      - name: Test deterministic city catalog builder
+        run: python tools/location/test_build_city_catalog.py
