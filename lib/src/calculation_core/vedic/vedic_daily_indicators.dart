@@ -1,3 +1,5 @@
+import 'ayanamsha.dart';
+
 enum VedicPaksha { shukla, krishna }
 
 final class VedicDailyIndicators {
@@ -44,6 +46,29 @@ abstract final class VedicDailyIndicatorsEngine {
   static const double _nakshatraSpanDegrees = 360.0 / 27.0;
   static const double _padaSpanDegrees = _nakshatraSpanDegrees / 4.0;
   static const double _tithiSpanDegrees = 12.0;
+
+  static VedicDailyIndicators calculateWithProvider({
+    required double julianDayTt,
+    required double tropicalSunLongitudeDegrees,
+    required double tropicalMoonLongitudeDegrees,
+    required String sourceId,
+    required String sourceVersion,
+    required AyanamshaProvider ayanamshaProvider,
+  }) {
+    if (!julianDayTt.isFinite) {
+      throw ArgumentError.value(julianDayTt, 'julianDayTt', 'Value must be finite.');
+    }
+    final ayanamsha = ayanamshaProvider.atJulianDayTt(julianDayTt);
+    return calculate(
+      tropicalSunLongitudeDegrees: tropicalSunLongitudeDegrees,
+      tropicalMoonLongitudeDegrees: tropicalMoonLongitudeDegrees,
+      ayanamshaDegrees: ayanamsha.degrees,
+      sourceId: sourceId,
+      sourceVersion: sourceVersion,
+      ayanamshaId: ayanamsha.sourceId,
+      ayanamshaVersion: ayanamsha.sourceVersion,
+    );
+  }
 
   static VedicDailyIndicators calculate({
     required double tropicalSunLongitudeDegrees,
