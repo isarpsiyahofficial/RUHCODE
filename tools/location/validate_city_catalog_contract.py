@@ -68,17 +68,39 @@ try:
     assert manifest['source_provider'] == 'GeoNames'
     assert manifest['license'] == 'CC-BY-4.0'
     assert manifest['attribution_required'] is True
+    assert manifest['commercial_use_allowed'] is True
     assert manifest['runtime_network_required'] is False
+    assert manifest['source_listing_verified_at_utc'].endswith('Z')
+    assert manifest['license_verified_at_utc'].endswith('Z')
+    assert manifest['source_listing_observed_modified_date']
+
     required = manifest['required_source_artifacts']
     optional = manifest['optional_enrichment_artifacts']
     assert 'cities500.zip' in required
     assert 'admin1CodesASCII.txt' in required
     assert 'countryInfo.txt' in required
+    assert 'readme.txt' in required
     assert 'alternateNamesV2.zip' not in required
     assert 'alternateNamesV2.zip' in optional
+
+    evidence = manifest['release_evidence_required']
+    for key in (
+        'source_artifact_sha256',
+        'generated_catalog_sha256',
+        'record_count',
+        'unique_stable_ids',
+        'valid_iana_timezone_ids',
+        'attribution_text_bundled',
+        'source_snapshot_date_recorded',
+    ):
+        assert evidence[key] is True, f'city release evidence gate disabled: {key}'
+
+    assert 'GeoNames' in manifest['attribution_text']
+    assert 'CC BY 4.0' in manifest['attribution_text']
+    assert 'web listing observation alone is not physical artifact evidence' in manifest['integrity_policy']
     assert manifest['status'] == 'SOURCE_SELECTED_NOT_BUNDLED'
 except (AssertionError, KeyError, json.JSONDecodeError) as exc:
     print(f'city catalog contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('city catalog contract OK: offline schema, compact required source set, optional alias enrichment, deterministic SHA-256 builder and disambiguation are present')
+print('city catalog contract OK: offline schema, GeoNames CC BY 4.0 provenance, compact source set, attribution and release SHA/evidence gates are present')
