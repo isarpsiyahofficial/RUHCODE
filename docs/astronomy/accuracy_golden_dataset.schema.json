@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ruhcode.local/schemas/astronomy-accuracy-golden-dataset.schema.json",
+  "title": "Ruh Code Astronomy Accuracy Golden Dataset",
+  "type": "object",
+  "required": ["datasetId", "version", "source", "license", "generatedAtUtc", "records"],
+  "properties": {
+    "datasetId": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "required": ["name", "url", "retrievedAtUtc", "sha256"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1},
+        "retrievedAtUtc": {"type": "string", "format": "date-time"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "license": {
+      "type": "object",
+      "required": ["name", "redistributionAllowed"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "redistributionAllowed": {"type": "boolean"},
+        "notice": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "generatedAtUtc": {"type": "string", "format": "date-time"},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "metric", "instantUtc", "expected", "unit", "tolerance"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "metric": {
+            "enum": [
+              "sun_longitude_deg",
+              "moon_longitude_deg",
+              "planet_longitude_deg",
+              "node_longitude_deg",
+              "ascendant_deg",
+              "mc_deg",
+              "house_cusp_deg",
+              "sunrise_seconds",
+              "sunset_seconds",
+              "planetary_hour_boundary_seconds"
+            ]
+          },
+          "instantUtc": {"type": "string", "format": "date-time"},
+          "body": {"type": "string"},
+          "houseIndex": {"type": "integer", "minimum": 1, "maximum": 12},
+          "latitudeDeg": {"type": "number", "minimum": -90, "maximum": 90},
+          "longitudeDeg": {"type": "number", "minimum": -180, "maximum": 180},
+          "expected": {"type": "number"},
+          "actual": {"type": "number"},
+          "unit": {"enum": ["deg", "seconds"]},
+          "tolerance": {"type": "number", "exclusiveMinimum": 0}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
