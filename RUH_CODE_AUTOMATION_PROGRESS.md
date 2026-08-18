@@ -59,19 +59,31 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 ## DailySnapshot
 
+### Uygulanmış / source-level
 - [x] `DailySnapshotIdentity` profile + exact date + IANA zone + coordinate + engineVersion + tzDatabaseVersion.
 - [x] Cache partition testleri ve provenance-only factor modeli.
 - [x] Daily Snapshot Contract.
-- [ ] Moon/phase, transit, planetary-hour, Personal Day ve Vedik günlük faktörleri gerçek motorlara bağlanmalı.
+- [x] Gerçek `PlanetaryHours` motoru için `PlanetaryHourDailyFactor` bağlandı.
+- [x] Civil midnight ile planetary-day sunrise sınırı karıştırılmıyor; 00:00→sunrise aralığında önceki planetary day slotu aranıyor.
+- [x] Planetary-hour result ID exact planetary date + slot + ruler + UTC başlangıç/bitiş provenance taşır.
+
+### Açık / DONE değil
+- [ ] Moon sign/phase gerçek motor bağlantısı.
+- [ ] Transit gerçek motor bağlantısı.
+- [ ] Personal Day gerçek motor bağlantısı.
+- [ ] Vedik günlük faktörler gerçek motor bağlantısı.
 - [ ] Flutter Quality SUCCESS kanıtı.
 
 ## Günün Mesajı
 
+### Uygulanmış / source-level
 - [x] Exact `CivilDate + locale` model, deterministic `YYYY-MM-DD|locale`, no random fallback.
 - [x] Duplicate/missing/non-empty/leap-date kontrolleri.
 - [x] 2026-01-01→2036-12-31 = 4.018 gün / 8.036 TR+EN manifest ve rolling >=10-year horizon.
 - [x] Runtime AI, random fallback ve TR↔EN machine translation yasak.
 - [x] Catalog validator + fixture tests + Daily Message Contract.
+
+### Açık / DONE değil
 - [ ] Gerçek 4.018 TR + bağımsız 4.018 EN editoryal içerik.
 - [ ] Near-duplicate/manual QA, artificial-pattern density, unsafe-certainty review ve release-horizon gate.
 
@@ -88,19 +100,58 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] IAU SOFA / USNO / IERS time-scale reference manifesti, validator ve CI contract.
 - [x] `SiderealTime.greenwichMeanHours`: JD_UT1 ve JD_TT explicit input; USNO approximate GMST.
 - [x] J2000 noon/midnight, normalization, degree tests; USNO manifest/validator/CI contract.
-- [x] `EarthOrientationProvider` portu eklendi; calculation core UT1−UTC verisini explicit ve versioned provenance ile ister.
+- [x] `EarthOrientationProvider` portu; calculation core UT1−UTC verisini explicit ve versioned provenance ile ister.
 - [x] `AstronomicalTimeContext` UTC, JD_UTC, JD_TT ve JD_UT1 değerlerini ayrı tutar.
 - [x] EOP sample timestamp mismatch, missing provenance ve `|UT1−UTC| >= 0.9s` reddedilir; UTC sessizce UT1 yerine kullanılamaz.
-- [x] IERS Earth-orientation manifesti `pendingRuntimeData=NOT_DONE` durumunu açık tutar; packaged offline EOP dataset olmadan DONE iddiası yapılamaz.
-- [x] Earth Orientation unit tests, structural validator ve `Earth Orientation Contract` workflow’u eklendi.
+- [x] IERS Earth-orientation manifesti `pendingRuntimeData=NOT_DONE` durumunu açık tutar.
+- [x] Earth Orientation unit tests, structural validator ve `Earth Orientation Contract` workflow’u.
+
+### Ephemeris runtime sözleşmesi — bu tur
+- [x] `AstroBody` kapsamı Sun/Moon/Mercury/Venus/Mars/Jupiter/Saturn/Uranus/Neptune/Pluto/meanNode/trueNode olarak explicit.
+- [x] `EphemerisCoverage` TT Julian Day range + source/version + lowercase SHA-256 zorunlu.
+- [x] Coverage dışı istek reject; network/nearest-date/zero-position fallback yasak.
+- [x] `EclipticState` longitude `[0,360)`, latitude `[-90,90]`, positive distance, signed longitude speed ve provenance doğruluyor.
+- [x] Direct/stationary/retrograde signed longitude speed üzerinden deterministik türetiliyor.
+- [x] Ephemeris unit testleri, `ephemeris_runtime.json`, validator ve `Ephemeris Contract` workflow’u.
+- [ ] Fiziksel, ticari yeniden dağıtıma uygun, 1890–2110 hedefini kapsayan planetary dataset hâlâ NOT_DONE; manifest bunu özellikle false-positive DONE olmaktan koruyor.
+
+### Solar events — bu tur
+- [x] NOAA/GML Meeus-tabancı deterministik solar-event alt motoru eklendi.
+- [x] Apparent sunrise/sunset threshold `-0.833333…°` (`zenith 90.833333…°`).
+- [x] Longitude convention east-positive; çıktı UTC minutes; timezone/DST solar core dışında uygulanır.
+- [x] New York 2026-08-01 NOAA 05:53 local / 09:53 UTC golden regression testi eklendi (1 dakika tolerans).
+- [x] Polar day/polar night explicit state; sahte sunrise/sunset üretimi yok.
+- [x] Solar reference manifesti, validator ve `Solar Events Contract` workflow’u.
+- [ ] NOAA calculator final planetary ephemeris kaynağı değildir; final solar accuracy budget + independent cross-check açık tutuldu.
+
+## Gezegen Saatleri — bu tur
+
+### Uygulanmış / source-level
+- [x] Classical Chaldean order: Saturn → Jupiter → Mars → Sun → Venus → Mercury → Moon.
+- [x] Weekday ruler gerçek `CivilWeekday` üzerinden hesaplanıyor; hard-coded takvim tablosu yok.
+- [x] Gündüz sunrise→sunset tam 12 eşit parçaya bölünüyor.
+- [x] Gece sunset→next sunrise tam 12 eşit parçaya bölünüyor.
+- [x] 24 slot UTC sınırları contiguous; day/night slotları ayrı işaretleniyor.
+- [x] Polar-day/night durumunda fake planetary-hour üretmek yerine unavailable dönüyor.
+- [x] Monday Moon-first, Tuesday Mars-first, contiguous/equal subdivision ve polar unavailable testleri.
+- [x] `planetary_hours_runtime.json`, validator ve `Planetary Hours Contract` workflow’u.
+- [x] DailySnapshot factor entegrasyonu ve before-sunrise previous-planetary-day testi.
 
 ### Açık / DONE değil
-- [ ] `Flutter Quality`, `Time Scales`, `Julian Day`, `Sidereal Time`, `Earth Orientation` contract exact-latest SUCCESS kanıtları.
+- [ ] AKİLES fiziksel 6.400+ planetary-hour golden dataset henüz yok; manifest `NOT_DONE` tutuyor.
+- [ ] Global bağımsız accuracy/cross-check genişletmesi.
+- [ ] Timezone-local UI sunumu ve notification entegrasyonu sonraki fazlarda.
+- [ ] Exact latest Flutter/contract workflow SUCCESS kanıtları.
+
+## Faz 8 açık kalan ana işler
+
+- [ ] `Flutter Quality`, `Time Scales`, `Julian Day`, `Sidereal Time`, `Earth Orientation`, `Ephemeris`, `Solar Events`, `Planetary Hours` exact-latest SUCCESS kanıtları.
 - [ ] Packaged/versioned offline EOP/UT1−UTC dataset + coverage + checksum manifesti.
-- [ ] Pre-1972 zaman ölçeği/Delta-T yaklaşımı; 1890–1971 hassas zaman hesapları henüz DONE değil.
-- [ ] Ephemeris runtime/lisans stratejisi ve version/checksum manifesti.
-- [ ] Güneş/Ay/gezegen konumları, nodes, retrograde/station, sunrise/sunset, Moon phase.
-- [ ] Hard accuracy budgets + independent golden cross-check.
+- [ ] Pre-1972 zaman ölçeği/Delta-T yaklaşımı; 1890–1971 hassas zaman hesapları.
+- [ ] Fiziksel ephemeris runtime dataset/lisans/version/checksum.
+- [ ] Güneş/Ay/gezegen gerçek ephemeris konumları ve nodes.
+- [ ] Hard accuracy budgets + bağımsız golden cross-check.
+- [ ] Moon phase gerçek ephemeris bağlantısı.
 
 ## UI reference durumu
 
@@ -117,21 +168,24 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 ## Son çalışma doğrulama notu
 
-- GitHub’a gerçek source/test/reference-manifest/validator/workflow commitleri yazıldı.
-- Runtime container’dan public GitHub DNS erişimi olmadığı için clean `git clone` girişimi ağ seviyesinde başarısız oldu; SUCCESS kanıtı sayılmadı.
-- GitHub push workflow SUCCESS sonucu connector üzerinden bu turda henüz elde edilemedi. Bu yüzden yeni işler source-level ilerlemedir; ilgili RC/TODO maddeleri DONE’a yükseltilmedi.
+- Bu turda gerçek source/test/reference-manifest/validator/workflow commitleri GitHub `main` dalına yazıldı.
+- Yeni kaynaklar: strict ephemeris port, deterministic solar events, planetary-hours engine ve DailySnapshot planetary-hour binding.
+- NOAA/GML yalnız solar-event regression referansı olarak kaydedildi; NOAA sayfasının artık aktif desteklenmediği de manifestte açıkça tutuldu.
+- Runtime container’dan public GitHub DNS erişimi hâlâ yok; clean `git clone` bu nedenle yapılamıyor.
+- Connector `combined status` check-run sonuçlarını göstermediği için yeni exact-latest GitHub Actions SUCCESS kanıtı bu turda alınamadı. Bu nedenle ilgili RC/TODO maddeleri yalnız source-level ilerledi; DONE’a yükseltilmedi.
 
 ## Sıradaki çalışma
 
-1. Latest exact commit üzerinde Flutter Quality + bütün yeni/eski contract sonuçlarını doğrula; kırmızıysa düzelt.
-2. Offline/versioned IERS EOP/UT1−UTC dataset stratejisini ve checksum/coverage manifestini fiziksel veriye bağla.
-3. Ephemeris runtime/lisans/version/checksum stratejisini kesinleştir; AKİLES binary bulunursa ayrıca hash/golden dataset taşı.
-4. Gerçek GeoNames compact catalog + timezone-ID toplu integrity testini tamamla.
-5. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
-6. Standard Flutter Android/iOS platformlarını yalnız gerçek Flutter generator ile üret.
-7. Güncel UI reference setini yeni alt navigasyonla üretip SCREEN-ID/hash manifestine bağla.
-8. Requirement state’e yalnız workflow/test/evidence kanıtı alınan RC’leri yükselt.
+1. Latest exact commit üzerinde Flutter Quality + bütün contract sonuçlarını doğrula; görünür check-run erişimi oluşursa kırmızıları aynı turda düzelt.
+2. Packaged/versioned IERS EOP/UT1−UTC dataset loader + coverage/checksum zincirini fiziksel veriye bağla.
+3. Ticari yeniden dağıtıma uygun offline ephemeris dataset stratejisini kesinleştir ve gerçek checksum/coverage ile bağla.
+4. Güneş/Ay gerçek ephemeris konumlarını provider üzerinden uygulamaya başla; Moon phase buradan türet.
+5. Gerçek GeoNames compact catalog + timezone-ID toplu integrity testini tamamla.
+6. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
+7. Standard Flutter Android/iOS platformlarını yalnız gerçek Flutter generator ile üret.
+8. Güncel UI reference setini yeni alt navigasyonla üretip SCREEN-ID/hash manifestine bağla.
+9. Requirement state’e yalnız workflow/test/evidence kanıtı alınan RC’leri yükselt.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Astronomik zaman altyapısı Julian Day + UTC/TAI/TT + explicit UT1/EOP + UT1/TT ayrımlı GMST seviyesine ilerledi. Gerçek CI kanıtları, EOP/ephemeris data, gezegen hesapları, gerçek city/message datasetleri, güncel UI reference assetleri ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
+**FINAL DEĞİL.** Astronomik altyapı artık Julian Day + UTC/TAI/TT + explicit UT1/EOP + GMST + strict ephemeris provider contract + real solar-event sub-engine + real 12+12 planetary-hours engine seviyesine ilerledi. Gerçek CI kanıtları, fiziksel EOP/ephemeris verileri, gezegen konumları, gerçek city/message datasetleri, güncel UI reference assetleri ve sonraki master fazlar tamamlanmadan ilgili requirement’lar DONE sayılmayacak.
