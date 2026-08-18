@@ -27,6 +27,14 @@ def write_manifest(path: Path) -> None:
                 'initial_days': 2,
                 'initial_total_records': 4,
                 'required_leap_dates': ['2028-02-29'],
+                'quality_thresholds': {
+                    'near_duplicate_similarity': 0.88,
+                    'near_duplicate_min_shared_tokens': 3,
+                    'near_duplicate_max_token_document_ratio': 1.0,
+                    'repetitive_opening_max_uses': 19,
+                    'fail_on_near_duplicate': True,
+                    'fail_on_unsafe_certainty': True,
+                },
             }
         ),
         encoding='utf-8',
@@ -46,7 +54,7 @@ def row(day: str, locale: str, suffix: str) -> dict[str, str]:
         'locale': locale,
         'title': f'Title {suffix}',
         'teaser': f'Teaser {suffix}',
-        'full_text': f'Unique full message for {suffix}.',
+        'full_text': f'Unique full message for {suffix} with a distinct reflective direction.',
         'theme_tag': f'theme-{suffix}',
     }
 
@@ -61,10 +69,10 @@ class DailyMessageAuditorTest(unittest.TestCase):
             write_catalog(
                 catalog,
                 [
-                    row('2028-02-28', 'tr', 'a'),
-                    row('2028-02-28', 'en', 'b'),
-                    row('2028-02-29', 'tr', 'c'),
-                    row('2028-02-29', 'en', 'd'),
+                    row('2028-02-28', 'tr', 'alpha'),
+                    row('2028-02-28', 'en', 'bravo'),
+                    row('2028-02-29', 'tr', 'charlie'),
+                    row('2028-02-29', 'en', 'delta'),
                 ],
             )
             result = module.audit(catalog, manifest)
@@ -72,6 +80,8 @@ class DailyMessageAuditorTest(unittest.TestCase):
             self.assertEqual(result['record_count'], 4)
             self.assertEqual(result['expected_record_count'], 4)
             self.assertEqual(len(result['catalog_sha256']), 64)
+            self.assertEqual(result['near_duplicate_candidates'], [])
+            self.assertEqual(result['unsafe_certainty_findings'], [])
 
     def test_missing_leap_locale_and_duplicate_key_fail(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -117,9 +127,65 @@ class DailyMessageAuditorTest(unittest.TestCase):
             write_catalog(catalog, rows)
             result = module.audit(catalog, manifest)
             self.assertFalse(result['ok'])
-            self.assertTrue(
-                any('exact duplicate message bodies' in error for error in result['errors'])
+            self.assertTrue(any('exact duplicate message bodies' in error for error in result['errors']))
+
+    def test_near_duplicate_is_flagged_within_same_locale(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            catalog = root / 'catalog.csv'
+            write_manifest(manifest)
+            first = row('2028-02-28', 'tr', 'alpha')
+            second = row('2028-02-29', 'tr', 'beta')
+            first.update({
+                'title': 'İçsel denge',
+                'teaser': 'Bugün acele etmeden yönünü gör.',
+                'full_text': 'Kendi ritmini koruduğunda önündeki seçenekleri daha sakin ve daha açık değerlendirebilirsin.',
+            })
+            second.update({
+                'title': 'İçsel denge',
+                'teaser': 'Bugün acele etmeden yönünü gör.',
+                'full_text': 'Kendi ritmini koruduğunda önündeki seçenekleri daha sakin ve daha net değerlendirebilirsin.',
+            })
+            write_catalog(
+                catalog,
+                [first, row('2028-02-28', 'en', 'bravo'), second, row('2028-02-29', 'en', 'delta')],
             )
+            result = module.audit(catalog, manifest)
+            self.assertFalse(result['ok'])
+            self.assertGreaterEqual(len(result['near_duplicate_candidates']), 1)
+            self.assertTrue(any('near-duplicate editorial review failed' in error for error in result['errors']))
+
+    def test_cross_locale_similarity_is_not_near_duplicate(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            catalog = root / 'catalog.csv'
+            write_manifest(manifest)
+            tr = row('2028-02-28', 'tr', 'tr-a')
+            en = row('2028-02-28', 'en', 'en-a')
+            shared = 'This same literal sentence exists only to prove locale isolation in the candidate engine.'
+            tr['full_text'] = shared
+            en['full_text'] = shared
+            write_catalog(catalog, [tr, en, row('2028-02-29', 'tr', 'tr-b'), row('2028-02-29', 'en', 'en-b')])
+            result = module.audit(catalog, manifest)
+            self.assertFalse(any('near-duplicate editorial review failed' in error for error in result['errors']))
+
+    def test_unsafe_certainty_is_flagged_for_tr_and_en(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            catalog = root / 'catalog.csv'
+            write_manifest(manifest)
+            tr = row('2028-02-28', 'tr', 'tr-a')
+            tr['full_text'] = 'Bugün beklediğin gelişme kesinlikle gerçekleşecek.'
+            en = row('2028-02-28', 'en', 'en-a')
+            en['full_text'] = 'The outcome you expect will definitely happen today.'
+            write_catalog(catalog, [tr, en, row('2028-02-29', 'tr', 'tr-b'), row('2028-02-29', 'en', 'en-b')])
+            result = module.audit(catalog, manifest)
+            self.assertFalse(result['ok'])
+            self.assertEqual({item['locale'] for item in result['unsafe_certainty_findings']}, {'tr', 'en'})
+            self.assertTrue(any('unsafe certainty review failed' in error for error in result['errors']))
 
 
 if __name__ == '__main__':
