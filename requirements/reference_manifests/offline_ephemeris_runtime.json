@@ -1,0 +1,44 @@
+{
+  "contractId": "offline-ephemeris-runtime-v1",
+  "status": "candidate_not_bundled",
+  "productDateRange": {
+    "start": "1890-01-01",
+    "end": "2110-12-31"
+  },
+  "planetaryEphemeris": {
+    "provider": "JPL/NASA NAIF SPK",
+    "solution": "DE440",
+    "officialCoverage": "1550-2650",
+    "sourceUrl": "https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de440.bsp",
+    "redistributionPolicySource": "https://naif.jpl.nasa.gov/naif/rules.html",
+    "redistributionRule": "unmodified_NAIF_distributed_kernel_permitted",
+    "commercialUse": "allowed_under_NAIF_rules_no_fee",
+    "bundled": false,
+    "sha256": null,
+    "byteSize": null,
+    "retrievedAtUtc": null,
+    "proven": false
+  },
+  "earthOrientation": {
+    "authority": "IERS",
+    "primaryProduct": "finals2000A.all",
+    "sourceMetadataUrl": "https://datacenter.iers.org/eop.php",
+    "observedCoverageStarts": "1973-01-02",
+    "predictionHorizon": "approximately_365_days",
+    "coversProductDateRange": false,
+    "fabricatedFutureEopForbidden": true,
+    "outsideCoveragePolicy": "separate_versioned_time_scale_model_or_unavailable",
+    "bundled": false,
+    "sha256": null,
+    "proven": false
+  },
+  "runtimeRules": {
+    "networkFallback": false,
+    "nearestDateFallback": false,
+    "zeroStateFallback": false,
+    "corruptionFailsClosed": true,
+    "outOfCoverageFailsClosed": true,
+    "independentGoldenEvidenceRequired": true,
+    "cleanCheckoutReproducibilityRequired": true
+  }
+}
