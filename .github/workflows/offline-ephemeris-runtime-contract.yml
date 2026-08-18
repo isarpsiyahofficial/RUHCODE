@@ -1,0 +1,29 @@
+name: Offline Ephemeris Runtime Contract
+
+on:
+  push:
+    paths:
+      - 'docs/astronomy/offline_ephemeris_strategy.md'
+      - 'requirements/reference_manifests/offline_ephemeris_runtime.json'
+      - 'tools/astronomy/validate_offline_ephemeris_runtime.py'
+      - '.github/workflows/offline-ephemeris-runtime-contract.yml'
+  pull_request:
+    paths:
+      - 'docs/astronomy/offline_ephemeris_strategy.md'
+      - 'requirements/reference_manifests/offline_ephemeris_runtime.json'
+      - 'tools/astronomy/validate_offline_ephemeris_runtime.py'
+      - '.github/workflows/offline-ephemeris-runtime-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate runtime provenance contract
+        run: python tools/astronomy/validate_offline_ephemeris_runtime.py
