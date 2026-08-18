@@ -11,6 +11,8 @@ enum TransitAspectType {
   final double exactAngleDegrees;
 }
 
+enum TransitAspectPhase { applying, exact, separating, indeterminate }
+
 final class NatalPoint {
   NatalPoint({required this.body, required this.longitudeDegrees}) {
     if (!longitudeDegrees.isFinite || longitudeDegrees < 0 || longitudeDegrees >= 360) {
@@ -59,9 +61,11 @@ final class TransitAspectMatch {
     required this.transitBody,
     required this.natalBody,
     required this.aspect,
+    required this.phase,
     required this.separationDegrees,
     required this.orbDegrees,
     required this.transitLongitudeDegrees,
+    required this.transitLongitudeSpeedDegreesPerDay,
     required this.natalLongitudeDegrees,
     required this.sourceId,
     required this.dataVersion,
@@ -70,9 +74,11 @@ final class TransitAspectMatch {
   final AstroBody transitBody;
   final AstroBody natalBody;
   final TransitAspectType aspect;
+  final TransitAspectPhase phase;
   final double separationDegrees;
   final double orbDegrees;
   final double transitLongitudeDegrees;
+  final double transitLongitudeSpeedDegreesPerDay;
   final double natalLongitudeDegrees;
   final String sourceId;
   final String dataVersion;
@@ -82,12 +88,27 @@ final class TransitAspectEngine {
   TransitAspectEngine(
     this.ephemeris, {
     this.orbPolicy = const TransitAspectOrbPolicy(),
+    this.phaseLookAheadDays = 1e-3,
+    this.exactToleranceDegrees = 1e-9,
+    this.phaseToleranceDegrees = 1e-9,
   }) {
     orbPolicy.validate();
+    if (!phaseLookAheadDays.isFinite || phaseLookAheadDays <= 0 || phaseLookAheadDays > 0.1) {
+      throw RangeError('Phase look-ahead must be finite and within (0, 0.1] days.');
+    }
+    if (!exactToleranceDegrees.isFinite || exactToleranceDegrees <= 0) {
+      throw RangeError('Exact tolerance must be positive and finite.');
+    }
+    if (!phaseToleranceDegrees.isFinite || phaseToleranceDegrees <= 0) {
+      throw RangeError('Phase tolerance must be positive and finite.');
+    }
   }
 
   final EphemerisProvider ephemeris;
   final TransitAspectOrbPolicy orbPolicy;
+  final double phaseLookAheadDays;
+  final double exactToleranceDegrees;
+  final double phaseToleranceDegrees;
 
   List<TransitAspectMatch> calculate({
     required double jdTt,
@@ -117,9 +138,16 @@ final class TransitAspectEngine {
                 transitBody: transitBody,
                 natalBody: point.body,
                 aspect: aspect,
+                phase: _classifyPhase(
+                  state: state,
+                  natalLongitudeDegrees: point.longitudeDegrees,
+                  aspect: aspect,
+                  currentOrbDegrees: orb,
+                ),
                 separationDegrees: separation,
                 orbDegrees: orb,
                 transitLongitudeDegrees: state.longitudeDegrees,
+                transitLongitudeSpeedDegreesPerDay: state.longitudeSpeedDegreesPerDay,
                 natalLongitudeDegrees: point.longitudeDegrees,
                 sourceId: state.sourceId,
                 dataVersion: state.dataVersion,
@@ -140,6 +168,37 @@ final class TransitAspectEngine {
       return a.aspect.index.compareTo(b.aspect.index);
     });
     return List<TransitAspectMatch>.unmodifiable(matches);
+  }
+
+  TransitAspectPhase _classifyPhase({
+    required EclipticState state,
+    required double natalLongitudeDegrees,
+    required TransitAspectType aspect,
+    required double currentOrbDegrees,
+  }) {
+    if (currentOrbDegrees <= exactToleranceDegrees) {
+      return TransitAspectPhase.exact;
+    }
+
+    final futureLongitude = _normalizeLongitude(
+      state.longitudeDegrees + state.longitudeSpeedDegreesPerDay * phaseLookAheadDays,
+    );
+    final futureSeparation = _smallestAngularSeparation(
+      futureLongitude,
+      natalLongitudeDegrees,
+    );
+    final futureOrb = (futureSeparation - aspect.exactAngleDegrees).abs();
+    final delta = futureOrb - currentOrbDegrees;
+
+    if (delta.abs() <= phaseToleranceDegrees) {
+      return TransitAspectPhase.indeterminate;
+    }
+    return delta < 0 ? TransitAspectPhase.applying : TransitAspectPhase.separating;
+  }
+
+  static double _normalizeLongitude(double value) {
+    final normalized = value % 360;
+    return normalized < 0 ? normalized + 360 : normalized;
   }
 
   static double _smallestAngularSeparation(double a, double b) {
