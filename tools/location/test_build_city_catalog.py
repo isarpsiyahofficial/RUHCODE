@@ -3,14 +3,16 @@ from pathlib import Path
 import csv
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 import zipfile
 
 MODULE_PATH = Path(__file__).with_name('build_city_catalog.py')
 spec = importlib.util.spec_from_file_location('build_city_catalog', MODULE_PATH)
-module = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 
 
@@ -30,8 +32,6 @@ class CityCatalogBuilderTest(unittest.TestCase):
             output = root / 'cities.csv'
             manifest = root / 'manifest.json'
 
-            # GeoNames allCountries/cities schema: geonameid,name,asciiname,alternates,
-            # lat,lon,feature class/code,country,cc2,admin1..4,pop,elev,dem,tz,modified.
             write_zip(
                 cities,
                 'cities500.txt',
