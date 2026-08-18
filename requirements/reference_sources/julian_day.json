@@ -1,0 +1,23 @@
+{
+  "reference_id": "usno-julian-date",
+  "authority": "U.S. Naval Observatory Astronomical Applications Department",
+  "source": "https://aa.usno.navy.mil/faq/JD_formula",
+  "scope": "Julian Date definition and Gregorian conversion reference values",
+  "reference_cases": [
+    {
+      "utc": "1978-01-01T00:00:00Z",
+      "julian_day": 2443509.5
+    },
+    {
+      "utc": "1978-07-21T15:00:00Z",
+      "julian_day": 2443711.125
+    },
+    {
+      "utc": "2000-01-01T12:00:00Z",
+      "julian_day": 2451545.0,
+      "note": "J2000 epoch"
+    }
+  ],
+  "time_scale_note": "Ruh Code currently feeds UTC instants into this foundation. Astronomy modules that require UT1 or TT must perform and version their explicit time-scale conversion rather than relabel UTC as UT1/TT.",
+  "checked_on": "2026-08-18"
+}
