@@ -1,0 +1,23 @@
+{
+  "contractId": "personal-day-runtime-v1",
+  "engineId": "numerology.pythagorean.personal-day",
+  "engineVersion": "1",
+  "algorithm": "personalYear=reduce(birthMonth+birthDay+reduce(targetYear)); personalMonth=reduce(personalYear+targetMonth); personalDay=reduce(personalMonth+targetDay)",
+  "defaultReductionPolicy": "singleDigit",
+  "supportedReductionPolicies": [
+    "singleDigit",
+    "preserveMasterNumbers"
+  ],
+  "masterNumbers": [11, 22, 33],
+  "dateSource": "strict CivilDate YYYY-MM-DD",
+  "localeIndependent": true,
+  "networkRequired": false,
+  "dailySnapshotFactor": "personalDay",
+  "rules": [
+    "No random fallback",
+    "No locale-dependent parsing",
+    "Leap-day dates are accepted only when CivilDate validates them",
+    "Policy is encoded into the factor result identity",
+    "Different target years are recomputed independently"
+  ]
+}

@@ -1,0 +1,42 @@
+name: Personal Day Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/numerology/**'
+      - 'lib/src/calculation_core/daily/personal_day_factor.dart'
+      - 'test/calculation_core/personal_day*.dart'
+      - 'requirements/reference_manifests/personal_day_runtime.json'
+      - 'tools/numerology/validate_personal_day_contract.py'
+      - '.github/workflows/personal-day-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/numerology/**'
+      - 'lib/src/calculation_core/daily/personal_day_factor.dart'
+      - 'test/calculation_core/personal_day*.dart'
+      - 'requirements/reference_manifests/personal_day_runtime.json'
+      - 'tools/numerology/validate_personal_day_contract.py'
+      - '.github/workflows/personal-day-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate personal day source contract
+        run: python tools/numerology/validate_personal_day_contract.py
+
+  flutter-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Personal day tests
+        run: flutter test test/calculation_core/personal_day_test.dart test/calculation_core/personal_day_daily_factor_test.dart
