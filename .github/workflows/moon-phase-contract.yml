@@ -1,0 +1,30 @@
+name: Moon Phase Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/lunar/**'
+      - 'lib/src/calculation_core/daily/moon_phase_factor.dart'
+      - 'test/calculation_core/moon_phase*_test.dart'
+      - 'requirements/reference_manifests/moon_phase_runtime.json'
+      - 'tools/astronomy/validate_moon_phase_contract.py'
+      - '.github/workflows/moon-phase-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/lunar/**'
+      - 'lib/src/calculation_core/daily/moon_phase_factor.dart'
+      - 'test/calculation_core/moon_phase*_test.dart'
+      - 'requirements/reference_manifests/moon_phase_runtime.json'
+      - 'tools/astronomy/validate_moon_phase_contract.py'
+
+jobs:
+  moon-phase-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: python tools/astronomy/validate_moon_phase_contract.py
+      - run: flutter test test/calculation_core/moon_phase_test.dart test/calculation_core/moon_phase_daily_factor_test.dart

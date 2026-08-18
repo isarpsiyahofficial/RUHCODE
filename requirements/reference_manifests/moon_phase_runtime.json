@@ -1,0 +1,18 @@
+{
+  "contract": "moon_phase_runtime",
+  "version": 1,
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "runtimeSource": "EphemerisProvider Sun/Moon geocentric ecliptic longitude at exact TT instant",
+  "formula": "phaseAngle = normalize(moonLongitude - sunLongitude); illumination = (1 - cos(phaseAngle))/2",
+  "phaseBinsDegrees": [22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5],
+  "provenanceRules": [
+    "Sun and Moon samples must use identical sourceId",
+    "Sun and Moon samples must use identical dataVersion",
+    "Sun and Moon samples must match exact requested jdTt",
+    "No network, nearest-date, zero-position, or synthetic fallback"
+  ],
+  "dailySnapshotBinding": true,
+  "physicalEphemerisDatasetDone": false,
+  "finalAccuracyCrossCheckDone": false,
+  "note": "Moon-phase math is implemented, but final DONE remains blocked on the physical licensed offline ephemeris dataset and independent accuracy suite."
+}
