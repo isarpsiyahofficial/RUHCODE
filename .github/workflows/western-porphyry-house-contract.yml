@@ -1,0 +1,35 @@
+name: Western Porphyry House Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/western/porphyry_houses.dart'
+      - 'test/calculation_core/western/porphyry_houses_test.dart'
+      - 'evidence/astronomy/western_porphyry_houses.json'
+      - 'tools/astronomy/validate_western_porphyry_houses.py'
+      - '.github/workflows/western-porphyry-house-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/western/porphyry_houses.dart'
+      - 'test/calculation_core/western/porphyry_houses_test.dart'
+      - 'evidence/astronomy/western_porphyry_houses.json'
+      - 'tools/astronomy/validate_western_porphyry_houses.py'
+      - '.github/workflows/western-porphyry-house-contract.yml'
+
+jobs:
+  porphyry-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate structural contract
+        run: python tools/astronomy/validate_western_porphyry_houses.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Flutter dependencies
+        run: flutter pub get
+      - name: Porphyry unit tests
+        run: flutter test test/calculation_core/western/porphyry_houses_test.dart
