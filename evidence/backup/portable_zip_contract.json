@@ -1,0 +1,50 @@
+{
+  "contract_id": "BACKUP-PORTABLE-ZIP-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0776",
+    "RC-0792",
+    "RC-0818",
+    "RC-0822",
+    "RC-0848",
+    "RC-1296",
+    "RC-1297",
+    "RC-1298",
+    "RC-1299",
+    "RC-1300",
+    "RC-1437",
+    "RC-1442"
+  ],
+  "source": "lib/src/backup/portable_zip_backup_codec.dart",
+  "tests": [
+    "test/backup/portable_zip_backup_codec_test.dart"
+  ],
+  "dependency": {
+    "package": "archive",
+    "constraint": "^4.0.9",
+    "purpose": "In-memory ZIP encode/decode for a single portable backup file"
+  },
+  "invariants": {
+    "single_file_zip": true,
+    "logical_package_validation_preserved": true,
+    "crc_verification_on_decode": true,
+    "zip_slip_rejected": true,
+    "absolute_paths_rejected": true,
+    "non_portable_separators_rejected": true,
+    "nested_member_paths_rejected": true,
+    "directories_rejected": true,
+    "symlinks_rejected": true,
+    "duplicate_member_names_rejected": true,
+    "member_count_bounded": true,
+    "member_size_bounded": true,
+    "expanded_total_size_bounded": true,
+    "manifest_required": true
+  },
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS on the tested commit",
+    "Device file save/open adapter",
+    "Export-to-file -> open-file -> preview/import integration",
+    "Clean-install lifecycle round-trip with real portable ZIP bytes"
+  ]
+}
