@@ -61,33 +61,44 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Classical essential dignities + canonical classical rulership API.
 - [x] `WesternNatalChartAssembler`: placements + houses + aspects + aspectGrid + dignities.
 - [x] Derived-data body-set integrity.
-- [x] Porphyry house engine: ASC/IC/DSC/MC quadrant trisection, wrap, exact-cusp assignment, degenerate-input rejection.
-- [x] Porphyry source/test/evidence/validator/CI contract.
-- [x] Placidus implementation contract: semidiurnal/seminocturnal definition, max 100 iterations, convergence mandatory, polar/invented-cusp prohibition, explicit Porphyry fallback only.
-- [x] Placidus source-level solver: independent pole-height iteration, 11/12/2/3 cusp solve, angular/opposite cusp assembly, non-monotonic geometry rejection.
-- [x] Placidus source-level tests: normal latitude, exact cusp assignment, polar unavailable, explicit Porphyry fallback metadata, invalid latitude.
-- [x] Placidus evidence/validator/Flutter CI workflow source-level zinciri.
+- [x] Porphyry house engine + test/evidence/validator/CI contract.
+- [x] Placidus implementation contract + strict source-level solver + tests/evidence/validator/CI.
 - [ ] Placidus independent golden proof henüz yok; 0.05° house-cusp budget kanıtlanmadı.
 - [ ] Exact latest Flutter/GitHub Actions SUCCESS görünür değil; ilgili RC’ler DONE değil.
 
-## Son tur — 2026-08-19 16:52
+## Backup / CSV — source-level
 
-Checkpoint: `automation_runs/2026-08-19_1652_western_placidus_solver.md`
+- [x] Strict `RuhCsvValueCodec` + `RuhCsvDocumentCodec`.
+- [x] CRLF records, comma/quote/newline escaping.
+- [x] UTF-8-compatible Unicode string round-trip contract.
+- [x] Null / empty string / zero ayrımı; `\\N` null sentinel + literal-backslash escaping.
+- [x] Locale-independent machine-number contract.
+- [x] Türkçe, Japonca, Arapça, emoji, embedded newline/quote/comma unit tests.
+- [x] `evidence/backup/csv_contract.json` source-level evidence.
+- [x] `tools/backup/validate_csv_contract.py` structural validator.
+- [x] `Backup CSV Contract` GitHub Actions workflow.
+- [ ] Exact workflow SUCCESS görünür değil; CSV RC'leri DONE değil.
+- [ ] Per-table schema registry ve kolon sözleşmeleri.
+- [ ] Manifest + record count + SHA-256.
+- [ ] UTF-8 byte/package boundary.
+- [ ] Transactional preview/import/merge/replace/rollback.
+- [ ] TR↔EN, legacy schema ve stress round-trip proof.
 
-Bu turda Placidus ilk genel fixed-point taslağından çıkarılıp resmî Placidus tanımıyla uyumlu pole-height iterasyonuna göre bağımsız olarak yeniden yazıldı. Swiss Ephemeris reference olarak kullanılıyor; runtime dependency veya doğrudan kaynak kopyası yok. 100 iteration ceiling, domain/polar failure, explicit fallback metadata ve house-cycle invariants source seviyesinde zorunlu.
+## Son tur — 2026-08-19 18:56
+
+Checkpoint: `automation_runs/2026-08-19_1856_backup_csv_codec.md`
+
+CSV backup formatının en riskli temel kısmı gerçek source/test/evidence/CI sözleşmesine taşındı. Null ile empty string artık aynı hücreye indirgenmiyor; comma/quote/newline ve çok alfabeli Unicode içerik deterministic round-trip sözleşmesine sahip. Full backup paketi tamamlanmadığı için ilgili maddeler DONE yapılmadı.
 
 Commit zinciri:
-- İlk strict solver `ed8f7cd6353f2c7ccacbdecf6b5cc0d385a6678a`
-- Solver tests `7d1cb7273fb91b6abc605a06176f3b0f56c759f8`
-- Evidence source-level `73716d339fbb05371257683f059eab7d2fee43b4`
-- Structural validator `dde64670c9ec241a97030e2c7e69ff3e3160775f`
-- Flutter CI gate `15c02933719085e7b575f2e785759026856f3a52`
-- Dart hardening `5648eb059508e2dcb0ab2bce4298dc421cc3d7ea`
-- Pole-height correction `131ac77a2689ec81e934871c838258ba1a41ccdc`
-- Validator correction `e890edb92e9056ab452d85da17ce57c62197acb4`
-- Run checkpoint `a5b4ee4a50731f887657fe833e09b917d90c2c86`
+- CSV codec `87f88998da8daf0d84d9c7208bb4f3069823dbc4`
+- CSV tests `23c281e5cc97d3cfe71564b6b2ef7f7b360f23c3`
+- Evidence `a84e01ef39878b18457996c161a7fb99c504a199`
+- Validator `c8d38d395d8ec1d05ca783fe3811fa0c3321efac`
+- CI gate `84ac231f3492305628b07c50e6692f135040d4db`
+- Run checkpoint `1d49cfb7f248da0620bf2ca336634df97723c0d1`
 
-GitHub combined-status exact commit için individual checks göstermedi (`statuses=[]`). Bu nedenle workflow SUCCESS uydurulmadı; `RC-0054`, `RC-0265`, `RC-1436` ve ilişkili requirement’lar DONE yapılmadı.
+GitHub combined-status `84ac231f...` için yine `statuses=[]` döndürdü; SUCCESS uydurulmadı.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -105,13 +116,16 @@ GitHub combined-status exact commit için individual checks göstermedi (`status
 ## Sıradaki çalışma
 
 1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt.
-2. ASC/MC + Placidus/Porphyry için gerçek independent golden house-cusp datasetlerini `house_cusp_deg` metric ile bağla ve 0.05° budget koş.
-3. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance zincirini ilerlet.
-4. Gerçek GeoNames compact catalog + source/output SHA + timezone bulk integrity.
-5. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
-6. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
-7. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+2. Backup per-table CSV schema registry + nullable/enum/date/FK contract.
+3. Backup manifest + file SHA-256 + record counts + UTF-8 package boundary.
+4. Transactional import preview + merge/replace + rollback.
+5. Paralelde ASC/MC + Placidus/Porphyry independent golden house-cusp proof.
+6. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
+7. Gerçek GeoNames compact catalog + source/output SHA + timezone bulk integrity.
+8. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
+9. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
+10. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Placidus artık source-level gerçek solver seviyesinde; fakat independent accuracy/golden proof, exact CI görünürlüğü ve fiziksel EOP/ephemeris zinciri olmadan DONE kabul edilmiyor. Master requirement, içerik, UI, backup/PDF, security, offline ve release fazları tamamlanmadan proje FINAL olmayacak.
+**FINAL DEĞİL.** Master requirement, içerik, UI, backup/PDF, security, offline, physical astronomy evidence ve release fazları tamamlanmadan proje FINAL olmayacak.
