@@ -5,7 +5,6 @@ import 'porphyry_houses.dart';
 
 enum PlacidusResultStatus { success, unavailable, fallback }
 enum PlacidusFallbackPolicy { none, explicitPorphyry }
-enum _ArcPhase { diurnal, seminocturnal }
 
 final class PlacidusHouseCusps {
   PlacidusHouseCusps._({required List<double> cusps, required this.iterationsUsed})
@@ -58,16 +57,22 @@ final class PlacidusHouseResult {
   bool get isAvailable => status != PlacidusResultStatus.unavailable;
 }
 
-/// Strict iterative Placidus ecliptic-cusp solver.
+/// Strict Placidus ecliptic-cusp solver.
 ///
-/// Intermediate cusps are defined from completed fractions of the semidiurnal
-/// and seminocturnal arcs. Because declination depends on the unknown ecliptic
-/// longitude, each cusp is solved iteratively. No polar or non-converged cusp is
-/// invented. Porphyry is returned only when explicitly requested and is always
-/// exposed in [effectiveSystem].
+/// The intermediate cusps are solved with the classical pole-height iteration:
+/// each target right ascension is fixed by local sidereal time, while the pole
+/// height is repeatedly recomputed from the declination of the current
+/// ecliptic longitude. This is an independent implementation of the documented
+/// Placidus semidiurnal/seminocturnal-arc geometry; no Swiss Ephemeris runtime
+/// code or dependency is used.
+///
+/// Non-convergence and polar-circle geometry return UNAVAILABLE. Porphyry is
+/// available only as an explicit caller-selected fallback and is always visible
+/// in result metadata.
 abstract final class PlacidusHouses {
   static const int maxIterations = 100;
   static const double convergenceDegrees = 1e-10;
+  static const double _tiny = 1e-14;
 
   static PlacidusHouseResult calculate({
     required AscMcResult angles,
@@ -84,7 +89,8 @@ abstract final class PlacidusHouses {
       );
     }
 
-    final polarLimit = 90.0 - angles.meanObliquityDegrees;
+    final obliquity = angles.meanObliquityDegrees;
+    final polarLimit = 90.0 - obliquity;
     if (latitudeDegreesNorth.abs() >= polarLimit) {
       return _unavailableOrFallback(
         angles: angles,
@@ -93,37 +99,52 @@ abstract final class PlacidusHouses {
       );
     }
 
-    final c11 = _solveCusp(
-      localSiderealDegrees: angles.localMeanSiderealDegrees,
+    final tanLatitude = math.tan(_radians(latitudeDegreesNorth));
+    final tanObliquity = math.tan(_radians(obliquity));
+    final initialArgument = tanLatitude * tanObliquity;
+    if (!initialArgument.isFinite || initialArgument.abs() > 1.0) {
+      return _unavailableOrFallback(
+        angles: angles,
+        fallbackPolicy: fallbackPolicy,
+        reason: 'Placidus initial pole-height geometry is outside its real domain.',
+      );
+    }
+
+    final auxiliaryAngle = _degrees(math.asin(initialArgument.clamp(-1.0, 1.0).toDouble()));
+    final initialPoleOneThird = _degrees(math.atan(
+      math.sin(_radians(auxiliaryAngle / 3.0)) / tanObliquity,
+    ));
+    final initialPoleTwoThirds = _degrees(math.atan(
+      math.sin(_radians(auxiliaryAngle * 2.0 / 3.0)) / tanObliquity,
+    ));
+
+    final c11 = _solvePoleHeightCusp(
+      targetRightAscensionDegrees: _normalize(angles.localMeanSiderealDegrees + 30.0),
       latitudeDegreesNorth: latitudeDegreesNorth,
-      obliquityDegrees: angles.meanObliquityDegrees,
-      phase: _ArcPhase.diurnal,
-      fractionCompleted: 2.0 / 3.0,
-      initialLongitude: _normalize(angles.midheavenDegrees + 30.0),
+      obliquityDegrees: obliquity,
+      divisor: 3.0,
+      initialPoleHeightDegrees: initialPoleOneThird,
     );
-    final c12 = _solveCusp(
-      localSiderealDegrees: angles.localMeanSiderealDegrees,
+    final c12 = _solvePoleHeightCusp(
+      targetRightAscensionDegrees: _normalize(angles.localMeanSiderealDegrees + 60.0),
       latitudeDegreesNorth: latitudeDegreesNorth,
-      obliquityDegrees: angles.meanObliquityDegrees,
-      phase: _ArcPhase.diurnal,
-      fractionCompleted: 1.0 / 3.0,
-      initialLongitude: _normalize(angles.midheavenDegrees + 60.0),
+      obliquityDegrees: obliquity,
+      divisor: 1.5,
+      initialPoleHeightDegrees: initialPoleTwoThirds,
     );
-    final c2 = _solveCusp(
-      localSiderealDegrees: angles.localMeanSiderealDegrees,
+    final c2 = _solvePoleHeightCusp(
+      targetRightAscensionDegrees: _normalize(angles.localMeanSiderealDegrees + 120.0),
       latitudeDegreesNorth: latitudeDegreesNorth,
-      obliquityDegrees: angles.meanObliquityDegrees,
-      phase: _ArcPhase.seminocturnal,
-      fractionCompleted: 2.0 / 3.0,
-      initialLongitude: _normalize(angles.ascendantDegrees + 30.0),
+      obliquityDegrees: obliquity,
+      divisor: 1.5,
+      initialPoleHeightDegrees: initialPoleTwoThirds,
     );
-    final c3 = _solveCusp(
-      localSiderealDegrees: angles.localMeanSiderealDegrees,
+    final c3 = _solvePoleHeightCusp(
+      targetRightAscensionDegrees: _normalize(angles.localMeanSiderealDegrees + 150.0),
       latitudeDegreesNorth: latitudeDegreesNorth,
-      obliquityDegrees: angles.meanObliquityDegrees,
-      phase: _ArcPhase.seminocturnal,
-      fractionCompleted: 1.0 / 3.0,
-      initialLongitude: _normalize(angles.ascendantDegrees + 60.0),
+      obliquityDegrees: obliquity,
+      divisor: 3.0,
+      initialPoleHeightDegrees: initialPoleOneThird,
     );
 
     final solved = <_SolvedCusp?>[c11, c12, c2, c3];
@@ -160,7 +181,7 @@ abstract final class PlacidusHouses {
       );
     }
 
-    final maxUsed = solved.whereType<_SolvedCusp>().fold<int>(
+    final iterationsUsed = solved.whereType<_SolvedCusp>().fold<int>(
           0,
           (current, cusp) => cusp.iterations > current ? cusp.iterations : current,
         );
@@ -169,40 +190,45 @@ abstract final class PlacidusHouses {
       requestedSystem: 'PLACIDUS',
       effectiveSystem: 'PLACIDUS',
       reason: null,
-      placidus: PlacidusHouseCusps._(cusps: cusps, iterationsUsed: maxUsed),
+      placidus: PlacidusHouseCusps._(cusps: cusps, iterationsUsed: iterationsUsed),
     );
   }
 
-  static _SolvedCusp? _solveCusp({
-    required double localSiderealDegrees,
+  static _SolvedCusp? _solvePoleHeightCusp({
+    required double targetRightAscensionDegrees,
     required double latitudeDegreesNorth,
     required double obliquityDegrees,
-    required _ArcPhase phase,
-    required double fractionCompleted,
-    required double initialLongitude,
+    required double divisor,
+    required double initialPoleHeightDegrees,
   }) {
-    var longitude = _normalize(initialLongitude);
-    final latitude = _radians(latitudeDegreesNorth);
-    final epsilon = _radians(obliquityDegrees);
+    var longitude = _eclipticIntersection(
+      rightAscensionDegrees: targetRightAscensionDegrees,
+      poleHeightDegrees: initialPoleHeightDegrees,
+      obliquityDegrees: obliquityDegrees,
+    );
+    final tanLatitude = math.tan(_radians(latitudeDegreesNorth));
+    final sineObliquity = math.sin(_radians(obliquityDegrees));
 
     for (var iteration = 1; iteration <= maxIterations; iteration++) {
-      final lambda = _radians(longitude);
-      final declination = math.asin(math.sin(epsilon) * math.sin(lambda));
-      final riseSetCosine = -math.tan(latitude) * math.tan(declination);
-      if (!riseSetCosine.isFinite || riseSetCosine.abs() > 1.0) return null;
+      final declination = math.asin(sineObliquity * math.sin(_radians(longitude)));
+      final tanDeclination = math.tan(declination);
 
-      final bounded = riseSetCosine.clamp(-1.0, 1.0).toDouble();
-      final semiDiurnal = _degrees(math.acos(bounded));
-      final targetHourAngle = switch (phase) {
-        _ArcPhase.diurnal => -(1.0 - fractionCompleted) * semiDiurnal,
-        _ArcPhase.seminocturnal => -180.0 + fractionCompleted * (180.0 - semiDiurnal),
-      };
-      final targetRa = _normalize(localSiderealDegrees - targetHourAngle);
-      final alpha = _radians(targetRa);
-      final next = _normalize(_degrees(math.atan2(
-        math.sin(alpha) / math.cos(epsilon),
-        math.cos(alpha),
-      )));
+      if (tanDeclination.abs() <= _tiny) {
+        final next = _normalize(targetRightAscensionDegrees);
+        return _SolvedCusp(longitude: next, iterations: iteration);
+      }
+
+      final argument = tanLatitude * tanDeclination;
+      if (!argument.isFinite || argument.abs() > 1.0) return null;
+      final arcAngle = math.asin(argument.clamp(-1.0, 1.0).toDouble());
+      final poleHeight = _degrees(math.atan(
+        math.sin(arcAngle / divisor) / tanDeclination,
+      ));
+      final next = _eclipticIntersection(
+        rightAscensionDegrees: targetRightAscensionDegrees,
+        poleHeightDegrees: poleHeight,
+        obliquityDegrees: obliquityDegrees,
+      );
 
       if (_angularDistance(longitude, next) <= convergenceDegrees) {
         return _SolvedCusp(longitude: next, iterations: iteration);
@@ -210,6 +236,58 @@ abstract final class PlacidusHouses {
       longitude = next;
     }
     return null;
+  }
+
+  /// Intersection longitude between the ecliptic and the great circle defined
+  /// by [rightAscensionDegrees] and [poleHeightDegrees]. The quadrant handling
+  /// is explicit so the result remains continuous across 0/90/180/270°.
+  static double _eclipticIntersection({
+    required double rightAscensionDegrees,
+    required double poleHeightDegrees,
+    required double obliquityDegrees,
+  }) {
+    final x = _normalize(rightAscensionDegrees);
+    final quadrant = (x / 90.0).floor();
+    switch (quadrant) {
+      case 0:
+        return _quadrantIntersection(x, poleHeightDegrees, obliquityDegrees);
+      case 1:
+        return _normalize(180.0 - _quadrantIntersection(
+          180.0 - x,
+          -poleHeightDegrees,
+          obliquityDegrees,
+        ));
+      case 2:
+        return _normalize(180.0 + _quadrantIntersection(
+          x - 180.0,
+          -poleHeightDegrees,
+          obliquityDegrees,
+        ));
+      default:
+        return _normalize(360.0 - _quadrantIntersection(
+          360.0 - x,
+          poleHeightDegrees,
+          obliquityDegrees,
+        ));
+    }
+  }
+
+  static double _quadrantIntersection(
+    double rightAscensionDegrees,
+    double poleHeightDegrees,
+    double obliquityDegrees,
+  ) {
+    final x = _radians(rightAscensionDegrees);
+    final pole = _radians(poleHeightDegrees);
+    final epsilon = _radians(obliquityDegrees);
+    final numerator = math.sin(x);
+    final denominator = -math.tan(pole) * math.sin(epsilon) +
+        math.cos(epsilon) * math.cos(x);
+    if (numerator.abs() <= _tiny) return 0.0;
+    if (denominator.abs() <= _tiny) return 90.0;
+    var angle = _degrees(math.atan(numerator / denominator));
+    if (angle < 0.0) angle += 180.0;
+    return angle;
   }
 
   static PlacidusHouseResult _unavailableOrFallback({
