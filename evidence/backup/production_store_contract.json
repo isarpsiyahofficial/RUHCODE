@@ -1,0 +1,39 @@
+{
+  "contract": "backup-production-store-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0763",
+    "RC-0764",
+    "RC-0823",
+    "RC-0824",
+    "RC-0839",
+    "RC-0840",
+    "RC-0841",
+    "RC-0843"
+  ],
+  "implementation": {
+    "store": "lib/src/backup/local_database_backup_import_store.dart",
+    "database_contract": "lib/src/data/local/local_database.dart",
+    "sqflite_adapter": "lib/src/data/local/sqflite_local_database.dart",
+    "test": "test/backup/local_database_backup_import_store_test.dart"
+  },
+  "invariants": [
+    "all imported row mutation occurs inside LocalDatabase.transaction",
+    "replace clears logical tables only inside the transaction interface",
+    "merge upserts by the canonical backup primary key",
+    "replace creates a durable flushed snapshot file before destructive mutation",
+    "snapshot restore validates snapshot and database schema versions",
+    "snapshot restore atomically clears and restores every registered backup table",
+    "profile CSV rows are mapped to the canonical runtime Profile storage shape",
+    "CSV JSON/boolean/integer/decimal types are decoded before storage",
+    "no network service is involved"
+  ],
+  "remaining_before_done": [
+    "exact GitHub Actions SUCCESS for the production adapter tests",
+    "real portable ZIP/file-system byte adapter and device integration",
+    "legacy schema migration proof",
+    "TR to EN and EN to TR clean-install round-trip proof",
+    "large-data restore stress proof"
+  ]
+}
