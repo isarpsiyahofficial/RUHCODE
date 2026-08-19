@@ -1,0 +1,21 @@
+name: Western Natal Distribution Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  western-natal-distribution-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Western natal distribution structural contract
+        run: python tools/astronomy/validate_western_natal_distribution.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test Western natal distribution
+        run: flutter test test/calculation_core/western/natal_distribution_test.dart
