@@ -3,17 +3,17 @@ name: Backup CSV Contract
 on:
   push:
     paths:
-      - 'lib/src/backup/csv_codec.dart'
-      - 'test/backup/csv_codec_test.dart'
-      - 'evidence/backup/csv_contract.json'
-      - 'tools/backup/validate_csv_contract.py'
+      - 'lib/src/backup/**'
+      - 'test/backup/**'
+      - 'evidence/backup/**'
+      - 'tools/backup/**'
       - '.github/workflows/backup-csv-contract.yml'
   pull_request:
     paths:
-      - 'lib/src/backup/csv_codec.dart'
-      - 'test/backup/csv_codec_test.dart'
-      - 'evidence/backup/csv_contract.json'
-      - 'tools/backup/validate_csv_contract.py'
+      - 'lib/src/backup/**'
+      - 'test/backup/**'
+      - 'evidence/backup/**'
+      - 'tools/backup/**'
       - '.github/workflows/backup-csv-contract.yml'
 
 jobs:
@@ -26,10 +26,12 @@ jobs:
           python-version: '3.12'
       - name: Validate CSV structural/evidence contract
         run: python tools/backup/validate_csv_contract.py
+      - name: Validate backup table schema contract
+        run: python tools/backup/validate_backup_schema_contract.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run CSV codec tests
-        run: flutter test test/backup/csv_codec_test.dart
+      - name: Run backup codec and schema tests
+        run: flutter test test/backup
