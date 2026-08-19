@@ -1,0 +1,21 @@
+name: Western Aspect Grid Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  western-aspect-grid-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Western aspect-grid structural contract
+        run: python tools/astronomy/validate_western_aspect_grid.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test Western aspect grid
+        run: flutter test test/calculation_core/western/aspect_grid_test.dart
