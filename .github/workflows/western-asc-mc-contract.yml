@@ -1,0 +1,21 @@
+name: Western ASC MC Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  western-asc-mc-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Western ASC MC structural contract
+        run: python tools/astronomy/validate_western_asc_mc.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test Western ASC MC geometry
+        run: flutter test test/calculation_core/western/asc_mc_test.dart
