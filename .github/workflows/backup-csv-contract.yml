@@ -28,10 +28,12 @@ jobs:
         run: python tools/backup/validate_csv_contract.py
       - name: Validate backup table schema contract
         run: python tools/backup/validate_backup_schema_contract.py
+      - name: Validate backup package codec contract
+        run: python tools/backup/validate_backup_package_contract.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run backup codec and schema tests
+      - name: Run backup codec schema and package tests
         run: flutter test test/backup
