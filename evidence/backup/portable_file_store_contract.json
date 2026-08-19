@@ -1,0 +1,37 @@
+{
+  "contract_id": "BACKUP-PORTABLE-FILE-STORE-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0795",
+    "RC-0848",
+    "RC-1296",
+    "RC-1297",
+    "RC-1298",
+    "RC-1299",
+    "RC-1300",
+    "RC-1442"
+  ],
+  "source": "lib/src/backup/portable_backup_file_store.dart",
+  "tests": [
+    "test/backup/portable_backup_file_store_test.dart"
+  ],
+  "invariants": {
+    "native_local_file_only": true,
+    "network_independent": true,
+    "explicit_user_selected_path_contract": true,
+    "canonical_extension": ".ruhcode.zip",
+    "atomic_same_directory_temp_write": true,
+    "flush_before_rename": true,
+    "temp_cleanup_on_failure": true,
+    "read_size_guard": true,
+    "write_size_guard": true,
+    "logical_package_zip_bridge": true
+  },
+  "remaining_before_done": [
+    "Platform document picker/share-sheet integration on Android",
+    "Exact Flutter test SUCCESS on the tested commit",
+    "Real export -> save -> reopen -> preview/import lifecycle",
+    "Clean-install device proof"
+  ]
+}
