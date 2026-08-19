@@ -20,5 +20,5 @@
     "externalGoldenRequiredForAscendant": true,
     "proven": false
   },
-  "requirements": ["RC-0055", "RC-0056", "RC-0266", "RC-0267", "RC-1436"]
+  "requirements": ["RC-0055", "RC-0056", "RC-0262", "RC-1436"]
 }
