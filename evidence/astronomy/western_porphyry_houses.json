@@ -1,0 +1,29 @@
+{
+  "contract": "western_porphyry_houses",
+  "version": 1,
+  "requirements": ["RC-0060", "RC-0061", "RC-0262", "RC-0268", "RC-1436"],
+  "definition": "Each ecliptic quadrant ASC→IC→DSC→MC→ASC is divided into three equal ecliptic arcs.",
+  "inputs": {
+    "ascendant_longitude": "degrees in [0,360)",
+    "midheaven_longitude": "degrees in [0,360)"
+  },
+  "hard_rules": [
+    "ASC is cusp 1 and MC is cusp 10",
+    "DSC is ASC + 180 degrees and IC is MC + 180 degrees modulo 360",
+    "each quadrant is divided into three equal ecliptic arcs",
+    "exact cusp longitude belongs to the cusp house",
+    "invalid or degenerate angular geometry is rejected",
+    "Porphyry fallback from another house system must be explicit and never silent"
+  ],
+  "reference": {
+    "name": "Swiss Ephemeris house-system documentation",
+    "url": "https://www.astro.com/swisseph/swisseph.htm",
+    "role": "definition and Placidus polar-fallback reference only; runtime code does not depend on Swiss Ephemeris"
+  },
+  "accuracy": {
+    "construction": "deterministic exact quadrant trisection",
+    "upstream_angle_budget_degrees": 0.05,
+    "independent_end_to_end_golden_proven": false
+  },
+  "status": "SOURCE_LEVEL_ONLY"
+}
