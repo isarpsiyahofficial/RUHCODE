@@ -17,7 +17,9 @@ void main() {
       exportedAtUtc: DateTime.utc(2026, 8, 19, 20),
     );
 
-    expect(package.files.keys.first, 'calculations.csv');
+    final keys = package.files.keys.toList(growable: false);
+    final sorted = List<String>.of(keys)..sort();
+    expect(keys, sorted);
     expect(package.files.containsKey('manifest.json'), isTrue);
     expect(package.files.length, BackupSchemaRegistry.tables.length + 1);
 
