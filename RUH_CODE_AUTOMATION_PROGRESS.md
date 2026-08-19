@@ -76,6 +76,13 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Hard astronomy acceptance budgets + validator + CI contract.
 - [x] Independent astronomy golden dataset schema/runner/self-test/CI contract.
 - [x] Offline ephemeris stratejisi JPL DE440/NAIF yaklaşımıyla contract seviyesinde kilitli; fiziksel kernel henüz bundle edilmedi.
+- [x] Western Whole Sign + Equal House deterministic cusp/house assignment.
+- [x] Western ASC/MC strict geometry core + boundary tests + evidence/CI contract.
+- [x] Western natal placements: Tropical sign, degree, house, motion + shared TT/provenance guards.
+- [x] Western natal major aspects: conjunction/sextile/square/trine/opposition + configurable per-aspect orb.
+- [x] Natal aspect 0/360 seam, inclusive orb boundary, invalid policy and deterministic pair tests.
+- [x] `WesternNatalChartAssembler`: placements + houses + aspects tek provenance snapshotında birleştiriliyor.
+- [x] Western natal aspect evidence manifest + structural validator + ayrı CI workflow.
 
 ### Açık ana işler / DONE değil
 - [ ] Latest exact commit üzerinde Flutter Quality ve bütün contract SUCCESS kanıtları.
@@ -84,7 +91,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [ ] Fiziksel, ticari yeniden dağıtıma uygun offline ephemeris runtime dataset/lisans/version/checksum.
 - [ ] Gerçek Sun/Moon/planet/node runtime state cross-check.
 - [ ] Accuracy-budget limitlerini bağımsız golden data ile kanıtlama.
-- [ ] ASC/MC/house sistemleri ve boundary testleri.
+- [ ] ASC/MC independent golden-reference kanıtı.
+- [ ] Placidus ve kabul edilen diğer house sistemleri.
 - [ ] Production Lahiri/Chitrapaksha physical artifact.
 - [ ] Vedik varga/dasha motorları.
 
@@ -102,29 +110,25 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - Önceki 9 UI PNG’si yasaklanan `Hesapla` alt menüsünü içerdiği için APPROVED değildir.
 - Yeni `Bugün · Araçlar · Kayıtlar · Profil` referansları SCREEN-ID/hash manifestine bağlanmadan UI DONE yapılmayacak.
 
-## Bu turdaki commitler
+## Son Western foundation commitleri
 
-### Günün Mesajı QA
-- Auditor near-duplicate / unsafe-certainty hardening: `00b13fb11b21675705fb916bd37dfa96349147b6`.
-- Auditor QA tests: `3b284b223d5f17849c3118710eddbc833520ec5c`.
-- Editorial QA thresholds manifest: `c7d7f518f3b416cc994509acde8f1d93b76189c0`.
-- Structural contract update: `2d3c1e1766a2612ec19f899cf9d4be561012ef55`.
-
-### Ayanamsha / Vedik production path
-- Strict tabulated ayanamsha provider: `e1e8ae97096f70482f0186c1c8d10b85e42a7f03`.
-- Provider tests: `0a22e79afa91baac6f262490a746f67491b804fc`.
-- Vedic provider binding: `efb2acb9c6c9a415ec508a093276e59f85b77015`.
-- Vedic binding tests: `57e5c8d344d6581e2be82b8493fe33860d286741`.
-- Ayanamsha evidence manifest: `0ec5082d2c97cb12822437e6acb94fa57d18c376`.
-- Ayanamsha structural validator: `d918472eeadfa2f41274a1f9717c226d644423c8`.
-- Ayanamsha CI contract: `8a5dc2af1fea2c5bf4a90176cec5811889d11450`.
+- Whole Sign / Equal House: `18072e32188369f349e262ce50ff254fd8ee8b51`.
+- Western ASC/MC geometry: `2c09aad03f3b8774de9e6d59204c3bb2dbc815be`.
+- Western natal placements: `6f1bc62bf03740791446de2faa1bba354be660c5`.
+- Western natal aspect engine: `38ecbcca73c579a7d6c5c2386cd7c79caf4ae356`.
+- Natal aspect tests: `74bda0ca42db1f5ff5c48e9f00fe9dd06c1ac4e6`.
+- Natal chart assembler: `5daa6f6feaad830dfab5d54c06581ee1f633eb50`.
+- Natal chart tests: `937b8f873ed2b3b513da8437c8cdcd2491f5788b`.
+- Natal aspect evidence: `ea232595f75cb7a800960f9af09a2cb163dc3381`.
+- Natal aspect structural validator: `f50cfd8be2f532f01ae950cf20ff6cec9bc62a97`.
+- Natal aspect CI contract: `3b9239a05c89f5e5191fb5bba9e6ae4b05ca8db2`.
 
 GitHub connector latest push için individual Actions sonuçlarını görünür şekilde döndürmedi; CI SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
 
 ## Sıradaki çalışma
 
-1. Latest exact commit üzerinde Daily Message, Ayanamsha Runtime, Vedic Daily, DailySnapshot ve Flutter Quality sonuçlarını doğrula; görünür kırmızıları aynı turda düzelt.
-2. Fiziksel/versioned Lahiri/Chitrapaksha artifact ingest + SHA/provenance ve independent golden-reference runner ekle.
+1. Latest exact commit üzerinde Western Natal Aspects, Western Natal Placements, Western ASC/MC, DailySnapshot ve Flutter Quality sonuçlarını doğrula; görünür kırmızıları aynı turda düzelt.
+2. Western natal chart için element/modality distribution + aspect grid gibi ephemeris bağımsız türetilmiş verileri source/test/contract ile ilerlet.
 3. Fiziksel/versioned IERS EOP artifact + checksum/provenance zincirini bağla; sahte gelecek EOP üretme.
 4. Ticari yeniden dağıtıma uygun offline ephemeris kernel/runtime ingest yolunu fiziksel artifact ile tamamla.
 5. Gerçek GeoNames compact catalog + source/output SHA + timezone-ID toplu integrity testini tamamla.
@@ -135,4 +139,4 @@ GitHub connector latest push için individual Actions sonuçlarını görünür 
 
 ## Final durumu
 
-**FINAL DEĞİL.** Bu turda Günün Mesajı kalite hattındaki near-duplicate/unsafe-certainty açıkları ve Vedik ayanamsha production-provider sözleşmesi kapatıldı. Fiziksel Lahiri/ephemeris/EOP/GeoNames verileri, bağımsız accuracy kanıtları, exact CI sonuçları, gerçek 8.036 editoryal mesaj, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement'lar DONE sayılmayacak.
+**FINAL DEĞİL.** Western natal aspect/orb ve tek natal snapshot assembly source/test/contract seviyesinde eklendi. Fiziksel ephemeris/EOP/Lahiri/GeoNames verileri, bağımsız accuracy kanıtları, exact CI sonuçları, gerçek 8.036 editoryal mesaj, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement'lar DONE sayılmayacak.
