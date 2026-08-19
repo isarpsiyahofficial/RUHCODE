@@ -24,10 +24,10 @@ void main() {
   test('classifies domicile exaltation detriment and fall independently', () {
     final result = WesternEssentialDignities.build(
       placements: placements([
-        state(AstroBody.sun, 120),      // Leo domicile
-        state(AstroBody.moon, 30),      // Taurus exaltation
-        state(AstroBody.venus, 210),    // Scorpio detriment
-        state(AstroBody.mars, 90),      // Cancer fall
+        state(AstroBody.sun, 120),
+        state(AstroBody.moon, 30),
+        state(AstroBody.venus, 210),
+        state(AstroBody.mars, 90),
       ]),
     );
 
@@ -37,24 +37,15 @@ void main() {
     expect(result.forBody(AstroBody.mars).has(EssentialDignity.fall), isTrue);
   });
 
-  test('supports overlapping classical statuses without collapsing them', () {
-    final result = WesternEssentialDignities.build(
-      placements: placements([
-        state(AstroBody.mercury, 150), // Virgo: domicile + exaltation
-        state(AstroBody.mercury, 330), // impossible duplicate input caught upstream
-      ]),
-    );
-
-    // Duplicate bodies are rejected by the placement builder before dignity evaluation.
-    expect(result, isNotNull);
-  }, skip: 'Duplicate-body rejection belongs to natal placement contract.');
-
   test('Mercury in Virgo carries both domicile and exaltation', () {
     final result = WesternEssentialDignities.build(
       placements: placements([state(AstroBody.mercury, 150)]),
     );
     final mercury = result.forBody(AstroBody.mercury);
-    expect(mercury.dignities, containsAll([EssentialDignity.domicile, EssentialDignity.exaltation]));
+    expect(
+      mercury.dignities,
+      containsAll([EssentialDignity.domicile, EssentialDignity.exaltation]),
+    );
   });
 
   test('outer planets and nodes are intentionally unassigned in classical table', () {
@@ -72,14 +63,25 @@ void main() {
   test('opposite signs derive detriment and fall consistently', () {
     final result = WesternEssentialDignities.build(
       placements: placements([
-        state(AstroBody.sun, 300),     // Aquarius detriment
-        state(AstroBody.saturn, 0),    // Aries fall
-        state(AstroBody.jupiter, 270), // Capricorn fall
+        state(AstroBody.sun, 300),
+        state(AstroBody.saturn, 0),
+        state(AstroBody.jupiter, 270),
       ]),
     );
 
     expect(result.forBody(AstroBody.sun).has(EssentialDignity.detriment), isTrue);
     expect(result.forBody(AstroBody.saturn).has(EssentialDignity.fall), isTrue);
     expect(result.forBody(AstroBody.jupiter).has(EssentialDignity.fall), isTrue);
+  });
+
+  test('Mercury in Pisces carries both detriment and fall', () {
+    final result = WesternEssentialDignities.build(
+      placements: placements([state(AstroBody.mercury, 330)]),
+    );
+    final mercury = result.forBody(AstroBody.mercury);
+    expect(
+      mercury.dignities,
+      containsAll([EssentialDignity.detriment, EssentialDignity.fall]),
+    );
   });
 }
