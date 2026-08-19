@@ -1,0 +1,30 @@
+{
+  "contract": "western_asc_mc",
+  "version": 1,
+  "requirements": ["RC-0018", "RC-0061", "RC-0262", "RC-1436"],
+  "mode": "mean_tropical",
+  "inputs": {
+    "time_scales": ["UT1", "TT"],
+    "longitude_convention": "east-positive-degrees",
+    "latitude_convention": "north-positive-degrees",
+    "poles_supported": false
+  },
+  "algorithms": {
+    "sidereal_time": "USNO approximate GMST already isolated in SiderealTime",
+    "obliquity": "IAU 2006 mean obliquity polynomial",
+    "angles": ["ASC", "MC"]
+  },
+  "hard_rules": [
+    "UTC must not be silently substituted for UT1",
+    "non-finite inputs are rejected",
+    "longitude outside [-180,180] is rejected",
+    "exact geographic poles are rejected",
+    "angles are normalized to [0,360)",
+    "independent golden accuracy is required before DONE"
+  ],
+  "accuracy": {
+    "budget_degrees": 0.05,
+    "independent_golden_proven": false
+  },
+  "status": "SOURCE_LEVEL_ONLY"
+}
