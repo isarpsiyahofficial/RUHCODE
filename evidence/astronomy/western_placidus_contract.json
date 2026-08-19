@@ -1,0 +1,48 @@
+{
+  "contract": "western_placidus_houses",
+  "version": 1,
+  "requirements": ["RC-0054", "RC-0061", "RC-0262", "RC-0265", "RC-1436"],
+  "definition": {
+    "basis": "semidiurnal and seminocturnal arc division",
+    "cusps": {
+      "11": "2/3 of semidiurnal arc completed",
+      "12": "1/3 of semidiurnal arc completed",
+      "2": "2/3 of seminocturnal arc completed",
+      "3": "1/3 of seminocturnal arc completed"
+    },
+    "opposites": "cusps 4/5/6/7/8/9 are opposite the corresponding 10/11/12/1/2/3 geometry"
+  },
+  "solver_contract": {
+    "iterative": true,
+    "max_iterations": 100,
+    "convergence_required": true,
+    "non_convergence_result": "UNAVAILABLE",
+    "silent_fallback_forbidden": true,
+    "optional_explicit_fallback": "PORPHYRY"
+  },
+  "polar_contract": {
+    "placidus_ecliptic_cusps_beyond_polar_circle_guaranteed": false,
+    "invented_cusps_forbidden": true,
+    "fallback_must_be_visible_in_result_metadata": true
+  },
+  "accuracy": {
+    "house_cusp_budget_degrees": 0.05,
+    "independent_golden_required": true,
+    "independent_golden_proven": false
+  },
+  "references": [
+    {
+      "name": "Swiss Ephemeris house systems documentation",
+      "url": "https://www.astro.com/swisseph/swisseph.htm",
+      "notes": "Defines Placidus using semidiurnal/seminocturnal arcs and documents convergence/polar limitations."
+    },
+    {
+      "name": "Swiss Ephemeris Programmer's Manual",
+      "url": "https://www.astro.com/swisseph/swephprg.htm",
+      "notes": "Documents house-system code P and Porphyry fallback behavior when Placidus cusps cannot be computed."
+    }
+  ],
+  "runtime_dependency_on_swiss_ephemeris": false,
+  "implementation_ready": false,
+  "status": "CONTRACT_ONLY"
+}
