@@ -61,6 +61,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Western natal aspect grid: deterministic square matrix, empty diagonal, symmetric pair lookup, provenance/duplicate guards.
 - [x] Classical Western essential dignities: domicile/exaltation/detriment/fall; overlapping statuses preserved; outer planets/nodes receive no invented classical status.
 - [x] `WesternNatalChartAssembler`: placements + houses + aspects + aspectGrid + dignities tek natal snapshotta birleştiriliyor.
+- [x] Natal derived-data body-set integrity: aspectGrid ve dignity assessment body setleri placement body setiyle birebir olmak zorunda.
+- [x] Classical rulership query API mevcut dignity domicile tablosundan türetiliyor; duplicate rulership table yok, modern outer-planet rulership varsayımı classical API'ye eklenmiyor.
 - [x] Aspect-grid ve dignity source/test/evidence/validator/CI contractları eklendi.
 
 ### Son Western commitleri
@@ -70,9 +72,13 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - Aspect-grid tests: `276dfbdc25923e4cf82713bd7733118aa8a79cf8`.
 - Dignity test cleanup/overlap coverage: `46fffff63a2db607c165c9f76c81e47748ed1092`.
 - Natal chart integration: `dede3f07e34fb07bf9bada29732482926d099211`.
+- Derived snapshot integrity: `876089be7dc4953fd96a1fe59d26f140d94065ac`.
+- Canonical classical rulership API: `cf46f69f05007c49e150a13f81d3021ddf5c11e3`.
+- Rulership tests: `53fade22b6fc06fb466976928a7f69e7fd9c4ec7`.
+- Natal body-set integration test: `d271cc3b843932af5b885652f119f2d5f4e0fab8`.
 - Aspect-grid evidence/validator/workflow: `b75cce5a...`, `ff53a1b3...`, `8b19d94b...`.
 - Dignity evidence/validator/workflow: `10f22059...`, `e1b4a6f7...`, `c683256d...`.
-- Ayrıntılı checkpoint: `automation_runs/2026-08-19_1054_western_aspect_grid_dignities.md`.
+- Ayrıntılı son checkpoint: `automation_runs/2026-08-19_1253_western_snapshot_rulership.md`.
 
 ### Açık ana işler / DONE değil
 
@@ -103,21 +109,20 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 ## CI görünürlüğü
 
-Latest Western dignity workflow commit `c683256d6394769ce11951e132c962167744c6d0` için GitHub combined-status connector sonucu `statuses=[]` döndürdü. Bu nedenle CI SUCCESS uydurulmadı ve ilgili RC'ler DONE'a yükseltilmedi.
+Latest exact Western integration commit `d271cc3b843932af5b885652f119f2d5f4e0fab8` için GitHub combined-status connector sonucu yine `statuses=[]` döndürdü. Bu nedenle CI SUCCESS uydurulmadı ve ilgili RC'ler DONE'a yükseltilmedi.
 
 ## Sıradaki çalışma
 
-1. Western aspect-grid/dignity workflow sonuçlarında görünür kırmızı oluşursa aynı turda düzelt.
-2. Natal chart derived-data snapshot bütünlüğünü testte genişlet; aspectGrid/dignity body setinin placement setiyle birebir eşleşmesini kanıtla.
-3. Classical rulership query API'sini canonical dignity tablosundan türet; tabloyu ikinci kez duplicate etme.
-4. Placidus algoritma/reference/tolerance sözleşmesini kesinleştir ve source/test contractını ilerlet; independent golden olmadan DONE deme.
-5. Fiziksel/versioned IERS EOP + checksum/provenance zincirini bağla.
-6. Ticari yeniden dağıtıma uygun offline ephemeris kernel/runtime ingest yolunu fiziksel artifact ile tamamla.
-7. Gerçek GeoNames compact catalog + source/output SHA + timezone-ID toplu integrity testini tamamla.
-8. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
-9. Güncel UI reference setini yeni alt navigasyonla üretip SCREEN-ID/hash manifestine bağla.
-10. Requirement state'e yalnız workflow/test/evidence kanıtı alınan RC'leri yükselt.
+1. Western dignity/natal workflow sonuçlarında görünür kırmızı oluşursa aynı turda düzelt.
+2. Placidus algoritma/reference/tolerance sözleşmesini kesinleştir; bağımsız golden olmadan DONE deme.
+3. Fiziksel/versioned IERS EOP + checksum/provenance zincirini bağla.
+4. Ticari yeniden dağıtıma uygun offline ephemeris kernel/runtime ingest yolunu fiziksel artifact ile tamamla.
+5. ASC/MC ve house-system independent golden accuracy datasetlerini bağla.
+6. Gerçek GeoNames compact catalog + source/output SHA + timezone-ID toplu integrity testini tamamla.
+7. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
+8. Güncel UI reference setini yeni alt navigasyonla üretip SCREEN-ID/hash manifestine bağla.
+9. Requirement state'e yalnız workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Western aspect-grid ve classical dignity katmanı source/test/evidence/CI contract seviyesinde ilerledi. Fiziksel ephemeris/EOP/Lahiri/GeoNames verileri, bağımsız accuracy kanıtları, exact CI sonuçları, gerçek 8.036 editoryal mesaj, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement'lar DONE sayılmayacak.
+**FINAL DEĞİL.** Western natal derived snapshot bütünlüğü ve canonical classical rulership API source/test seviyesinde ilerledi. Fiziksel ephemeris/EOP/Lahiri/GeoNames verileri, bağımsız accuracy kanıtları, exact CI sonuçları, Placidus, gerçek 8.036 editoryal mesaj, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement'lar DONE sayılmayacak.
