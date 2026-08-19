@@ -185,4 +185,40 @@ final class _SqfliteTransaction implements LocalDatabaseTransaction {
       whereArgs: [table, id],
     );
   }
+
+  @override
+  Future<Map<String, Map<String, Object?>>> readTable(String table) async {
+    if (table.trim().isEmpty) {
+      throw ArgumentError('table must not be empty');
+    }
+    final rows = await _txn.query(
+      'records',
+      columns: const ['record_id', 'payload_json'],
+      where: 'table_name = ?',
+      whereArgs: [table],
+      orderBy: 'record_id ASC',
+    );
+    final result = <String, Map<String, Object?>>{};
+    for (final row in rows) {
+      final id = row['record_id']! as String;
+      final decoded = jsonDecode(row['payload_json']! as String);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException('Stored payload is not a JSON object.');
+      }
+      result[id] = Map<String, Object?>.from(decoded);
+    }
+    return result;
+  }
+
+  @override
+  Future<void> clearTable(String table) async {
+    if (table.trim().isEmpty) {
+      throw ArgumentError('table must not be empty');
+    }
+    await _txn.delete(
+      'records',
+      where: 'table_name = ?',
+      whereArgs: [table],
+    );
+  }
 }
