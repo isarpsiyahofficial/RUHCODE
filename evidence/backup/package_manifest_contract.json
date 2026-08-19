@@ -1,0 +1,63 @@
+{
+  "contractVersion": 1,
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "hashAlgorithm": "SHA-256",
+  "manifestFields": [
+    "schemaVersion",
+    "appVersion",
+    "engineVersion",
+    "exportedAtUtc",
+    "localeTag",
+    "files"
+  ],
+  "fileEntryFields": [
+    "fileName",
+    "recordCount",
+    "byteLength",
+    "sha256"
+  ],
+  "invariants": {
+    "utf8ByteHashing": true,
+    "recordCountNonNegative": true,
+    "sha256LowercaseHex64": true,
+    "duplicateFilesRejected": true,
+    "manifestFileOrderDeterministic": true,
+    "exportTimestampUtc": true,
+    "byteLengthVerified": true,
+    "tamperDetection": true
+  },
+  "sourceFiles": [
+    "lib/src/backup/backup_package_manifest.dart"
+  ],
+  "testFiles": [
+    "test/backup/backup_package_manifest_test.dart"
+  ],
+  "dependency": {
+    "package": "crypto",
+    "constraint": "^3.0.7",
+    "publisher": "dart.dev",
+    "license": "BSD-3-Clause"
+  },
+  "requirements": [
+    "RC-0818",
+    "RC-0819",
+    "RC-0820",
+    "RC-0821",
+    "RC-0822",
+    "RC-0824",
+    "RC-0825",
+    "RC-0826",
+    "RC-0827",
+    "RC-0847",
+    "RC-1245",
+    "RC-1246"
+  ],
+  "remainingProof": [
+    "Actual multi-file package writer/reader",
+    "Manifest file serialized into exported package",
+    "Import rejects checksum/record-count mismatches before mutation",
+    "Clean install round-trip proof",
+    "Exact CI success on tested commit"
+  ]
+}
