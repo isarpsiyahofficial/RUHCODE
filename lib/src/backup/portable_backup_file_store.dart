@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'backup_package_codec.dart';
 import 'portable_zip_backup_codec.dart';
 
 /// Native file-system adapter for portable Ruh Code backup ZIP bytes.
