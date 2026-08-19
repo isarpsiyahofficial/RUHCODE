@@ -1,0 +1,35 @@
+name: Backup CSV Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/backup/csv_codec.dart'
+      - 'test/backup/csv_codec_test.dart'
+      - 'evidence/backup/csv_contract.json'
+      - 'tools/backup/validate_csv_contract.py'
+      - '.github/workflows/backup-csv-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/backup/csv_codec.dart'
+      - 'test/backup/csv_codec_test.dart'
+      - 'evidence/backup/csv_contract.json'
+      - 'tools/backup/validate_csv_contract.py'
+      - '.github/workflows/backup-csv-contract.yml'
+
+jobs:
+  csv-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate CSV structural/evidence contract
+        run: python tools/backup/validate_csv_contract.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run CSV codec tests
+        run: flutter test test/backup/csv_codec_test.dart
