@@ -4,14 +4,18 @@ on:
   push:
     paths:
       - 'lib/src/backup/**'
+      - 'lib/src/data/local/**'
       - 'test/backup/**'
+      - 'test/data/**'
       - 'evidence/backup/**'
       - 'tools/backup/**'
       - '.github/workflows/backup-csv-contract.yml'
   pull_request:
     paths:
       - 'lib/src/backup/**'
+      - 'lib/src/data/local/**'
       - 'test/backup/**'
+      - 'test/data/**'
       - 'evidence/backup/**'
       - 'tools/backup/**'
       - '.github/workflows/backup-csv-contract.yml'
@@ -32,10 +36,12 @@ jobs:
         run: python tools/backup/validate_backup_package_contract.py
       - name: Validate transactional backup import contract
         run: python tools/backup/validate_backup_import_contract.py
+      - name: Validate production SQLite backup-store contract
+        run: python tools/backup/validate_backup_production_store_contract.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run backup codec schema package and import tests
-        run: flutter test test/backup
+      - name: Run backup codec schema package import and production-store tests
+        run: flutter test test/backup test/data
