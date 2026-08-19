@@ -158,4 +158,17 @@ final class _MemoryTransaction implements LocalDatabaseTransaction {
   Future<void> delete({required String table, required String id}) async {
     database._tables[table]?.remove(id);
   }
+
+  @override
+  Future<Map<String, Map<String, Object?>>> readTable(String table) async {
+    final rows = database._tables[table] ?? const <String, Map<String, Object?>>{};
+    return rows.map(
+      (id, value) => MapEntry(id, Map<String, Object?>.from(value)),
+    );
+  }
+
+  @override
+  Future<void> clearTable(String table) async {
+    database._tables.remove(table);
+  }
 }
