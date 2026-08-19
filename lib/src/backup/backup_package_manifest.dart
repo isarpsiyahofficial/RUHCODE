@@ -21,6 +21,31 @@ final class BackupFileManifestEntry {
         'byteLength': byteLength,
         'sha256': sha256Hex,
       };
+
+  factory BackupFileManifestEntry.fromJson(Map<String, Object?> json) {
+    final fileName = json['fileName'];
+    final recordCount = json['recordCount'];
+    final byteLength = json['byteLength'];
+    final digest = json['sha256'];
+    if (fileName is! String || fileName.isEmpty) {
+      throw const FormatException('Backup manifest fileName must be a non-empty string.');
+    }
+    if (recordCount is! int || recordCount < 0) {
+      throw FormatException('Backup manifest recordCount is invalid for $fileName.');
+    }
+    if (byteLength is! int || byteLength < 0) {
+      throw FormatException('Backup manifest byteLength is invalid for $fileName.');
+    }
+    if (digest is! String || !RegExp(r'^[0-9a-f]{64}$').hasMatch(digest)) {
+      throw FormatException('Backup manifest SHA-256 is invalid for $fileName.');
+    }
+    return BackupFileManifestEntry(
+      fileName: fileName,
+      recordCount: recordCount,
+      byteLength: byteLength,
+      sha256Hex: digest,
+    );
+  }
 }
 
 final class BackupPackageManifestV1 {
@@ -50,6 +75,59 @@ final class BackupPackageManifestV1 {
       };
 
   String toCanonicalJson() => jsonEncode(toJson());
+
+  factory BackupPackageManifestV1.fromJson(Map<String, Object?> json) {
+    final schemaVersion = json['schemaVersion'];
+    final appVersion = json['appVersion'];
+    final engineVersion = json['engineVersion'];
+    final exportedAtRaw = json['exportedAtUtc'];
+    final localeTag = json['localeTag'];
+    final rawFiles = json['files'];
+    if (schemaVersion is! int || schemaVersion < 1) {
+      throw const FormatException('Backup manifest schemaVersion is invalid.');
+    }
+    if (appVersion is! String || appVersion.isEmpty) {
+      throw const FormatException('Backup manifest appVersion is invalid.');
+    }
+    if (engineVersion is! String || engineVersion.isEmpty) {
+      throw const FormatException('Backup manifest engineVersion is invalid.');
+    }
+    if (exportedAtRaw is! String) {
+      throw const FormatException('Backup manifest exportedAtUtc is invalid.');
+    }
+    final exportedAt = DateTime.tryParse(exportedAtRaw);
+    if (exportedAt == null || !exportedAt.isUtc || !exportedAtRaw.endsWith('Z')) {
+      throw const FormatException('Backup manifest exportedAtUtc must be UTC ISO-8601 ending in Z.');
+    }
+    if (localeTag is! String || localeTag.isEmpty) {
+      throw const FormatException('Backup manifest localeTag is invalid.');
+    }
+    if (rawFiles is! List) {
+      throw const FormatException('Backup manifest files must be a list.');
+    }
+    final files = rawFiles.map((item) {
+      if (item is! Map) {
+        throw const FormatException('Backup manifest file entry must be an object.');
+      }
+      return BackupFileManifestEntry.fromJson(Map<String, Object?>.from(item));
+    }).toList(growable: false);
+    return BackupPackageManifestBuilder().build(
+      schemaVersion: schemaVersion,
+      appVersion: appVersion,
+      engineVersion: engineVersion,
+      exportedAtUtc: exportedAt,
+      localeTag: localeTag,
+      files: files,
+    );
+  }
+
+  factory BackupPackageManifestV1.parse(String source) {
+    final decoded = jsonDecode(source);
+    if (decoded is! Map) {
+      throw const FormatException('Backup manifest root must be an object.');
+    }
+    return BackupPackageManifestV1.fromJson(Map<String, Object?>.from(decoded));
+  }
 }
 
 final class BackupPackageManifestBuilder {
@@ -78,6 +156,10 @@ final class BackupPackageManifestBuilder {
     required String localeTag,
     required List<BackupFileManifestEntry> files,
   }) {
+    if (schemaVersion < 1) throw ArgumentError.value(schemaVersion, 'schemaVersion');
+    if (appVersion.isEmpty) throw ArgumentError.value(appVersion, 'appVersion');
+    if (engineVersion.isEmpty) throw ArgumentError.value(engineVersion, 'engineVersion');
+    if (localeTag.isEmpty) throw ArgumentError.value(localeTag, 'localeTag');
     if (!exportedAtUtc.isUtc) {
       throw ArgumentError.value(exportedAtUtc, 'exportedAtUtc', 'must be UTC');
     }
