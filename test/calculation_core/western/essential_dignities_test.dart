@@ -84,4 +84,29 @@ void main() {
       containsAll([EssentialDignity.detriment, EssentialDignity.fall]),
     );
   });
+
+  test('classical rulership queries are derived from the domicile table', () {
+    expect(
+      WesternEssentialDignities.domicilesForBody(AstroBody.mercury),
+      containsAll([TropicalZodiacSign.gemini, TropicalZodiacSign.virgo]),
+    );
+    expect(
+      WesternEssentialDignities.classicalRulerOfSign(TropicalZodiacSign.scorpio),
+      AstroBody.mars,
+    );
+    expect(
+      WesternEssentialDignities.classicalRulerOfSign(TropicalZodiacSign.aquarius),
+      AstroBody.saturn,
+    );
+    expect(
+      WesternEssentialDignities.rulersOfSign(TropicalZodiacSign.leo),
+      {AstroBody.sun},
+    );
+  });
+
+  test('modern outer-planet rulerships are not invented by the classical API', () {
+    expect(WesternEssentialDignities.domicilesForBody(AstroBody.uranus), isEmpty);
+    expect(WesternEssentialDignities.domicilesForBody(AstroBody.neptune), isEmpty);
+    expect(WesternEssentialDignities.domicilesForBody(AstroBody.pluto), isEmpty);
+  });
 }
