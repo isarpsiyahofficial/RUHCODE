@@ -1,0 +1,24 @@
+{
+  "contract": "western_equal_house_runtime",
+  "version": 1,
+  "systems": ["wholeSign", "equal"],
+  "input": {
+    "ascendantLongitude": "finite degrees in [0,360)",
+    "provenancePolicy": "ascendant must come from a separately verified angle engine; this module never invents ASC"
+  },
+  "invariants": [
+    "exactly 12 cusps",
+    "all cusps normalized to [0,360)",
+    "adjacent cusps separated by exactly 30 degrees",
+    "wholeSign house 1 begins at the ascendant sign boundary",
+    "equal house 1 begins at the exact ascendant longitude",
+    "a longitude exactly on a cusp belongs to the house beginning at that cusp",
+    "invalid/non-finite longitude is rejected rather than silently repaired"
+  ],
+  "accuracy": {
+    "kind": "deterministic arithmetic",
+    "externalGoldenRequiredForAscendant": true,
+    "proven": false
+  },
+  "requirements": ["RC-0055", "RC-0056", "RC-0266", "RC-0267", "RC-1436"]
+}
