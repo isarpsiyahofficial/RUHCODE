@@ -1,26 +1,39 @@
-name: Western Placidus Definition Contract
+name: Western Placidus Contract
 
 on:
   push:
     paths:
       - 'evidence/astronomy/western_placidus_contract.json'
       - 'tools/astronomy/validate_western_placidus_contract.py'
+      - 'lib/src/calculation_core/western/placidus_houses.dart'
       - 'lib/src/calculation_core/western/porphyry_houses.dart'
+      - 'lib/src/calculation_core/western/asc_mc.dart'
+      - 'test/calculation_core/western/placidus_houses_test.dart'
       - '.github/workflows/western-placidus-contract.yml'
   pull_request:
     paths:
       - 'evidence/astronomy/western_placidus_contract.json'
       - 'tools/astronomy/validate_western_placidus_contract.py'
+      - 'lib/src/calculation_core/western/placidus_houses.dart'
       - 'lib/src/calculation_core/western/porphyry_houses.dart'
+      - 'lib/src/calculation_core/western/asc_mc.dart'
+      - 'test/calculation_core/western/placidus_houses_test.dart'
       - '.github/workflows/western-placidus-contract.yml'
 
 jobs:
-  placidus-definition-contract:
+  placidus-contract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate Placidus definition and fallback contract
+      - name: Validate Placidus structural/evidence contract
         run: python tools/astronomy/validate_western_placidus_contract.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run Placidus solver tests
+        run: flutter test test/calculation_core/western/placidus_houses_test.dart
