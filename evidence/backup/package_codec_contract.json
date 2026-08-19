@@ -1,0 +1,43 @@
+{
+  "contract": "RUH_CODE_BACKUP_PACKAGE_CODEC_V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "schemaVersion": 1,
+  "requiredMembers": {
+    "manifest": "manifest.json",
+    "csvTables": 14,
+    "encoding": "UTF-8",
+    "csvRecordSeparator": "CRLF"
+  },
+  "writer": {
+    "allRegisteredTablesRequired": true,
+    "emptyTablesStillContainHeader": true,
+    "deterministicMemberOrdering": true,
+    "sha256PerCsvMember": true,
+    "recordCountPerCsvMember": true
+  },
+  "reader": {
+    "strictUtf8": true,
+    "manifestBeforePayloadParsing": true,
+    "schemaVersionCheck": true,
+    "missingMemberRejected": true,
+    "unexpectedManifestMemberRejected": true,
+    "unmanifestedPayloadRejected": true,
+    "sha256AndByteLengthBeforeCsvParsing": true,
+    "recordCountBeforeStorageMutation": true,
+    "tableSchemaValidation": true,
+    "foreignKeyValidation": true,
+    "previewHasNoStorageMutation": true
+  },
+  "tests": [
+    "test/backup/backup_package_codec_test.dart"
+  ],
+  "remainingBeforeDone": [
+    "exact Flutter test SUCCESS on the tested commit",
+    "transactional merge/replace implementation",
+    "replace safety snapshot and rollback proof",
+    "duplicate-ID/idempotent re-import proof",
+    "TR↔EN/legacy/stress round-trip proof",
+    "portable ZIP adapter and device/file integration proof"
+  ]
+}
