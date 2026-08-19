@@ -1,0 +1,19 @@
+{
+  "contract": "western_essential_dignities",
+  "version": 1,
+  "requirements": ["RC-0049", "RC-0050", "RC-0276"],
+  "inputs": ["validated Tropical NatalPlacementSet"],
+  "outputs": ["classical domicile", "classical exaltation", "derived detriment", "derived fall"],
+  "hard_rules": [
+    "classical domicile table is limited to Sun Moon Mercury Venus Mars Jupiter Saturn",
+    "classical exaltation table is limited to Sun Moon Mercury Venus Mars Jupiter Saturn",
+    "detriment is derived only as the sign opposite a classical domicile",
+    "fall is derived only as the sign opposite a classical exaltation",
+    "multiple simultaneous statuses are preserved instead of collapsed",
+    "Mercury in Virgo may be both domicile and exaltation",
+    "Mercury in Pisces may be both detriment and fall",
+    "outer planets and lunar nodes receive no invented classical dignity"
+  ],
+  "status": "SOURCE_LEVEL_ONLY",
+  "interpretive_scoring_proven": false
+}
