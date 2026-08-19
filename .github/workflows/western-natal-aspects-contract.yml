@@ -1,0 +1,21 @@
+name: Western Natal Aspects Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  western-natal-aspects-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Western natal aspect structural contract
+        run: python tools/astronomy/validate_western_natal_aspects.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test Western natal aspects and chart assembly
+        run: flutter test test/calculation_core/western/natal_aspects_test.dart test/calculation_core/western/natal_chart_test.dart
