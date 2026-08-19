@@ -44,8 +44,8 @@ void main() {
     const store = PortableBackupFileStore();
     final path = '${tempDir.path}/backup.zip';
 
-    expect(
-      () => store.save(path: path, zipBytes: <int>[1]),
+    await expectLater(
+      store.save(path: path, zipBytes: <int>[1]),
       throwsFormatException,
     );
   });
@@ -54,8 +54,8 @@ void main() {
     const store = PortableBackupFileStore();
     final path = '${tempDir.path}/missing/backup.ruhcode.zip';
 
-    expect(
-      () => store.save(path: path, zipBytes: <int>[1]),
+    await expectLater(
+      store.save(path: path, zipBytes: <int>[1]),
       throwsA(isA<FileSystemException>()),
     );
   });
@@ -67,10 +67,10 @@ void main() {
     await File(empty).writeAsBytes(<int>[]);
     await File(large).writeAsBytes(<int>[1, 2, 3, 4, 5]);
 
-    expect(() => store.open(empty), throwsFormatException);
-    expect(() => store.open(large), throwsFormatException);
-    expect(
-      () => store.save(path: large, zipBytes: <int>[1, 2, 3, 4, 5]),
+    await expectLater(store.open(empty), throwsFormatException);
+    await expectLater(store.open(large), throwsFormatException);
+    await expectLater(
+      store.save(path: large, zipBytes: <int>[1, 2, 3, 4, 5]),
       throwsFormatException,
     );
   });
