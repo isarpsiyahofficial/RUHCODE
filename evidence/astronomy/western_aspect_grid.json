@@ -1,0 +1,18 @@
+{
+  "contract": "western_aspect_grid",
+  "version": 1,
+  "requirements": ["RC-0051", "RC-0277", "RC-0278"],
+  "inputs": ["validated NatalPlacementSet", "validated NatalAspectSet with exact shared provenance"],
+  "outputs": ["deterministic symmetric square aspect grid", "empty diagonal", "pair-addressable major-aspect cells"],
+  "hard_rules": [
+    "grid dimensions exactly match the unique placement body list",
+    "row/column body ordering follows AstroBody index deterministically",
+    "diagonal cells never claim a self-aspect",
+    "A-B and B-A resolve to the same NatalAspectHit",
+    "an aspect referencing a body absent from placements is rejected",
+    "duplicate major-aspect entries for one body pair are rejected",
+    "placements and aspects must share exact TT/source/version provenance"
+  ],
+  "status": "SOURCE_LEVEL_ONLY",
+  "physical_ephemeris_proven": false
+}
