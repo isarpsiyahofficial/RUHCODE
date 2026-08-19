@@ -1,0 +1,44 @@
+{
+  "contract_id": "BACKUP-LOCAL-EXPORT-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0774",
+    "RC-0794",
+    "RC-0795",
+    "RC-0796",
+    "RC-0803",
+    "RC-0805",
+    "RC-0809",
+    "RC-0812",
+    "RC-0848",
+    "RC-1246",
+    "RC-1248",
+    "RC-1296",
+    "RC-1442"
+  ],
+  "source": "lib/src/backup/local_database_backup_exporter.dart",
+  "tests": [
+    "test/backup/local_database_backup_exporter_test.dart"
+  ],
+  "invariants": {
+    "single_transaction_snapshot": true,
+    "all_registered_tables_exported": true,
+    "stable_record_id_order": true,
+    "shared_schema_registry": true,
+    "locale_independent_machine_values": true,
+    "enum_ids_not_translated": true,
+    "canonical_json_key_order": true,
+    "runtime_profile_mapping": true,
+    "record_key_payload_id_consistency": true,
+    "strict_package_preview_acceptance_test": true
+  },
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS on the tested commit",
+    "SQLite FFI export/import symmetry for every domain table",
+    "TR->EN and EN->TR clean-install restore proof",
+    "Legacy schema migration proof",
+    "Large-data export/restore stress proof",
+    "Clean-install export -> erase -> restore -> domain equality proof"
+  ]
+}
