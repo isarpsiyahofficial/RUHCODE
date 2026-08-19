@@ -26,41 +26,18 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Vedik günlük factor binding: sidereal Sun/Moon + Nakshatra + Pada + Tithi + Paksha.
 - [ ] Fiziksel ephemeris/EOP ve independent accuracy kanıtları olmadan astronomik/Vedik faktörler DONE değil.
 
-## Vedik günlük çekirdek — source-level
-
-- [x] Tropical longitude − ayanamsha → normalized sidereal longitude.
-- [x] 27 Nakshatra, 4 Pada, 30 Tithi ve Shukla/Krishna Paksha hesabı.
-- [x] Ephemeris provenance ile ayanamsha provenance ayrılmış durumda.
-- [x] `AyanamshaProvider` + `TabulatedAyanamshaProvider` eklendi.
-- [x] Provider TT Julian Day kullanıyor; source/version/SHA-256 zorunlu.
-- [x] Tablo örnekleri strictly increasing olmak zorunda.
-- [x] Coverage dışına ayanamsha extrapolation yasak.
-- [x] Vedic daily engine için `calculateWithProvider` production-yolu eklendi.
-- [x] Provider interpolation/provenance/coverage ve Vedic binding testleri source-level mevcut.
-- [x] `ayanamsha_runtime.json` evidence contract + structural validator + ayrı CI workflow mevcut.
-- [ ] Fiziksel/versioned Lahiri/Chitrapaksha üretim datası ve exact SHA-256.
-- [ ] Independent Lahiri reference golden suite.
-- [ ] Fiziksel Sun/Moon ephemeris state'leriyle end-to-end Vedik daily golden doğrulaması.
-- [ ] Exact Flutter/CI SUCCESS kanıtı.
-
 ## Günün Mesajı
 
 - [x] Exact `CivilDate + locale`, deterministic key, random fallback yok.
 - [x] Duplicate/missing/non-empty/leap-date kontrolleri.
 - [x] 2026-01-01→2036-12-31 = 4.018 gün / 8.036 TR+EN manifest ve rolling >=10-year horizon sözleşmesi.
 - [x] Runtime AI ve TR↔EN machine translation yasak.
-- [x] Exact duplicate quality gate.
-- [x] Near-duplicate candidate engine: locale-isolated, informative-token candidate generation + SequenceMatcher threshold.
-- [x] Repetitive opening yoğunluğu locale bazında denetleniyor.
-- [x] TR/EN unsafe-certainty pattern review kapısı eklendi.
-- [x] Near-duplicate, cross-locale isolation ve unsafe-certainty unit testleri mevcut.
-- [x] Manifestte explicit editorial QA thresholds ve fail policies tanımlı.
-- [x] Daily Message structural contract yeni QA kapılarını zorunlu kılıyor.
+- [x] Exact duplicate + near-duplicate + repetitive opening + unsafe-certainty kalite kapıları.
 - [ ] Gerçek 4.018 TR + bağımsız 4.018 EN editoryal içerik.
-- [ ] Gerçek 8.036 kayıt üzerinde near-duplicate/manual QA, artificial-pattern density ve unsafe-certainty final raporu.
+- [ ] Gerçek 8.036 kayıt üzerinde final editoryal QA.
 - [ ] Release-date rolling 10-year horizon kanıtı.
 
-## Faz 8 — astronomik çekirdek
+## Faz 8 — astronomik çekirdek / Western ilerlemesi
 
 ### Uygulanmış / source-level
 - [x] Julian Day / MJD / J2000.
@@ -80,11 +57,25 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - [x] Western ASC/MC strict geometry core + boundary tests + evidence/CI contract.
 - [x] Western natal placements: Tropical sign, degree, house, motion + shared TT/provenance guards.
 - [x] Western natal major aspects: conjunction/sextile/square/trine/opposition + configurable per-aspect orb.
-- [x] Natal aspect 0/360 seam, inclusive orb boundary, invalid policy and deterministic pair tests.
-- [x] `WesternNatalChartAssembler`: placements + houses + aspects tek provenance snapshotında birleştiriliyor.
-- [x] Western natal aspect evidence manifest + structural validator + ayrı CI workflow.
+- [x] Western natal element/modality distribution + explicit weight policy.
+- [x] Western natal aspect grid: deterministic square matrix, empty diagonal, symmetric pair lookup, provenance/duplicate guards.
+- [x] Classical Western essential dignities: domicile/exaltation/detriment/fall; overlapping statuses preserved; outer planets/nodes receive no invented classical status.
+- [x] `WesternNatalChartAssembler`: placements + houses + aspects + aspectGrid + dignities tek natal snapshotta birleştiriliyor.
+- [x] Aspect-grid ve dignity source/test/evidence/validator/CI contractları eklendi.
+
+### Son Western commitleri
+
+- Aspect grid: `3d6a0e9efa0d96540cdd183d1fc771d6c5601825`.
+- Classical dignities: `ea8ee3a2a9879e07180f66c80f7dd19bc447dc3e`.
+- Aspect-grid tests: `276dfbdc25923e4cf82713bd7733118aa8a79cf8`.
+- Dignity test cleanup/overlap coverage: `46fffff63a2db607c165c9f76c81e47748ed1092`.
+- Natal chart integration: `dede3f07e34fb07bf9bada29732482926d099211`.
+- Aspect-grid evidence/validator/workflow: `b75cce5a...`, `ff53a1b3...`, `8b19d94b...`.
+- Dignity evidence/validator/workflow: `10f22059...`, `e1b4a6f7...`, `c683256d...`.
+- Ayrıntılı checkpoint: `automation_runs/2026-08-19_1054_western_aspect_grid_dignities.md`.
 
 ### Açık ana işler / DONE değil
+
 - [ ] Latest exact commit üzerinde Flutter Quality ve bütün contract SUCCESS kanıtları.
 - [ ] Fiziksel/versioned IERS EOP/UT1−UTC artifact + gerçek checksum/provenance.
 - [ ] Pre-1972 Delta-T/time-scale yaklaşımı.
@@ -110,33 +101,23 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 - Önceki 9 UI PNG’si yasaklanan `Hesapla` alt menüsünü içerdiği için APPROVED değildir.
 - Yeni `Bugün · Araçlar · Kayıtlar · Profil` referansları SCREEN-ID/hash manifestine bağlanmadan UI DONE yapılmayacak.
 
-## Son Western foundation commitleri
+## CI görünürlüğü
 
-- Whole Sign / Equal House: `18072e32188369f349e262ce50ff254fd8ee8b51`.
-- Western ASC/MC geometry: `2c09aad03f3b8774de9e6d59204c3bb2dbc815be`.
-- Western natal placements: `6f1bc62bf03740791446de2faa1bba354be660c5`.
-- Western natal aspect engine: `38ecbcca73c579a7d6c5c2386cd7c79caf4ae356`.
-- Natal aspect tests: `74bda0ca42db1f5ff5c48e9f00fe9dd06c1ac4e6`.
-- Natal chart assembler: `5daa6f6feaad830dfab5d54c06581ee1f633eb50`.
-- Natal chart tests: `937b8f873ed2b3b513da8437c8cdcd2491f5788b`.
-- Natal aspect evidence: `ea232595f75cb7a800960f9af09a2cb163dc3381`.
-- Natal aspect structural validator: `f50cfd8be2f532f01ae950cf20ff6cec9bc62a97`.
-- Natal aspect CI contract: `3b9239a05c89f5e5191fb5bba9e6ae4b05ca8db2`.
-
-GitHub connector latest push için individual Actions sonuçlarını görünür şekilde döndürmedi; CI SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
+Latest Western dignity workflow commit `c683256d6394769ce11951e132c962167744c6d0` için GitHub combined-status connector sonucu `statuses=[]` döndürdü. Bu nedenle CI SUCCESS uydurulmadı ve ilgili RC'ler DONE'a yükseltilmedi.
 
 ## Sıradaki çalışma
 
-1. Latest exact commit üzerinde Western Natal Aspects, Western Natal Placements, Western ASC/MC, DailySnapshot ve Flutter Quality sonuçlarını doğrula; görünür kırmızıları aynı turda düzelt.
-2. Western natal chart için element/modality distribution + aspect grid gibi ephemeris bağımsız türetilmiş verileri source/test/contract ile ilerlet.
-3. Fiziksel/versioned IERS EOP artifact + checksum/provenance zincirini bağla; sahte gelecek EOP üretme.
-4. Ticari yeniden dağıtıma uygun offline ephemeris kernel/runtime ingest yolunu fiziksel artifact ile tamamla.
-5. Gerçek GeoNames compact catalog + source/output SHA + timezone-ID toplu integrity testini tamamla.
-6. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
-7. Standard Flutter Android/iOS platformlarını yalnız gerçek Flutter generator ile üret.
-8. Güncel UI reference setini yeni alt navigasyonla üretip SCREEN-ID/hash manifestine bağla.
-9. Requirement state'e yalnız workflow/test/evidence kanıtı alınan RC'leri yükselt.
+1. Western aspect-grid/dignity workflow sonuçlarında görünür kırmızı oluşursa aynı turda düzelt.
+2. Natal chart derived-data snapshot bütünlüğünü testte genişlet; aspectGrid/dignity body setinin placement setiyle birebir eşleşmesini kanıtla.
+3. Classical rulership query API'sini canonical dignity tablosundan türet; tabloyu ikinci kez duplicate etme.
+4. Placidus algoritma/reference/tolerance sözleşmesini kesinleştir ve source/test contractını ilerlet; independent golden olmadan DONE deme.
+5. Fiziksel/versioned IERS EOP + checksum/provenance zincirini bağla.
+6. Ticari yeniden dağıtıma uygun offline ephemeris kernel/runtime ingest yolunu fiziksel artifact ile tamamla.
+7. Gerçek GeoNames compact catalog + source/output SHA + timezone-ID toplu integrity testini tamamla.
+8. Günün Mesajı 8.036 gerçek editoryal kayıt üretim/QA zincirini ilerlet.
+9. Güncel UI reference setini yeni alt navigasyonla üretip SCREEN-ID/hash manifestine bağla.
+10. Requirement state'e yalnız workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Western natal aspect/orb ve tek natal snapshot assembly source/test/contract seviyesinde eklendi. Fiziksel ephemeris/EOP/Lahiri/GeoNames verileri, bağımsız accuracy kanıtları, exact CI sonuçları, gerçek 8.036 editoryal mesaj, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement'lar DONE sayılmayacak.
+**FINAL DEĞİL.** Western aspect-grid ve classical dignity katmanı source/test/evidence/CI contract seviyesinde ilerledi. Fiziksel ephemeris/EOP/Lahiri/GeoNames verileri, bağımsız accuracy kanıtları, exact CI sonuçları, gerçek 8.036 editoryal mesaj, güncel UI referansları ve sonraki master fazlar tamamlanmadan ilgili requirement'lar DONE sayılmayacak.
