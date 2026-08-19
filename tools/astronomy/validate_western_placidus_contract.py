@@ -52,11 +52,13 @@ def main() -> None:
         "PlacidusFallbackPolicy.explicitPorphyry",
         "effectiveSystem: 'PORPHYRY'",
         "effectiveSystem: 'UNAVAILABLE'",
-        "_solveCusp",
-        "_ArcPhase.diurnal",
-        "_ArcPhase.seminocturnal",
+        "_solvePoleHeightCusp",
+        "_eclipticIntersection",
+        "divisor: 3.0",
+        "divisor: 1.5",
     ):
         require(token in source, f"Placidus source missing required behavior token: {token}")
+    require("Swiss Ephemeris runtime" in source, "source must state that Swiss is not a runtime dependency")
 
     tests = PLACIDUS_TEST.read_text(encoding="utf-8")
     for token in ("ordinary latitude", "polar-circle", "explicit and visible", "exact cusp"):
