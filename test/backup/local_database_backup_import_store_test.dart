@@ -95,7 +95,11 @@ void main() {
       snapshotDirectory: snapshotDirectory,
     );
     final token = await store.createSafetySnapshot();
-    expect(await snapshotDirectory.list().where((entity) => entity is File).isNotEmpty, isTrue);
+    final snapshotFiles = await snapshotDirectory
+        .list()
+        .where((entity) => entity is File)
+        .toList();
+    expect(snapshotFiles, hasLength(1));
 
     await database.transaction<void>((tx) async {
       await tx.clearTable(table);
