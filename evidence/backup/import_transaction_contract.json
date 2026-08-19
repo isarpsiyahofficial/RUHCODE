@@ -1,0 +1,31 @@
+{
+  "contract": "RUH_CODE_BACKUP_IMPORT_TRANSACTION_V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "preconditions": {
+    "validPreviewRequired": true,
+    "invalidPreviewCannotMutateStorage": true
+  },
+  "merge": {
+    "transactional": true,
+    "primaryKeyUpsert": true,
+    "sameBackupReimportIdempotent": true,
+    "safetySnapshotRequired": false
+  },
+  "replace": {
+    "preImportSafetySnapshot": true,
+    "transactional": true,
+    "failureRestoresSafetySnapshot": true
+  },
+  "tests": [
+    "test/backup/backup_import_coordinator_test.dart"
+  ],
+  "remainingBeforeDone": [
+    "exact Flutter test SUCCESS on tested commit",
+    "SQLite production adapter wired to transaction contract",
+    "durable safety snapshot implementation",
+    "legacy schema migration proof",
+    "TR↔EN restore proof",
+    "large-data and clean-install round-trip proof"
+  ]
+}
