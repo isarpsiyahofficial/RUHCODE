@@ -70,44 +70,45 @@ Bu dosya tekrar eden geliştirme çalışmalarında kaldığı yeri kaybetmemek 
 
 - [x] Strict `RuhCsvValueCodec` + `RuhCsvDocumentCodec`.
 - [x] CRLF records, comma/quote/newline escaping.
-- [x] UTF-8-compatible Unicode string round-trip contract.
-- [x] Null / empty string / zero ayrımı; `\\N` null sentinel + literal-backslash escaping.
-- [x] Locale-independent machine-number contract.
-- [x] Türkçe, Japonca, Arapça, emoji, embedded newline/quote/comma unit tests.
-- [x] Versioned per-table CSV schema registry: 14 taşınabilir tablo, sabit kolon sırası ve primary-key metadata.
-- [x] Nullable/enum/date/datetime/decimal/JSON column contracts.
-- [x] Foreign-key metadata ve cross-table FK validator.
-- [x] Header, duplicate PK, unknown enum, locale-formatted decimal, non-UTC datetime ve unresolved-FK rejection tests.
-- [x] SHA-256 package-file manifest builder: byte length + record count + deterministic file ordering + tamper verification.
-- [x] `crypto ^3.0.7` (`dart.dev`, BSD-3-Clause) dependency ile gerçek SHA-256 byte hashing.
-- [x] Backup structural/evidence validator ve genişletilmiş `Backup CSV Contract` workflow.
+- [x] Unicode round-trip, null/empty/zero ayrımı ve locale-independent machine-number contract.
+- [x] Versioned per-table CSV schema registry: 14 taşınabilir tablo, sabit kolon sırası, PK/FK/nullable/enum/date/datetime/decimal/JSON metadata.
+- [x] Header, duplicate PK, enum/decimal/datetime/FK rejection testleri.
+- [x] SHA-256 manifest builder: byte length + record count + deterministic ordering + tamper verification.
+- [x] Strict manifest JSON parser + schema/app/engine/export-time/locale/file-entry validation.
+- [x] `BackupPackageWriter`: `manifest.json` + 14 UTF-8 CSV member; boş tablo dahi header ile pakette.
+- [x] `BackupPackageReader.preview`: manifest/schema-version → member set → SHA/byte length → strict UTF-8 → CSV count → schema → FK doğrulama sırası.
+- [x] Import preview storage mutation yapmıyor; per-table ve total record count taşıyor.
+- [x] `BackupImportCoordinator`: valid preview olmadan mutation yasak.
+- [x] Merge transaction + primary-key upsert; aynı backup ikinci importta idempotent olacak şekilde testli.
+- [x] Replace öncesi safety snapshot; transactional failure sonrası snapshot restore sözleşmesi/testi.
+- [x] Package/import source-level evidence + structural validators + genişletilmiş `Backup CSV Contract` workflow.
 - [ ] Exact workflow SUCCESS görünür değil; ilgili Backup RC'leri DONE değil.
-- [ ] Gerçek multi-file package writer/reader (`manifest.json` + UTF-8 CSV bytes).
-- [ ] Import öncesi checksum + record-count + schema + FK preview zinciri.
-- [ ] Transactional merge/replace + replace öncesi safety snapshot + failure rollback.
-- [ ] Duplicate-ID/idempotent re-import policy.
-- [ ] TR↔EN, legacy schema ve stress round-trip proof.
+- [ ] Production SQLite `BackupImportStore` adapter.
+- [ ] Durable safety snapshot implementation.
+- [ ] ZIP/file adapter ile gerçek portable package bytes/device integration.
+- [ ] TR↔EN, legacy schema, large-data ve clean-install round-trip proof.
 
-## Son tur — 2026-08-19 20:57
+## Son tur — 2026-08-19 22:53
 
-Checkpoint: `automation_runs/2026-08-19_2057_backup_schema_manifest.md`
+Checkpoint: `automation_runs/2026-08-19_2253_backup_package_transaction.md`
 
-Backup hattı tablo sözleşmesi ve gerçek SHA-256 manifest seviyesine taşındı. `profiles/clients/consultations/notes/calculations/calculation_manifests/journal/goals/habits/tarot/favorites/settings/professional_presets/interpretation_templates` için machine-readable schema registry oluştu. Import öncesi tip/enum/PK/FK doğrulama primitives'i eklendi. Manifest builder UTF-8 byte stream SHA-256, byte length ve record count üretip tamper doğruluyor.
+Bu turda backup hattı logical package + validation preview + transactional import seviyesine taşındı. Manifest parser artık dışarıdan gelen JSON’u strict okuyor. Writer bütün registered tabloları UTF-8 CSV olarak paketliyor. Reader hiçbir storage mutation öncesi checksum/byte-length/record-count/schema/FK kontrollerini tamamlıyor. Merge PK-upsert ile idempotent; replace güvenlik snapshot’ı alıp hata halinde restore ediyor.
 
-Commit zincirinin son bölümü:
-- `9c767ff2ab0fc51f332e8fc19adf12149b0510a4` schema registry
-- `af1010b6e368f431e98b88ea7f344cbd886d0c9d` schema validator
-- `edaf9e52247295d42c304b57cdb7f270ec810a91` schema tests
-- `0f998c38895a2027f95fae95f77f4f8c0d9e5cfd` schema evidence
-- `e6abbd54bb5a8d7abe76e94ae0d59404a109cd64` structural validator
-- `f40dbf4e5f09a3f503c96b374c4a64078134a3e2` backup CI expansion
-- `5413cd2ec7e1fba4b690ad46b74ce8b6ba3186fd` crypto dependency
-- `30db4145d3f7d8039e2fd630a1be76e80eef024c` package manifest builder
-- `87b84e57ff07c9b9266e5297f4882296d199d653` manifest tests
-- `c5da46e9135313471ab1aa513448d80c7cdaf0ce` manifest evidence
-- `a56f5d8b2a7cc423f53931c15cc3ed2bd43be639` run checkpoint
+Son commit zinciri:
+- `774131d680b247532c9be5a22042fa766f6b2106` strict manifest parser
+- `4890aa8a1b520f5700903cb3be946d4ecc51852d` package writer/reader/preview
+- `fc44c9df45c85dd3730083a6f5e9b116627b58cb` package tests correction
+- `902b6ef7f09f73fd60549017c02670f4ad0d887c` package evidence
+- `02fc8ac66c3c628e9f7acdefa909efbeae4a4bdd` package validator
+- `93e88ffd0bf5ab757446add029ff4c1f2bdffe06` package CI wiring
+- `e9da32525055a98c2956b988740ff9ee1868ba13` transactional import coordinator
+- `7a58481896eb347a4028d167af9f3be0efdd5228` merge/replace/rollback/idempotency tests
+- `ab0e47ed9de7e59b6eb1b2ba0f26058ec1f3a71a` import evidence
+- `108263aff7b0a25fcd92839daae5d940446a826d` import validator
+- `1356e9c8d3fce55ef99aff9054da0de69bbb26c2` transactional import CI wiring
+- `cae2a8ff6c2050ca5aa2e2fc354bfb5140d220b9` run checkpoint
 
-GitHub combined-status `c5da46e...` için `statuses=[]` döndürdü; SUCCESS uydurulmadı.
+GitHub combined-status `1356e9c8...` için yine `statuses=[]` döndürdü; SUCCESS uydurulmadı.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -125,17 +126,16 @@ GitHub combined-status `c5da46e...` için `statuses=[]` döndürdü; SUCCESS uyd
 ## Sıradaki çalışma
 
 1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt.
-2. Backup package writer/reader: `manifest.json` + CSV byte files.
-3. Import pipeline: checksum/count → schema → FK → preview; hiçbir validation geçmeden storage mutation yok.
-4. Transactional merge/replace; replace öncesi safety snapshot; exception durumunda rollback.
-5. Duplicate-ID policy + aynı backup'ın ikinci importunda idempotency.
-6. TR→EN / EN→TR + legacy schema + large-data round-trip testleri.
-7. Paralelde ASC/MC + Placidus/Porphyry independent golden house-cusp proof.
-8. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
-9. Gerçek GeoNames compact catalog + source/output SHA + timezone bulk integrity.
-10. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
-11. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
-12. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+2. `BackupImportStore` için production SQLite adapter; transaction dışı mutation yasak.
+3. Durable safety snapshot + restore; replace failure proof.
+4. ZIP/file adapter ile gerçek portable package bytes.
+5. TR→EN / EN→TR + legacy schema + large-data + clean-install export→erase→restore testleri.
+6. Paralelde ASC/MC + Placidus/Porphyry independent golden house-cusp proof.
+7. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
+8. Gerçek GeoNames compact catalog + source/output SHA + timezone bulk integrity.
+9. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
+10. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
+11. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
