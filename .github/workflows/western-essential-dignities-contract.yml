@@ -1,0 +1,21 @@
+name: Western Essential Dignities Contract
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  western-essential-dignities-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Western essential-dignity structural contract
+        run: python tools/astronomy/validate_western_essential_dignities.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test Western essential dignities
+        run: flutter test test/calculation_core/western/essential_dignities_test.dart
