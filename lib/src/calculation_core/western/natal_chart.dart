@@ -56,6 +56,12 @@ abstract final class WesternNatalChartAssembler {
     );
     final dignities = WesternEssentialDignities.build(placements: placements);
 
+    _validateDerivedBodySets(
+      placements: placements,
+      aspectGrid: aspectGrid,
+      dignities: dignities,
+    );
+
     return WesternNatalChart(
       jdTt: placements.jdTt,
       sourceId: placements.sourceId,
@@ -66,5 +72,29 @@ abstract final class WesternNatalChartAssembler {
       aspectGrid: aspectGrid,
       dignities: dignities,
     );
+  }
+
+  static void _validateDerivedBodySets({
+    required NatalPlacementSet placements,
+    required NatalAspectGrid aspectGrid,
+    required EssentialDignitySet dignities,
+  }) {
+    final placementBodies = placements.placements.map((item) => item.body).toSet();
+    final gridBodies = aspectGrid.bodies.toSet();
+    final dignityBodies = dignities.assessments.map((item) => item.body).toSet();
+
+    if (placementBodies.length != placements.placements.length) {
+      throw StateError('Natal placement body set contains duplicates.');
+    }
+    if (gridBodies.length != aspectGrid.bodies.length ||
+        !gridBodies.containsAll(placementBodies) ||
+        !placementBodies.containsAll(gridBodies)) {
+      throw StateError('Natal aspect-grid body set does not match placements.');
+    }
+    if (dignityBodies.length != dignities.assessments.length ||
+        !dignityBodies.containsAll(placementBodies) ||
+        !placementBodies.containsAll(dignityBodies)) {
+      throw StateError('Natal dignity body set does not match placements.');
+    }
   }
 }
