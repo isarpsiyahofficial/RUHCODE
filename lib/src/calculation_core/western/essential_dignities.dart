@@ -68,6 +68,30 @@ abstract final class WesternEssentialDignities {
     return EssentialDignitySet(assessments: assessments);
   }
 
+  static Set<TropicalZodiacSign> domicilesForBody(AstroBody body) =>
+      Set<TropicalZodiacSign>.unmodifiable(
+        _domiciles[body] ?? const <TropicalZodiacSign>{},
+      );
+
+  static Set<AstroBody> rulersOfSign(TropicalZodiacSign sign) {
+    final rulers = _domiciles.entries
+        .where((entry) => entry.value.contains(sign))
+        .map((entry) => entry.key)
+        .toSet();
+    return Set<AstroBody>.unmodifiable(rulers);
+  }
+
+  static AstroBody? classicalRulerOfSign(TropicalZodiacSign sign) {
+    final rulers = rulersOfSign(sign);
+    if (rulers.isEmpty) {
+      return null;
+    }
+    if (rulers.length != 1) {
+      throw StateError('Classical rulership table is ambiguous for ${sign.name}.');
+    }
+    return rulers.single;
+  }
+
   static Set<EssentialDignity> _for(AstroBody body, TropicalZodiacSign sign) {
     final domiciles = _domiciles[body];
     final exaltation = _exaltations[body];
