@@ -1,6 +1,6 @@
 {
   "contract": "western_placidus_houses",
-  "version": 1,
+  "version": 2,
   "requirements": ["RC-0054", "RC-0061", "RC-0262", "RC-0265", "RC-1436"],
   "definition": {
     "basis": "semidiurnal and seminocturnal arc division",
@@ -16,9 +16,12 @@
     "iterative": true,
     "max_iterations": 100,
     "convergence_required": true,
+    "convergence_degrees": 1e-10,
     "non_convergence_result": "UNAVAILABLE",
     "silent_fallback_forbidden": true,
-    "optional_explicit_fallback": "PORPHYRY"
+    "optional_explicit_fallback": "PORPHYRY",
+    "source": "lib/src/calculation_core/western/placidus_houses.dart",
+    "tests": "test/calculation_core/western/placidus_houses_test.dart"
   },
   "polar_contract": {
     "placidus_ecliptic_cusps_beyond_polar_circle_guaranteed": false,
@@ -39,10 +42,16 @@
     {
       "name": "Swiss Ephemeris Programmer's Manual",
       "url": "https://www.astro.com/swisseph/swephprg.htm",
-      "notes": "Documents house-system code P and Porphyry fallback behavior when Placidus cusps cannot be computed."
+      "notes": "Documents house-system code P, the 100-iteration convergence ceiling and Porphyry fallback behavior when Placidus cusps cannot be computed."
     }
   ],
   "runtime_dependency_on_swiss_ephemeris": false,
-  "implementation_ready": false,
-  "status": "CONTRACT_ONLY"
+  "implementation_ready": true,
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "done_blockers": [
+    "independent ASC/MC + Placidus golden references within 0.05 degree",
+    "exact Flutter test and CI success evidence",
+    "production EOP/time-scale provenance"
+  ]
 }
