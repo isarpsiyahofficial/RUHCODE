@@ -40,6 +40,30 @@ void main() {
     expect(chart.placements.forBody(AstroBody.sun).houseNumber, 10);
   });
 
+  test('all derived natal collections preserve the exact placement body set', () {
+    final chart = WesternNatalChartAssembler.build(
+      states: [
+        state(AstroBody.sun, 0),
+        state(AstroBody.moon, 90),
+        state(AstroBody.mercury, 120),
+        state(AstroBody.venus, 180),
+      ],
+      houses: EqualHouseSystems.equal(ascendantLongitude: 15),
+    );
+
+    final placementBodies = chart.placements.placements.map((item) => item.body).toSet();
+    final gridBodies = chart.aspectGrid.bodies.toSet();
+    final dignityBodies = chart.dignities.assessments.map((item) => item.body).toSet();
+
+    expect(gridBodies, placementBodies);
+    expect(dignityBodies, placementBodies);
+    expect(chart.aspectGrid.rows, hasLength(placementBodies.length));
+    expect(
+      chart.aspectGrid.rows.every((row) => row.length == placementBodies.length),
+      isTrue,
+    );
+  });
+
   test('custom orb policy is propagated through chart assembly', () {
     final chart = WesternNatalChartAssembler.build(
       states: [state(AstroBody.sun, 0), state(AstroBody.moon, 92)],
