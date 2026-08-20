@@ -5,7 +5,9 @@ import json
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / 'lib/src/entitlements/feature_catalog.dart'
 SERVICE = ROOT / 'lib/src/entitlements/entitlement_service.dart'
+STORE = ROOT / 'lib/src/entitlements/local_entitlement_snapshot_store.dart'
 TEST = ROOT / 'test/entitlements/entitlement_service_test.dart'
+STORE_TEST = ROOT / 'test/entitlements/local_entitlement_snapshot_store_test.dart'
 EVIDENCE = ROOT / 'evidence/entitlements/feature_policy_contract.json'
 
 checks = (
@@ -28,6 +30,15 @@ checks = (
         'Temporary entitlement expiry must be UTC.',
         'Entitlement clock must return UTC.',
     ]),
+    (STORE, [
+        'final class LocalEntitlementSnapshotStore implements EntitlementSnapshotProvider',
+        "static const tableName = 'system_entitlement_state'",
+        "static const recordId = 'current'",
+        'tx.get(table: tableName, id: recordId)',
+        'tx.put(',
+        'tx.delete(table: tableName, id: recordId)',
+        'Stored temporary grant expiry must be UTC ISO-8601.',
+    ]),
     (TEST, [
         'catalog covers every canonical feature ID exactly once',
         'free feature stays usable without PRO',
@@ -37,6 +48,12 @@ checks = (
         'unknown feature ID fails closed',
         'temporary expiry must be UTC',
         'entitlement clock must return UTC',
+    ]),
+    (STORE_TEST, [
+        'missing local entitlement state defaults to Free without mutating user tables',
+        'PRO and temporary grants round trip in dedicated system table only',
+        'clear removes entitlement state without clearing domain data',
+        'non UTC temporary grant cannot be persisted',
     ]),
 )
 
@@ -57,7 +74,7 @@ else:
     if evidence.get('contract') != 'ruh-code-feature-entitlement-policy-v1':
         errors.append('unexpected entitlement evidence contract id')
     if evidence.get('done') is not False:
-        errors.append('entitlement policy evidence must remain done=false until store/restore/UI/release proofs pass')
+        errors.append('entitlement policy evidence must remain done=false until restore/UI/release proofs pass')
     if evidence.get('offlineCore') is not True:
         errors.append('entitlement policy core must be offline-capable')
     required = set(evidence.get('requiredProperties', []))
@@ -69,6 +86,7 @@ else:
         'temporary access can unlock only policy-approved PRO features',
         'temporary grants use exact UTC expiry and expire at the boundary',
         'entitlement resolution itself does not delete or mutate user records',
+        'entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records',
     }:
         if item not in required:
             errors.append(f'entitlement evidence missing property: {item}')
@@ -76,4 +94,4 @@ else:
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Feature entitlement policy contract OK (source-level, not DONE).')
+print('Feature entitlement policy/local-store contract OK (source-level, not DONE).')
