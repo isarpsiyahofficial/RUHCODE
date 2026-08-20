@@ -50,10 +50,12 @@ jobs:
         run: python tools/backup/validate_backup_production_store_contract.py
       - name: Validate full portable SQLite backup lifecycle contract
         run: python tools/backup/validate_full_lifecycle_contract.py
+      - name: Validate legacy v0 migration contract
+        run: python tools/backup/validate_legacy_v0_migration_contract.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run backup codec schema package import ZIP file-store export lifecycle and production-store tests
+      - name: Run backup codec schema package import ZIP file-store export lifecycle legacy-migration and production-store tests
         run: flutter test test/backup test/data
