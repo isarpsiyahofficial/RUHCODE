@@ -5,9 +5,13 @@ import json
 ROOT = Path(__file__).resolve().parents[2]
 REPORT_SOURCE = ROOT / 'lib/src/pdf/pdf_report_contract.dart'
 DATA_SOURCE = ROOT / 'lib/src/pdf/pdf_data_contract.dart'
+RENDER_SOURCE = ROOT / 'lib/src/pdf/pdf_local_renderer.dart'
 REPORT_TEST = ROOT / 'test/pdf/pdf_report_contract_test.dart'
 DATA_TEST = ROOT / 'test/pdf/pdf_data_contract_test.dart'
+RENDER_TEST = ROOT / 'test/pdf/pdf_local_renderer_contract_test.dart'
 EVIDENCE = ROOT / 'evidence/pdf/report_planning_contract.json'
+RENDER_EVIDENCE = ROOT / 'evidence/pdf/local_renderer_contract.json'
+PUBSPEC = ROOT / 'pubspec.yaml'
 
 contracts = (
     (REPORT_SOURCE, [
@@ -31,6 +35,18 @@ contracts = (
         'does not belong to the report snapshot.',
         'UI and PDF calculation snapshots do not match.',
     ]),
+    (RENDER_SOURCE, [
+        'final class PdfFontBundle',
+        'sha256.convert(regularBytes)',
+        'sha256.convert(boldBytes)',
+        'final class PdfLocalRenderer',
+        'pw.Document(',
+        'pw.MultiPage(',
+        'PdfPageFormat.mm',
+        "bytes[0] != 0x25",
+        'Render section ${section.sectionId} belongs to another snapshot.',
+        'Selected PDF section $id has no render payload.',
+    ]),
     (REPORT_TEST, [
         'requested section order is preserved while empty sections are suppressed',
         'sample PDF cannot accidentally receive real user data origin',
@@ -43,6 +59,14 @@ contracts = (
         'section from another snapshot is rejected before rendering',
         'demo origin cannot be mislabeled as a real client and vice versa',
         'UI and PDF must use the exact same calculation snapshot digest',
+    ]),
+    (RENDER_TEST, [
+        'font bundle rejects a mismatched SHA-256 digest before rendering',
+        'renderer rejects cross-snapshot render section before parsing fonts',
+        'renderer rejects a selected section without render payload',
+    ]),
+    (PUBSPEC, [
+        'pdf: ^3.13.0',
     ]),
 )
 
@@ -78,7 +102,27 @@ else:
         if feature not in features:
             errors.append(f'PDF evidence missing feature: {feature}')
 
+if not RENDER_EVIDENCE.exists():
+    errors.append(f'missing {RENDER_EVIDENCE.relative_to(ROOT)}')
+else:
+    render_evidence = json.loads(RENDER_EVIDENCE.read_text(encoding='utf-8'))
+    if render_evidence.get('contract') != 'professional-pdf-local-renderer-v1':
+        errors.append('unexpected local PDF renderer evidence contract id')
+    if render_evidence.get('done') is not False:
+        errors.append('local renderer evidence must remain done=false until approved fonts and render regression pass')
+    if render_evidence.get('localOnly') is not True:
+        errors.append('local PDF renderer must be local-only')
+    required = set(render_evidence.get('requiredProperties', []))
+    for item in {
+        'all selected sections belong to one exact SHA-256 calculation snapshot',
+        'regular and bold font bytes are verified against declared SHA-256 digests',
+        'font family and license identifiers are mandatory',
+        'renderer output must begin with the PDF file signature',
+    }:
+        if item not in required:
+            errors.append(f'local PDF renderer evidence missing property: {item}')
+
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Professional PDF report planning/data contract OK (source-level, not DONE).')
+print('Professional PDF planning/data/local-renderer contract OK (source-level, not DONE).')
