@@ -1,0 +1,21 @@
+{
+  "contract": "backup-application-service",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-0773", "RC-0794", "RC-0795", "RC-0823", "RC-0832", "RC-0838", "RC-0839", "RC-0840", "RC-0841", "RC-0936", "RC-0937", "RC-0938", "RC-1296", "RC-1297", "RC-1298", "RC-1299"],
+  "properties": {
+    "exportToNativeSave": true,
+    "exportToNativeShare": true,
+    "nativePickThenStrictPreview": true,
+    "previewBeforeMutation": true,
+    "mergeAndReplaceDelegatedToTransactionalCoordinator": true,
+    "userCancelIsNotError": true,
+    "networkRequired": false,
+    "portableFormat": ".ruhcode.zip"
+  },
+  "finalBlockers": [
+    "Exact Flutter/GitHub Actions success must be visible for the tested commit.",
+    "Android real-device save/open/share smoke evidence is still required.",
+    "User-facing TR/EN action/state integration is still required."
+  ]
+}
