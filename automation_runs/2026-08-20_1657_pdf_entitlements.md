@@ -23,6 +23,11 @@ Bu tur iki bağımsız hattı ilerletti: Profesyonel PDF output/table güvenliğ
 - Professional client/preset alanları temporary/ad grant ile açılamıyor.
 - Feature policy unit testleri, evidence contract, structural validator ve `Feature Entitlement Contract` CI workflow'u eklendi.
 - Async exception testlerindeki yanlış matcher kullanımı aynı turda düzeltildi.
+- `LocalEntitlementSnapshotStore` eklendi; entitlement snapshot ayrı `system_entitlement_state` logical table içinde offline persist ediliyor ve user-domain tablolarına dokunmuyor.
+- `LocalRollbackResistantEntitlementClock` eklendi. Installation'ın daha önce gördüğü en ileri UTC anından geriye gidilmiyor; basit device-clock rollback geçici erişimi uzatamıyor.
+- Time-anchor korumasının app-data temizleme/reinstall sonrası mutlak güvenlik sağlamadığı açıkça kod/evidence sözleşmesine yazıldı; platform purchase restore hâlâ gerekli.
+- Entitlement clock async hale getirilerek persistent time-anchor desteklendi; test double'ları buna uyarlandı.
+- Type-promotion belirsizliği olan time-anchor satırı explicit `DateTime` akışına çevrildi; structural validator aynı turda güncellendi.
 
 ## Commit zinciri
 
@@ -41,17 +46,29 @@ Bu tur iki bağımsız hattı ilerletti: Profesyonel PDF output/table güvenliğ
 - `3b65a3058d952765c70be560e78f9c0b1a367648` entitlement evidence
 - `7bbfb87ec563296b34aba2c1afc7c7060926b38b` entitlement validator
 - `d4af235f14b53813d2e11eab22d642c0b06ce669` entitlement CI gate
+- `8f72fa20dbeaf65412fcf559f7b25745426680de` offline entitlement snapshot store
+- `79a0add5ed40eb2f9007420d1e458da5d896dbfc` local snapshot tests
+- `853f99944302bb156ea297b5a227c6693e1b8250` entitlement validator local-store extension
+- `3d9a42fe29a6b0de2dd378de68dbbe1f8446af1a` local-store evidence
+- `9e6a645259673dde3eac43e867f79fde5f351530` async entitlement clock contract
+- `db814e84046945e2409270d95be5e3965b132715` async clock test adaptation
+- `13f265b3ce1b7f0c322b90a05ab3f26d625324cf` rollback-resistant time anchor
+- `40984fe6160d848fcbca38e74a0fcd7b04738ed2` time-anchor tests
+- `e6b2dbe44e147095ee5bc04953adc558f8af2ed9` time-anchor validator extension
+- `23b98115c8d283a9916a859286cfa08340a8d3c4` time-anchor evidence
+- `a5ec32626b6ce8bb2a572d33e50313848f2c795a` explicit DateTime type-flow hardening
+- `82b08c12349db7c51272d5c9e38673babb88efd0` validator alignment
 
 ## Kanıt durumu
 
-GitHub combined-status son entitlement workflow commit'i için `statuses=[]` döndürdü. Exact workflow SUCCESS görünür olmadığı için PDF ve entitlement RC'leri DONE'a yükseltilmedi.
+GitHub combined-status entitlement evidence hedef commit'i için yine `statuses=[]` döndürdü. Exact workflow SUCCESS görünür olmadığı için PDF ve entitlement RC'leri DONE'a yükseltilmedi.
 
 ## Açık sıradaki işler
 
-1. Entitlement snapshot'ını offline ve kalıcı store'a bağla; Free↔PRO değişimlerinin user-data mutation yapmadığını integration test et.
-2. Serverless sınırlar içinde temporary access için local rollback-resistant time anchor sözleşmesi oluştur.
-3. UI / route / service guard'larını aynı `EntitlementService` kaynağına bağla.
-4. Purchase ownership restore / reinstall / device-change akışını Google Play resmi mekanizmasına bağla ve offline cached ownership davranışını test et.
+1. Production SQLite üzerinde Free↔PRO değişimlerinin profile/client/consultation/note/calculation verisini değiştirmediğini integration test et.
+2. UI / route / service guard'larını aynı `EntitlementService` kaynağına bağla.
+3. Purchase ownership restore / reinstall / device-change akışını Google Play resmi mekanizmasına bağla ve offline cached ownership davranışını test et.
+4. Rewarded-ad success/cancel/failure akışını entitlement snapshot mutation kurallarıyla bağla; hata durumunda state bozulmasın.
 5. PDF approved Unicode font artifact gelmeden font DONE yapma; blocker dışı olarak 5/25/50+ test fixture generator ve full parser/crop/glyph gate altyapısını ilerlet.
 6. Production Western vector painter, Vedik adapter ve BaZi/Numeroloji PDF table modellerini ilerlet.
 7. Physical astronomy/GeoNames/daily-message/UI-reference blocker dışı görevleri paralelde sürdür.
