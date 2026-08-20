@@ -33,15 +33,20 @@
     "SqfliteLocalDatabase target"
   ],
   "tests": [
-    "test/backup/backup_full_lifecycle_test.dart"
+    "test/backup/backup_full_lifecycle_test.dart",
+    "test/backup/backup_all_tables_symmetry_test.dart"
   ],
   "invariants": {
     "real_sqlite_source_and_target": true,
     "all_registered_backup_tables_compared": true,
+    "all_14_tables_non_empty_representative_fixture": true,
+    "cross_table_foreign_keys_in_fixture": true,
     "portable_zip_round_trip": true,
     "strict_preview_before_mutation": true,
     "production_import_store": true,
     "storage_equality_after_restore": true,
+    "export_erase_restore_raw_equality": true,
+    "export_erase_restore_domain_object_equality": true,
     "same_backup_second_import_idempotent": true,
     "tr_en_manifest_locale_does_not_mutate_machine_storage": true,
     "large_data_2500_record_replace_restore": true,
@@ -50,9 +55,7 @@
   },
   "remaining_before_done": [
     "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
-    "Representative non-empty fixtures for every one of the 14 logical tables",
     "Legacy schema migration/adoption proof",
-    "Android document picker/share-sheet integration",
-    "Clean-install export -> erase -> restore -> domain-object equality proof"
+    "Android document picker/share-sheet integration"
   ]
 }
