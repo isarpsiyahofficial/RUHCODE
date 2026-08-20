@@ -40,7 +40,7 @@ void main() {
     expect(store.rows['profiles.csv']!.single.first, 'profile-1');
   });
 
-  test('replace failure restores the pre-import safety snapshot', () async {
+  test('replace failure restores the pre-import safety snapshot and reports it', () async {
     final original = _profileRow(id: 'old-profile', name: 'Korunacak');
     final store = _MemoryBackupImportStore(
       initialRows: <String, List<List<String?>>>{
@@ -50,14 +50,46 @@ void main() {
     );
     final coordinator = BackupImportCoordinator(store: store);
 
-    await expectLater(
-      coordinator.apply(preview: _validProfilePreview(), mode: BackupImportMode.replace),
-      throwsStateError,
-    );
+    Object? captured;
+    try {
+      await coordinator.apply(preview: _validProfilePreview(), mode: BackupImportMode.replace);
+    } catch (error) {
+      captured = error;
+    }
 
+    expect(captured, isA<BackupRestoreException>());
+    final failure = captured! as BackupRestoreException;
+    expect(failure.rollbackRestored, isTrue);
+    expect(failure.cause, isA<StateError>());
+    expect(failure.rollbackFailure, isNull);
     expect(store.restoreCount, 1);
     expect(store.rows['profiles.csv']!.single.first, 'old-profile');
     expect(store.rows['profiles.csv']!.single[1], 'Korunacak');
+  });
+
+  test('rollback failure is never falsely reported as restored', () async {
+    final store = _MemoryBackupImportStore(
+      initialRows: <String, List<List<String?>>>{
+        'profiles.csv': <List<String?>>[
+          _profileRow(id: 'old-profile', name: 'Korunacak'),
+        ],
+      },
+      failOnTable: 'clients.csv',
+      failRollback: true,
+    );
+    final coordinator = BackupImportCoordinator(store: store);
+
+    Object? captured;
+    try {
+      await coordinator.apply(preview: _validProfilePreview(), mode: BackupImportMode.replace);
+    } catch (error) {
+      captured = error;
+    }
+
+    expect(captured, isA<BackupRestoreException>());
+    final failure = captured! as BackupRestoreException;
+    expect(failure.rollbackRestored, isFalse);
+    expect(failure.rollbackFailure, isA<StateError>());
   });
 
   test('invalid preview is rejected before transaction or snapshot creation', () async {
@@ -117,10 +149,12 @@ final class _MemoryBackupImportStore implements BackupImportStore {
   _MemoryBackupImportStore({
     Map<String, List<List<String?>>>? initialRows,
     this.failOnTable,
+    this.failRollback = false,
   }) : rows = _clone(initialRows ?? const <String, List<List<String?>>>{});
 
   Map<String, List<List<String?>>> rows;
   final String? failOnTable;
+  final bool failRollback;
   int snapshotCount = 0;
   int restoreCount = 0;
   int transactionCount = 0;
@@ -136,6 +170,9 @@ final class _MemoryBackupImportStore implements BackupImportStore {
   @override
   Future<void> restoreSafetySnapshot(Object snapshotToken) async {
     restoreCount++;
+    if (failRollback) {
+      throw StateError('Synthetic safety-snapshot restore failure');
+    }
     final id = snapshotToken as int;
     rows = _clone(_snapshots[id]!);
   }
