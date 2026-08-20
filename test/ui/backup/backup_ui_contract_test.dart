@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/backup/backup_application_service.dart';
+import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
 import 'package:ruh_code/src/backup/backup_platform_gateway.dart';
 import 'package:ruh_code/src/ui/backup/backup_ui_contract.dart';
 
@@ -98,6 +99,28 @@ void main() {
       );
       expect(state.phase, BackupUiPhase.cancelled);
       expect(state.canApplyRestore, isFalse);
+    });
+
+    test('UI claims rollback restoration only when coordinator proves it', () {
+      expect(
+        phaseForRestoreError(
+          BackupRestoreException(
+            cause: StateError('import failed'),
+            rollbackRestored: true,
+          ),
+        ),
+        BackupUiPhase.rollbackRestored,
+      );
+      expect(
+        phaseForRestoreError(
+          BackupRestoreException(
+            cause: StateError('import failed'),
+            rollbackRestored: false,
+            rollbackFailure: StateError('snapshot restore failed'),
+          ),
+        ),
+        BackupUiPhase.failed,
+      );
     });
   });
 }
