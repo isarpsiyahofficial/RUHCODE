@@ -179,9 +179,9 @@ abstract final class PdfWesternChartGeometryAdapter {
     }
 
     final relative = _normalize(longitudeDegrees - ascendantLongitude);
-    // Ascendant is anchored at the left edge (9 o'clock). Zodiac longitude
-    // increases counter-clockwise in the logical chart coordinate space.
-    final angle = math.pi + (relative * math.pi / 180.0);
+    // Ascendant is anchored at the left edge (9 o'clock). Increasing zodiac
+    // longitude moves counter-clockwise in Cartesian chart coordinates.
+    final angle = math.pi - (relative * math.pi / 180.0);
     return PdfVectorPoint(math.cos(angle) * radius, math.sin(angle) * radius);
   }
 
