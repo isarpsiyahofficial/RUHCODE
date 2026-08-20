@@ -37,6 +37,25 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [ ] ASC/MC + Placidus independent golden proof ve 0.05° cusp budget.
 - [ ] Exact latest Flutter/GitHub Actions SUCCESS görünür kanıtı.
 
+## Free / PRO / temporary entitlement — Faz 21 source-level
+
+- [x] Merkezi canonical `RuhFeatureIds` kataloğu.
+- [x] Her canonical ID için tek Free/PRO base policy.
+- [x] Unknown feature ID fail-closed.
+- [x] PRO snapshot bütün canonical özellikleri açıyor.
+- [x] Temporary unlock yalnız açıkça izin verilen PRO feature'larda çalışıyor.
+- [x] Temporary grant exact UTC expiry ile bitiyor; non-UTC expiry/clock reddediliyor.
+- [x] Professional client/preset alanları temporary/ad grant ile açılamıyor.
+- [x] Offline `LocalEntitlementSnapshotStore` dedicated `system_entitlement_state` logical table üzerinde mevcut.
+- [x] Entitlement save/load/clear işlemlerinin profile/client/note gibi user-domain tablolarını değiştirmemesi source-level test sözleşmesine bağlı.
+- [x] Entitlement unit tests + evidence + structural validator + ayrı CI workflow mevcut.
+- [ ] Google Play purchase ownership restore / reinstall / device-change doğrulaması.
+- [ ] Serverless sınırlar içinde rollback-resistant local time anchor.
+- [ ] UI, route ve service guard'larının aynı `EntitlementService` kaynağına bağlanması.
+- [ ] Production SQLite üzerinde Free↔PRO geçişlerinde bütün kullanıcı verisinin değişmediğini integration test et.
+- [ ] Rewarded-ad failure/cancel durumunun entitlement state'i bozmamasını kanıtla.
+- [ ] Exact workflow + release-mode Free/PRO/temporary matrix SUCCESS görünür kanıtı.
+
 ## Backup / CSV — source-level
 
 - [x] Strict Unicode CSV codec ve 14-table versioned schema registry.
@@ -86,47 +105,42 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] ASC 9 yönü + counter-clockwise zodiac coordinate contract test/evidence ile kilitlendi.
 - [x] `GEOM-PDF-WESTERN-WHEEL` source geometry status `IMPLEMENTED`; painter/golden kanıtı beklediğinden DONE değil.
 - [x] Local renderer/font provider/Western geometry source tests + evidence + structural gates PDF CI'a bağlandı.
+- [x] `PdfOutputInspector`: generated PDF byte'larında `%PDF-`, `%%EOF`, Catalog, Pages tree ve en az bir gerçek Page object zorunlu; truncated output reddediliyor.
+- [x] `PdfTableLayout`: uzun logical tablolar bounded chunk'lara ayrılıyor, header tekrarlanıyor ve kolon genişliği tutarsızlığı render öncesi reddediliyor.
+- [x] Output inspector + table layout renderer/evidence/structural validator zincirine bağlandı.
 - [ ] Production Unicode TR/EN font binary asset + lisans dosyası + immutable SHA manifesti.
 - [ ] Gerçek approved font ile byte-render testi.
 - [ ] Western geometry için production vector painter + approved zodiac/planet glyph asset bağlantısı + label collision.
 - [ ] Vedik vector chart embedding.
 - [ ] BaZi/Numerology table renderers.
-- [ ] Table split prevention için gerçek uzun-table render/regression kanıtı.
 - [ ] 5 / 25 / 50+ gerçek page-count testleri ve low-memory test.
-- [ ] PDF open/parse validation, crop/glyph checks, visual regression.
+- [ ] Full PDF parser/open validation, crop/glyph checks, visual regression.
 - [ ] Free sample PDF'nin APPROVED referans tasarımı ve gerçek demo-only wiring'i.
 - [ ] Exact workflow SUCCESS görünür kanıtı.
 
-## Son tur — 2026-08-20 14:56
+## Son tur — 2026-08-20 16:57
 
-Checkpoint: `automation_runs/2026-08-20_1456_backup_registry_pdf_renderer.md`
+Checkpoint: `automation_runs/2026-08-20_1657_pdf_entitlements.md`
 
 Öne çıkan commitler:
-- `7d8f23e0491f3a0821eafc47a7ea2ef89f9ca3e0` local PDF dependency
-- `fe74cf58b8dccca48b23023ca240bc115468e15e` local PDF byte renderer
-- `93f7a19079b9ad97daf6dd04e6d007dc754ca11d` portable backup action labels
-- `88666955fdb9adb3e485067b05b848185e23a390` renderer contract tests
-- `3068f19619cdb89dea0cab35aca30ce501cab69f` renderer evidence
-- `84d0c173a04bf85bde83d127249e6fa6030fabad` backup action wording validator
-- `ccae7354789833171f88fe03d9c64eb7e7a4d052` UI CI wiring
-- `60d5c317410a091893763e3f5330e1c7ee351b30` PDF local report service
-- `953553628f38a92985749ec124ca6303651f10e9` verified asset font provider
-- `d22ea908ecf195f954745a568913896d30a7e48d` renderer test syntax fix
-- `11c70e0191740fc0166dfabc31365a148d215c4f` font provider tests
-- `2a27c425ae7ed04e497a5acbd11a59f22de4c49e` PDF service/font structural gate
-- `2ab7e9cfa60986dd9ba4cb46a430c0a6b46657fb` long-report pagination safeguards
-- `aa0a37c5aa2d760fa7e17af3be6e9a5478112712` pagination evidence update
-- `06de5176e2bf4f114d22864e9ed2e7a0f2657b87` pagination structural gate
-- `a2431e5bd472ca735254040a2cd872b8f1e88728` Western PDF geometry adapter
-- `89f1e5799bef03a5f1557b3682aab62efc461d84` Western geometry orientation fix
-- `ec072984cafa4930839c2b71010934e692664a42` Western geometry tests
-- `4b9cff70b1f5ff57e11350e45b0c32303f1320c4` dynamic geometry manifest progress
-- `2e14f2adfe60302cfc868480fd6b89405b9678bf` Western geometry evidence
-- `f116a399631708655ee84180de8de07631b1f4c5` Western geometry structural validator
-- `fb4155a3ebff1cdf688261b13ec4fd0866270129` Western PDF geometry CI gate
-- `0fada9ba15dadf3d4d57345c47a2c518e698511a` extended run checkpoint
+- `86fcc401b59ff6740f99de84e5a4fe24d92cf1e1` PDF output structural inspector
+- `c49924802ab78b219fec52741faf7a4b777922a8` inspector tests
+- `ceaab74451e059ff28f7c3bce4ce2a5281665b73` deterministic long-table layout
+- `8457ce3dead0cdb17a19e54a9d080539d4e5c970` renderer output/table integration
+- `d541058f50ce327616adedf19475fe6ee727f74d` PDF evidence extension
+- `a481337fca101aa34a88c95a6c7d4954c6733d4b` PDF structural validator extension
+- `ca67a8716e5ff917b3f086046850d2629dd90a30` canonical Feature ID/Free-PRO matrix
+- `26ad0ed6ef03533b6fd1a92986febb23d5651e94` central entitlement resolver
+- `3b8819a926b5cc326e96bef8f8ecc08f7197e5c1` async entitlement test correction
+- `3b65a3058d952765c70be560e78f9c0b1a367648` entitlement evidence
+- `7bbfb87ec563296b34aba2c1afc7c7060926b38b` entitlement structural validator
+- `d4af235f14b53813d2e11eab22d642c0b06ce669` entitlement CI gate
+- `8f72fa20dbeaf65412fcf559f7b25745426680de` offline entitlement snapshot store
+- `79a0add5ed40eb2f9007420d1e458da5d896dbfc` local entitlement store tests
+- `853f99944302bb156ea297b5a227c6693e1b8250` entitlement validator store extension
+- `3d9a42fe29a6b0de2dd378de68dbbe1f8446af1a` entitlement offline-store evidence update
 
-GitHub combined-status exact UI workflow hedef commit'i için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
+GitHub combined-status exact entitlement workflow hedef commit'i için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -143,16 +157,15 @@ GitHub combined-status exact UI workflow hedef commit'i için `statuses=[]` dön
 ## Sıradaki çalışma
 
 1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt; görünmüyorsa SUCCESS uydurma.
-2. Approved Unicode TR/EN font asset + license + SHA-256 manifestini gerçek artifact ile bağla; binary artifact yoksa blocker'ı açık tut.
-3. Gerçek fontla 5/25/50+ PDF byte generation ve parse/open testlerini kur.
-4. Uzun table pagination, missing glyph, crop ve visual regression kapılarını ekle.
-5. Western geometry modelini approved glyph assetlerini kullanan production PDF vector painter'a bağla; golden onay olmadan görseli final sayma.
-6. Vedik dynamic vector geometry'yi aynı calculation snapshot üzerinden PDF adapterına bağla.
-7. BaZi/Numerology tablolarını gerçek PDF layout'a bağla.
-8. `pubspec.lock` yalnız gerçek `flutter pub get` çözümlemesinden sonra commit et.
-9. Paralelde physical astronomy/GeoNames/daily-message/UI-reference blocker dışı işleri ilerlet.
-10. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+2. Entitlement için production SQLite Free↔PRO data-preservation integration testi ve local rollback-resistant time anchor sözleşmesini ekle.
+3. UI/route/service feature guard'larını aynı `EntitlementService` kaynağına bağla.
+4. Google Play ownership restore/reinstall/device-change akışını resmi purchase API sözleşmesine bağla; cached offline ownership ile network bağımlılığını ayır.
+5. Approved Unicode TR/EN font artifact yoksa blocker'ı açık tut; 5/25/50+ PDF fixture/page-count ve parser/crop/glyph kapı altyapısını ilerlet.
+6. Western production PDF vector painter + approved glyph bağlantısı; ardından Vedik vector adapter ve BaZi/Numeroloji tabloları.
+7. `pubspec.lock` yalnız gerçek `flutter pub get` çözümlemesinden sonra commit et.
+8. Paralelde physical astronomy/GeoNames/daily-message/UI-reference blocker dışı işleri ilerlet.
+9. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
-**FINAL DEĞİL.** Master requirement, içerik, UI, backup/PDF, security, offline, physical astronomy evidence ve release fazları tamamlanmadan proje FINAL olmayacak.
+**FINAL DEĞİL.** Master requirement, içerik, UI, entitlement, backup/PDF, security, offline, physical astronomy evidence ve release fazları tamamlanmadan proje FINAL olmayacak.
