@@ -32,6 +32,8 @@ def main() -> None:
         'storage_equality_after_restore',
         'same_backup_second_import_idempotent',
         'tr_en_manifest_locale_does_not_mutate_machine_storage',
+        'large_data_2500_record_replace_restore',
+        'unicode_stress_payload',
         'offline_only',
     ]:
         if invariants.get(key) is not True:
@@ -50,6 +52,9 @@ def main() -> None:
         'same portable backup twice',
         "('tr', trTarget)",
         "('en', enTarget)",
+        '2500 deterministic records',
+        "'değer-$index-İÜşğ'",
+        'BackupImportMode.replace',
     ]:
         if token not in source:
             fail(f'Full backup lifecycle test is missing required token: {token}')
