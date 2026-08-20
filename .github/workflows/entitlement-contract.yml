@@ -4,8 +4,11 @@ on:
   push:
     paths:
       - 'lib/src/entitlements/**'
+      - 'lib/src/ui/navigation/**'
+      - 'lib/src/app/**'
       - 'lib/src/domain/models/core_models.dart'
       - 'test/entitlements/**'
+      - 'test/ui/main_navigation_entitlement_wiring_test.dart'
       - 'evidence/entitlements/**'
       - 'tools/entitlements/**'
       - 'pubspec.yaml'
@@ -14,8 +17,11 @@ on:
   pull_request:
     paths:
       - 'lib/src/entitlements/**'
+      - 'lib/src/ui/navigation/**'
+      - 'lib/src/app/**'
       - 'lib/src/domain/models/core_models.dart'
       - 'test/entitlements/**'
+      - 'test/ui/main_navigation_entitlement_wiring_test.dart'
       - 'evidence/entitlements/**'
       - 'tools/entitlements/**'
       - 'pubspec.yaml'
@@ -37,5 +43,7 @@ jobs:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run entitlement tests
+      - name: Run entitlement unit and integration tests
         run: flutter test test/entitlements
+      - name: Run guarded UI route matrix
+        run: flutter test test/ui/main_navigation_entitlement_wiring_test.dart
