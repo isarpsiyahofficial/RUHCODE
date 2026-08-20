@@ -1,0 +1,65 @@
+{
+  "contract": "backup-ui-action-state-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "portableFormat": ".ruhcode.zip",
+  "machineDataFormat": "UTF-8 CSV files inside the portable backup package",
+  "requirements": [
+    "RC-0795",
+    "RC-0823",
+    "RC-0832",
+    "RC-0838",
+    "RC-0839",
+    "RC-0840",
+    "RC-0841",
+    "RC-0842",
+    "RC-0847",
+    "RC-0848",
+    "RC-1296",
+    "RC-1297",
+    "RC-1298",
+    "RC-1299",
+    "RC-1431",
+    "RC-1440",
+    "RC-1441"
+  ],
+  "source": "lib/src/ui/backup/backup_ui_contract.dart",
+  "tests": [
+    "test/ui/backup/backup_ui_contract_test.dart"
+  ],
+  "requiredActions": [
+    "saveFullBackup",
+    "shareFullBackup",
+    "chooseBackup",
+    "restoreMerge",
+    "restoreReplace",
+    "cancelRestore"
+  ],
+  "requiredStates": [
+    "idle",
+    "exporting",
+    "saved",
+    "sharing",
+    "shared",
+    "picking",
+    "previewReady",
+    "restoring",
+    "restored",
+    "cancelled",
+    "invalidBackup",
+    "rollbackRestored",
+    "shareUnavailable",
+    "failed"
+  ],
+  "localeContract": {
+    "supported": ["tr", "en"],
+    "independentVisibleCopy": true,
+    "userCancellationIsFailure": false,
+    "invalidPreviewMayMutateStorage": false
+  },
+  "releaseBlockers": [
+    "Exact Flutter workflow success is not yet recorded in this evidence file.",
+    "Approved UI reference image for backup screens is not yet available.",
+    "Android real-device save/open/share smoke proof is not yet attached."
+  ]
+}
