@@ -12,14 +12,14 @@
     "temporary access can unlock only policy-approved PRO features",
     "temporary grants use exact UTC expiry and expire at the boundary",
     "non-temporary-eligible professional features cannot be unlocked by an ad grant",
-    "entitlement resolution itself does not delete or mutate user records"
+    "entitlement resolution itself does not delete or mutate user records",
+    "entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records"
   ],
   "remainingBeforeDone": [
-    "persist canonical entitlement snapshot offline",
     "implement Google Play purchase ownership restore and reinstall/device-change verification",
     "implement rollback-resistant local time anchor for temporary access within serverless constraints",
     "wire UI route and service guards to the same EntitlementService",
-    "prove Free to PRO and PRO to Free transitions preserve all user data",
+    "prove Free to PRO and PRO to Free transitions preserve all user data using production SQLite integration",
     "prove rewarded-ad failure cannot crash or corrupt entitlement state",
     "run exact workflow and release-mode entitlement matrix successfully"
   ]
