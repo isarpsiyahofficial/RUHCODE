@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../entitlements/feature_access_guard.dart';
 import '../ui/navigation/main_navigation_shell.dart';
 
 class RuhCodeApp extends StatelessWidget {
-  const RuhCodeApp({super.key});
+  const RuhCodeApp({
+    super.key,
+    required this.featureAccess,
+  });
+
+  final FeatureAccessGuard featureAccess;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,7 @@ class RuhCodeApp extends StatelessWidget {
           surface: Colors.white,
         ),
       ),
-      home: const MainNavigationShell(),
+      home: MainNavigationShell(featureAccess: featureAccess),
     );
   }
 }
