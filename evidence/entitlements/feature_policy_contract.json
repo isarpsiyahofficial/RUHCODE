@@ -23,6 +23,8 @@
     "concrete Tools routes resolve canonical basic and advanced Feature IDs through FeatureAccessGuard",
     "professional Danışanlarım route is guarded by professional.clients and remains unavailable to Free users",
     "PDF sample preview remains Free while professional PDF route is guarded by pdf.professional_export",
+    "professional PDF byte generation is independently service-guarded by pdf.professional_export even if a caller bypasses UI or route checks",
+    "protected persisted record repositories can be wrapped so reads, saves, replacements and deletes are rejected before database transactions when entitlement is locked",
     "Google Play lifetime ownership uses the official Android past-purchase query path",
     "successful Google Play ownership stores only a SHA-256 verification fingerprint rather than raw verification material",
     "a Google Play query outage never revokes previously confirmed cached lifetime ownership",
@@ -35,7 +37,7 @@
   ],
   "remainingBeforeDone": [
     "prove real Google Play reinstall/device-change restore on a Play-distributed test build",
-    "wire remaining concrete production service entry points through FeatureAccessGuard as those services are implemented",
+    "wire guarded record repositories into concrete professional client/preset application services when those production mutation services are introduced",
     "connect a production rewarded-ad SDK adapter and verify real-device cancellation/failure/completion events",
     "replace placeholder route bodies with approved production screens and rerun the same Free/PRO route matrix",
     "run exact workflow and release-mode entitlement matrix successfully"
