@@ -25,11 +25,14 @@
     "PDF sample preview remains Free while professional PDF route is guarded by pdf.professional_export",
     "professional PDF byte generation is independently service-guarded by pdf.professional_export even if a caller bypasses UI or route checks",
     "protected persisted record repositories can be wrapped so reads, saves, replacements and deletes are rejected before database transactions when entitlement is locked",
+    "production professional client consultation note preset and interpretation-template repositories are composed through guarded repositories using canonical professional Feature IDs",
     "Google Play lifetime ownership uses the official Android past-purchase query path",
     "successful Google Play ownership stores only a SHA-256 verification fingerprint rather than raw verification material",
     "a Google Play query outage never revokes previously confirmed cached lifetime ownership",
     "a successful Google Play not-owned result changes only the store ownership cache and cannot erase independent local entitlement state",
     "cached confirmed Google Play lifetime ownership remains usable offline",
+    "runtime entitlement resolution combines local entitlement state with cached Google Play lifetime ownership",
+    "startup performs best-effort Google Play ownership synchronization without making store availability an application-start requirement",
     "rewarded-ad cancellation and failure are strict entitlement-state no-ops",
     "only a verified rewarded outcome can add a temporary grant",
     "a rewarded grant cannot shorten an already longer active grant",
@@ -37,7 +40,6 @@
   ],
   "remainingBeforeDone": [
     "prove real Google Play reinstall/device-change restore on a Play-distributed test build",
-    "wire guarded record repositories into concrete professional client/preset application services when those production mutation services are introduced",
     "connect a production rewarded-ad SDK adapter and verify real-device cancellation/failure/completion events",
     "replace placeholder route bodies with approved production screens and rerun the same Free/PRO route matrix",
     "run exact workflow and release-mode entitlement matrix successfully"
