@@ -36,6 +36,31 @@ final class BackupImportResult {
   final bool safetySnapshotCreated;
 }
 
+/// Typed failure for a replace restore after a safety snapshot was created.
+///
+/// The UI may only claim that the safety snapshot was restored when
+/// [rollbackRestored] is true. The original failure is preserved as [cause].
+final class BackupRestoreException implements Exception {
+  const BackupRestoreException({
+    required this.cause,
+    required this.rollbackRestored,
+    this.rollbackFailure,
+  });
+
+  final Object cause;
+  final bool rollbackRestored;
+  final Object? rollbackFailure;
+
+  @override
+  String toString() {
+    if (rollbackRestored) {
+      return 'Backup restore failed; safety snapshot was restored. Cause: $cause';
+    }
+    return 'Backup restore failed and safety snapshot restoration also failed. '
+        'Cause: $cause; rollback failure: $rollbackFailure';
+  }
+}
+
 final class BackupImportCoordinator {
   const BackupImportCoordinator({required this.store});
 
@@ -86,9 +111,20 @@ final class BackupImportCoordinator {
               );
             }
           });
-        } catch (_) {
-          await store.restoreSafetySnapshot(snapshot);
-          rethrow;
+        } catch (cause) {
+          try {
+            await store.restoreSafetySnapshot(snapshot);
+          } catch (rollbackFailure) {
+            throw BackupRestoreException(
+              cause: cause,
+              rollbackRestored: false,
+              rollbackFailure: rollbackFailure,
+            );
+          }
+          throw BackupRestoreException(
+            cause: cause,
+            rollbackRestored: true,
+          );
         }
         return BackupImportResult(
           mode: mode,
