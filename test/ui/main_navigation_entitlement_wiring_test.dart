@@ -26,10 +26,8 @@ final class _FreeOnlyEntitlements implements EntitlementService {
       RuhFeatureCatalog.policyFor(featureId).baseAccess == FeatureBaseAccess.free;
 
   @override
-  Future<FeatureEntitlement> resolve(String featureId) async => FeatureEntitlement(
-        featureId: featureId,
-        tier: canUse(featureId) is Future<bool> ? EntitlementTier.free : EntitlementTier.free,
-      );
+  Future<FeatureEntitlement> resolve(String featureId) async =>
+      FeatureEntitlement(featureId: featureId, tier: EntitlementTier.free);
 }
 
 void main() {
