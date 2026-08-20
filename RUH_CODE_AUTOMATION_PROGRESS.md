@@ -74,34 +74,47 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] CSV→runtime storage payload mapping; Profile mapping gerçek `CoreRepositories` ile okunabilir integration testine bağlı.
 - [x] SQLite FFI production adapter integration testleri.
 - [x] `evidence/backup/production_store_contract.json` + structural validator + genişletilmiş Backup CSV workflow.
+- [x] Portable `BackupPackageBytes` ↔ tek ZIP byte stream adapterı.
+- [x] ZIP safety: CRC verify, zip-slip/absolute/nested path, directory/symlink, duplicate member ve zip-bomb size/count guard.
+- [x] Native local file store: `.ruhcode.zip`, atomic `.tmp` + flush + rename, read/write size guards; network yok.
+- [x] Runtime LocalDatabase → canonical 14-table CSV export mapperı.
+- [x] Export deterministic record order + canonical JSON key order + storage key/payload id consistency.
+- [x] `exportPackage` strict package preview acceptance testine bağlı.
 - [ ] Exact workflow SUCCESS görünür değil; ilgili Backup RC'leri DONE değil.
-- [ ] Logical package ↔ gerçek portable ZIP/file bytes adapterı.
-- [ ] Device file save/open integration.
-- [ ] Runtime storage payload → canonical CSV export row mapping.
+- [ ] Android document picker/share-sheet platform entegrasyonu.
+- [ ] Production SQLite 14-table export → ZIP → import → domain/storage equality lifecycle proof.
 - [ ] TR→EN / EN→TR clean-install round-trip proof.
 - [ ] Legacy schema migration/adoption proof.
 - [ ] Large-data/stress restore.
 - [ ] Export→erase→restore→domain equality lifecycle proof.
+- [ ] `pubspec.lock` henüz repository'de yok; clean-checkout reproducibility için gerçek dependency resolution sonrası commit edilmeli.
 
-## Son tur — 2026-08-20 00:57
+## Son tur — 2026-08-20 02:55
 
-Checkpoint: `automation_runs/2026-08-20_0057_backup_sqlite_durable_snapshot.md`
+Checkpoint: `automation_runs/2026-08-20_0255_backup_portable_zip_export.md`
 
-Bu turda backup hattı logical transaction mock seviyesinden gerçek offline `LocalDatabase`/SQLite adapter seviyesine taşındı. Destructive replace yalnız transaction içinde clear yapabiliyor; safety snapshot artık memory token değil, diske flush edilen durable snapshot dosyası. Restore snapshot format/schema doğrulaması sonrası kayıtları atomik olarak geri yüklüyor. Profile CSV mapping'in gerçek runtime repository tarafından okunabildiği SQLite FFI testi eklendi.
+Bu turda backup paketi logical member map seviyesinden gerçek portable tek dosya ZIP seviyesine taşındı. ZIP decode CRC verify kullanıyor; traversal, absolute/nested path, backslash, directory/symlink, duplicate member ve expanded-size saldırıları reddediliyor. Ardından local-only atomik `.ruhcode.zip` file store eklendi. Aynı turda import yönünün tersi olan `LocalDatabaseBackupExporter` kuruldu: 14 tablo tek DB transaction snapshot içinde canonical CSV'ye dönüyor, Profile nested payload mapping ve deterministic/canonical JSON export mevcut.
 
 Son commit zinciri:
-- `b9a3993f8fccfe9358fe665ffb96907f963914b7` LocalDatabase bulk transaction contract
-- `5d5f0454c3b523e6e16c1e5ba7b30949399d93fc` Sqflite bulk implementation
-- `051e5351038918081f1404515032be3763ffdb93` production backup import store
-- `e75e35034beef37bb38dd7baddc3505161ca51bd` memory test compatibility
-- `c43be712c11841de962cf3a1ab15d2ae9a882aca` production adapter tests
-- `24b6f457d7e370006c3aa88103dd6bcab1d1ea7d` test correction
-- `99fc529ffeade9c080609e3b257d4488bae19ed9` production-store evidence
-- `e985cb8e080cc8867263339921c8c1137a443b70` production-store validator
-- `c64d1a5576a872706731acd30771e8a1544b5e37` Backup CSV CI wiring
-- `6b34dde89c4b29c73025280cf5e26ce3aeaa5dbd` run checkpoint
+- `d204fed87a59d3a968e7df6cd3411fe8808578d4` archive dependency
+- `c3ead898f182b1d6bca6d6be9c7c7ae4ae8d74bb` portable ZIP codec
+- `a5ed192068e9f43239f3aee11a05338cedc37ad1` ZIP tests
+- `45145051dbe34b996b0191c338c9a632fbf9af86` ZIP evidence
+- `98b3d2ea4c0b77e2e1a5791888610e53d63be7f1` ZIP validator
+- `900925636653f3bac799097333bf8dabea771de6` ZIP CI wiring
+- `b46cb70f4c174de12374cbe98153d730c26304ea` file-store source fix
+- `5e8732d193344e9475ed20f407390682ad15c2e1` file-store tests corrected
+- `f3cd25ea64aadbd2fdddeac2178884edc12de26e` file-store evidence
+- `569b32e01c9222c6c37e8531354a0a996ff51e1a` file-store validator
+- `8bb7753a4bc200a17b891a797ed02e8f03d2f97f` file-store CI wiring
+- `9cfb66e25c36344fb96056313657597d6dcd19c8` LocalDatabase exporter
+- `ef8f973dd4650691fe0a3731673e6ddb924213dc` exporter tests
+- `01bd3b8209ebb91dfd328bc7fd1729ae019c7e5e` exporter evidence
+- `da5c90a277163f26b71689ec9616e59eb795c99e` exporter validator
+- `c33ce557af0fa80ae48dc10deb0f1a5af5bfe6c9` exporter CI wiring
+- `7750ea603715d99d67a3473a26774e1bccf2a459` run checkpoint
 
-GitHub combined-status `c64d1a557...` için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
+GitHub combined-status `c33ce557...` için yine `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -119,16 +132,19 @@ GitHub combined-status `c64d1a557...` için `statuses=[]` döndürdü; SUCCESS u
 ## Sıradaki çalışma
 
 1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt.
-2. Portable ZIP/archive adapterı: `BackupPackageBytes` ↔ tek dosya byte stream; zip-slip/duplicate member/size guard.
-3. Device file save/open adapter sözleşmesi.
-4. Runtime DB → canonical CSV export mapping ve export/import symmetry testleri.
-5. TR→EN / EN→TR, legacy schema, large-data ve clean-install export→erase→restore testleri.
-6. Paralelde ASC/MC + Placidus/Porphyry independent golden house-cusp proof.
-7. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
-8. Gerçek GeoNames compact catalog + source/output SHA + timezone bulk integrity.
-9. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
-10. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
-11. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+2. SQLite FFI üzerinde LocalDatabase export → package → portable ZIP → decode → preview → production import symmetry testi.
+3. Import sonrası domain/storage equality ve aynı backup ikinci import idempotency.
+4. TR→EN / EN→TR locale-independent restore.
+5. Legacy schema migration/adoption fixture.
+6. Large-data stress export/restore.
+7. Android document picker/share-sheet adapterı; core file store platform UI'dan ayrı kalacak.
+8. `pubspec.lock` clean-checkout reproducibility kapısı.
+9. Paralelde ASC/MC + Placidus/Porphyry independent golden house-cusp proof.
+10. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
+11. Gerçek GeoNames compact catalog + source/output SHA + timezone bulk integrity.
+12. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
+13. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
+14. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
