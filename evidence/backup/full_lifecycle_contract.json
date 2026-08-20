@@ -1,0 +1,54 @@
+{
+  "contract_id": "BACKUP-FULL-LIFECYCLE-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0795",
+    "RC-0816",
+    "RC-0817",
+    "RC-0823",
+    "RC-0838",
+    "RC-0841",
+    "RC-0843",
+    "RC-0847",
+    "RC-0848",
+    "RC-1296",
+    "RC-1297",
+    "RC-1298",
+    "RC-1299",
+    "RC-1442"
+  ],
+  "pipeline": [
+    "SqfliteLocalDatabase source",
+    "LocalDatabaseBackupExporter",
+    "BackupPackageWriter",
+    "PortableZipBackupCodec.encode",
+    "PortableZipBackupCodec.decode",
+    "BackupPackageReader.preview",
+    "BackupImportCoordinator",
+    "LocalDatabaseBackupImportStore",
+    "SqfliteLocalDatabase target"
+  ],
+  "tests": [
+    "test/backup/backup_full_lifecycle_test.dart"
+  ],
+  "invariants": {
+    "real_sqlite_source_and_target": true,
+    "all_registered_backup_tables_compared": true,
+    "portable_zip_round_trip": true,
+    "strict_preview_before_mutation": true,
+    "production_import_store": true,
+    "storage_equality_after_restore": true,
+    "same_backup_second_import_idempotent": true,
+    "tr_en_manifest_locale_does_not_mutate_machine_storage": true,
+    "offline_only": true
+  },
+  "remaining_before_done": [
+    "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
+    "Representative non-empty fixtures for every one of the 14 logical tables",
+    "Legacy schema migration/adoption proof",
+    "Large-data stress export/restore proof",
+    "Android document picker/share-sheet integration",
+    "Clean-install export -> erase -> restore -> domain-object equality proof"
+  ]
+}
