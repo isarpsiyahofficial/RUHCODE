@@ -13,11 +13,12 @@
     "temporary grants use exact UTC expiry and expire at the boundary",
     "non-temporary-eligible professional features cannot be unlocked by an ad grant",
     "entitlement resolution itself does not delete or mutate user records",
-    "entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records"
+    "entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records",
+    "local time anchor never moves behind the latest UTC instant already observed by the installation",
+    "local time-anchor protection explicitly does not claim reinstall-proof tamper resistance"
   ],
   "remainingBeforeDone": [
     "implement Google Play purchase ownership restore and reinstall/device-change verification",
-    "implement rollback-resistant local time anchor for temporary access within serverless constraints",
     "wire UI route and service guards to the same EntitlementService",
     "prove Free to PRO and PRO to Free transitions preserve all user data using production SQLite integration",
     "prove rewarded-ad failure cannot crash or corrupt entitlement state",
