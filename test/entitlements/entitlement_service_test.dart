@@ -93,10 +93,10 @@ void main() {
       snapshotProvider: _SnapshotProvider(const EntitlementSnapshot(hasPro: false)),
       clock: _Clock(now),
     );
-    expect(() => service.canUse('invented.feature'), throwsArgumentError);
+    await expectLater(service.canUse('invented.feature'), throwsArgumentError);
   });
 
-  test('temporary expiry and entitlement clock must be UTC', () async {
+  test('temporary expiry must be UTC', () async {
     final service = PolicyEntitlementService(
       snapshotProvider: _SnapshotProvider(
         EntitlementSnapshot(
@@ -111,6 +111,20 @@ void main() {
       ),
       clock: _Clock(now),
     );
-    expect(() => service.resolve(RuhFeatureIds.pdfProfessionalExport), throwsFormatException);
+    await expectLater(
+      service.resolve(RuhFeatureIds.pdfProfessionalExport),
+      throwsFormatException,
+    );
+  });
+
+  test('entitlement clock must return UTC', () async {
+    final service = PolicyEntitlementService(
+      snapshotProvider: _SnapshotProvider(const EntitlementSnapshot(hasPro: false)),
+      clock: _Clock(DateTime(2026, 8, 20, 12)),
+    );
+    await expectLater(
+      service.resolve(RuhFeatureIds.pdfProfessionalExport),
+      throwsStateError,
+    );
   });
 }
