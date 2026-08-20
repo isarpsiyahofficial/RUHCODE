@@ -16,7 +16,7 @@ final class _Clock implements EntitlementClock {
   DateTime value;
 
   @override
-  DateTime nowUtc() => value;
+  Future<DateTime> nowUtc() async => value;
 }
 
 void main() {
