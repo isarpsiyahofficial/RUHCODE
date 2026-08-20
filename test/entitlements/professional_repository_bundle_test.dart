@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/data/local/core_repositories.dart';
 import 'package:ruh_code/src/data/local/local_database.dart';
+import 'package:ruh_code/src/domain/models/core_models.dart';
 import 'package:ruh_code/src/entitlements/entitlement_service.dart';
 import 'package:ruh_code/src/entitlements/feature_access_guard.dart';
 import 'package:ruh_code/src/entitlements/feature_catalog.dart';
