@@ -17,12 +17,19 @@
     "local time anchor never moves behind the latest UTC instant already observed by the installation",
     "local time-anchor protection explicitly does not claim reinstall-proof tamper resistance",
     "production SQLite Free to PRO to Free transitions preserve user-domain records byte-for-byte at the logical JSON layer",
-    "expired temporary access cannot be resurrected by rolling the device wall clock backward within the same installation"
+    "expired temporary access cannot be resurrected by rolling the device wall clock backward within the same installation",
+    "UI route and service access checks use one FeatureAccessGuard backed by the same EntitlementService",
+    "locked service actions are rejected before their action executes",
+    "Google Play lifetime ownership uses the official Android past-purchase query path",
+    "successful Google Play ownership stores only a SHA-256 verification fingerprint rather than raw verification material",
+    "a Google Play query outage never revokes previously confirmed cached lifetime ownership",
+    "a successful Google Play not-owned result changes only the store ownership cache and cannot erase independent local entitlement state",
+    "cached confirmed Google Play lifetime ownership remains usable offline"
   ],
   "remainingBeforeDone": [
-    "implement Google Play purchase ownership restore and reinstall/device-change verification",
-    "wire UI route and service guards to the same EntitlementService",
-    "prove rewarded-ad failure cannot crash or corrupt entitlement state",
+    "prove real Google Play reinstall/device-change restore on a Play-distributed test build",
+    "prove rewarded-ad failure and cancellation cannot corrupt entitlement state",
+    "wire concrete production UI routes and service entry points through FeatureAccessGuard as those screens/services are implemented",
     "run exact workflow and release-mode entitlement matrix successfully"
   ]
 }
