@@ -7,6 +7,7 @@ on:
       - 'lib/src/ui/navigation/**'
       - 'lib/src/app/**'
       - 'lib/src/pdf/guarded_pdf_service.dart'
+      - 'lib/src/data/local/core_repositories.dart'
       - 'lib/src/domain/models/core_models.dart'
       - 'test/entitlements/**'
       - 'test/ui/main_navigation_entitlement_wiring_test.dart'
@@ -21,6 +22,7 @@ on:
       - 'lib/src/ui/navigation/**'
       - 'lib/src/app/**'
       - 'lib/src/pdf/guarded_pdf_service.dart'
+      - 'lib/src/data/local/core_repositories.dart'
       - 'lib/src/domain/models/core_models.dart'
       - 'test/entitlements/**'
       - 'test/ui/main_navigation_entitlement_wiring_test.dart'
@@ -40,6 +42,8 @@ jobs:
           python-version: '3.12'
       - name: Validate entitlement structural contract
         run: python tools/entitlements/validate_feature_policy_contract.py
+      - name: Validate runtime entitlement composition
+        run: python tools/entitlements/validate_runtime_entitlement_composition.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
