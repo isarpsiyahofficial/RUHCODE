@@ -53,7 +53,12 @@ final class LocalRollbackResistantEntitlementClock implements EntitlementClock {
         }
       }
 
-      final effective = anchor == null || wallNow.isAfter(anchor) ? wallNow : anchor;
+      final DateTime effective;
+      if (anchor == null) {
+        effective = wallNow;
+      } else {
+        effective = wallNow.isAfter(anchor) ? wallNow : anchor;
+      }
       if (anchor == null || effective.isAfter(anchor)) {
         await tx.put(
           table: tableName,
