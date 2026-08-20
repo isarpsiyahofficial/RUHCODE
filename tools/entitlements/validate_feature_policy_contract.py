@@ -9,12 +9,14 @@ STORE = ROOT / 'lib/src/entitlements/local_entitlement_snapshot_store.dart'
 TIME_ANCHOR = ROOT / 'lib/src/entitlements/local_entitlement_time_anchor.dart'
 ACCESS_GUARD = ROOT / 'lib/src/entitlements/feature_access_guard.dart'
 PLAY_OWNERSHIP = ROOT / 'lib/src/entitlements/google_play_lifetime_ownership.dart'
+REWARDED = ROOT / 'lib/src/entitlements/rewarded_temporary_unlock.dart'
 TEST = ROOT / 'test/entitlements/entitlement_service_test.dart'
 STORE_TEST = ROOT / 'test/entitlements/local_entitlement_snapshot_store_test.dart'
 TIME_ANCHOR_TEST = ROOT / 'test/entitlements/local_entitlement_time_anchor_test.dart'
 SQLITE_TEST = ROOT / 'test/entitlements/entitlement_sqlite_preservation_test.dart'
 ACCESS_GUARD_TEST = ROOT / 'test/entitlements/feature_access_guard_test.dart'
 PLAY_OWNERSHIP_TEST = ROOT / 'test/entitlements/google_play_lifetime_ownership_test.dart'
+REWARDED_TEST = ROOT / 'test/entitlements/rewarded_temporary_unlock_test.dart'
 PUBSPEC = ROOT / 'pubspec.yaml'
 EVIDENCE = ROOT / 'evidence/entitlements/feature_policy_contract.json'
 
@@ -72,12 +74,21 @@ checks = (
         'getPlatformAddition<InAppPurchaseAndroidPlatformAddition>()',
         'queryPastPurchases()',
         'purchase.verificationData.serverVerificationData',
-        "sha256",
+        'sha256',
         "static const tableName = 'system_google_play_ownership'",
         'if (check.status == StoreOwnershipStatus.unavailable)',
         'cacheChanged: false',
         'final class CompositeEntitlementSnapshotProvider implements EntitlementSnapshotProvider',
         'hasPro: local.hasPro || (store?.owned ?? false)',
+    ]),
+    (REWARDED, [
+        'enum RewardedAdOutcome { rewarded, cancelled, failed }',
+        'final class RewardedTemporaryUnlockCoordinator',
+        'if (outcome != RewardedAdOutcome.rewarded)',
+        'stateChanged: false',
+        'policy.temporaryUnlockAllowed',
+        'existingExpiry.isAfter(requestedExpiry)',
+        'hasPro: current.hasPro',
     ]),
     (TEST, [
         'catalog covers every canonical feature ID exactly once',
@@ -122,6 +133,13 @@ checks = (
         'store outage never revokes previously confirmed ownership',
         'successful not-owned query clears only Google Play ownership cache',
         'owned cache requires fingerprint and UTC timestamp',
+    ]),
+    (REWARDED_TEST, [
+        'cancelled rewarded ad is a strict entitlement no-op',
+        'failed rewarded ad is a strict entitlement no-op',
+        'verified reward adds only the requested eligible temporary feature',
+        'reward never shortens an already longer active grant',
+        'professional-only feature cannot be unlocked by rewarded ad',
     ]),
     (PUBSPEC, [
         'in_app_purchase: ^3.3.0',
@@ -169,6 +187,10 @@ else:
         'a Google Play query outage never revokes previously confirmed cached lifetime ownership',
         'a successful Google Play not-owned result changes only the store ownership cache and cannot erase independent local entitlement state',
         'cached confirmed Google Play lifetime ownership remains usable offline',
+        'rewarded-ad cancellation and failure are strict entitlement-state no-ops',
+        'only a verified rewarded outcome can add a temporary grant',
+        'a rewarded grant cannot shorten an already longer active grant',
+        'professional-only non-temporary features cannot be unlocked by rewarded ads',
     }:
         if item not in required:
             errors.append(f'entitlement evidence missing property: {item}')
@@ -176,4 +198,4 @@ else:
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Feature entitlement/guard/Google-Play ownership contract OK (source-level, not DONE).')
+print('Feature entitlement/guard/Play/rewarded safety contract OK (source-level, not DONE).')
