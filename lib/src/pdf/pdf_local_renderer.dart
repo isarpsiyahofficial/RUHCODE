@@ -7,6 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'pdf_data_contract.dart';
 import 'pdf_output_inspector.dart';
 import 'pdf_report_contract.dart';
+import 'pdf_table_layout.dart';
 
 final class PdfFontBundle {
   const PdfFontBundle({
@@ -84,6 +85,7 @@ final class PdfLocalRenderer {
   const PdfLocalRenderer({
     this.dataValidator = const PdfReportDataValidator(),
     this.outputInspector = const PdfOutputInspector(),
+    this.tableLayout = const PdfTableLayout(),
   });
 
   static const int maxReportPages = 200;
@@ -91,6 +93,7 @@ final class PdfLocalRenderer {
 
   final PdfReportDataValidator dataValidator;
   final PdfOutputInspector outputInspector;
+  final PdfTableLayout tableLayout;
 
   Future<Uint8List> render(PdfRenderPayload payload) async {
     _validate(payload);
@@ -210,18 +213,16 @@ final class PdfLocalRenderer {
       widgets.add(heading);
     }
 
-    if (section.rows.isNotEmpty) {
-      final columnCount = section.rows.fold<int>(0, (max, row) => row.length > max ? row.length : max);
-      if (columnCount > 0) {
-        widgets.add(
-          pw.TableHelper.fromTextArray(
-            data: section.rows,
-            cellStyle: pw.TextStyle(fontSize: tokens.tablePt),
-            headerStyle: pw.TextStyle(fontSize: tokens.tablePt, fontWeight: pw.FontWeight.bold),
-            cellPadding: const pw.EdgeInsets.all(4),
-          ),
-        );
-      }
+    for (final chunk in tableLayout.chunk(section.rows)) {
+      widgets.add(
+        pw.TableHelper.fromTextArray(
+          data: chunk.rows,
+          cellStyle: pw.TextStyle(fontSize: tokens.tablePt),
+          headerStyle: pw.TextStyle(fontSize: tokens.tablePt, fontWeight: pw.FontWeight.bold),
+          cellPadding: const pw.EdgeInsets.all(4),
+        ),
+      );
+      widgets.add(pw.SizedBox(height: 6));
     }
     return widgets;
   }
@@ -263,6 +264,7 @@ final class PdfLocalRenderer {
       if (available[section.sectionId] != true || !section.hasContent) {
         throw FormatException('Render section ${section.sectionId} is empty or unavailable.');
       }
+      tableLayout.chunk(section.rows);
     }
 
     for (final id in payload.plan.sectionIds) {
