@@ -10,6 +10,7 @@ TIME_ANCHOR = ROOT / 'lib/src/entitlements/local_entitlement_time_anchor.dart'
 TEST = ROOT / 'test/entitlements/entitlement_service_test.dart'
 STORE_TEST = ROOT / 'test/entitlements/local_entitlement_snapshot_store_test.dart'
 TIME_ANCHOR_TEST = ROOT / 'test/entitlements/local_entitlement_time_anchor_test.dart'
+SQLITE_TEST = ROOT / 'test/entitlements/entitlement_sqlite_preservation_test.dart'
 EVIDENCE = ROOT / 'evidence/entitlements/feature_policy_contract.json'
 
 checks = (
@@ -74,6 +75,15 @@ checks = (
         'time anchor never mutates domain records',
         'non UTC wall clock is rejected',
     ]),
+    (SQLITE_TEST, [
+        'Free to PRO to Free changes only dedicated entitlement rows',
+        'persistent time anchor cannot change user data in production SQLite adapter',
+        'stored PRO snapshot and rollback-resistant time combine offline',
+        'sqfliteFfiInit',
+        'SqfliteLocalDatabase(',
+        'expect(await snapshotDomain(), before)',
+        'Rolling the wall clock back cannot resurrect the expired grant.',
+    ]),
 )
 
 errors = []
@@ -108,6 +118,8 @@ else:
         'entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records',
         'local time anchor never moves behind the latest UTC instant already observed by the installation',
         'local time-anchor protection explicitly does not claim reinstall-proof tamper resistance',
+        'production SQLite Free to PRO to Free transitions preserve user-domain records byte-for-byte at the logical JSON layer',
+        'expired temporary access cannot be resurrected by rolling the device wall clock backward within the same installation',
     }:
         if item not in required:
             errors.append(f'entitlement evidence missing property: {item}')
@@ -115,4 +127,4 @@ else:
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Feature entitlement policy/local-store/time-anchor contract OK (source-level, not DONE).')
+print('Feature entitlement policy/local-store/time-anchor/SQLite preservation contract OK (source-level, not DONE).')
