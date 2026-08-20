@@ -20,6 +20,9 @@
     "expired temporary access cannot be resurrected by rolling the device wall clock backward within the same installation",
     "UI route and service access checks use one FeatureAccessGuard backed by the same EntitlementService",
     "locked service actions are rejected before their action executes",
+    "concrete Tools routes resolve canonical basic and advanced Feature IDs through FeatureAccessGuard",
+    "professional Danışanlarım route is guarded by professional.clients and remains unavailable to Free users",
+    "PDF sample preview remains Free while professional PDF route is guarded by pdf.professional_export",
     "Google Play lifetime ownership uses the official Android past-purchase query path",
     "successful Google Play ownership stores only a SHA-256 verification fingerprint rather than raw verification material",
     "a Google Play query outage never revokes previously confirmed cached lifetime ownership",
@@ -32,8 +35,9 @@
   ],
   "remainingBeforeDone": [
     "prove real Google Play reinstall/device-change restore on a Play-distributed test build",
-    "wire concrete production UI routes and service entry points through FeatureAccessGuard as those screens/services are implemented",
+    "wire remaining concrete production service entry points through FeatureAccessGuard as those services are implemented",
     "connect a production rewarded-ad SDK adapter and verify real-device cancellation/failure/completion events",
+    "replace placeholder route bodies with approved production screens and rerun the same Free/PRO route matrix",
     "run exact workflow and release-mode entitlement matrix successfully"
   ]
 }
