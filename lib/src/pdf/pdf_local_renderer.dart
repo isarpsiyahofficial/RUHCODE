@@ -84,6 +84,9 @@ final class PdfLocalRenderer {
     this.dataValidator = const PdfReportDataValidator(),
   });
 
+  static const int maxReportPages = 200;
+  static const double sectionKeepTogetherFreeSpacePt = 72;
+
   final PdfReportDataValidator dataValidator;
 
   Future<Uint8List> render(PdfRenderPayload payload) async {
@@ -117,6 +120,7 @@ final class PdfLocalRenderer {
       pw.MultiPage(
         pageFormat: pageFormat,
         theme: theme,
+        maxPages: maxReportPages,
         footer: (context) => pw.Align(
           alignment: pw.Alignment.centerRight,
           child: pw.Text(
@@ -180,26 +184,37 @@ final class PdfLocalRenderer {
 
   List<pw.Widget> _sectionWidgets(PdfRenderPayload payload, PdfRenderSection section) {
     final tokens = payload.plan.typography;
+    final paragraphs = section.paragraphs.where((value) => value.trim().isNotEmpty).toList(growable: false);
     final widgets = <pw.Widget>[
+      // Avoid an orphaned section heading at the bottom of a page.
+      pw.NewPage(freeSpace: sectionKeepTogetherFreeSpacePt),
       pw.SizedBox(height: 10),
-      pw.Header(
-        level: 1,
-        text: section.title,
-        textStyle: pw.TextStyle(fontSize: tokens.h1Pt, fontWeight: pw.FontWeight.bold),
-      ),
     ];
-    for (final paragraph in section.paragraphs) {
-      if (paragraph.trim().isEmpty) continue;
+
+    final heading = pw.Header(
+      level: 1,
+      text: section.title,
+      textStyle: pw.TextStyle(fontSize: tokens.h1Pt, fontWeight: pw.FontWeight.bold),
+    );
+    if (paragraphs.isNotEmpty) {
       widgets.add(
-        pw.Padding(
-          padding: const pw.EdgeInsets.only(bottom: 7),
-          child: pw.Text(
-            paragraph,
-            style: pw.TextStyle(fontSize: tokens.bodyPt, lineSpacing: tokens.lineHeight),
+        pw.Inseparable(
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: <pw.Widget>[
+              heading,
+              _paragraphWidget(paragraphs.first, tokens),
+            ],
           ),
         ),
       );
+      for (final paragraph in paragraphs.skip(1)) {
+        widgets.add(_paragraphWidget(paragraph, tokens));
+      }
+    } else {
+      widgets.add(heading);
     }
+
     if (section.rows.isNotEmpty) {
       final columnCount = section.rows.fold<int>(0, (max, row) => row.length > max ? row.length : max);
       if (columnCount > 0) {
@@ -215,6 +230,14 @@ final class PdfLocalRenderer {
     }
     return widgets;
   }
+
+  pw.Widget _paragraphWidget(String paragraph, PdfTypographyTokens tokens) => pw.Padding(
+        padding: const pw.EdgeInsets.only(bottom: 7),
+        child: pw.Text(
+          paragraph,
+          style: pw.TextStyle(fontSize: tokens.bodyPt, lineSpacing: tokens.lineHeight),
+        ),
+      );
 
   void _validate(PdfRenderPayload payload) {
     payload.fonts.validate();
