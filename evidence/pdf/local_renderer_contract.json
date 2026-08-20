@@ -1,0 +1,29 @@
+{
+  "contract": "professional-pdf-local-renderer-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "localOnly": true,
+  "dependency": {
+    "package": "pdf",
+    "constraint": "^3.13.0",
+    "publisher": "nfet.net"
+  },
+  "requiredProperties": [
+    "A4 dimensions and margins come from PdfReportPlan",
+    "all selected sections belong to one exact SHA-256 calculation snapshot",
+    "TR/EN production rendering requires bundled TrueType font bytes",
+    "regular and bold font bytes are verified against declared SHA-256 digests",
+    "font family and license identifiers are mandatory",
+    "empty or unavailable sections cannot be rendered",
+    "page numbers are generated locally",
+    "renderer output must begin with the PDF file signature"
+  ],
+  "remainingBeforeDone": [
+    "bundle approved Unicode TR/EN fonts with license and immutable SHA-256 manifest",
+    "run actual byte-render tests with those font assets",
+    "add 5/25/50+ page and low-memory tests",
+    "add parse/open, missing-glyph, crop and visual-regression checks",
+    "add Western/Vedic vector chart and BaZi/Numerology table render adapters",
+    "obtain exact workflow SUCCESS evidence"
+  ]
+}
