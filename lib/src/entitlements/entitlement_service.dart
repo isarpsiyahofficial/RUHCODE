@@ -31,14 +31,14 @@ abstract interface class EntitlementSnapshotProvider {
 }
 
 abstract interface class EntitlementClock {
-  DateTime nowUtc();
+  Future<DateTime> nowUtc();
 }
 
 final class SystemEntitlementClock implements EntitlementClock {
   const SystemEntitlementClock();
 
   @override
-  DateTime nowUtc() => DateTime.now().toUtc();
+  Future<DateTime> nowUtc() async => DateTime.now().toUtc();
 }
 
 /// Single policy resolver used by UI, routing and services.
@@ -68,7 +68,7 @@ final class PolicyEntitlementService implements EntitlementService {
       return FeatureEntitlement(featureId: featureId, tier: EntitlementTier.free);
     }
 
-    final now = clock.nowUtc();
+    final now = await clock.nowUtc();
     if (!now.isUtc) {
       throw const StateError('Entitlement clock must return UTC.');
     }
