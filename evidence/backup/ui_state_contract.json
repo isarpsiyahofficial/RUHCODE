@@ -23,9 +23,13 @@
     "RC-1440",
     "RC-1441"
   ],
-  "source": "lib/src/ui/backup/backup_ui_contract.dart",
+  "sources": [
+    "lib/src/ui/backup/backup_ui_contract.dart",
+    "lib/src/backup/backup_import_coordinator.dart"
+  ],
   "tests": [
-    "test/ui/backup/backup_ui_contract_test.dart"
+    "test/ui/backup/backup_ui_contract_test.dart",
+    "test/backup/backup_import_coordinator_test.dart"
   ],
   "requiredActions": [
     "saveFullBackup",
@@ -57,8 +61,14 @@
     "userCancellationIsFailure": false,
     "invalidPreviewMayMutateStorage": false
   },
+  "rollbackContract": {
+    "typedException": "BackupRestoreException",
+    "uiMayClaimRollbackOnlyWhenRollbackRestoredIsTrue": true,
+    "rollbackFailureMustNotBeReportedAsRestored": true
+  },
   "releaseBlockers": [
     "Exact Flutter workflow success is not yet recorded in this evidence file.",
+    "Primary ui/action_registry.csv still contains legacy CSV wording and must be migrated to portable-backup labels.",
     "Approved UI reference image for backup screens is not yet available.",
     "Android real-device save/open/share smoke proof is not yet attached."
   ]
