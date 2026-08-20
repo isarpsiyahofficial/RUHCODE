@@ -6,8 +6,10 @@ ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / 'lib/src/entitlements/feature_catalog.dart'
 SERVICE = ROOT / 'lib/src/entitlements/entitlement_service.dart'
 STORE = ROOT / 'lib/src/entitlements/local_entitlement_snapshot_store.dart'
+TIME_ANCHOR = ROOT / 'lib/src/entitlements/local_entitlement_time_anchor.dart'
 TEST = ROOT / 'test/entitlements/entitlement_service_test.dart'
 STORE_TEST = ROOT / 'test/entitlements/local_entitlement_snapshot_store_test.dart'
+TIME_ANCHOR_TEST = ROOT / 'test/entitlements/local_entitlement_time_anchor_test.dart'
 EVIDENCE = ROOT / 'evidence/entitlements/feature_policy_contract.json'
 
 checks = (
@@ -29,6 +31,7 @@ checks = (
         'grant.validUntilUtc.isAfter(now)',
         'Temporary entitlement expiry must be UTC.',
         'Entitlement clock must return UTC.',
+        'final now = await clock.nowUtc();',
     ]),
     (STORE, [
         'final class LocalEntitlementSnapshotStore implements EntitlementSnapshotProvider',
@@ -38,6 +41,14 @@ checks = (
         'tx.put(',
         'tx.delete(table: tableName, id: recordId)',
         'Stored temporary grant expiry must be UTC ISO-8601.',
+    ]),
+    (TIME_ANCHOR, [
+        'final class LocalRollbackResistantEntitlementClock implements EntitlementClock',
+        "static const tableName = 'system_entitlement_time_anchor'",
+        "static const recordId = 'latest_seen_utc'",
+        'final effective = anchor == null || wallNow.isAfter(anchor) ? wallNow : anchor;',
+        'Stored entitlement time anchor must be UTC ISO-8601.',
+        'clearing app data/reinstalling',
     ]),
     (TEST, [
         'catalog covers every canonical feature ID exactly once',
@@ -54,6 +65,13 @@ checks = (
         'PRO and temporary grants round trip in dedicated system table only',
         'clear removes entitlement state without clearing domain data',
         'non UTC temporary grant cannot be persisted',
+    ]),
+    (TIME_ANCHOR_TEST, [
+        'first observation stores exact UTC wall time',
+        'device clock rollback cannot move effective entitlement time backwards',
+        'later legitimate wall time advances the persistent anchor',
+        'time anchor never mutates domain records',
+        'non UTC wall clock is rejected',
     ]),
 )
 
@@ -87,6 +105,8 @@ else:
         'temporary grants use exact UTC expiry and expire at the boundary',
         'entitlement resolution itself does not delete or mutate user records',
         'entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records',
+        'local time anchor never moves behind the latest UTC instant already observed by the installation',
+        'local time-anchor protection explicitly does not claim reinstall-proof tamper resistance',
     }:
         if item not in required:
             errors.append(f'entitlement evidence missing property: {item}')
@@ -94,4 +114,4 @@ else:
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Feature entitlement policy/local-store contract OK (source-level, not DONE).')
+print('Feature entitlement policy/local-store/time-anchor contract OK (source-level, not DONE).')
