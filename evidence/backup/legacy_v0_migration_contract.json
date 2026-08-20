@@ -1,0 +1,40 @@
+{
+  "contract_id": "BACKUP-LEGACY-V0-MIGRATION-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0750",
+    "RC-0751",
+    "RC-0752",
+    "RC-0753",
+    "RC-0754",
+    "RC-0823",
+    "RC-0858",
+    "RC-1245",
+    "RC-1246"
+  ],
+  "legacy_format": {
+    "version": 0,
+    "manifest": false,
+    "required_files": ["profiles.csv"],
+    "optional_files": ["settings.csv"],
+    "missing_current_field": "birth_time_knowledge"
+  },
+  "migration_rules": {
+    "birth_time_present": "exact",
+    "birth_time_missing": "unknown",
+    "unknown_time_never_defaults_to_midnight": true,
+    "tables_absent_in_v0_become_empty_current_tables": true,
+    "unknown_legacy_members_rejected": true,
+    "unknown_legacy_headers_rejected": true,
+    "migration_emits_current_schema_package": true,
+    "strict_current_preview_after_migration": true,
+    "production_import_after_migration": true
+  },
+  "source": "lib/src/backup/legacy_backup_v0_migrator.dart",
+  "tests": ["test/backup/legacy_backup_v0_migrator_test.dart"],
+  "remaining_before_done": [
+    "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
+    "A released historical backup fixture when one exists"
+  ]
+}
