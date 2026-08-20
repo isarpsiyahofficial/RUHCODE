@@ -22,6 +22,45 @@ enum BackupShareStatus {
   unavailable,
 }
 
+final class BackupPlatformPolicy {
+  const BackupPlatformPolicy({
+    this.maxBackupBytes = 64 * 1024 * 1024,
+  });
+
+  final int maxBackupBytes;
+
+  Uint8List validateBytes(List<int> bytes) {
+    if (maxBackupBytes <= 0) {
+      throw StateError('Backup platform size limit must be positive.');
+    }
+    if (bytes.isEmpty) {
+      throw const FormatException('Portable backup bytes cannot be empty.');
+    }
+    if (bytes.length > maxBackupBytes) {
+      throw FormatException(
+        'Portable backup exceeds platform size limit: ${bytes.length} > $maxBackupBytes.',
+      );
+    }
+    return Uint8List.fromList(bytes);
+  }
+
+  String validateFileName(String fileName) {
+    final trimmed = fileName.trim();
+    if (trimmed.isEmpty) {
+      throw const FormatException('Portable backup file name cannot be empty.');
+    }
+    if (trimmed.contains('/') || trimmed.contains('\\')) {
+      throw const FormatException('Portable backup file name must not contain a path.');
+    }
+    if (!trimmed.toLowerCase().endsWith(kRuhCodeBackupExtension)) {
+      throw const FormatException(
+        'Portable backup file name must end with .ruhcode.zip.',
+      );
+    }
+    return trimmed;
+  }
+}
+
 abstract interface class BackupPlatformGateway {
   Future<Uri?> saveBackup({
     required String suggestedFileName,
@@ -46,18 +85,18 @@ abstract interface class BackupPlatformGateway {
 /// strict ZIP/package layer.
 final class NativeBackupPlatformGateway implements BackupPlatformGateway {
   const NativeBackupPlatformGateway({
-    this.maxBackupBytes = 64 * 1024 * 1024,
+    this.policy = const BackupPlatformPolicy(),
   });
 
-  final int maxBackupBytes;
+  final BackupPlatformPolicy policy;
 
   @override
   Future<Uri?> saveBackup({
     required String suggestedFileName,
     required List<int> bytes,
   }) async {
-    final safeName = _validateFileName(suggestedFileName);
-    final data = _validateBytes(bytes);
+    final safeName = policy.validateFileName(suggestedFileName);
+    final data = policy.validateBytes(bytes);
 
     return FilePicker.saveFile(
       dialogTitle: 'Ruh Code yedeğini kaydet',
@@ -78,8 +117,8 @@ final class NativeBackupPlatformGateway implements BackupPlatformGateway {
       return null;
     }
 
-    final safeName = _validateFileName(file.name);
-    final bytes = _validateBytes(await file.readAsBytes());
+    final safeName = policy.validateFileName(file.name);
+    final bytes = policy.validateBytes(await file.readAsBytes());
     return PickedBackupDocument(name: safeName, bytes: bytes);
   }
 
@@ -90,8 +129,8 @@ final class NativeBackupPlatformGateway implements BackupPlatformGateway {
     String? title,
     String? text,
   }) async {
-    final safeName = _validateFileName(fileName);
-    final data = _validateBytes(bytes);
+    final safeName = policy.validateFileName(fileName);
+    final data = policy.validateBytes(bytes);
 
     final result = await SharePlus.instance.share(
       ShareParams(
@@ -112,36 +151,5 @@ final class NativeBackupPlatformGateway implements BackupPlatformGateway {
       ShareResultStatus.dismissed => BackupShareStatus.dismissed,
       ShareResultStatus.unavailable => BackupShareStatus.unavailable,
     };
-  }
-
-  Uint8List _validateBytes(List<int> bytes) {
-    if (maxBackupBytes <= 0) {
-      throw StateError('Backup platform size limit must be positive.');
-    }
-    if (bytes.isEmpty) {
-      throw const FormatException('Portable backup bytes cannot be empty.');
-    }
-    if (bytes.length > maxBackupBytes) {
-      throw FormatException(
-        'Portable backup exceeds platform size limit: ${bytes.length} > $maxBackupBytes.',
-      );
-    }
-    return Uint8List.fromList(bytes);
-  }
-
-  String _validateFileName(String fileName) {
-    final trimmed = fileName.trim();
-    if (trimmed.isEmpty) {
-      throw const FormatException('Portable backup file name cannot be empty.');
-    }
-    if (trimmed.contains('/') || trimmed.contains('\\')) {
-      throw const FormatException('Portable backup file name must not contain a path.');
-    }
-    if (!trimmed.toLowerCase().endsWith(kRuhCodeBackupExtension)) {
-      throw const FormatException(
-        'Portable backup file name must end with .ruhcode.zip.',
-      );
-    }
-    return trimmed;
   }
 }
