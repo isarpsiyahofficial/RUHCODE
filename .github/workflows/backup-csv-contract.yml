@@ -7,10 +7,13 @@ on:
       - 'pubspec.lock'
       - 'lib/src/backup/**'
       - 'lib/src/data/local/**'
+      - 'lib/src/ui/backup/**'
       - 'test/backup/**'
       - 'test/data/**'
+      - 'test/ui/backup/**'
       - 'evidence/backup/**'
       - 'tools/backup/**'
+      - 'ui/action_registry.csv'
       - '.github/workflows/backup-csv-contract.yml'
   pull_request:
     paths:
@@ -18,10 +21,13 @@ on:
       - 'pubspec.lock'
       - 'lib/src/backup/**'
       - 'lib/src/data/local/**'
+      - 'lib/src/ui/backup/**'
       - 'test/backup/**'
       - 'test/data/**'
+      - 'test/ui/backup/**'
       - 'evidence/backup/**'
       - 'tools/backup/**'
+      - 'ui/action_registry.csv'
       - '.github/workflows/backup-csv-contract.yml'
 
 jobs:
@@ -46,6 +52,8 @@ jobs:
         run: python tools/backup/validate_backup_platform_gateway_contract.py
       - name: Validate backup application-service contract
         run: python tools/backup/validate_backup_application_service_contract.py
+      - name: Validate backup UI action/state contract
+        run: python tools/backup/validate_backup_ui_contract.py
       - name: Validate LocalDatabase export contract
         run: python tools/backup/validate_local_export_contract.py
       - name: Validate transactional backup import contract
@@ -61,5 +69,5 @@ jobs:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run backup codec schema package import ZIP platform-gateway application-service file-store export lifecycle legacy-migration and production-store tests
-        run: flutter test test/backup test/data
+      - name: Run backup and backup-UI contract tests
+        run: flutter test test/backup test/data test/ui/backup
