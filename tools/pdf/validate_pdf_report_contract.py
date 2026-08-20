@@ -18,57 +18,37 @@ PUBSPEC = ROOT / 'pubspec.yaml'
 
 contracts = (
     (REPORT_SOURCE, [
-        'static const a4 = PdfPageSpec(',
-        'widthMm: 210',
-        'heightMm: 297',
-        'enum PdfDataOrigin',
-        'enum PdfCoverStyle',
+        'static const a4 = PdfPageSpec(', 'widthMm: 210', 'heightMm: 297',
+        'enum PdfDataOrigin', 'enum PdfCoverStyle',
         "request.localeTag != 'tr' && request.localeTag != 'en'",
-        'Sample PDF must use demo data only.',
-        'Non-sample PDF must use user data origin.',
-        'Duplicate requested PDF section id',
-        'PDF report has no non-empty content section.',
-        'selected.add(id)',
+        'Sample PDF must use demo data only.', 'Non-sample PDF must use user data origin.',
+        'Duplicate requested PDF section id', 'PDF report has no non-empty content section.', 'selected.add(id)',
     ]),
     (DATA_SOURCE, [
-        'final class PdfSnapshotIdentity',
-        "RegExp(r'^[a-f0-9]{64}$')",
-        'Demo PDF origin requires a demo subject identity.',
-        'User PDF origin cannot use a demo subject identity.',
-        'does not belong to the report snapshot.',
-        'UI and PDF calculation snapshots do not match.',
+        'final class PdfSnapshotIdentity', "RegExp(r'^[a-f0-9]{64}$')",
+        'Demo PDF origin requires a demo subject identity.', 'User PDF origin cannot use a demo subject identity.',
+        'does not belong to the report snapshot.', 'UI and PDF calculation snapshots do not match.',
     ]),
     (RENDER_SOURCE, [
-        'final class PdfFontBundle',
-        'sha256.convert(regularBytes)',
-        'sha256.convert(boldBytes)',
-        'final class PdfLocalRenderer',
-        'pw.Document(',
-        'pw.MultiPage(',
-        'PdfPageFormat.mm',
-        "bytes[0] != 0x25",
+        'final class PdfFontBundle', 'sha256.convert(regularBytes)', 'sha256.convert(boldBytes)',
+        'final class PdfLocalRenderer', 'static const int maxReportPages = 200',
+        'static const double sectionKeepTogetherFreeSpacePt = 72', 'pw.Document(', 'pw.MultiPage(',
+        'maxPages: maxReportPages', 'pw.NewPage(freeSpace: sectionKeepTogetherFreeSpacePt)', 'pw.Inseparable(',
+        'PdfPageFormat.mm', "bytes[0] != 0x25",
         'Render section ${section.sectionId} belongs to another snapshot.',
         'Selected PDF section $id has no render payload.',
     ]),
     (SERVICE_SOURCE, [
-        'abstract interface class PdfReportContentAdapter',
-        'abstract interface class PdfFontBundleProvider',
-        'final class PdfLocalReportService',
-        'implements PdfService<TSnapshot>',
-        'dataValidator.validateAndProject(dataset)',
-        'planner.build(',
-        'fontProvider.loadForLocale(options.localeTag)',
-        'renderer.render(',
+        'abstract interface class PdfReportContentAdapter', 'abstract interface class PdfFontBundleProvider',
+        'final class PdfLocalReportService', 'implements PdfService<TSnapshot>',
+        'dataValidator.validateAndProject(dataset)', 'planner.build(',
+        'fontProvider.loadForLocale(options.localeTag)', 'renderer.render(',
     ]),
     (FONT_SOURCE, [
-        'final class PdfFontAssetSpec',
-        "localeTag != 'tr' && localeTag != 'en'",
-        'familyName.trim().isEmpty || licenseId.trim().isEmpty',
-        "RegExp(r'^[a-f0-9]{64}$')",
-        'final class PdfAssetFontBundleProvider',
-        "for (final locale in const <String>{'tr', 'en'})",
-        'bundle.load(spec.regularAssetPath)',
-        'result.validate();',
+        'final class PdfFontAssetSpec', "localeTag != 'tr' && localeTag != 'en'",
+        'familyName.trim().isEmpty || licenseId.trim().isEmpty', "RegExp(r'^[a-f0-9]{64}$')",
+        'final class PdfAssetFontBundleProvider', "for (final locale in const <String>{'tr', 'en'})",
+        'bundle.load(spec.regularAssetPath)', 'result.validate();',
     ]),
     (REPORT_TEST, [
         'requested section order is preserved while empty sections are suppressed',
@@ -89,14 +69,11 @@ contracts = (
         'renderer rejects a selected section without render payload',
     ]),
     (FONT_TEST, [
-        'provider requires an explicit TR and EN font specification',
-        'provider rejects duplicate locale specifications',
+        'provider requires an explicit TR and EN font specification', 'provider rejects duplicate locale specifications',
         'loaded font bytes must match the immutable declared SHA-256',
         'verified locale font bundle loads without changing declared provenance',
     ]),
-    (PUBSPEC, [
-        'pdf: ^3.13.0',
-    ]),
+    (PUBSPEC, ['pdf: ^3.13.0']),
 )
 
 errors = []
@@ -113,43 +90,32 @@ if not EVIDENCE.exists():
     errors.append(f'missing {EVIDENCE.relative_to(ROOT)}')
 else:
     evidence = json.loads(EVIDENCE.read_text(encoding='utf-8'))
-    if evidence.get('contract') != 'professional-pdf-report-planning-v1':
-        errors.append('unexpected PDF planning evidence contract id')
-    if evidence.get('done') is not False:
-        errors.append('PDF planning evidence must remain done=false until byte-render/visual proof exists')
+    if evidence.get('contract') != 'professional-pdf-report-planning-v1': errors.append('unexpected PDF planning evidence contract id')
+    if evidence.get('done') is not False: errors.append('PDF planning evidence must remain done=false until byte-render/visual proof exists')
     page = evidence.get('page', {})
-    if page.get('format') != 'A4' or page.get('widthMm') != 210 or page.get('heightMm') != 297:
-        errors.append('PDF planning evidence must pin A4 210x297mm')
-    if page.get('localOnly') is not True:
-        errors.append('PDF planning evidence must require local-only generation')
+    if page.get('format') != 'A4' or page.get('widthMm') != 210 or page.get('heightMm') != 297: errors.append('PDF planning evidence must pin A4 210x297mm')
+    if page.get('localOnly') is not True: errors.append('PDF planning evidence must require local-only generation')
     features = set(evidence.get('contractFeatures', []))
-    for feature in {
-        'every section bound to one SHA-256 calculation snapshot identity',
-        'cross-snapshot section mixing rejected before rendering',
-        'UI and PDF snapshot parity can be required explicitly',
-    }:
-        if feature not in features:
-            errors.append(f'PDF evidence missing feature: {feature}')
+    for feature in {'every section bound to one SHA-256 calculation snapshot identity','cross-snapshot section mixing rejected before rendering','UI and PDF snapshot parity can be required explicitly'}:
+        if feature not in features: errors.append(f'PDF evidence missing feature: {feature}')
 
 if not RENDER_EVIDENCE.exists():
     errors.append(f'missing {RENDER_EVIDENCE.relative_to(ROOT)}')
 else:
     render_evidence = json.loads(RENDER_EVIDENCE.read_text(encoding='utf-8'))
-    if render_evidence.get('contract') != 'professional-pdf-local-renderer-v1':
-        errors.append('unexpected local PDF renderer evidence contract id')
-    if render_evidence.get('done') is not False:
-        errors.append('local renderer evidence must remain done=false until approved fonts and render regression pass')
-    if render_evidence.get('localOnly') is not True:
-        errors.append('local PDF renderer must be local-only')
+    if render_evidence.get('contract') != 'professional-pdf-local-renderer-v1': errors.append('unexpected local PDF renderer evidence contract id')
+    if render_evidence.get('done') is not False: errors.append('local renderer evidence must remain done=false until approved fonts and render regression pass')
+    if render_evidence.get('localOnly') is not True: errors.append('local PDF renderer must be local-only')
     required = set(render_evidence.get('requiredProperties', []))
     for item in {
         'all selected sections belong to one exact SHA-256 calculation snapshot',
         'regular and bold font bytes are verified against declared SHA-256 digests',
         'font family and license identifiers are mandatory',
+        'renderer explicitly supports reports longer than 50 pages with a bounded 200-page safety ceiling',
+        'section headings are protected against orphaning by a minimum remaining-space break and inseparable heading plus first paragraph',
         'renderer output must begin with the PDF file signature',
     }:
-        if item not in required:
-            errors.append(f'local PDF renderer evidence missing property: {item}')
+        if item not in required: errors.append(f'local PDF renderer evidence missing property: {item}')
 
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
