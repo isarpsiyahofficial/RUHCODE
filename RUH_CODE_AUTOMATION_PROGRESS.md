@@ -65,36 +65,36 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Aynı backup ikinci merge import idempotency.
 - [x] TR/EN manifest metadata machine-storage isolation.
 - [x] 2.500 Unicode kayıt replace-mode stress restore.
-- [x] **14 logical tablonun tamamı non-empty representative relational fixture ile full export/import symmetry testine bağlı.**
-- [x] **Export → bütün registered tabloları erase → replace restore → raw storage equality testi mevcut.**
-- [x] **Aynı erase/restore akışında `CoreRepositories` + `CoreModelCodecs` üzerinden domain-object equality testi mevcut.**
-- [x] **Explicit legacy v0 migrator mevcut:** manifestsiz `profiles.csv` + opsiyonel `settings.csv`; birth-time knowledge migration; bilinmeyen saati midnight uydurmama; yeni tabloları boş üretme; unknown member/header rejection.
+- [x] 14 logical tablonun tamamı non-empty representative relational fixture ile full export/import symmetry testine bağlı.
+- [x] Export → bütün registered tabloları erase → replace restore → raw storage equality testi mevcut.
+- [x] Aynı erase/restore akışında `CoreRepositories` + `CoreModelCodecs` üzerinden domain-object equality testi mevcut.
+- [x] Explicit legacy v0 migrator: manifestsiz `profiles.csv` + opsiyonel `settings.csv`; bilinmeyen saati midnight uydurmama; unknown member/header rejection.
 - [x] Legacy v0 → current strict preview → production SQLite import → domain read source-level testi mevcut.
+- [x] **Native/platform backup gateway eklendi:** OS Save As, tek backup seçme, share sheet; `.ruhcode.zip` suffix/path/payload policy; core serialization'dan ayrı; network yok.
+- [x] `file_picker ^12.0.0` ve `share_plus ^13.3.0` dependency contract'a bağlandı.
+- [x] Platform gateway policy testleri + evidence + validator + Backup CI wiring mevcut.
 - [ ] Exact workflow SUCCESS görünür değil; ilgili Backup RC'leri DONE değil.
-- [ ] Android document picker/share-sheet platform entegrasyonu.
+- [ ] Android gerçek cihaz save/open/share smoke testi.
+- [ ] Backup export/import application service + kullanıcı iptal semantics.
 - [ ] Released historical backup fixture mevcut olduğunda gerçek tarihsel fixture doğrulaması.
-- [ ] `pubspec.lock` henüz repository'de yok; clean-checkout reproducibility için gerçek dependency resolution sonrası commit edilmeli.
+- [ ] `pubspec.lock` gerçek dependency resolution sonrası commit edilmeli; elle uydurulmayacak.
 
-## Son tur — 2026-08-20 06:56
+## Son tur — 2026-08-20 08:56
 
-Checkpoint: `automation_runs/2026-08-20_0656_backup_symmetry_legacy.md`
+Checkpoint: `automation_runs/2026-08-20_0856_backup_platform_gateway.md`
 
-Bu turda backup hattındaki iki büyük açık source-level kapatıldı: bütün 14 tablo non-empty ve gerçek FK ilişkileri taşıyan representative fixture ile portable restore symmetry testine alındı; ayrıca export sonrası bütün tabloların silinip restore edilmesi ve domain repository seviyesinde aynı nesnelere dönülmesi kanıt zincirine eklendi.
-
-Legacy migration için de ilk açık ve deterministik sürüm geçişi eklendi. V0 backup'ın manifest taşımadığı, yalnız profile/settings bildiği ve `birth_time_knowledge` taşımadığı sözleşme olarak tanımlandı. Saat varsa `exact`, yoksa `unknown`; `00:00` uydurma kesinlikle yok. V0'da bulunmayan tablolar boş current-schema dosyalarına dönüşüyor ve bilinmeyen legacy yapılar reddediliyor.
+Bu turda Android/cihaz dosya seçme ve paylaşma açığı source-level ilerletildi. Backup serialization/ZIP/SQLite katmanları değiştirilmeden, platform sınırı `BackupPlatformGateway` ile ayrıldı. `NativeBackupPlatformGateway` OS-native save dialog, tek dosya picker ve share sheet kullanıyor. Kullanıcı iptali nullable sonuç olarak korunuyor; platform kodu ağ çağrısı yapmıyor. `.ruhcode.zip` adı, path injection, boş/oversize payload ve 64 MiB sınırı saf `BackupPlatformPolicy` ile test edilebilir hale getirildi.
 
 Son commit zinciri:
-- `7c98cb0e66daab80ab6f984cac7ee7df1ceacbfc` all-table symmetry + erase/restore
-- `daafa91264e4701736d45f99fa0441f8061451a2` lifecycle evidence
-- `f6656686241c7c93aeaac56fcf0a0fa0eb2a584a` lifecycle validator
-- `95d442c6887a97ed2b196a052c85821e9b785775` legacy v0 migrator
-- `997c190054dfe3e05721d3610fee069478e726b2` legacy tests
-- `3c6cc898eb3a5180d07743e63a2d6a848f83d71b` legacy evidence
-- `a00424f9e7329791ec4169160c51dd30e183d7af` legacy validator
-- `f962595646febeb8a978b558ab682c2900817753` Backup CI wiring
-- `60fb7b02d8b7d0c40c8d6aeee012e7a0703a2687` run checkpoint
+- `809a1000eec938a9d9586a544a2fbe3d70b513a0` platform dependencies
+- `decba829d49c7d5e8bf1b5f15436be57912fd008` platform gateway + validation policy
+- `b2419bba1dee8e3e596d64641bfbfc2fd514d764` platform policy tests
+- `b57b68fa2a4346442d7d8cfa7f297c72bf5c5f75` evidence contract
+- `35bcf569ec554c9acac607cea4970a0f36be1ebd` structural validator
+- `7f7cc01f96771d5153c0d2ec12396740383e9d66` Backup CI wiring
+- `a8dcdb77eb736f846c534bcf470b3ad413f6f33b` run checkpoint
 
-GitHub combined-status latest workflow commit için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
+GitHub combined-status workflow commit için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -112,15 +112,16 @@ GitHub combined-status latest workflow commit için `statuses=[]` döndürdü; S
 ## Sıradaki çalışma
 
 1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt.
-2. Android document picker/share-sheet adapterını core backup file store'dan ayrı platform katmanı olarak ekle.
-3. `pubspec.lock` clean-checkout reproducibility kapısı.
-4. Backup hattı sonrası PDF motoru ve export/preview contract'a ilerle.
-5. Paralelde ASC/MC + Placidus/Porphyry independent golden proof.
-6. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
-7. GeoNames gerçek compact catalog + source/output SHA + timezone bulk integrity.
-8. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
-9. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
-10. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+2. Backup export/import application service'i `BackupPlatformGateway` ile bağla; user cancel hata olmasın.
+3. Backup kullanıcı aksiyon/state'lerini TR/EN UI/action registry ile bağla.
+4. Gerçek dependency resolution mümkün olduğunda `pubspec.lock` üret ve clean-checkout gate'e ekle.
+5. Backup hattı sonrası profesyonel PDF motoru ve export/preview contract'a ilerle.
+6. Paralelde ASC/MC + Placidus/Porphyry independent golden proof.
+7. Fiziksel IERS EOP + offline ephemeris artifact/checksum/provenance.
+8. GeoNames gerçek compact catalog + source/output SHA + timezone bulk integrity.
+9. Günün Mesajı gerçek 8.036 editoryal kayıt hattı.
+10. Güncel APPROVED UI reference seti ve SCREEN-ID/hash manifesti.
+11. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
