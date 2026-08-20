@@ -1,0 +1,27 @@
+{
+  "contract": "backup-platform-gateway",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-0936", "RC-0937", "RC-0938", "RC-0939", "RC-0940", "RC-1296", "RC-1297", "RC-1298", "RC-1299", "RC-1300"],
+  "properties": {
+    "nativeDocumentPicker": true,
+    "nativeSaveAs": true,
+    "nativeShareSheet": true,
+    "networkRequired": false,
+    "portableSuffix": ".ruhcode.zip",
+    "mimeType": "application/zip",
+    "pathInjectionRejected": true,
+    "maxPayloadBytes": 67108864,
+    "coreSerializationSeparatedFromPlatform": true
+  },
+  "dependencies": {
+    "file_picker": "^12.0.0",
+    "share_plus": "^13.3.0"
+  },
+  "finalEvidenceStillRequired": [
+    "exact Flutter test SUCCESS",
+    "Android device save/open/share smoke test",
+    "clean-checkout dependency lock and build",
+    "user-visible TR/EN UI integration"
+  ]
+}
