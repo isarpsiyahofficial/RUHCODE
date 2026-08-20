@@ -15,12 +15,13 @@
     "entitlement resolution itself does not delete or mutate user records",
     "entitlement snapshot is persisted offline in a dedicated system table separate from user-domain records",
     "local time anchor never moves behind the latest UTC instant already observed by the installation",
-    "local time-anchor protection explicitly does not claim reinstall-proof tamper resistance"
+    "local time-anchor protection explicitly does not claim reinstall-proof tamper resistance",
+    "production SQLite Free to PRO to Free transitions preserve user-domain records byte-for-byte at the logical JSON layer",
+    "expired temporary access cannot be resurrected by rolling the device wall clock backward within the same installation"
   ],
   "remainingBeforeDone": [
     "implement Google Play purchase ownership restore and reinstall/device-change verification",
     "wire UI route and service guards to the same EntitlementService",
-    "prove Free to PRO and PRO to Free transitions preserve all user data using production SQLite integration",
     "prove rewarded-ad failure cannot crash or corrupt entitlement state",
     "run exact workflow and release-mode entitlement matrix successfully"
   ]
