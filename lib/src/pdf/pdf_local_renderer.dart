@@ -5,6 +5,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import 'pdf_data_contract.dart';
+import 'pdf_output_inspector.dart';
 import 'pdf_report_contract.dart';
 
 final class PdfFontBundle {
@@ -82,12 +83,14 @@ final class PdfRenderPayload {
 final class PdfLocalRenderer {
   const PdfLocalRenderer({
     this.dataValidator = const PdfReportDataValidator(),
+    this.outputInspector = const PdfOutputInspector(),
   });
 
   static const int maxReportPages = 200;
   static const double sectionKeepTogetherFreeSpacePt = 72;
 
   final PdfReportDataValidator dataValidator;
+  final PdfOutputInspector outputInspector;
 
   Future<Uint8List> render(PdfRenderPayload payload) async {
     _validate(payload);
@@ -146,16 +149,9 @@ final class PdfLocalRenderer {
       ),
     );
 
-    final bytes = await document.save();
-    if (bytes.length < 8 ||
-        bytes[0] != 0x25 ||
-        bytes[1] != 0x50 ||
-        bytes[2] != 0x44 ||
-        bytes[3] != 0x46 ||
-        bytes[4] != 0x2D) {
-      throw const StateError('Local PDF renderer did not produce a PDF header.');
-    }
-    return Uint8List.fromList(bytes);
+    final bytes = Uint8List.fromList(await document.save());
+    outputInspector.requireUsable(bytes);
+    return bytes;
   }
 
   List<pw.Widget> _coverWidgets(PdfRenderPayload payload, PdfRenderSection section) {
@@ -186,7 +182,6 @@ final class PdfLocalRenderer {
     final tokens = payload.plan.typography;
     final paragraphs = section.paragraphs.where((value) => value.trim().isNotEmpty).toList(growable: false);
     final widgets = <pw.Widget>[
-      // Avoid an orphaned section heading at the bottom of a page.
       pw.NewPage(freeSpace: sectionKeepTogetherFreeSpacePt),
       pw.SizedBox(height: 10),
     ];
