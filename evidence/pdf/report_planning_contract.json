@@ -1,0 +1,52 @@
+{
+  "contract": "professional-pdf-report-planning-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0862",
+    "RC-0863",
+    "RC-0865",
+    "RC-0868",
+    "RC-0870",
+    "RC-0878",
+    "RC-0881",
+    "RC-0898",
+    "RC-0903",
+    "RC-0918",
+    "RC-0919",
+    "RC-0929",
+    "RC-0931",
+    "RC-0951",
+    "RC-0956",
+    "RC-0964"
+  ],
+  "source": "lib/src/pdf/pdf_report_contract.dart",
+  "tests": ["test/pdf/pdf_report_contract_test.dart"],
+  "page": {
+    "format": "A4",
+    "widthMm": 210,
+    "heightMm": 297,
+    "localOnly": true
+  },
+  "contractFeatures": [
+    "deterministic A4 page geometry",
+    "typography hierarchy validation",
+    "canonical section identifiers",
+    "user-selected section ordering",
+    "empty-section suppression",
+    "professional and client-friendly cover styles",
+    "optional professional branding metadata",
+    "TR/EN locale restriction",
+    "strict demo-versus-user data-origin separation",
+    "sample report cannot consume real user origin",
+    "non-sample report cannot consume demo origin"
+  ],
+  "releaseBlockers": [
+    "No production PDF byte renderer is implemented yet.",
+    "Unicode font assets and license manifest are not yet attached.",
+    "Vector Western/Vedic chart embedding is not yet implemented.",
+    "Pagination, orphan prevention, table split control and long-report memory tests are not yet implemented.",
+    "PDF parse/render/visual-regression proof is not yet attached.",
+    "Exact Flutter workflow success is not yet recorded in this evidence file."
+  ]
+}
