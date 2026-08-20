@@ -55,7 +55,7 @@ void main() {
     final bundle = PdfFontBundle(
       regularBytes: bytes,
       boldBytes: bytes,
-      regularSha256: '0' * 64,
+      regularSha256: List<String>.filled(64, '0').join(),
       boldSha256: sha256.convert(bytes).toString(),
       familyName: 'Test',
       licenseId: 'TEST',
