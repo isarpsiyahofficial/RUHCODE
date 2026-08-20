@@ -1,5 +1,6 @@
 import '../../backup/backup_application_service.dart';
 import '../../backup/backup_import_coordinator.dart';
+import '../../backup/backup_platform_gateway.dart';
 
 enum RuhLocale { tr, en }
 
@@ -134,8 +135,7 @@ BackupUiPhase phaseForShareResult(BackupShareResult result) {
   if (result.status == BackupUserOperationStatus.cancelled) {
     return BackupUiPhase.cancelled;
   }
-  final shareStatus = result.shareStatus?.name;
-  if (shareStatus == 'unavailable') {
+  if (result.shareStatus == BackupShareStatus.unavailable) {
     return BackupUiPhase.shareUnavailable;
   }
   return BackupUiPhase.shared;
@@ -149,7 +149,7 @@ BackupUiState stateForPickResult(BackupPickResult result) {
   if (selection == null) {
     return const BackupUiState(phase: BackupUiPhase.failed);
   }
-  if (!selection.preview.isValid) {
+  if (!selection.preview.valid) {
     return BackupUiState(
       phase: BackupUiPhase.invalidBackup,
       selection: selection,
@@ -160,11 +160,5 @@ BackupUiState stateForPickResult(BackupPickResult result) {
 }
 
 BackupUiPhase phaseForImportResult(BackupImportResult result) {
-  if (result.isSuccess) {
-    return BackupUiPhase.restored;
-  }
-  if (result.rollbackRestored) {
-    return BackupUiPhase.rollbackRestored;
-  }
-  return BackupUiPhase.failed;
+  return BackupUiPhase.restored;
 }
