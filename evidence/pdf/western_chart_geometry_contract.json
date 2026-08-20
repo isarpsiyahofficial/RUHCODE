@@ -1,0 +1,32 @@
+{
+  "contract": "pdf-western-chart-geometry-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "calculationSource": "WesternNatalChart",
+  "sharedCalculationRequired": true,
+  "coordinateContract": {
+    "normalizedRadius": 1.0,
+    "ascendantAnchor": "9_o_clock",
+    "zodiacDirection": "counter_clockwise",
+    "houseRayRadius": 1.0,
+    "planetRadius": 0.82,
+    "aspectRadius": 0.58
+  },
+  "requiredProperties": [
+    "house cusps come directly from the selected WesternNatalChart house set",
+    "planet markers come directly from exact natal placement longitudes",
+    "aspect chords come directly from exact NatalAspectSet hits",
+    "calculation source id version and TT instant cannot be mixed",
+    "duplicate planet bodies are rejected",
+    "ASC is normalized to the left edge before any visual styling",
+    "geometry generation is deterministic and contains no decorative randomization"
+  ],
+  "remainingBeforeDone": [
+    "bind geometry to a production PDF vector painter",
+    "use approved zodiac and planet glyph assets rather than invented symbols",
+    "add label collision resolution",
+    "add UI/PDF shared snapshot visual parity test",
+    "add approved Western PDF reference and visual golden regression",
+    "obtain exact workflow SUCCESS evidence"
+  ]
+}
