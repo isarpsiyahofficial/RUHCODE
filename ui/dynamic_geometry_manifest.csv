@@ -11,5 +11,5 @@ GEOM-BAZI-PILLARS,BAZI_GRID,SCR-BAZI-PILLARS-001,BaZiPillarsSnapshot,DETERMINIST
 GEOM-BAZI-ELEMENTS,BAZI_VISUAL,SCR-BAZI-ELEMENTS-001,BaZiElementBalance,DETERMINISTIC_VECTOR,true,SPECIFIED,Five Elements visualization must use calculated element weights
 GEOM-NUMEROLOGY-LOSHU,NUMEROLOGY_GRID,SCR-LOSHU-001,LoShuSnapshot,DETERMINISTIC_LAYOUT,true,SPECIFIED,Lo Shu cells must be populated from calculation output
 GEOM-NUMEROLOGY-PYTHAGOREAN,NUMEROLOGY_VISUAL,SCR-PYTHAGOREAN-001,PythagoreanSnapshot,DETERMINISTIC_VECTOR,true,SPECIFIED,Number visualization must use calculation result not decorative random values
-GEOM-PDF-WESTERN-WHEEL,PDF_VECTOR,SCR-PDF-PREVIEW-001,WesternNatalSnapshot,SHARED_CALCULATION_VECTOR,true,SPECIFIED,PDF and UI must render the same western calculation snapshot
+GEOM-PDF-WESTERN-WHEEL,PDF_VECTOR,SCR-PDF-PREVIEW-001,WesternNatalSnapshot,SHARED_CALCULATION_VECTOR,true,IMPLEMENTED,Normalized PDF vector geometry adapter derives house rays planet markers and aspect chords from one WesternNatalChart snapshot; painter and golden visual proof remain pending
 GEOM-PDF-VEDIC-CHART,PDF_VECTOR,SCR-PDF-PREVIEW-001,VedicChartSnapshot,SHARED_CALCULATION_VECTOR,true,SPECIFIED,PDF and UI must render the same Vedic calculation snapshot
