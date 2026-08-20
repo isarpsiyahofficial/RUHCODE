@@ -1,0 +1,39 @@
+name: Professional PDF Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/pdf/**'
+      - 'test/pdf/**'
+      - 'evidence/pdf/**'
+      - 'tools/pdf/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/pdf-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/pdf/**'
+      - 'test/pdf/**'
+      - 'evidence/pdf/**'
+      - 'tools/pdf/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/pdf-contract.yml'
+
+jobs:
+  pdf-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate PDF planning structural contract
+        run: python tools/pdf/validate_pdf_report_contract.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run PDF contract tests
+        run: flutter test test/pdf
