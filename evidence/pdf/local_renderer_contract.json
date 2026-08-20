@@ -16,6 +16,8 @@
     "font family and license identifiers are mandatory",
     "empty or unavailable sections cannot be rendered",
     "page numbers are generated locally",
+    "renderer explicitly supports reports longer than 50 pages with a bounded 200-page safety ceiling",
+    "section headings are protected against orphaning by a minimum remaining-space break and inseparable heading plus first paragraph",
     "renderer output must begin with the PDF file signature"
   ],
   "remainingBeforeDone": [
