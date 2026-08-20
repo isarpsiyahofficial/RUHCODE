@@ -20,8 +20,14 @@
     "RC-0956",
     "RC-0964"
   ],
-  "source": "lib/src/pdf/pdf_report_contract.dart",
-  "tests": ["test/pdf/pdf_report_contract_test.dart"],
+  "sources": [
+    "lib/src/pdf/pdf_report_contract.dart",
+    "lib/src/pdf/pdf_data_contract.dart"
+  ],
+  "tests": [
+    "test/pdf/pdf_report_contract_test.dart",
+    "test/pdf/pdf_data_contract_test.dart"
+  ],
   "page": {
     "format": "A4",
     "widthMm": 210,
@@ -39,7 +45,10 @@
     "TR/EN locale restriction",
     "strict demo-versus-user data-origin separation",
     "sample report cannot consume real user origin",
-    "non-sample report cannot consume demo origin"
+    "non-sample report cannot consume demo origin",
+    "every section bound to one SHA-256 calculation snapshot identity",
+    "cross-snapshot section mixing rejected before rendering",
+    "UI and PDF snapshot parity can be required explicitly"
   ],
   "releaseBlockers": [
     "No production PDF byte renderer is implemented yet.",
