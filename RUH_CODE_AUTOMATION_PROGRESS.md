@@ -82,10 +82,14 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Page-number footer ve A4 local renderer yolu mevcut.
 - [x] 50+ rapor gereksinimi için explicit `maxReportPages = 200` safety ceiling tanımlandı.
 - [x] Section heading orphan prevention için minimum remaining-space page break + inseparable heading/first-paragraph sözleşmesi eklendi.
-- [x] Local renderer/font provider source tests + evidence + structural gate genişletildi.
+- [x] Western PDF normalized vector geometry adapter gerçek `WesternNatalChart` house/placement/aspect snapshot'ından türetiliyor; decorative/random geometri yok.
+- [x] ASC 9 yönü + counter-clockwise zodiac coordinate contract test/evidence ile kilitlendi.
+- [x] `GEOM-PDF-WESTERN-WHEEL` source geometry status `IMPLEMENTED`; painter/golden kanıtı beklediğinden DONE değil.
+- [x] Local renderer/font provider/Western geometry source tests + evidence + structural gates PDF CI'a bağlandı.
 - [ ] Production Unicode TR/EN font binary asset + lisans dosyası + immutable SHA manifesti.
 - [ ] Gerçek approved font ile byte-render testi.
-- [ ] Western/Vedic vector chart embedding.
+- [ ] Western geometry için production vector painter + approved zodiac/planet glyph asset bağlantısı + label collision.
+- [ ] Vedik vector chart embedding.
 - [ ] BaZi/Numerology table renderers.
 - [ ] Table split prevention için gerçek uzun-table render/regression kanıtı.
 - [ ] 5 / 25 / 50+ gerçek page-count testleri ve low-memory test.
@@ -113,9 +117,16 @@ Checkpoint: `automation_runs/2026-08-20_1456_backup_registry_pdf_renderer.md`
 - `2ab7e9cfa60986dd9ba4cb46a430c0a6b46657fb` long-report pagination safeguards
 - `aa0a37c5aa2d760fa7e17af3be6e9a5478112712` pagination evidence update
 - `06de5176e2bf4f114d22864e9ed2e7a0f2657b87` pagination structural gate
-- `e2d58e78eb52d90056bb1df5b73c8c7975e7c14a` run checkpoint
+- `a2431e5bd472ca735254040a2cd872b8f1e88728` Western PDF geometry adapter
+- `89f1e5799bef03a5f1557b3682aab62efc461d84` Western geometry orientation fix
+- `ec072984cafa4930839c2b71010934e692664a42` Western geometry tests
+- `4b9cff70b1f5ff57e11350e45b0c32303f1320c4` dynamic geometry manifest progress
+- `2e14f2adfe60302cfc868480fd6b89405b9678bf` Western geometry evidence
+- `f116a399631708655ee84180de8de07631b1f4c5` Western geometry structural validator
+- `fb4155a3ebff1cdf688261b13ec4fd0866270129` Western PDF geometry CI gate
+- `0fada9ba15dadf3d4d57345c47a2c518e698511a` extended run checkpoint
 
-GitHub combined-status exact UI workflow hedef commit'i için yine `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
+GitHub combined-status exact UI workflow hedef commit'i için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -135,11 +146,12 @@ GitHub combined-status exact UI workflow hedef commit'i için yine `statuses=[]`
 2. Approved Unicode TR/EN font asset + license + SHA-256 manifestini gerçek artifact ile bağla; binary artifact yoksa blocker'ı açık tut.
 3. Gerçek fontla 5/25/50+ PDF byte generation ve parse/open testlerini kur.
 4. Uzun table pagination, missing glyph, crop ve visual regression kapılarını ekle.
-5. Western/Vedic dynamic vector geometry'yi aynı calculation snapshot üzerinden PDF adapterına bağla.
-6. BaZi/Numerology tablolarını gerçek PDF layout'a bağla.
-7. `pubspec.lock` yalnız gerçek `flutter pub get` çözümlemesinden sonra commit et.
-8. Paralelde physical astronomy/GeoNames/daily-message/UI-reference blocker dışı işleri ilerlet.
-9. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+5. Western geometry modelini approved glyph assetlerini kullanan production PDF vector painter'a bağla; golden onay olmadan görseli final sayma.
+6. Vedik dynamic vector geometry'yi aynı calculation snapshot üzerinden PDF adapterına bağla.
+7. BaZi/Numerology tablolarını gerçek PDF layout'a bağla.
+8. `pubspec.lock` yalnız gerçek `flutter pub get` çözümlemesinden sonra commit et.
+9. Paralelde physical astronomy/GeoNames/daily-message/UI-reference blocker dışı işleri ilerlet.
+10. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
