@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../lib/src/domain/models/core_models.dart';
 import '../../lib/src/entitlements/entitlement_service.dart';
 import '../../lib/src/entitlements/feature_access_guard.dart';
 import '../../lib/src/ui/navigation/main_navigation_shell.dart';
