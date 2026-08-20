@@ -30,8 +30,8 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     final pages = <Widget>[
       const _PlaceholderPage(title: 'Bugün'),
       _ToolsPage(featureAccess: widget.featureAccess),
-      const _PlaceholderPage(title: 'Kayıtlar'),
-      const _PlaceholderPage(title: 'Profil'),
+      _RecordsPage(featureAccess: widget.featureAccess),
+      _ProfilePage(featureAccess: widget.featureAccess),
     ];
 
     return Scaffold(
@@ -45,16 +45,42 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   }
 }
 
-class _ToolDefinition {
-  const _ToolDefinition({
+class _FeatureDefinition {
+  const _FeatureDefinition({
     required this.title,
     required this.icon,
     required this.featureId,
+    this.lockedMessage = 'Bu özellik için PRO erişimi gerekiyor.',
   });
 
   final String title;
   final IconData icon;
   final String featureId;
+  final String lockedMessage;
+}
+
+Future<void> _openGuardedFeature(
+  BuildContext context, {
+  required FeatureAccessGuard featureAccess,
+  required _FeatureDefinition feature,
+}) async {
+  final decision = await featureAccess.forRoute(feature.featureId);
+  if (!context.mounted) return;
+  if (!decision.allowed) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(feature.lockedMessage)),
+    );
+    return;
+  }
+  await Navigator.of(context).push<void>(
+    MaterialPageRoute<void>(
+      builder: (_) => _FeaturePlaceholderPage(
+        title: feature.title,
+        featureId: feature.featureId,
+        featureAccess: featureAccess,
+      ),
+    ),
+  );
 }
 
 class _ToolsPage extends StatelessWidget {
@@ -62,33 +88,14 @@ class _ToolsPage extends StatelessWidget {
 
   final FeatureAccessGuard featureAccess;
 
-  static const tools = <_ToolDefinition>[
-    _ToolDefinition(title: 'Batı Astrolojisi', icon: Icons.auto_awesome_outlined, featureId: RuhFeatureIds.westernNatalBasic),
-    _ToolDefinition(title: 'Vedik Astroloji', icon: Icons.brightness_4_outlined, featureId: RuhFeatureIds.vedicBasic),
-    _ToolDefinition(title: 'Gezegen Saatleri', icon: Icons.schedule_outlined, featureId: RuhFeatureIds.planetaryHours),
-    _ToolDefinition(title: 'Numeroloji', icon: Icons.pin_outlined, featureId: RuhFeatureIds.numerologyBasic),
-    _ToolDefinition(title: 'BaZi', icon: Icons.grid_4x4_outlined, featureId: RuhFeatureIds.baziBasic),
+  static const tools = <_FeatureDefinition>[
+    _FeatureDefinition(title: 'Batı Astrolojisi', icon: Icons.auto_awesome_outlined, featureId: RuhFeatureIds.westernNatalBasic),
+    _FeatureDefinition(title: 'Vedik Astroloji', icon: Icons.brightness_4_outlined, featureId: RuhFeatureIds.vedicBasic),
+    _FeatureDefinition(title: 'Gezegen Saatleri', icon: Icons.schedule_outlined, featureId: RuhFeatureIds.planetaryHours),
+    _FeatureDefinition(title: 'Numeroloji', icon: Icons.pin_outlined, featureId: RuhFeatureIds.numerologyBasic),
+    _FeatureDefinition(title: 'BaZi', icon: Icons.grid_4x4_outlined, featureId: RuhFeatureIds.baziBasic),
+    _FeatureDefinition(title: 'Gelişmiş Batı Analizi', icon: Icons.insights_outlined, featureId: RuhFeatureIds.westernAdvanced),
   ];
-
-  Future<void> _openTool(BuildContext context, _ToolDefinition tool) async {
-    final decision = await featureAccess.forRoute(tool.featureId);
-    if (!context.mounted) return;
-    if (!decision.allowed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bu araç için PRO erişimi gerekiyor.')),
-      );
-      return;
-    }
-    await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => _FeaturePlaceholderPage(
-          title: tool.title,
-          featureId: tool.featureId,
-          featureAccess: featureAccess,
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +112,115 @@ class _ToolsPage extends StatelessWidget {
               leading: Icon(tool.icon),
               title: Text(tool.title),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => _openTool(context, tool),
+              onTap: () => _openGuardedFeature(
+                context,
+                featureAccess: featureAccess,
+                feature: tool,
+              ),
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _RecordsPage extends StatelessWidget {
+  const _RecordsPage({required this.featureAccess});
+
+  final FeatureAccessGuard featureAccess;
+
+  static const professionalClients = _FeatureDefinition(
+    title: 'Danışanlarım',
+    icon: Icons.groups_outlined,
+    featureId: RuhFeatureIds.professionalClients,
+    lockedMessage: 'Danışan çalışma alanı PRO kullanıcılar içindir.',
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Text('Kayıtlar', style: Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height: 8),
+        Text('Kendi kayıtların ve profesyonel çalışma alanın.', style: Theme.of(context).textTheme.bodyLarge),
+        const SizedBox(height: 20),
+        const Card(
+          child: ListTile(
+            leading: Icon(Icons.person_pin_outlined),
+            title: Text('Profillerim'),
+            subtitle: Text('Kayıtlı kişisel profiller'),
+            trailing: Icon(Icons.chevron_right),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.groups_outlined),
+            title: const Text('Danışanlarım'),
+            subtitle: const Text('Profesyonel danışan çalışma alanı'),
+            trailing: const Icon(Icons.lock_outline),
+            onTap: () => _openGuardedFeature(
+              context,
+              featureAccess: featureAccess,
+              feature: professionalClients,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfilePage extends StatelessWidget {
+  const _ProfilePage({required this.featureAccess});
+
+  final FeatureAccessGuard featureAccess;
+
+  static const pdfPreview = _FeatureDefinition(
+    title: 'PDF Rapor Önizleme',
+    icon: Icons.preview_outlined,
+    featureId: RuhFeatureIds.pdfSamplePreview,
+  );
+  static const pdfExport = _FeatureDefinition(
+    title: 'Profesyonel PDF Raporu',
+    icon: Icons.picture_as_pdf_outlined,
+    featureId: RuhFeatureIds.pdfProfessionalExport,
+    lockedMessage: 'Profesyonel PDF oluşturmak için PRO erişimi gerekiyor.',
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Text('Profil', style: Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height: 20),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.preview_outlined),
+            title: const Text('PDF Rapor Önizleme'),
+            subtitle: const Text('Örnek raporun nasıl görüneceğini incele'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _openGuardedFeature(
+              context,
+              featureAccess: featureAccess,
+              feature: pdfPreview,
+            ),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.picture_as_pdf_outlined),
+            title: const Text('Profesyonel PDF Raporu'),
+            subtitle: const Text('Kendi verilerinle profesyonel rapor oluştur'),
+            trailing: const Icon(Icons.lock_outline),
+            onTap: () => _openGuardedFeature(
+              context,
+              featureAccess: featureAccess,
+              feature: pdfExport,
+            ),
+          ),
+        ),
       ],
     );
   }
