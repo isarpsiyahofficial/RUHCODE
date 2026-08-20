@@ -50,16 +50,17 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Native platform gateway: OS Save As, picker, native share; `.ruhcode.zip` policy; user cancel nullable.
 - [x] Backup application service: export→package→ZIP→Save As/share; picker→ZIP decode→strict preview; preview-before-mutation; merge/replace transactional coordinator; user cancellation normal result.
 - [x] TR/EN backup UI copy/state contract: full backup/save/share/select/merge/replace/cancel; invalid-preview/share-unavailable/rollback-restored durumları ayrıldı.
-- [x] Replace restore hatası artık typed `BackupRestoreException` ile gerçek rollback sonucunu taşıyor; rollback başarısızken UI'nın “geri yüklendi” demesi engellendi.
+- [x] Replace restore hatası typed `BackupRestoreException` ile gerçek rollback sonucunu taşıyor; rollback başarısızken UI'nın “geri yüklendi” demesi engellendi.
 - [x] Backup UI test/evidence/structural validator ve Backup CI wiring eklendi.
-- [ ] Primary `ui/action_registry.csv` içinde eski `CSV Dışa Aktar / CSV İçe Aktar` wording hâlâ bulunuyor; registry migrasyonu açık.
+- [x] Primary `ui/action_registry.csv` portable full-backup davranışıyla hizalandı: `Tam Yedek Oluştur` / `Yedekten Geri Yükle`.
+- [x] Legacy `CSV Dışa Aktar / CSV İçe Aktar` wording'in primary action registry'ye geri girmesini engelleyen validator + UI CI gate eklendi.
 - [ ] Exact workflow SUCCESS görünür değil; ilgili Backup RC'leri DONE değil.
 - [ ] Android gerçek cihaz save/open/share smoke testi.
 - [ ] Approved backup UI reference PNG/state seti.
 - [ ] Released historical backup fixture mevcut olduğunda gerçek fixture doğrulaması.
 - [ ] `pubspec.lock` gerçek dependency resolution sonrası commit edilmeli; elle uydurulmayacak.
 
-## Profesyonel PDF — Faz 23 source-level başlangıç
+## Profesyonel PDF — Faz 23 source-level
 
 - [x] A4 `210×297 mm` page contract + deterministik margin/content geometry.
 - [x] Typography hierarchy token sözleşmesi.
@@ -73,40 +74,48 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] PDF section'larının tek exact calculation snapshot SHA-256 identity'sine bağlı olması zorunlu.
 - [x] Cross-snapshot/client section mixing render öncesi reddediliyor.
 - [x] UI ve PDF calculation snapshot parity guard mevcut.
-- [x] PDF planning/data tests + evidence + structural validator + ayrı CI workflow eklendi.
-- [ ] Production local PDF byte renderer.
-- [ ] Unicode TR/EN font asset + lisans/hash manifesti.
+- [x] PDF planning/data tests + evidence + structural validator + ayrı CI workflow mevcut.
+- [x] Production local PDF byte renderer source-level eklendi; yerel `pdf` package üzerinden gerçek byte üretim yolu mevcut.
+- [x] `PdfLocalReportService` planning/data contract → font provider → byte renderer zincirini mevcut `PdfService` arayüzüne bağladı.
+- [x] Font byte'larında SHA-256 doğrulaması ve family/license ID zorunluluğu var.
+- [x] `PdfAssetFontBundleProvider` TR + EN için explicit asset spec zorunlu kılıyor ve asset byte'larını yükleme sonrası SHA-256 ile tekrar doğruluyor.
+- [x] Page-number footer ve A4 local renderer yolu mevcut.
+- [x] 50+ rapor gereksinimi için explicit `maxReportPages = 200` safety ceiling tanımlandı.
+- [x] Section heading orphan prevention için minimum remaining-space page break + inseparable heading/first-paragraph sözleşmesi eklendi.
+- [x] Local renderer/font provider source tests + evidence + structural gate genişletildi.
+- [ ] Production Unicode TR/EN font binary asset + lisans dosyası + immutable SHA manifesti.
+- [ ] Gerçek approved font ile byte-render testi.
 - [ ] Western/Vedic vector chart embedding.
 - [ ] BaZi/Numerology table renderers.
-- [ ] Cover/section/page-number renderer.
-- [ ] Controlled pagination, orphan prevention, table split prevention.
-- [ ] 5 / 25 / 50+ page tests ve low-memory test.
+- [ ] Table split prevention için gerçek uzun-table render/regression kanıtı.
+- [ ] 5 / 25 / 50+ gerçek page-count testleri ve low-memory test.
 - [ ] PDF open/parse validation, crop/glyph checks, visual regression.
 - [ ] Free sample PDF'nin APPROVED referans tasarımı ve gerçek demo-only wiring'i.
 - [ ] Exact workflow SUCCESS görünür kanıtı.
 
-## Son tur — 2026-08-20 12:56
+## Son tur — 2026-08-20 14:56
 
-Checkpoint: `automation_runs/2026-08-20_1256_backup_ui_pdf_foundations.md`
+Checkpoint: `automation_runs/2026-08-20_1456_backup_registry_pdf_renderer.md`
 
 Öne çıkan commitler:
-- `9786ca1621ea237e79b16c37ab42663211392908` backup UI contract API düzeltmesi
-- `c16858da1750f320a73a2f047730b7c2cfe7d0cc` backup UI tests
-- `ecedb9e9655c5edf806b58d8011a05c14b250d0e` backup UI structural validator
-- `29495f1b1b29907aea26bdc8eb732c9e3d58c16a` Backup CI UI wiring
-- `3f2f64e2834f2dd668ac5b7b738dc72db307e255` typed rollback exception
-- `f818ed2c7acdb134242cdc5a0d128cabe3d8aaf2` rollback outcome tests
-- `afd69af6ca2716ef728a735434373a97587059da` rollback→UI state mapping
-- `5f0e2640f91eead02e68e7abab13eb1945364205` backup UI rollback mapping tests
-- `5e5c4e8fde457215e1d0f607f629951ccec1c099` PDF report planning contract
-- `dc8e798c28f1b46b3ff6ad109fcddbf78bcf0542` PDF planning tests
-- `47aa2b564e43cd1f85df6b9e6df3970f99475088` PDF CI workflow
-- `e4f281212a6567811df5ca595c2e921698475de7` PDF snapshot data contract
-- `70c6eab92d0e49871edd8f1397a52060cfae22aa` PDF snapshot isolation tests
-- `6c1f83cc4bbedce678abfbd2401babc41190dcfa` PDF structural validator expansion
-- `413df63c61c9cbc89cbaf723ec808c39a22701c5` run checkpoint
+- `7d8f23e0491f3a0821eafc47a7ea2ef89f9ca3e0` local PDF dependency
+- `fe74cf58b8dccca48b23023ca240bc115468e15e` local PDF byte renderer
+- `93f7a19079b9ad97daf6dd04e6d007dc754ca11d` portable backup action labels
+- `88666955fdb9adb3e485067b05b848185e23a390` renderer contract tests
+- `3068f19619cdb89dea0cab35aca30ce501cab69f` renderer evidence
+- `84d0c173a04bf85bde83d127249e6fa6030fabad` backup action wording validator
+- `ccae7354789833171f88fe03d9c64eb7e7a4d052` UI CI wiring
+- `60d5c317410a091893763e3f5330e1c7ee351b30` PDF local report service
+- `953553628f38a92985749ec124ca6303651f10e9` verified asset font provider
+- `d22ea908ecf195f954745a568913896d30a7e48d` renderer test syntax fix
+- `11c70e0191740fc0166dfabc31365a148d215c4f` font provider tests
+- `2a27c425ae7ed04e497a5acbd11a59f22de4c49e` PDF service/font structural gate
+- `2ab7e9cfa60986dd9ba4cb46a430c0a6b46657fb` long-report pagination safeguards
+- `aa0a37c5aa2d760fa7e17af3be6e9a5478112712` pagination evidence update
+- `06de5176e2bf4f114d22864e9ed2e7a0f2657b87` pagination structural gate
+- `e2d58e78eb52d90056bb1df5b73c8c7975e7c14a` run checkpoint
 
-GitHub combined-status latest test commit için `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
+GitHub combined-status exact UI workflow hedef commit'i için yine `statuses=[]` döndürdü; SUCCESS uydurulmadı ve requirement state yapay biçimde yükseltilmedi.
 
 ## Açık fiziksel/evidence blocker'ları
 
@@ -118,17 +127,19 @@ GitHub combined-status latest test commit için `statuses=[]` döndürdü; SUCCE
 - [ ] GeoNames source/output SHA + bulk IANA integrity.
 - [ ] 8.036 gerçek editoryal Günün Mesajı kaydı.
 - [ ] Yeni `Bugün · Araçlar · Kayıtlar · Profil` APPROVED UI referans seti.
+- [ ] Production Unicode PDF font binary + lisans/hash artifact.
 
 ## Sıradaki çalışma
 
-1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt.
-2. Primary `ui/action_registry.csv` portable-backup wording/action IDs ile migrate et; eski CSV etiketi kullanıcıya görünür contract'ta kalmasın.
-3. Gerçek dependency resolution mümkün olduğunda `pubspec.lock` üret ve clean-checkout gate'e ekle.
-4. Faz 23: local PDF byte renderer + bundled Unicode font lisans/hash contract kur.
-5. Cover/section/page-number/pagination renderer'ını kur; ardından Western/Vedic vector chart adapterlarına geç.
-6. PDF 5/25/50+ page, parse/render, missing-glyph, crop ve visual-regression testlerini ekle.
-7. Paralelde physical astronomy/GeoNames/daily-message/UI-reference blocker'larını ilerlet.
-8. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
+1. Exact workflow sonucu görünür kırmızı olursa aynı turda düzelt; görünmüyorsa SUCCESS uydurma.
+2. Approved Unicode TR/EN font asset + license + SHA-256 manifestini gerçek artifact ile bağla; binary artifact yoksa blocker'ı açık tut.
+3. Gerçek fontla 5/25/50+ PDF byte generation ve parse/open testlerini kur.
+4. Uzun table pagination, missing glyph, crop ve visual regression kapılarını ekle.
+5. Western/Vedic dynamic vector geometry'yi aynı calculation snapshot üzerinden PDF adapterına bağla.
+6. BaZi/Numerology tablolarını gerçek PDF layout'a bağla.
+7. `pubspec.lock` yalnız gerçek `flutter pub get` çözümlemesinden sonra commit et.
+8. Paralelde physical astronomy/GeoNames/daily-message/UI-reference blocker dışı işleri ilerlet.
+9. Requirement state'e yalnız gerçek workflow/test/evidence kanıtı alınan RC'leri yükselt.
 
 ## Final durumu
 
