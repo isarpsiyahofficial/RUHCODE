@@ -8,6 +8,8 @@ SERVICE = ROOT / 'lib/src/entitlements/entitlement_service.dart'
 STORE = ROOT / 'lib/src/entitlements/local_entitlement_snapshot_store.dart'
 TIME_ANCHOR = ROOT / 'lib/src/entitlements/local_entitlement_time_anchor.dart'
 ACCESS_GUARD = ROOT / 'lib/src/entitlements/feature_access_guard.dart'
+GUARDED_RECORDS = ROOT / 'lib/src/entitlements/guarded_record_repository.dart'
+GUARDED_PDF = ROOT / 'lib/src/pdf/guarded_pdf_service.dart'
 PLAY_OWNERSHIP = ROOT / 'lib/src/entitlements/google_play_lifetime_ownership.dart'
 REWARDED = ROOT / 'lib/src/entitlements/rewarded_temporary_unlock.dart'
 TEST = ROOT / 'test/entitlements/entitlement_service_test.dart'
@@ -15,6 +17,8 @@ STORE_TEST = ROOT / 'test/entitlements/local_entitlement_snapshot_store_test.dar
 TIME_ANCHOR_TEST = ROOT / 'test/entitlements/local_entitlement_time_anchor_test.dart'
 SQLITE_TEST = ROOT / 'test/entitlements/entitlement_sqlite_preservation_test.dart'
 ACCESS_GUARD_TEST = ROOT / 'test/entitlements/feature_access_guard_test.dart'
+GUARDED_RECORDS_TEST = ROOT / 'test/entitlements/guarded_record_repository_test.dart'
+GUARDED_PDF_TEST = ROOT / 'test/entitlements/guarded_pdf_service_test.dart'
 PLAY_OWNERSHIP_TEST = ROOT / 'test/entitlements/google_play_lifetime_ownership_test.dart'
 REWARDED_TEST = ROOT / 'test/entitlements/rewarded_temporary_unlock_test.dart'
 PUBSPEC = ROOT / 'pubspec.yaml'
@@ -67,6 +71,22 @@ checks = (
         'RuhFeatureCatalog.policyFor(featureId)',
         'final allowed = await entitlements.canUse(featureId);',
         'throw FeatureAccessDeniedException(featureId);',
+    ]),
+    (GUARDED_RECORDS, [
+        'final class GuardedRecordRepository<T>',
+        'featureAccess.runService<void>',
+        'featureAccess.runService<T?>',
+        'delegate.save(value)',
+        'delegate.findById(id)',
+        'delegate.deleteById(id)',
+        'delegate.replaceAtomically',
+    ]),
+    (GUARDED_PDF, [
+        'final class GuardedProfessionalPdfService<TSnapshot>',
+        'implements PdfService<TSnapshot>',
+        'RuhFeatureIds.pdfProfessionalExport',
+        'featureAccess.runService<List<int>>',
+        'delegate.buildReport',
     ]),
     (PLAY_OWNERSHIP, [
         "const ruhCodeLifetimeProductId = 'ruh_code_lifetime_pro'",
@@ -128,6 +148,17 @@ checks = (
         'runService executes exactly once when access is allowed',
         'invented feature IDs fail closed before entitlement lookup',
     ]),
+    (GUARDED_RECORDS_TEST, [
+        'locked professional repository cannot read or mutate delegate',
+        'PRO professional repository executes through delegate',
+        'expect(database.transactionCount, 0)',
+    ]),
+    (GUARDED_PDF_TEST, [
+        'Free entitlement cannot execute professional PDF delegate',
+        'PRO entitlement executes professional PDF delegate exactly once',
+        'RuhFeatureIds.pdfProfessionalExport',
+        'expect(delegate.calls, 0)',
+    ]),
     (PLAY_OWNERSHIP_TEST, [
         'successful owned query is cached and exposed as offline PRO',
         'store outage never revokes previously confirmed ownership',
@@ -183,6 +214,8 @@ else:
         'expired temporary access cannot be resurrected by rolling the device wall clock backward within the same installation',
         'UI route and service access checks use one FeatureAccessGuard backed by the same EntitlementService',
         'locked service actions are rejected before their action executes',
+        'professional PDF byte generation is independently service-guarded by pdf.professional_export even if a caller bypasses UI or route checks',
+        'protected persisted record repositories can be wrapped so reads, saves, replacements and deletes are rejected before database transactions when entitlement is locked',
         'Google Play lifetime ownership uses the official Android past-purchase query path',
         'a Google Play query outage never revokes previously confirmed cached lifetime ownership',
         'a successful Google Play not-owned result changes only the store ownership cache and cannot erase independent local entitlement state',
