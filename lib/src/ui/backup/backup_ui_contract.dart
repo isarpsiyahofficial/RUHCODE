@@ -162,3 +162,10 @@ BackupUiState stateForPickResult(BackupPickResult result) {
 BackupUiPhase phaseForImportResult(BackupImportResult result) {
   return BackupUiPhase.restored;
 }
+
+BackupUiPhase phaseForRestoreError(Object error) {
+  if (error is BackupRestoreException && error.rollbackRestored) {
+    return BackupUiPhase.rollbackRestored;
+  }
+  return BackupUiPhase.failed;
+}
