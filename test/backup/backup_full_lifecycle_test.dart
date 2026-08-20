@@ -49,7 +49,7 @@ void main() {
 
       final decodedPackage = zipCodec.decode(zipBytes);
       final preview = const BackupPackageReader().preview(decodedPackage);
-      expect(preview.valid, isTrue, reason: preview.errors.join('\n'));
+      expect(preview.valid, isTrue, reason: _issueSummary(preview));
       expect(preview.recordCounts.length, BackupSchemaRegistry.tables.length);
 
       final importStore = LocalDatabaseBackupImportStore(
@@ -94,7 +94,7 @@ void main() {
         const PortableZipBackupCodec().encode(package),
       );
       final preview = const BackupPackageReader().preview(portable);
-      expect(preview.valid, isTrue, reason: preview.errors.join('\n'));
+      expect(preview.valid, isTrue, reason: _issueSummary(preview));
 
       await BackupImportCoordinator(
         store: LocalDatabaseBackupImportStore(
@@ -110,6 +110,47 @@ void main() {
       await _snapshotRegisteredTables(trTarget),
       await _snapshotRegisteredTables(enTarget),
     );
+  });
+
+  test('portable restore preserves 2500 deterministic records without loss', () async {
+    final source = await _openDatabase('${root.path}/stress_source.db');
+    final target = await _openDatabase('${root.path}/stress_target.db');
+    addTearDown(source.close);
+    addTearDown(target.close);
+
+    await source.transaction<void>((tx) async {
+      for (var index = 0; index < 2500; index++) {
+        final key = 'stress_${index.toString().padLeft(4, '0')}';
+        await tx.put(
+          table: 'settings',
+          id: key,
+          value: <String, Object?>{'key': key, 'value': 'değer-$index-İÜşğ'},
+        );
+      }
+    });
+
+    final expected = await _snapshotRegisteredTables(source);
+    final package = await LocalDatabaseBackupExporter(database: source).exportPackage(
+      appVersion: '0.1.0+1',
+      engineVersion: 'backup-stress-test',
+      localeTag: 'tr',
+      exportedAtUtc: DateTime.utc(2026, 8, 20, 3),
+    );
+    const zipCodec = PortableZipBackupCodec();
+    final preview = const BackupPackageReader().preview(
+      zipCodec.decode(zipCodec.encode(package)),
+    );
+    expect(preview.valid, isTrue, reason: _issueSummary(preview));
+    expect(preview.recordCounts['settings.csv'], 2500);
+
+    await BackupImportCoordinator(
+      store: LocalDatabaseBackupImportStore(
+        database: target,
+        snapshotDirectory: Directory('${root.path}/stress_snapshots'),
+      ),
+    ).apply(preview: preview, mode: BackupImportMode.replace);
+
+    expect(await _snapshotRegisteredTables(target), expected);
   });
 }
 
@@ -166,4 +207,8 @@ Future<Map<String, Map<String, Map<String, Object?>>>> _snapshotRegisteredTables
     }
     return result;
   });
+}
+
+String _issueSummary(BackupImportPreview preview) {
+  return preview.issues.map((issue) => issue.toString()).join('\n');
 }
