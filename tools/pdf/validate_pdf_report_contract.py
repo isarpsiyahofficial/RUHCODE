@@ -6,9 +6,12 @@ ROOT = Path(__file__).resolve().parents[2]
 REPORT_SOURCE = ROOT / 'lib/src/pdf/pdf_report_contract.dart'
 DATA_SOURCE = ROOT / 'lib/src/pdf/pdf_data_contract.dart'
 RENDER_SOURCE = ROOT / 'lib/src/pdf/pdf_local_renderer.dart'
+SERVICE_SOURCE = ROOT / 'lib/src/pdf/pdf_local_service.dart'
+FONT_SOURCE = ROOT / 'lib/src/pdf/pdf_asset_font_provider.dart'
 REPORT_TEST = ROOT / 'test/pdf/pdf_report_contract_test.dart'
 DATA_TEST = ROOT / 'test/pdf/pdf_data_contract_test.dart'
 RENDER_TEST = ROOT / 'test/pdf/pdf_local_renderer_contract_test.dart'
+FONT_TEST = ROOT / 'test/pdf/pdf_asset_font_provider_test.dart'
 EVIDENCE = ROOT / 'evidence/pdf/report_planning_contract.json'
 RENDER_EVIDENCE = ROOT / 'evidence/pdf/local_renderer_contract.json'
 PUBSPEC = ROOT / 'pubspec.yaml'
@@ -47,6 +50,26 @@ contracts = (
         'Render section ${section.sectionId} belongs to another snapshot.',
         'Selected PDF section $id has no render payload.',
     ]),
+    (SERVICE_SOURCE, [
+        'abstract interface class PdfReportContentAdapter',
+        'abstract interface class PdfFontBundleProvider',
+        'final class PdfLocalReportService',
+        'implements PdfService<TSnapshot>',
+        'dataValidator.validateAndProject(dataset)',
+        'planner.build(',
+        'fontProvider.loadForLocale(options.localeTag)',
+        'renderer.render(',
+    ]),
+    (FONT_SOURCE, [
+        'final class PdfFontAssetSpec',
+        "localeTag != 'tr' && localeTag != 'en'",
+        'familyName.trim().isEmpty || licenseId.trim().isEmpty',
+        "RegExp(r'^[a-f0-9]{64}$')",
+        'final class PdfAssetFontBundleProvider',
+        "for (final locale in const <String>{'tr', 'en'})",
+        'bundle.load(spec.regularAssetPath)',
+        'result.validate();',
+    ]),
     (REPORT_TEST, [
         'requested section order is preserved while empty sections are suppressed',
         'sample PDF cannot accidentally receive real user data origin',
@@ -64,6 +87,12 @@ contracts = (
         'font bundle rejects a mismatched SHA-256 digest before rendering',
         'renderer rejects cross-snapshot render section before parsing fonts',
         'renderer rejects a selected section without render payload',
+    ]),
+    (FONT_TEST, [
+        'provider requires an explicit TR and EN font specification',
+        'provider rejects duplicate locale specifications',
+        'loaded font bytes must match the immutable declared SHA-256',
+        'verified locale font bundle loads without changing declared provenance',
     ]),
     (PUBSPEC, [
         'pdf: ^3.13.0',
@@ -125,4 +154,4 @@ else:
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Professional PDF planning/data/local-renderer contract OK (source-level, not DONE).')
+print('Professional PDF planning/data/local-renderer/font-provider contract OK (source-level, not DONE).')
