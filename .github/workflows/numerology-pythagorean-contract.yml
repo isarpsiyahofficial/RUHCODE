@@ -30,6 +30,10 @@ jobs:
         run: python tools/numerology/validate_chaldean_name.py
       - name: Validate Lo Shu structural contract
         run: python tools/numerology/validate_lo_shu_grid.py
+      - name: Validate personal cycle structural contract
+        run: python tools/numerology/validate_personal_cycles.py
+      - name: Validate Pinnacle and Challenge structural contract
+        run: python tools/numerology/validate_pinnacles_challenges.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
