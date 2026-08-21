@@ -1,4 +1,4 @@
-name: Numerology Pythagorean Contract
+name: Numerology Core Contract
 
 on:
   push:
@@ -17,19 +17,21 @@ on:
       - '.github/workflows/numerology-pythagorean-contract.yml'
 
 jobs:
-  pythagorean-contract:
+  numerology-core-contract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate structural contract
+      - name: Validate Pythagorean structural contract
         run: python tools/numerology/validate_pythagorean_profile.py
+      - name: Validate Chaldean structural contract
+        run: python tools/numerology/validate_chaldean_name.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run Pythagorean numerology tests
+      - name: Run numerology core tests
         run: flutter test test/calculation_core/numerology
