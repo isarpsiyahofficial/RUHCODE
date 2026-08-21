@@ -37,7 +37,7 @@ def load_requirements(path):
 
 # Exact semantic ownership for evidence files that previously suffered or are especially
 # vulnerable to TODO-index-as-RC drift. QA umbrella requirements are included only where the
-# MASTER literally applies them to the engine family. Unrelated data/security/offline RCs must
+# MASTER literally applies them to the engine family. Unrelated data/security/cache RCs must
 # never appear here.
 EXPECTED = {
     "evidence/numerology/pythagorean_profile.json": {
@@ -66,6 +66,12 @@ EXPECTED = {
     },
     "evidence/bazi/ten_gods.json": {
         153,
+    },
+    "evidence/pdf/report_planning_contract.json": {
+        862, 863, 865, 868, 870, 878, 881, 898, 903, 918, 919, 929, 931, 951, 956, 964,
+    },
+    "evidence/pdf/numerology_data_adapter.json": {
+        875, 903, 925, 954,
     },
 }
 
@@ -100,6 +106,25 @@ KEYWORDS = {
     183: "normalize",
     329: "Numeroloji motorlarının",
     337: "Leap year",
+    862: "cihaz üzerinde",
+    863: "sunucumuza",
+    865: "Unicode",
+    868: "ekran görüntülerini",
+    870: "vektörel",
+    875: "Numeroloji tabloları",
+    878: "A4/Letter",
+    881: "kenar boşlukları",
+    898: "Kapak sayfası",
+    903: "Kombine danışmanlık raporu",
+    918: "bölümlerini açıp kapatabilecek",
+    919: "bölüm sırası",
+    925: "Numeroloji sonuçları",
+    929: "önizleme",
+    931: "boş bölüm",
+    951: "PDF doğrulama testi",
+    954: "Gerekli metinlerin",
+    956: "görsel regresyon",
+    964: "Yanlış müşteri verisinin",
     1436: "doğruluk toleransı",
 }
 
