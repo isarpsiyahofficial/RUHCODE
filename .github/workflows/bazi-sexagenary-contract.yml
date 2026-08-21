@@ -5,12 +5,15 @@ on:
     paths:
       - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
       - 'lib/src/calculation_core/bazi/hidden_stems.dart'
+      - 'lib/src/calculation_core/bazi/four_pillars_primitives.dart'
       - 'lib/src/calculation_core/bazi/ten_gods.dart'
       - 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
       - 'test/calculation_core/bazi/hidden_stems_test.dart'
+      - 'test/calculation_core/bazi/four_pillars_primitives_test.dart'
       - 'test/calculation_core/bazi/ten_gods_test.dart'
       - 'evidence/bazi/sexagenary_cycle.json'
       - 'evidence/bazi/hidden_stems.json'
+      - 'evidence/bazi/four_pillars_primitives.json'
       - 'evidence/bazi/ten_gods.json'
       - 'tools/astronomy/validate_bazi_sexagenary_cycle.py'
       - '.github/workflows/bazi-sexagenary-contract.yml'
@@ -18,12 +21,15 @@ on:
     paths:
       - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
       - 'lib/src/calculation_core/bazi/hidden_stems.dart'
+      - 'lib/src/calculation_core/bazi/four_pillars_primitives.dart'
       - 'lib/src/calculation_core/bazi/ten_gods.dart'
       - 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
       - 'test/calculation_core/bazi/hidden_stems_test.dart'
+      - 'test/calculation_core/bazi/four_pillars_primitives_test.dart'
       - 'test/calculation_core/bazi/ten_gods_test.dart'
       - 'evidence/bazi/sexagenary_cycle.json'
       - 'evidence/bazi/hidden_stems.json'
+      - 'evidence/bazi/four_pillars_primitives.json'
       - 'evidence/bazi/ten_gods.json'
       - 'tools/astronomy/validate_bazi_sexagenary_cycle.py'
       - '.github/workflows/bazi-sexagenary-contract.yml'
@@ -44,4 +50,4 @@ jobs:
       - name: Resolve Flutter dependencies
         run: flutter pub get
       - name: BaZi primitive tests
-        run: flutter test test/calculation_core/bazi/sexagenary_cycle_test.dart test/calculation_core/bazi/hidden_stems_test.dart test/calculation_core/bazi/ten_gods_test.dart
+        run: flutter test test/calculation_core/bazi/sexagenary_cycle_test.dart test/calculation_core/bazi/hidden_stems_test.dart test/calculation_core/bazi/four_pillars_primitives_test.dart test/calculation_core/bazi/ten_gods_test.dart
