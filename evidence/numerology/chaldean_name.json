@@ -1,0 +1,32 @@
+{
+  "contractId": "NUM-CHALDEAN-NAME-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engineId": "numerology.chaldean.name",
+  "engineVersion": "1",
+  "requirements": [
+    "RC-0161",
+    "RC-0163",
+    "RC-0165",
+    "RC-0182",
+    "RC-0183",
+    "RC-0184",
+    "RC-0329"
+  ],
+  "source": "lib/src/calculation_core/numerology/chaldean_name.dart",
+  "tests": [
+    "test/calculation_core/numerology/chaldean_name_test.dart"
+  ],
+  "policy": {
+    "normalization": "shared explicit TR/EN normalization only",
+    "letterTable": "independent Chaldean 1..8 table",
+    "pythagoreanLetterTableReuse": false,
+    "unsupportedCharacters": "reject",
+    "defaultReduction": "preserve 11/22/33 master numbers"
+  },
+  "openBeforeDone": [
+    "Flutter test success on exact commit",
+    "independent Chaldean reference dataset",
+    "interpretation coverage remains separate"
+  ]
+}
