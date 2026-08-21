@@ -1,0 +1,36 @@
+{
+  "contract_id": "TR_EN_TERMINOLOGY_GLOSSARY_V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "version": "terminology.v1",
+  "requirements": [
+    "RC-1059",
+    "RC-1060",
+    "RC-1061",
+    "RC-1062",
+    "RC-1063",
+    "RC-1064",
+    "RC-1065",
+    "RC-0539",
+    "RC-0540",
+    "RC-0541"
+  ],
+  "invariants": [
+    "Every canonical TerminologyId has exactly one Turkish and one English label.",
+    "Ascendant/Yükselen and House/Ev are fixed canonical mappings.",
+    "Professional Vedik terms such as Nakshatra, Ayanamsha, Dasha and Pada are retained instead of being arbitrarily renamed.",
+    "Optional preferredTechnicalLabel may supplement, but never silently replace, the canonical TR/EN label.",
+    "Unsupported locale tags fail closed instead of leaking or guessing another language."
+  ],
+  "source": [
+    "lib/src/content/terminology/terminology_glossary.dart"
+  ],
+  "tests": [
+    "test/content/terminology/terminology_glossary_test.dart"
+  ],
+  "remaining_before_done": [
+    "All production UI/PDF/notification surfaces must consume this glossary or prove equivalent canonical IDs rather than hard-code divergent terminology.",
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Final TR/EN localization audit must prove there are no conflicting duplicate translations outside the glossary."
+  ]
+}
