@@ -3,7 +3,7 @@
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "requirements": [
-    "RC-0344"
+    "RC-0153"
   ],
   "source": "lib/src/calculation_core/bazi/ten_gods.dart",
   "tests": [
