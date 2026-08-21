@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "ui" / "action_registry.csv"
+RUNTIME_BINDINGS = ROOT / "ui" / "runtime_action_bindings.csv"
 FEATURE_CATALOG = ROOT / "lib" / "src" / "entitlements" / "feature_catalog.dart"
 
 EXPECTED_ACTION_ACCESS = {
@@ -17,6 +18,12 @@ EXPECTED_ACTION_ACCESS = {
     "ACTION-PDF-BUILDER-SECTIONS": "PRO",
     "ACTION-PDF-BUILDER-ORDER": "PRO",
     "ACTION-PDF-BUILDER-PREVIEW": "PRO",
+}
+
+EXPECTED_RUNTIME_BINDINGS = {
+    "ACTION-SETTINGS-PDF": ("settingsPdf", "lib/src/ui/navigation/main_navigation_shell.dart", "NAVIGATION", ""),
+    "ACTION-PDF-PREVIEW": ("pdfPreview", "lib/src/ui/pdf/pdf_reports_pages.dart", "ROUTE", "pdf.sample_preview"),
+    "ACTION-PDF-BUILD": ("pdfBuild", "lib/src/ui/pdf/pdf_reports_pages.dart", "ROUTE", "pdf.professional_export"),
 }
 
 
@@ -42,6 +49,23 @@ def main() -> None:
     if rows["ACTION-PDF-BUILD"]["label_or_purpose"] != "Profesyonel PDF Oluştur":
         fail("PRO build action must be explicitly labelled as professional PDF generation")
 
+    with RUNTIME_BINDINGS.open(encoding="utf-8", newline="") as handle:
+        bindings = {row["action_id"]: row for row in csv.DictReader(handle)}
+    for action_id, expected in EXPECTED_RUNTIME_BINDINGS.items():
+        row = bindings.get(action_id)
+        if row is None:
+            fail(f"missing runtime binding for {action_id}")
+        if row["status"] != "IMPLEMENTED":
+            fail(f"runtime binding for {action_id} must be IMPLEMENTED")
+        actual = (
+            row["constant_name"],
+            row["binding_file"],
+            row["binding_kind"],
+            row["feature_id"],
+        )
+        if actual != expected:
+            fail(f"runtime binding drift for {action_id}: expected {expected}, got {actual}")
+
     source = FEATURE_CATALOG.read_text(encoding="utf-8")
     required_fragments = (
         "static const pdfSamplePreview = 'pdf.sample_preview';",
@@ -55,7 +79,10 @@ def main() -> None:
         if fragment not in source:
             fail(f"feature catalog missing canonical fragment: {fragment!r}")
 
-    print("PDF entitlement contract OK: sample preview FREE, professional generation/export PRO.")
+    print(
+        "PDF entitlement contract OK: sample preview FREE, professional generation/export PRO, "
+        "and runtime Settings/preview/build bindings are canonical."
+    )
 
 
 if __name__ == "__main__":
