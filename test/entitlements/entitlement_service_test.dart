@@ -27,6 +27,17 @@ void main() {
     expect(RuhFeatureCatalog.policies.keys.toSet(), RuhFeatureIds.all);
   });
 
+  test('canonical astrology entry tiers match current product contract', () {
+    expect(
+      RuhFeatureCatalog.policyFor(RuhFeatureIds.chineseBasic).baseAccess,
+      FeatureBaseAccess.free,
+    );
+    expect(
+      RuhFeatureCatalog.policyFor(RuhFeatureIds.baziBasic).baseAccess,
+      FeatureBaseAccess.pro,
+    );
+  });
+
   test('free feature stays usable without PRO', () async {
     final service = PolicyEntitlementService(
       snapshotProvider: _SnapshotProvider(const EntitlementSnapshot(hasPro: false)),
@@ -44,6 +55,7 @@ void main() {
     );
 
     expect(await service.canUse(RuhFeatureIds.pdfProfessionalExport), isFalse);
+    expect(await service.canUse(RuhFeatureIds.baziBasic), isFalse);
   });
 
   test('PRO account can use all canonical features', () async {
