@@ -1,12 +1,15 @@
 {
-  "contract_id": "NUM-PYTHAGOREAN-KARMIC-DEBT-V2",
+  "contract_id": "NUM-PYTHAGOREAN-KARMIC-DEBT-V3",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "engine": "numerology.pythagorean.karmic-debt",
-  "engine_version": "2",
+  "engine_version": "3",
   "requirements": [
     "RC-0174",
-    "RC-0362"
+    "RC-0362",
+    "RC-0364",
+    "RC-0365",
+    "RC-0366"
   ],
   "policy": {
     "canonical_compounds": {
@@ -18,20 +21,23 @@
     "provenance": "A Karmic Debt finding requires an exact upstream compound value plus a non-empty provenance identifier. A reduced value alone never implies a debt compound.",
     "validation": "The supplied reduced value must equal the single-digit reduction of the exact compound; duplicate observations for the same metric are rejected.",
     "scope": "The engine detects debt from preserved upstream compounds. It does not reverse-infer 13/4, 14/5, 16/7 or 19/1 from a final 4, 5, 7 or 1.",
-    "profile_adapter": "Pythagorean profile metrics preserve exact reduction traces. observationsFromProfile inspects only compounds actually present in those traces and carries the metric's provenance through to the finding."
+    "profile_adapter": "Pythagorean profile metrics preserve exact reduction traces. observationsFromProfile inspects only compounds actually present in those traces and carries the metric provenance into the finding.",
+    "cycle_adapter": "Personal Year, Personal Month and Personal Day preserve exact reduction traces. observationsFromPersonalCycles emits only canonical debt compounds actually observed in those traces; exact target-date identity and the cycle provenance identifier are preserved."
   },
   "tests": [
     "test/calculation_core/numerology/karmic_debt_test.dart",
-    "test/calculation_core/numerology/pythagorean_profile_test.dart"
+    "test/calculation_core/numerology/pythagorean_profile_test.dart",
+    "test/calculation_core/numerology/personal_cycles_test.dart"
   ],
   "source": [
     "lib/src/calculation_core/numerology/karmic_debt.dart",
     "lib/src/calculation_core/numerology/pythagorean_profile.dart",
+    "lib/src/calculation_core/numerology/personal_cycles.dart",
     "lib/src/calculation_core/numerology/personal_day.dart"
   ],
   "remaining_before_done": [
     "Exact Flutter test SUCCESS must be visible on the tested commit.",
-    "Personal Year/Month/Day compound provenance must be connected before cycle-based Karmic Debt can be exposed.",
+    "Independent numerology reference evidence remains required where the master requirement demands external accuracy proof.",
     "Interpretation content remains separate from this calculation contract."
   ]
 }
