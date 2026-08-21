@@ -1,0 +1,29 @@
+{
+  "contract_id": "INTERPRETATION-CLAIM-AGGREGATION-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-1070",
+    "RC-1072",
+    "RC-1077",
+    "RC-1078"
+  ],
+  "invariants": [
+    "Every claim has a stable claim ID, topic ID, polarity, text and one or more exact source factor IDs.",
+    "Duplicate claim IDs and missing source factor provenance fail closed.",
+    "A topic containing both supportive and challenging claims is marked mixed.",
+    "Mixed topics preserve every claim and source factor separately; the aggregator never invents one definitive conclusion.",
+    "Topic groups and claims are sorted deterministically so the same factor set yields the same presentation order."
+  ],
+  "source": [
+    "lib/src/interpretation/interpretation_claims.dart"
+  ],
+  "tests": [
+    "test/interpretation/interpretation_claims_test.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Domain interpretation catalogs must emit claim/topic/polarity metadata and exact calculation-factor IDs before their contradiction handling is DONE.",
+    "UI and PDF must render mixed-topic factors separately rather than flattening them into a single certainty statement."
+  ]
+}
