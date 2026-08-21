@@ -41,6 +41,12 @@ final class BackupSchemaRegistry {
 
   static const int schemaVersion = 1;
 
+  /// `tarot_cards.csv` is an additive schema-v1 member. Readers accept older
+  /// schema-v1 packages that predate this member and treat it as an empty table.
+  /// New writers always emit the file. This keeps RC-0788 explicit without
+  /// invalidating backups generated before the table was introduced.
+  static const Set<String> additiveOptionalForLegacyV1 = <String>{'tarot_cards.csv'};
+
   static const List<BackupTableSchema> tables = <BackupTableSchema>[
     BackupTableSchema(fileName: 'profiles.csv', primaryKey: 'id', columns: <BackupColumnSchema>[
       BackupColumnSchema(name: 'id', type: BackupColumnType.text),
@@ -133,6 +139,13 @@ final class BackupSchemaRegistry {
       BackupColumnSchema(name: 'card_ids_json', type: BackupColumnType.jsonText),
       BackupColumnSchema(name: 'created_at_utc', type: BackupColumnType.isoDateTimeUtc),
       BackupColumnSchema(name: 'updated_at_utc', type: BackupColumnType.isoDateTimeUtc),
+    ]),
+    BackupTableSchema(fileName: 'tarot_cards.csv', primaryKey: 'id', columns: <BackupColumnSchema>[
+      BackupColumnSchema(name: 'id', type: BackupColumnType.text),
+      BackupColumnSchema(name: 'session_id', type: BackupColumnType.text, foreignKey: BackupForeignKey(table: 'tarot_sessions.csv', column: 'id')),
+      BackupColumnSchema(name: 'position_index', type: BackupColumnType.integer),
+      BackupColumnSchema(name: 'card_id', type: BackupColumnType.text),
+      BackupColumnSchema(name: 'orientation', type: BackupColumnType.enumId, enumValues: {'upright', 'reversed'}),
     ]),
     BackupTableSchema(fileName: 'professional_presets.csv', primaryKey: 'id', columns: <BackupColumnSchema>[
       BackupColumnSchema(name: 'id', type: BackupColumnType.text),
