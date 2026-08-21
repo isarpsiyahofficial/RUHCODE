@@ -27,11 +27,20 @@ void main() {
         'goals.csv',
         'habits.csv',
         'tarot_sessions.csv',
+        'tarot_cards.csv',
         'favorites.csv',
         'settings.csv',
         'professional_presets.csv',
         'interpretation_templates.csv',
       }));
+    });
+
+    test('tarot card rows are normalized and linked to a session', () {
+      final schema = BackupSchemaRegistry.table('tarot_cards.csv');
+      expect(schema.primaryKey, 'id');
+      expect(schema.column('session_id').foreignKey?.table, 'tarot_sessions.csv');
+      expect(schema.column('session_id').foreignKey?.column, 'id');
+      expect(schema.column('orientation').enumValues, <String>{'upright', 'reversed'});
     });
 
     test('enum ids are locale independent', () {
@@ -101,6 +110,17 @@ void main() {
         ],
         'consultations.csv': <List<String?>>[
           <String?>['consultation-1', 'missing-client', '2026-08-19T17:00:00Z', null, '2026-08-19T17:00:00Z', '2026-08-19T17:00:00Z'],
+        ],
+      });
+      expect(issues, hasLength(1));
+      expect(issues.single.message, contains('unresolved foreign key'));
+    });
+
+    test('rejects tarot card row whose session does not exist', () {
+      final issues = validator.validateForeignKeys(rowsByTable: <String, List<List<String?>>>{
+        'tarot_sessions.csv': const <List<String?>>[],
+        'tarot_cards.csv': const <List<String?>>[
+          <String?>['card-row-1', 'missing-session', '0', 'major.00', 'upright'],
         ],
       });
       expect(issues, hasLength(1));
