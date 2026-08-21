@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/numerology/karmic_debt.dart';
+import 'package:ruh_code/src/calculation_core/numerology/personal_cycles.dart';
 import 'package:ruh_code/src/calculation_core/numerology/pythagorean_profile.dart';
 import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
@@ -64,6 +65,24 @@ void main() {
             .provenance,
         'expression.full_name_value_sum',
       );
+    });
+
+    test('builds cycle debt only from an observed cycle compound', () {
+      final cycles = PythagoreanPersonalCycleEngine.calculate(
+        birthDate: const CivilDate(year: 1990, month: 5, day: 19),
+        targetDate: const CivilDate(year: 2026, month: 1, day: 5),
+      );
+
+      final observations =
+          PythagoreanKarmicDebtEngine.observationsFromPersonalCycles(cycles);
+      final findings = PythagoreanKarmicDebtEngine.detect(observations);
+
+      expect(cycles.personalDayTrace.steps, <int>[13, 4]);
+      expect(observations, hasLength(1));
+      expect(observations.single.metric, KarmicDebtMetric.personalDay);
+      expect(observations.single.compoundValue, 13);
+      expect(observations.single.provenance, 'personal_cycle.personal_day');
+      expect(findings.single.reducedValue, 4);
     });
 
     test('reduced value alone never invents a Karmic Debt compound', () {
