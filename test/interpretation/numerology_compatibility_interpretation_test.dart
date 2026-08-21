@@ -107,8 +107,8 @@ void main() {
       catalog: fullCatalog(),
     );
 
-    expect(
-      () => engine.interpret(snapshot: snapshot, localeTag: 'de'),
+    await expectLater(
+      engine.interpret(snapshot: snapshot, localeTag: 'de'),
       throwsArgumentError,
     );
   });
