@@ -1,0 +1,37 @@
+name: Numerology Name Change Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/numerology/name_change_comparison.dart'
+      - 'lib/src/calculation_core/numerology/pythagorean_profile.dart'
+      - 'test/calculation_core/numerology/name_change_comparison_test.dart'
+      - 'evidence/numerology/name_change_comparison.json'
+      - 'tools/numerology/validate_name_change_comparison.py'
+      - '.github/workflows/numerology-name-change-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/numerology/name_change_comparison.dart'
+      - 'lib/src/calculation_core/numerology/pythagorean_profile.dart'
+      - 'test/calculation_core/numerology/name_change_comparison_test.dart'
+      - 'evidence/numerology/name_change_comparison.json'
+      - 'tools/numerology/validate_name_change_comparison.py'
+      - '.github/workflows/numerology-name-change-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Structural name-change contract
+        run: python tools/numerology/validate_name_change_comparison.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Name-change calculation tests
+        run: flutter test test/calculation_core/numerology/name_change_comparison_test.dart
