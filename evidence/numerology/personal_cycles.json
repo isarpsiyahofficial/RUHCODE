@@ -1,0 +1,33 @@
+{
+  "contract_id": "NUM-PYTHAGOREAN-PERSONAL-CYCLES-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engine": "numerology.pythagorean.personal-cycles",
+  "engine_version": "1",
+  "requirements": [
+    "RC-0364",
+    "RC-0365",
+    "RC-0366",
+    "RC-0371",
+    "RC-0378",
+    "RC-1436"
+  ],
+  "invariants": [
+    "Personal Year, Personal Month and Personal Day are produced from one exact target date and one explicit reduction policy.",
+    "The public cycle API delegates to the already-bound Pythagorean personal-day arithmetic so DailySnapshot and numerology screens cannot diverge silently.",
+    "singleDigit and preserveMasterNumbers are distinct explicit policies.",
+    "Different YYYY-MM-DD target dates retain distinct identity."
+  ],
+  "tests": [
+    "test/calculation_core/numerology/personal_cycles_test.dart"
+  ],
+  "source": [
+    "lib/src/calculation_core/numerology/personal_cycles.dart",
+    "lib/src/calculation_core/numerology/personal_day.dart",
+    "lib/src/calculation_core/daily/personal_day_factor.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Requirement-state promotion must be backed by the workflow/test evidence rather than source presence alone."
+  ]
+}
