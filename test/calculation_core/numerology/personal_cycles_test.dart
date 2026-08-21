@@ -6,15 +6,14 @@ import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
 void main() {
   group('PythagoreanPersonalCycleEngine', () {
-    const birthDate = CivilDate(year: 1990, month: 5, day: 19);
-    const targetDate = CivilDate(year: 2026, month: 8, day: 16);
+    final birthDate = CivilDate(1990, 5, 19);
+    final targetDate = CivilDate(2026, 8, 16);
 
     test('exposes year, month and day from one exact-date calculation', () {
       final result = PythagoreanPersonalCycleEngine.calculate(
         birthDate: birthDate,
         targetDate: targetDate,
       );
-
       expect(result.universalYear, 1);
       expect(result.personalYear, 7);
       expect(result.personalMonth, 6);
@@ -27,7 +26,6 @@ void main() {
         birthDate: birthDate,
         targetDate: targetDate,
       );
-
       expect(result.universalYearTrace.steps, <int>[2026, 10, 1]);
       expect(result.personalYearTrace.steps, <int>[25, 7]);
       expect(result.personalMonthTrace.steps, <int>[15, 6]);
@@ -41,7 +39,6 @@ void main() {
         targetDate: targetDate,
         policy: PersonalCycleReductionPolicy.preserveMasterNumbers,
       );
-
       expect(result.personalYear, 7);
       expect(result.personalMonth, 6);
       expect(result.personalDay, 22);
@@ -58,7 +55,6 @@ void main() {
         birthDate: birthDate,
         targetDate: targetDate,
       );
-
       expect(
         dailyReference.resultId,
         'personal-day|${targetDate.isoKey}|${cycle.personalDay}|'
@@ -67,7 +63,7 @@ void main() {
     });
 
     test('different calendar years cannot collapse to the same target date', () {
-      const nextYear = CivilDate(year: 2027, month: 8, day: 16);
+      final nextYear = CivilDate(2027, 8, 16);
       final first = PythagoreanPersonalCycleEngine.calculate(
         birthDate: birthDate,
         targetDate: targetDate,
@@ -76,7 +72,6 @@ void main() {
         birthDate: birthDate,
         targetDate: nextYear,
       );
-
       expect(first.targetDate.isoKey, isNot(second.targetDate.isoKey));
       expect(first.personalYear, isNot(second.personalYear));
     });
