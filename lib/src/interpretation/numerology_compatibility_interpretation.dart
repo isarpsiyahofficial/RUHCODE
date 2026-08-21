@@ -139,9 +139,12 @@ final class PythagoreanCompatibilityInterpretationEngine
       ruleIds.add(entry.ruleId);
     }
 
-    return InterpretationBundle(
+    final bundle = InterpretationBundle(
       items: List<String>.unmodifiable(items),
       sourceRuleIds: List<String>.unmodifiable(ruleIds),
+      interpretationVersion: interpretationVersion,
     );
+    InterpretationQualityGuard.validate(bundle);
+    return bundle;
   }
 }
