@@ -1,0 +1,36 @@
+{
+  "contract_id": "NUM-PYTHAGOREAN-COMPATIBILITY-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engine": "numerology.pythagorean.compatibility",
+  "engine_version": "1",
+  "requirements": [
+    "RC-0181",
+    "RC-0369"
+  ],
+  "policy": {
+    "compared_metrics": [
+      "lifePath",
+      "expression",
+      "soulUrge",
+      "personality",
+      "birthday",
+      "maturity"
+    ],
+    "score_semantics": "No synthetic percentage or hidden weighted score is produced. The calculation exposes exact core-number pairs, exact-match flags, absolute numeric differences and an exact-match count.",
+    "reduction_policy": "Both profiles must use the same explicit Pythagorean reduction policy; mixed policies are rejected.",
+    "interpretation_boundary": "Human-readable relationship interpretation is separate CONTENT logic and cannot change the calculation result."
+  },
+  "tests": [
+    "test/calculation_core/numerology/compatibility_test.dart"
+  ],
+  "source": [
+    "lib/src/calculation_core/numerology/compatibility.dart",
+    "lib/src/calculation_core/numerology/pythagorean_profile.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "TR/EN compatibility interpretation coverage must be proven separately if shown to users.",
+    "UI must disclose the compared numerology system and reduction policy rather than presenting a hidden universal compatibility percentage."
+  ]
+}
