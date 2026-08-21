@@ -21,6 +21,7 @@ abstract final class RuhFeatureIds {
   static const westernAdvanced = 'western.advanced';
   static const vedicBasic = 'vedic.basic';
   static const vedicAdvanced = 'vedic.advanced';
+  static const chineseBasic = 'chinese.basic';
   static const planetaryHours = 'planetary_hours.basic';
   static const numerologyBasic = 'numerology.basic';
   static const numerologyAdvanced = 'numerology.advanced';
@@ -39,6 +40,7 @@ abstract final class RuhFeatureIds {
     westernAdvanced,
     vedicBasic,
     vedicAdvanced,
+    chineseBasic,
     planetaryHours,
     numerologyBasic,
     numerologyAdvanced,
@@ -79,6 +81,10 @@ abstract final class RuhFeatureCatalog {
       id: RuhFeatureIds.vedicAdvanced,
       baseAccess: FeatureBaseAccess.pro,
       temporaryUnlockAllowed: true,
+    ),
+    RuhFeatureIds.chineseBasic: FeaturePolicy(
+      id: RuhFeatureIds.chineseBasic,
+      baseAccess: FeatureBaseAccess.free,
     ),
     RuhFeatureIds.planetaryHours: FeaturePolicy(
       id: RuhFeatureIds.planetaryHours,
