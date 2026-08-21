@@ -1,0 +1,26 @@
+name: PDF Entitlement Contract
+
+on:
+  push:
+    paths:
+      - 'ui/action_registry.csv'
+      - 'lib/src/entitlements/feature_catalog.dart'
+      - 'tools/ui/validate_pdf_entitlement_policy.py'
+      - '.github/workflows/pdf-entitlement-contract.yml'
+  pull_request:
+    paths:
+      - 'ui/action_registry.csv'
+      - 'lib/src/entitlements/feature_catalog.dart'
+      - 'tools/ui/validate_pdf_entitlement_policy.py'
+      - '.github/workflows/pdf-entitlement-contract.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate sample preview and professional PDF access policy
+        run: python tools/ui/validate_pdf_entitlement_policy.py
