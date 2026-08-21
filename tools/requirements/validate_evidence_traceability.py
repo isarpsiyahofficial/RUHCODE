@@ -35,9 +35,10 @@ def load_requirements(path):
     return set(parsed)
 
 
-# Exact semantic ownership for evidence files that previously suffered TODO-index-as-RC drift.
-# QA umbrella requirements (for example RC-0329) are included only where the MASTER literally
-# applies them to the engine family. Unrelated data/security/offline RCs must never appear here.
+# Exact semantic ownership for evidence files that previously suffered or are especially
+# vulnerable to TODO-index-as-RC drift. QA umbrella requirements are included only where the
+# MASTER literally applies them to the engine family. Unrelated data/security/offline RCs must
+# never appear here.
 EXPECTED = {
     "evidence/numerology/pythagorean_profile.json": {
         161, 162, 165, 166, 167, 168, 169, 170, 171, 174, 182, 183, 329,
@@ -54,10 +55,29 @@ EXPECTED = {
     "evidence/numerology/compatibility.json": {
         181, 329,
     },
+    "evidence/bazi/sexagenary_cycle.json": {
+        147, 148,
+    },
+    "evidence/bazi/hidden_stems.json": {
+        149,
+    },
+    "evidence/bazi/four_pillars_primitives.json": {
+        150, 151, 152,
+    },
+    "evidence/bazi/ten_gods.json": {
+        153,
+    },
 }
 
 # Literal keyword assertions make accidental reassignment harder even if an EXPECTED set is edited.
 KEYWORDS = {
+    147: "Heavenly Stems",
+    148: "Earthly Branches",
+    149: "Hidden Stems",
+    150: "Five Elements",
+    151: "Yin/Yang",
+    152: "Day Master",
+    153: "Ten Gods",
     161: "Numeroloji",
     162: "Pythagorean",
     166: "Life Path",
@@ -104,7 +124,11 @@ def main():
             if rc not in master:
                 raise AssertionError(f"{path}: RC-{rc:04d} is absent from MASTER")
 
-    print(f"OK: semantic evidence ownership validated for {len(EXPECTED)} numerology contracts")
+    families = sorted({path.split('/')[1] for path in EXPECTED})
+    print(
+        f"OK: semantic evidence ownership validated for {len(EXPECTED)} contracts "
+        f"across {', '.join(families)}"
+    )
 
 
 if __name__ == "__main__":
