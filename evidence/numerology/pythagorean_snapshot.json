@@ -1,0 +1,46 @@
+{
+  "id": "NUM-PYTHAGOREAN-SNAPSHOT-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engine": "numerology.pythagorean.snapshot",
+  "engineVersion": "1",
+  "requirements": [
+    "RC-0165",
+    "RC-0168",
+    "RC-0169",
+    "RC-0170",
+    "RC-0171",
+    "RC-0172",
+    "RC-0173",
+    "RC-0174",
+    "RC-0175",
+    "RC-0176",
+    "RC-0177",
+    "RC-0360",
+    "RC-0361",
+    "RC-0362",
+    "RC-0363",
+    "RC-0364",
+    "RC-0365",
+    "RC-0366",
+    "RC-0367",
+    "RC-0368"
+  ],
+  "source": "lib/src/calculation_core/numerology/pythagorean_snapshot.dart",
+  "tests": [
+    "test/calculation_core/numerology/pythagorean_snapshot_test.dart"
+  ],
+  "invariants": [
+    "UI/PDF/interpretation consumers can receive one canonical Pythagorean snapshot instead of independently recalculating metrics",
+    "static profile, extended-name and Pinnacle/Challenge results must share the same normalized name, birth date, reduction policy and Life Path",
+    "date-dependent Personal Year/Month/Day values exist only when an explicit CivilDate targetDate is supplied",
+    "target date is never substituted from device current time",
+    "Karmic Debt observations are derived only from exact upstream reduction traces with provenance",
+    "changing targetDate cannot mutate static birth/name profile values"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "independent editorial/golden acceptance of every supported numerology convention",
+    "full UI/PDF wiring to this snapshot"
+  ]
+}
