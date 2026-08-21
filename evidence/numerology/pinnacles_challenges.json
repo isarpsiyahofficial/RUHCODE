@@ -1,0 +1,28 @@
+{
+  "contract_id": "NUM-PYTHAGOREAN-PINNACLES-CHALLENGES-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engine": "numerology.pythagorean.pinnacles-challenges",
+  "engine_version": "1",
+  "requirements": [
+    "RC-0179",
+    "RC-0180",
+    "RC-0367",
+    "RC-0368"
+  ],
+  "policy": {
+    "pinnacles": "Birth month/day/year components are reduced with the selected explicit Pythagorean reduction policy. P1=month+day, P2=day+year, P3=P1+P2, P4=month+year.",
+    "challenges": "Challenge values are absolute differences and are reduced to single digits only; zero is preserved as meaningful.",
+    "period_boundaries": "First period runs through age 36-LifePath inclusive; second and third periods each extend the boundary by nine years; fourth begins on the following birthday and is open-ended."
+  },
+  "tests": [
+    "test/calculation_core/numerology/pinnacles_challenges_test.dart"
+  ],
+  "source": [
+    "lib/src/calculation_core/numerology/pinnacles_challenges.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Independent policy/reference review must remain traceable before final release."
+  ]
+}
