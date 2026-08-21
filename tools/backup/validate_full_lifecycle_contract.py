@@ -34,7 +34,8 @@ def main() -> None:
     for key in [
         'real_sqlite_source_and_target',
         'all_registered_backup_tables_compared',
-        'all_14_tables_non_empty_representative_fixture',
+        'all_15_tables_non_empty_representative_fixture',
+        'tarot_cards_non_empty_and_session_linked',
         'cross_table_foreign_keys_in_fixture',
         'portable_zip_round_trip',
         'strict_preview_before_mutation',
@@ -73,7 +74,7 @@ def main() -> None:
 
     symmetry = SYMMETRY_TEST.read_text(encoding='utf-8')
     for token in [
-        'all 14 logical tables are non-empty',
+        'all 15 logical tables are non-empty',
         '_seedAllTables',
         "table: 'profiles'",
         "table: 'clients'",
@@ -85,6 +86,9 @@ def main() -> None:
         "table: 'goals'",
         "table: 'habits'",
         "table: 'tarot_sessions'",
+        "table: 'tarot_cards'",
+        "'sessionId': _tarotId",
+        "'orientation': 'upright'",
         "table: 'professional_presets'",
         "table: 'interpretation_templates'",
         "table: 'settings'",
