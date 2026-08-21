@@ -1,0 +1,35 @@
+name: BaZi Sexagenary Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
+      - 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
+      - 'evidence/bazi/sexagenary_cycle.json'
+      - 'tools/astronomy/validate_bazi_sexagenary_cycle.py'
+      - '.github/workflows/bazi-sexagenary-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
+      - 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
+      - 'evidence/bazi/sexagenary_cycle.json'
+      - 'tools/astronomy/validate_bazi_sexagenary_cycle.py'
+      - '.github/workflows/bazi-sexagenary-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Structural BaZi sexagenary contract
+        run: python tools/astronomy/validate_bazi_sexagenary_cycle.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: BaZi sexagenary tests
+        run: flutter test test/calculation_core/bazi/sexagenary_cycle_test.dart
