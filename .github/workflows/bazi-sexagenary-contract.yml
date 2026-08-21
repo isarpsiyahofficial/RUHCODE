@@ -1,18 +1,24 @@
-name: BaZi Sexagenary Contract
+name: BaZi Primitive Contract
 
 on:
   push:
     paths:
       - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
+      - 'lib/src/calculation_core/bazi/hidden_stems.dart'
       - 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
+      - 'test/calculation_core/bazi/hidden_stems_test.dart'
       - 'evidence/bazi/sexagenary_cycle.json'
+      - 'evidence/bazi/hidden_stems.json'
       - 'tools/astronomy/validate_bazi_sexagenary_cycle.py'
       - '.github/workflows/bazi-sexagenary-contract.yml'
   pull_request:
     paths:
       - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
+      - 'lib/src/calculation_core/bazi/hidden_stems.dart'
       - 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
+      - 'test/calculation_core/bazi/hidden_stems_test.dart'
       - 'evidence/bazi/sexagenary_cycle.json'
+      - 'evidence/bazi/hidden_stems.json'
       - 'tools/astronomy/validate_bazi_sexagenary_cycle.py'
       - '.github/workflows/bazi-sexagenary-contract.yml'
 
@@ -24,12 +30,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Structural BaZi sexagenary contract
+      - name: Structural BaZi primitive contract
         run: python tools/astronomy/validate_bazi_sexagenary_cycle.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: BaZi sexagenary tests
-        run: flutter test test/calculation_core/bazi/sexagenary_cycle_test.dart
+      - name: BaZi primitive tests
+        run: flutter test test/calculation_core/bazi/sexagenary_cycle_test.dart test/calculation_core/bazi/hidden_stems_test.dart
