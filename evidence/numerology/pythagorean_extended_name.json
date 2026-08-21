@@ -8,9 +8,9 @@
     "RC-0172",
     "RC-0173",
     "RC-0175",
-    "RC-0360",
-    "RC-0361",
-    "RC-0363"
+    "RC-0182",
+    "RC-0183",
+    "RC-0329"
   ],
   "policy": {
     "balance": "Balance uses the Pythagorean values of each normalized name component's first letter; whitespace and hyphen delimit components.",
