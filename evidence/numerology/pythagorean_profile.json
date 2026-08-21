@@ -17,8 +17,7 @@
     "RC-0174",
     "RC-0182",
     "RC-0183",
-    "RC-0329",
-    "RC-0362"
+    "RC-0329"
   ],
   "source": "lib/src/calculation_core/numerology/pythagorean_profile.dart",
   "tests": [
