@@ -28,6 +28,8 @@ jobs:
         run: python tools/numerology/validate_pythagorean_profile.py
       - name: Validate Chaldean structural contract
         run: python tools/numerology/validate_chaldean_name.py
+      - name: Validate Lo Shu structural contract
+        run: python tools/numerology/validate_lo_shu_grid.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
