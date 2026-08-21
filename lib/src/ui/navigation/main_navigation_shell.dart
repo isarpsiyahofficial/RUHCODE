@@ -4,6 +4,7 @@ import '../../entitlements/feature_access_guard.dart';
 import '../../entitlements/feature_catalog.dart';
 import '../actions/ruh_action_ids.dart';
 import '../numerology/numerology_screen.dart';
+import '../pdf/pdf_reports_pages.dart';
 
 class MainNavigationShell extends StatefulWidget {
   const MainNavigationShell({
@@ -61,7 +62,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
       const _PlaceholderPage(title: 'Bugün'),
       _ToolsPage(featureAccess: widget.featureAccess),
       _RecordsPage(featureAccess: widget.featureAccess),
-      const _ProfilePage(),
+      _ProfilePage(featureAccess: widget.featureAccess),
     ];
 
     return Scaffold(
@@ -175,8 +176,6 @@ Widget _buildFeatureScreen({
   required FeatureAccessGuard featureAccess,
 }) {
   if (feature.featureId == RuhFeatureIds.numerologyBasic) {
-    // The profile/calculation flow is not wired yet. Showing the real empty
-    // state is preferable to fabricating sample results or recalculating in UI.
     return const NumerologyScreen(model: null);
   }
   return _FeaturePlaceholderPage(
@@ -384,7 +383,9 @@ class _RecordsPage extends StatelessWidget {
 }
 
 class _ProfilePage extends StatelessWidget {
-  const _ProfilePage();
+  const _ProfilePage({required this.featureAccess});
+
+  final FeatureAccessGuard featureAccess;
 
   @override
   Widget build(BuildContext context) {
@@ -399,7 +400,10 @@ class _ProfilePage extends StatelessWidget {
             title: 'Ayarlar',
             subtitle: 'Dil, bildirimler, gizlilik, yedekleme ve raporlar',
             icon: Icons.settings_outlined,
-            onTap: () => _pushPage(context, const _SettingsPlaceholderPage()),
+            onTap: () => _pushPage(
+              context,
+              _SettingsPage(featureAccess: featureAccess),
+            ),
           ),
         ),
       ],
@@ -407,14 +411,32 @@ class _ProfilePage extends StatelessWidget {
   }
 }
 
-class _SettingsPlaceholderPage extends StatelessWidget {
-  const _SettingsPlaceholderPage();
+class _SettingsPage extends StatelessWidget {
+  const _SettingsPage({required this.featureAccess});
+
+  final FeatureAccessGuard featureAccess;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ayarlar')),
-      body: const Center(child: Text('Ayarlar')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Card(
+            child: _ActionListTile(
+              actionId: RuhActionIds.settingsPdf,
+              title: 'PDF Raporları',
+              subtitle: 'Örnek raporu incele veya profesyonel rapor alanını aç',
+              icon: Icons.picture_as_pdf_outlined,
+              onTap: () => _pushPage(
+                context,
+                PdfReportsHubPage(featureAccess: featureAccess),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
