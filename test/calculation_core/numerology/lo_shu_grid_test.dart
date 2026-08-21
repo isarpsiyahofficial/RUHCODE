@@ -6,7 +6,7 @@ void main() {
   group('LoShuGridEngine', () {
     test('uses canonical 4-9-2 / 3-5-7 / 8-1-6 layout', () {
       final result = LoShuGridEngine.calculate(
-        const CivilDate(year: 1990, month: 5, day: 19),
+        CivilDate(1990, 5, 19),
       );
 
       expect(result.canonicalGrid, const <List<int>>[
@@ -18,7 +18,7 @@ void main() {
 
     test('counts exact birth-date digits and ignores zero', () {
       final result = LoShuGridEngine.calculate(
-        const CivilDate(year: 1990, month: 5, day: 19),
+        CivilDate(1990, 5, 19),
       );
 
       expect(result.countOf(1), 2);
@@ -30,7 +30,7 @@ void main() {
 
     test('leap-day input remains an exact Gregorian date input', () {
       final result = LoShuGridEngine.calculate(
-        const CivilDate(year: 2028, month: 2, day: 29),
+        CivilDate(2028, 2, 29),
       );
 
       expect(result.countOf(2), 4);
@@ -41,7 +41,7 @@ void main() {
 
     test('rejects non-grid lookup values', () {
       final result = LoShuGridEngine.calculate(
-        const CivilDate(year: 2000, month: 1, day: 1),
+        CivilDate(2000, 1, 1),
       );
       expect(() => result.countOf(0), throwsRangeError);
       expect(() => result.countOf(10), throwsRangeError);
