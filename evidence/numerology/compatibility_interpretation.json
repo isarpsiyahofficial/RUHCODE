@@ -1,0 +1,43 @@
+{
+  "contract_id": "NUM-PYTHAGOREAN-COMPATIBILITY-CONTENT-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0181",
+    "RC-0369",
+    "RC-0412",
+    "RC-0414",
+    "RC-0415",
+    "RC-0416",
+    "RC-0418",
+    "RC-1059",
+    "RC-1066",
+    "RC-1070",
+    "RC-1073",
+    "RC-1074"
+  ],
+  "calculation_engine": "numerology.pythagorean.compatibility",
+  "interpretation_engine": "numerology.compatibility.content.v1",
+  "invariants": [
+    "Compatibility calculation values and interpretation content are separate layers.",
+    "Interpretation consumes exact-match state but never changes leftValue, rightValue, absoluteDifference or exactMatchCount.",
+    "The catalog requires exactly match+difference content for all six compatibility metrics.",
+    "TR and EN are explicit independent fields; unsupported locale tags fail closed instead of falling back silently.",
+    "Blank locale text, unresolved placeholders and duplicate rule IDs are rejected before interpretation.",
+    "No hidden percentage or weighting is introduced by the interpretation layer."
+  ],
+  "source": [
+    "lib/src/calculation_core/numerology/compatibility.dart",
+    "lib/src/interpretation/interpretation_engine.dart",
+    "lib/src/interpretation/numerology_compatibility_interpretation.dart"
+  ],
+  "tests": [
+    "test/calculation_core/numerology/compatibility_test.dart",
+    "test/interpretation/numerology_compatibility_interpretation_test.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Production editorial TR and EN compatibility copy must be supplied and independently reviewed; test fixture text is not production content.",
+    "Final TR/EN content coverage and repetition/quality audit must pass before user-facing interpretation is DONE."
+  ]
+}
