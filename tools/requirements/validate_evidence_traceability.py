@@ -37,8 +37,8 @@ def load_requirements(path):
 
 # Exact semantic ownership for evidence files that previously suffered or are especially
 # vulnerable to TODO-index-as-RC drift. QA umbrella requirements are included only where the
-# MASTER literally applies them to the engine family. Unrelated data/security/cache RCs must
-# never appear here.
+# MASTER literally applies them to the engine family. Unrelated data/security/cache/build RCs
+# must never appear here.
 EXPECTED = {
     "evidence/numerology/pythagorean_profile.json": {
         161, 162, 165, 166, 167, 168, 169, 170, 171, 174, 182, 183, 329,
@@ -55,23 +55,26 @@ EXPECTED = {
     "evidence/numerology/compatibility.json": {
         181, 329,
     },
-    "evidence/bazi/sexagenary_cycle.json": {
-        147, 148,
-    },
-    "evidence/bazi/hidden_stems.json": {
-        149,
-    },
-    "evidence/bazi/four_pillars_primitives.json": {
-        150, 151, 152,
-    },
-    "evidence/bazi/ten_gods.json": {
-        153,
-    },
+    "evidence/bazi/sexagenary_cycle.json": {147, 148},
+    "evidence/bazi/hidden_stems.json": {149},
+    "evidence/bazi/four_pillars_primitives.json": {150, 151, 152},
+    "evidence/bazi/ten_gods.json": {153},
     "evidence/pdf/report_planning_contract.json": {
         862, 863, 865, 868, 870, 878, 881, 898, 903, 918, 919, 929, 931, 951, 956, 964,
     },
-    "evidence/pdf/numerology_data_adapter.json": {
-        875, 903, 925, 954,
+    "evidence/pdf/numerology_data_adapter.json": {875, 903, 925, 954},
+    "evidence/backup/csv_contract.json": {
+        774, 777, 792, 793, 796, 797, 798, 799, 800, 801, 802, 803, 804,
+        805, 806, 807, 809, 810, 811, 812, 814, 815,
+    },
+    "evidence/backup/schema_registry_contract.json": {
+        774, 775, 776, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787,
+        789, 790, 791, 805, 806, 809, 810, 811, 812, 813, 814, 815, 816, 817,
+        828, 829, 830,
+    },
+    "evidence/backup/full_lifecycle_contract.json": {
+        795, 816, 817, 823, 838, 841, 843, 847, 848, 850, 851, 854,
+        1296, 1297, 1298, 1299,
     },
 }
 
@@ -106,6 +109,42 @@ KEYWORDS = {
     183: "normalize",
     329: "Numeroloji motorlarının",
     337: "Leap year",
+    774: "CSV tabanlı",
+    775: "tek bir düz CSV",
+    776: "paket halinde",
+    777: "UTF-8 CSV",
+    778: "profiles.csv",
+    789: "favorites.csv",
+    790: "settings.csv",
+    791: "ayrı CSV",
+    792: "ZIP",
+    793: "insan tarafından",
+    795: "tüm Ruh Code verilerini",
+    796: "UTF-8",
+    800: "virgül",
+    801: "çift tırnak",
+    802: "yeni satır",
+    803: "Boş değer ile sıfır",
+    804: "null",
+    805: "locale formatına",
+    809: "ISO formatında",
+    812: "çeviri metinleriyle",
+    813: "Whole Sign",
+    815: "Türkçe yedek İngilizce",
+    816: "İngilizce cihazda",
+    817: "Türkçe cihazdan İngilizce",
+    823: "bozuk backup",
+    828: "Foreign key",
+    829: "ID değerleri",
+    830: "Tarih formatları",
+    838: "Birleştir",
+    841: "rollback",
+    843: "iki kere import",
+    847: "Import sonrası",
+    848: "temiz kurulum",
+    850: "Binlerce kayıtla",
+    851: "Türkçe karakterlerle",
+    854: "Emoji",
     862: "cihaz üzerinde",
     863: "sunucumuza",
     865: "Unicode",
@@ -125,6 +164,10 @@ KEYWORDS = {
     954: "Gerekli metinlerin",
     956: "görsel regresyon",
     964: "Yanlış müşteri verisinin",
+    1296: "Cihazlar arası veri transferi",
+    1297: "eski telefondan",
+    1298: "Yeni telefonda",
+    1299: "internet sunucumuza",
     1436: "doğruluk toleransı",
 }
 
