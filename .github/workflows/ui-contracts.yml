@@ -16,6 +16,8 @@ jobs:
           python-version: '3.12'
       - name: Validate UI contracts
         run: python tools/ui/validate_ui_contracts.py
+      - name: Validate accessibility and interaction contracts
+        run: python tools/ui/validate_accessibility_interactions.py
       - name: Validate portable backup action wording
         run: python tools/ui/validate_backup_action_labels.py
       - name: Validate static asset contracts
