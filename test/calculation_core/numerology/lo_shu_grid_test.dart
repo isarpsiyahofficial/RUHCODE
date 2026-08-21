@@ -33,10 +33,10 @@ void main() {
         const CivilDate(year: 2028, month: 2, day: 29),
       );
 
-      expect(result.countOf(2), 3);
+      expect(result.countOf(2), 4);
       expect(result.countOf(9), 1);
       expect(result.countOf(8), 1);
-      expect(result.counts.values.reduce((a, b) => a + b), 5);
+      expect(result.counts.values.reduce((a, b) => a + b), 6);
     });
 
     test('rejects non-grid lookup values', () {
