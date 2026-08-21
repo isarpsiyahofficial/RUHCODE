@@ -21,6 +21,7 @@ void main() {
     final sorted = List<String>.of(keys)..sort();
     expect(keys, sorted);
     expect(package.files.containsKey('manifest.json'), isTrue);
+    expect(package.files.containsKey('tarot_cards.csv'), isTrue);
     expect(package.files.length, BackupSchemaRegistry.tables.length + 1);
 
     final preview = reader.preview(package);
@@ -28,6 +29,29 @@ void main() {
     expect(preview.totalRecords, 0);
     expect(preview.recordCounts.length, BackupSchemaRegistry.tables.length);
     expect(preview.manifest.localeTag, 'tr');
+  });
+
+  test('accepts older schema-v1 package that predates tarot_cards.csv', () {
+    final current = writer.write(
+      rowsByTable: const <String, List<List<String?>>>{},
+      appVersion: '0.1.0+1',
+      engineVersion: 'engine-1',
+      localeTag: 'tr',
+      exportedAtUtc: DateTime.utc(2026, 8, 19, 20),
+    );
+    final files = Map<String, List<int>>.from(current.files)..remove('tarot_cards.csv');
+    final manifest = jsonDecode(utf8.decode(files['manifest.json']!)) as Map<String, dynamic>;
+    final manifestFiles = (manifest['files'] as List<dynamic>)
+        .cast<Map<String, dynamic>>()
+        .where((entry) => entry['fileName'] != 'tarot_cards.csv')
+        .toList(growable: false);
+    manifest['files'] = manifestFiles;
+    files['manifest.json'] = utf8.encode(jsonEncode(manifest));
+
+    final preview = reader.preview(BackupPackageBytes(files: Map.unmodifiable(files)));
+    expect(preview.valid, isTrue);
+    expect(preview.rowsByTable['tarot_cards.csv'], isEmpty);
+    expect(preview.recordCounts['tarot_cards.csv'], 0);
   });
 
   test('round-trips Unicode profile data and exact record counts', () {
