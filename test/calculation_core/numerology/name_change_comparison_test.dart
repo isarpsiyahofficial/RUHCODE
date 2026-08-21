@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/numerology/name_change_comparison.dart';
+import 'package:ruh_code/src/calculation_core/numerology/personal_day.dart';
 import 'package:ruh_code/src/calculation_core/numerology/pythagorean_profile.dart';
 import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
