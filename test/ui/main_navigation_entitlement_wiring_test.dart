@@ -57,6 +57,20 @@ void main() {
     expect(find.text('Batı Astrolojisi ekranı'), findsOneWidget);
   });
 
+  testWidgets('personal profiles action is live and remains free', (tester) async {
+    const guard = FeatureAccessGuard(entitlements: _FreeOnlyEntitlements());
+    await tester.pumpWidget(
+      const MaterialApp(home: MainNavigationShell(featureAccess: guard)),
+    );
+
+    await tester.tap(find.text('Kayıtlar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Profillerim'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Profillerim ekranı'), findsOneWidget);
+  });
+
   testWidgets('free user cannot enter advanced Western route', (tester) async {
     const guard = FeatureAccessGuard(entitlements: _FreeOnlyEntitlements());
     await tester.pumpWidget(
