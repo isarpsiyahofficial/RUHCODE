@@ -1,3 +1,4 @@
+import 'personal_cycles.dart';
 import 'personal_day.dart';
 import 'pythagorean_profile.dart';
 
@@ -43,13 +44,8 @@ final class KarmicDebtFinding {
 
 abstract final class PythagoreanKarmicDebtEngine {
   static const String engineId = 'numerology.pythagorean.karmic-debt';
-  static const String engineVersion = '2';
+  static const String engineVersion = '3';
 
-  /// Canonical Pythagorean karmic-debt compounds supported by Ruh Code.
-  ///
-  /// A reduced value alone never proves a debt. For example, a final value of
-  /// 4 does not imply 13/4 unless the upstream calculation preserved 13 as the
-  /// exact compound that reduced to 4.
   static const Map<int, int> supportedCompounds = <int, int>{
     13: 4,
     14: 5,
@@ -57,12 +53,6 @@ abstract final class PythagoreanKarmicDebtEngine {
     19: 1,
   };
 
-  /// Creates exact observations from the reduction traces produced by the
-  /// canonical Pythagorean profile engine.
-  ///
-  /// This is intentionally one-way: a profile final value is never used to
-  /// reverse-infer a debt. Only a debt-bearing compound that actually appears
-  /// in the metric's preserved reduction trace becomes an observation.
   static List<KarmicDebtObservation> observationsFromProfile(
     PythagoreanProfileResult profile,
   ) {
@@ -77,26 +67,57 @@ abstract final class PythagoreanKarmicDebtEngine {
 
     final observations = <KarmicDebtObservation>[];
     for (final entry in traces.entries) {
-      final trace = entry.value;
-      int? debtCompound;
-      for (final compound in trace.observedCompounds) {
-        if (supportedCompounds.containsKey(compound)) {
-          debtCompound = compound;
-          break;
-        }
-      }
-      if (debtCompound == null) continue;
-
-      observations.add(
-        KarmicDebtObservation(
-          metric: entry.key,
-          compoundValue: debtCompound,
-          reducedValue: trace.reducedValue,
-          provenance: trace.provenance,
-        ),
+      final observation = _observationFromTrace(
+        metric: entry.key,
+        observedCompounds: entry.value.observedCompounds,
+        reducedValue: entry.value.reducedValue,
+        provenance: entry.value.provenance,
       );
+      if (observation != null) observations.add(observation);
     }
     return List<KarmicDebtObservation>.unmodifiable(observations);
+  }
+
+  static List<KarmicDebtObservation> observationsFromPersonalCycles(
+    PythagoreanPersonalCycleResult cycles,
+  ) {
+    final traces = <KarmicDebtMetric, PersonalCycleReductionTrace>{
+      KarmicDebtMetric.personalYear: cycles.personalYearTrace,
+      KarmicDebtMetric.personalMonth: cycles.personalMonthTrace,
+      KarmicDebtMetric.personalDay: cycles.personalDayTrace,
+    };
+
+    final observations = <KarmicDebtObservation>[];
+    for (final entry in traces.entries) {
+      final observation = _observationFromTrace(
+        metric: entry.key,
+        observedCompounds: entry.value.observedCompounds,
+        reducedValue: entry.value.reducedValue,
+        provenance: entry.value.provenance,
+      );
+      if (observation != null) observations.add(observation);
+    }
+    return List<KarmicDebtObservation>.unmodifiable(observations);
+  }
+
+  static KarmicDebtObservation? _observationFromTrace({
+    required KarmicDebtMetric metric,
+    required Iterable<int> observedCompounds,
+    required int reducedValue,
+    required String provenance,
+  }) {
+    for (final compound in observedCompounds) {
+      final expected = supportedCompounds[compound];
+      if (expected == reducedValue) {
+        return KarmicDebtObservation(
+          metric: metric,
+          compoundValue: compound,
+          reducedValue: reducedValue,
+          provenance: provenance,
+        );
+      }
+    }
+    return null;
   }
 
   static List<KarmicDebtFinding> detect(
