@@ -1,4 +1,5 @@
 import 'personal_day.dart';
+import 'pythagorean_profile.dart';
 
 enum KarmicDebtMetric {
   birthday,
@@ -42,7 +43,7 @@ final class KarmicDebtFinding {
 
 abstract final class PythagoreanKarmicDebtEngine {
   static const String engineId = 'numerology.pythagorean.karmic-debt';
-  static const String engineVersion = '1';
+  static const String engineVersion = '2';
 
   /// Canonical Pythagorean karmic-debt compounds supported by Ruh Code.
   ///
@@ -55,6 +56,48 @@ abstract final class PythagoreanKarmicDebtEngine {
     16: 7,
     19: 1,
   };
+
+  /// Creates exact observations from the reduction traces produced by the
+  /// canonical Pythagorean profile engine.
+  ///
+  /// This is intentionally one-way: a profile final value is never used to
+  /// reverse-infer a debt. Only a debt-bearing compound that actually appears
+  /// in the metric's preserved reduction trace becomes an observation.
+  static List<KarmicDebtObservation> observationsFromProfile(
+    PythagoreanProfileResult profile,
+  ) {
+    final traces = <KarmicDebtMetric, PythagoreanReductionTrace>{
+      KarmicDebtMetric.lifePath: profile.lifePathTrace,
+      KarmicDebtMetric.expression: profile.expressionTrace,
+      KarmicDebtMetric.soulUrge: profile.soulUrgeTrace,
+      KarmicDebtMetric.personality: profile.personalityTrace,
+      KarmicDebtMetric.birthday: profile.birthdayTrace,
+      KarmicDebtMetric.maturity: profile.maturityTrace,
+    };
+
+    final observations = <KarmicDebtObservation>[];
+    for (final entry in traces.entries) {
+      final trace = entry.value;
+      int? debtCompound;
+      for (final compound in trace.observedCompounds) {
+        if (supportedCompounds.containsKey(compound)) {
+          debtCompound = compound;
+          break;
+        }
+      }
+      if (debtCompound == null) continue;
+
+      observations.add(
+        KarmicDebtObservation(
+          metric: entry.key,
+          compoundValue: debtCompound,
+          reducedValue: trace.reducedValue,
+          provenance: trace.provenance,
+        ),
+      );
+    }
+    return List<KarmicDebtObservation>.unmodifiable(observations);
+  }
 
   static List<KarmicDebtFinding> detect(
     Iterable<KarmicDebtObservation> observations,
