@@ -38,6 +38,8 @@ jobs:
         run: python tools/numerology/validate_pythagorean_extended_name.py
       - name: Validate Karmic Debt structural contract
         run: python tools/numerology/validate_karmic_debt.py
+      - name: Validate compatibility structural contract
+        run: python tools/numerology/validate_compatibility.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
