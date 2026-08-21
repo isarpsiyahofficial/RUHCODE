@@ -10,9 +10,7 @@
     "RC-0875",
     "RC-0903",
     "RC-0925",
-    "RC-0954",
-    "RC-1224",
-    "RC-1225"
+    "RC-0954"
   ],
   "invariants": [
     "PDF numerology values are projected from PythagoreanNumerologySnapshot and are not independently recalculated",
