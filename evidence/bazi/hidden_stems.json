@@ -3,7 +3,7 @@
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "requirements": [
-    "RC-0341"
+    "RC-0149"
   ],
   "source": "lib/src/calculation_core/bazi/hidden_stems.dart",
   "tests": [
