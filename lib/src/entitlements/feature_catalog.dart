@@ -16,6 +16,7 @@ final class FeaturePolicy {
 /// IDs instead of inventing local premium flags.
 abstract final class RuhFeatureIds {
   static const todayOverview = 'today.overview';
+  static const personalProfiles = 'records.profiles';
   static const westernNatalBasic = 'western.natal.basic';
   static const westernAdvanced = 'western.advanced';
   static const vedicBasic = 'vedic.basic';
@@ -33,6 +34,7 @@ abstract final class RuhFeatureIds {
 
   static const all = <String>{
     todayOverview,
+    personalProfiles,
     westernNatalBasic,
     westernAdvanced,
     vedicBasic,
@@ -54,6 +56,10 @@ abstract final class RuhFeatureCatalog {
   static const policies = <String, FeaturePolicy>{
     RuhFeatureIds.todayOverview: FeaturePolicy(
       id: RuhFeatureIds.todayOverview,
+      baseAccess: FeatureBaseAccess.free,
+    ),
+    RuhFeatureIds.personalProfiles: FeaturePolicy(
+      id: RuhFeatureIds.personalProfiles,
       baseAccess: FeatureBaseAccess.free,
     ),
     RuhFeatureIds.westernNatalBasic: FeaturePolicy(
