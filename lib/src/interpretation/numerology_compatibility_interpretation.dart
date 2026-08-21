@@ -58,14 +58,24 @@ final class NumerologyCompatibilityCatalog {
             NumerologyCompatibilityContentEntry>
         entries,
   ) : _entries = Map.unmodifiable(entries) {
-    final expected = <NumerologyCompatibilityInterpretationKey>{
-      for (final metric in NumerologyCompatibilityMetric.values) ...<NumerologyCompatibilityInterpretationKey>{
-        NumerologyCompatibilityInterpretationKey(metric: metric, exactMatch: true),
-        NumerologyCompatibilityInterpretationKey(metric: metric, exactMatch: false),
-      },
-    };
-    if (_entries.keys.toSet().length != expected.length ||
-        !_entries.keys.toSet().containsAll(expected)) {
+    final expected = <NumerologyCompatibilityInterpretationKey>{};
+    for (final metric in NumerologyCompatibilityMetric.values) {
+      expected.add(
+        NumerologyCompatibilityInterpretationKey(
+          metric: metric,
+          exactMatch: true,
+        ),
+      );
+      expected.add(
+        NumerologyCompatibilityInterpretationKey(
+          metric: metric,
+          exactMatch: false,
+        ),
+      );
+    }
+
+    final actual = _entries.keys.toSet();
+    if (actual.length != expected.length || !actual.containsAll(expected)) {
       throw StateError(
         'Compatibility catalog must contain exactly match+difference content '
         'for all ${NumerologyCompatibilityMetric.values.length} metrics.',
