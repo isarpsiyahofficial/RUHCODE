@@ -1,0 +1,31 @@
+{
+  "id": "PDF-NUMEROLOGY-DATA-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "source": "lib/src/pdf/pdf_numerology_data.dart",
+  "tests": [
+    "test/pdf/pdf_numerology_data_test.dart"
+  ],
+  "requirements": [
+    "RC-0875",
+    "RC-0903",
+    "RC-0925",
+    "RC-0954",
+    "RC-1224",
+    "RC-1225"
+  ],
+  "invariants": [
+    "PDF numerology values are projected from PythagoreanNumerologySnapshot and are not independently recalculated",
+    "PDF identity uses the exact canonical Pythagorean snapshot SHA-256 digest",
+    "UI/PDF parity can be enforced through PdfReportDataValidator using that same digest",
+    "target-date changes produce a new PDF snapshot identity",
+    "demo and user subject boundaries are validated before rendering",
+    "translated labels and interpretation prose remain outside calculation identity"
+  ],
+  "notProvenYet": [
+    "exact Flutter/GitHub Actions SUCCESS for the workflow target commit",
+    "production Unicode font artifact and real rendered numerology report",
+    "approved numerology PDF visual reference and visual regression",
+    "production UI wiring to the same snapshot digest"
+  ]
+}
