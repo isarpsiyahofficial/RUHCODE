@@ -52,6 +52,22 @@ void main() {
       expect(result.maturity, 5);
     });
 
+    test('preserves exact reduction traces for downstream provenance', () {
+      final result = PythagoreanProfileEngine.calculate(
+        birthDate: const CivilDate(year: 1990, month: 5, day: 19),
+        fullName: 'İbrahim Yeşilyurt',
+      );
+
+      expect(result.expressionTrace.sourceValue, 88);
+      expect(result.expressionTrace.steps, <int>[88, 16, 7]);
+      expect(result.expressionTrace.reducedValue, result.expression);
+      expect(result.birthdayTrace.steps, <int>[19, 10, 1]);
+      expect(result.birthdayTrace.reducedValue, result.birthday);
+      expect(result.maturityTrace.steps, <int>[14, 5]);
+      expect(result.maturityTrace.reducedValue, result.maturity);
+      expect(result.expressionTrace.provenance, 'expression.full_name_value_sum');
+    });
+
     test('preserves master numbers only when policy requests it', () {
       final preserved = PythagoreanProfileEngine.calculate(
         birthDate: const CivilDate(year: 2000, month: 1, day: 11),
@@ -64,7 +80,9 @@ void main() {
       );
 
       expect(preserved.birthday, 11);
+      expect(preserved.birthdayTrace.steps, <int>[11]);
       expect(reduced.birthday, 2);
+      expect(reduced.birthdayTrace.steps, <int>[11, 2]);
     });
 
     test('Y is treated consistently as a consonant in v1 policy', () {
