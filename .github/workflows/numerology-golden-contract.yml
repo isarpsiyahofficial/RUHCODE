@@ -1,0 +1,35 @@
+name: Numerology Golden Contract
+
+on:
+  push:
+    paths:
+      - 'evidence/numerology/golden_vectors_v1.json'
+      - 'test/calculation_core/numerology/golden_vectors_test.dart'
+      - 'tools/numerology/validate_golden_vectors.py'
+      - 'lib/src/calculation_core/numerology/**'
+      - '.github/workflows/numerology-golden-contract.yml'
+  pull_request:
+    paths:
+      - 'evidence/numerology/golden_vectors_v1.json'
+      - 'test/calculation_core/numerology/golden_vectors_test.dart'
+      - 'tools/numerology/validate_golden_vectors.py'
+      - 'lib/src/calculation_core/numerology/**'
+      - '.github/workflows/numerology-golden-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate independent golden fixture contract
+        run: python tools/numerology/validate_golden_vectors.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run independent numerology golden regressions
+        run: flutter test test/calculation_core/numerology/golden_vectors_test.dart
