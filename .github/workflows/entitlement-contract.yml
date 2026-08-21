@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - 'lib/src/entitlements/**'
+      - 'lib/src/ui/actions/**'
       - 'lib/src/ui/navigation/**'
       - 'lib/src/app/**'
       - 'lib/src/pdf/guarded_pdf_service.dart'
       - 'lib/src/data/local/core_repositories.dart'
       - 'lib/src/domain/models/core_models.dart'
+      - 'ui/runtime_action_bindings.csv'
       - 'test/entitlements/**'
       - 'test/ui/main_navigation_entitlement_wiring_test.dart'
       - 'evidence/entitlements/**'
@@ -19,11 +21,13 @@ on:
   pull_request:
     paths:
       - 'lib/src/entitlements/**'
+      - 'lib/src/ui/actions/**'
       - 'lib/src/ui/navigation/**'
       - 'lib/src/app/**'
       - 'lib/src/pdf/guarded_pdf_service.dart'
       - 'lib/src/data/local/core_repositories.dart'
       - 'lib/src/domain/models/core_models.dart'
+      - 'ui/runtime_action_bindings.csv'
       - 'test/entitlements/**'
       - 'test/ui/main_navigation_entitlement_wiring_test.dart'
       - 'evidence/entitlements/**'
