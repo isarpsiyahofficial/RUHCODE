@@ -1,0 +1,35 @@
+name: Numerology Pythagorean Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/numerology/**'
+      - 'test/calculation_core/numerology/**'
+      - 'evidence/numerology/**'
+      - 'tools/numerology/**'
+      - '.github/workflows/numerology-pythagorean-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/numerology/**'
+      - 'test/calculation_core/numerology/**'
+      - 'evidence/numerology/**'
+      - 'tools/numerology/**'
+      - '.github/workflows/numerology-pythagorean-contract.yml'
+
+jobs:
+  pythagorean-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate structural contract
+        run: python tools/numerology/validate_pythagorean_profile.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run Pythagorean numerology tests
+        run: flutter test test/calculation_core/numerology
