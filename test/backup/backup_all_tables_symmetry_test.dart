@@ -25,6 +25,7 @@ const _tarotId = '10000000-0000-4000-8000-000000000010';
 const _presetId = '10000000-0000-4000-8000-000000000011';
 const _templateId = '10000000-0000-4000-8000-000000000012';
 const _favoriteId = '10000000-0000-4000-8000-000000000013';
+const _tarotCardId = '10000000-0000-4000-8000-000000000014';
 
 void main() {
   sqfliteFfiInit();
@@ -41,7 +42,7 @@ void main() {
     }
   });
 
-  test('all 14 logical tables are non-empty and survive portable replace restore', () async {
+  test('all 15 logical tables are non-empty and survive portable replace restore', () async {
     final source = await _openDatabase('${root.path}/all_tables_source.db');
     final target = await _openDatabase('${root.path}/all_tables_target.db');
     addTearDown(source.close);
@@ -67,7 +68,7 @@ void main() {
       zipCodec.decode(zipCodec.encode(package)),
     );
     expect(preview.valid, isTrue, reason: _issueSummary(preview));
-    expect(preview.recordCounts.length, 14);
+    expect(preview.recordCounts.length, 15);
     for (final count in preview.recordCounts.values) {
       expect(count, greaterThan(0));
     }
@@ -288,6 +289,17 @@ Future<void> _seedAllTables(SqfliteLocalDatabase database) {
         'cardIds': <String>['star', 'hermit', 'sun'],
         'createdAtUtc': created,
         'updatedAtUtc': updated,
+      },
+    );
+    await tx.put(
+      table: 'tarot_cards',
+      id: _tarotCardId,
+      value: const <String, Object?>{
+        'id': _tarotCardId,
+        'sessionId': _tarotId,
+        'positionIndex': 0,
+        'cardId': 'star',
+        'orientation': 'upright',
       },
     );
     await tx.put(
