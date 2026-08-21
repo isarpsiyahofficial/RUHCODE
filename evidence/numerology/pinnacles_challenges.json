@@ -7,8 +7,7 @@
   "requirements": [
     "RC-0179",
     "RC-0180",
-    "RC-0367",
-    "RC-0368"
+    "RC-0329"
   ],
   "policy": {
     "pinnacles": "Birth month/day/year components are reduced with the selected explicit Pythagorean reduction policy. P1=month+day, P2=day+year, P3=P1+P2, P4=month+year.",
