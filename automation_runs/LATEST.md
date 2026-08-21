@@ -2,38 +2,38 @@
 
 Latest completed source-level work:
 
-1. `automation_runs/2026-08-21_2252_runtime_actions_semantic_evidence.md`
-   - runtime Tools information architecture now follows `Araçlar → Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim`
-   - Astrology hub exposes Western, Vedic, Chinese, BaZi and Planetary Hours as separate children
-   - canonical runtime `ACTION-*` constants + `ui/runtime_action_bindings.csv` added
-   - runtime action validator cross-checks ACTIVE action-registry rows and Feature Catalog Free/PRO tiers
-   - real BaZi access drift fixed: Chinese basic remains Free; BaZi basic is PRO consistently in registry/runtime
-   - current action tiles have explicit semantics labels and >=48dp target contract; critical hierarchy has a 360×800 / 2.0x text-scale widget regression
-   - PDF semantic drift fixed: numerology PDF evidence no longer claims unrelated cache RC-1224/1225
-   - Backup semantic drift fixed: schema evidence no longer falsely claims missing `tarot_cards.csv` RC-0788; backup lifecycle no longer claims RC-1442 clean-checkout build
-   - Entitlement evidence now owns an explicit conservative RC set; production ad SDK RC-1102/1103 remains unclaimed
-   - central evidence traceability validator now covers Numerology, BaZi, PDF, Backup and Entitlement families
+1. `automation_runs/2026-08-22_0054_pdf_policy_tarot_backup.md`
+   - PDF action registry now matches canonical product policy: example PDF preview is FREE; professional PDF generation/export/share remains PRO
+   - explicit `PDF Entitlement Contract` validator/workflow added so registry and Feature Catalog cannot silently drift again
+   - standalone `tarot_cards.csv` added for RC-0788 with session foreign key, position index, card ID and locale-independent upright/reversed orientation IDs
+   - new schema-v1 writers always emit `tarot_cards.csv`
+   - older schema-v1 packages that predate the additive member remain readable and materialize an empty tarot-card table
+   - schema/package tests cover tarot_cards presence, session FK, orientation enum and old-v1 missing-member compatibility
+   - full SQLite portable backup fixture now contains 15 non-empty logical tables, including a real tarot card linked to its tarot session
+   - schema/full-lifecycle evidence and structural validators updated; semantic evidence traceability now owns and verifies literal MASTER RC-0788
 
 Latest relevant source commits:
-- Runtime hierarchy/action IDs: `30291a1155272f72481acbc9d0ea33ae2bf9e6ab`
-- Runtime binding/access parity validator: `362fe8371c585ea24fa4c90d7cc353115014df70`
-- Free/PRO route matrix update: `351e1d812ce8d6f44d85fd1c08d65052f704047b`
-- Entitlement unit matrix update: `b0bbf4bcb2cc503efeed1b8beca9fb3bada858ba`
-- PDF semantic ownership fix: `7015b23552e44b2d98a552acbd94ed78f66c954f`
-- Backup semantic ownership fixes: `64ed121ed3bf8e1c49f930f0543ed2545f4153ab`, `a543889f23247dc00efc9d1e1a3a8e3b246a281f`
-- Entitlement exact RC ownership: `8999e9485ec300f7bac1c8dd2503f2d88b222060`
-- Central semantic traceability extension: `37db3e99beb9753e59120073e5c0a14789a315ba`
-- Checkpoint: `2b74968090c299fef813a674fe4f567ae8e987a1`
+- PDF registry policy correction: `bae8b2e64d4000cec99d58fa4f0e88c64871643f`
+- PDF entitlement structural validator: `b3a5a85be52564d27a7489ee7ab80781377c4a00`
+- PDF entitlement CI gate: `2b3dcab2235104d1a891836c5865c007c54a5e2b`
+- `tarot_cards.csv` schema: `b1e9648630f398c3462c4beaaca17a182215e105`
+- schema-v1 additive compatibility reader: `08907e8af38bcb7d41629418a2900f9294019bf4`
+- backup schema tests: `743b9f3043b367210ef382b1f297d8cb84dabf09`
+- legacy current-package compatibility test: `3aecb130bf4c13891b91725b9bdf8cdd825b5513`
+- schema evidence RC-0788 claim: `a0e65047bdc0a6f151adb0bce21d90d10134c748`
+- semantic traceability RC-0788 extension: `fbe9fbfdf71f44de9947799304a8a5be23c5f20c`
+- 15-table non-empty SQLite lifecycle fixture: `fc14a56000fb3a2613332148276a6758301f2c0a`
+- full-lifecycle evidence/validator: `89578d6795dded5ad285d297733f59e19092fc45`, `2396707c7555b33ac68639695e2024d3263216c0`
+- checkpoint: `f7f4ea3a93eb3c006651b3ea4bf1828a9b69cccd`
 
 Validation limitation:
-- GitHub combined-status still exposes no individual statuses for the workflow target (`statuses=[]`).
-- Clean local clone/test was blocked by the execution environment failing to resolve `github.com`.
+- GitHub combined-status still exposes no individual statuses for the latest exact source commit (`statuses=[]`).
 - No SUCCESS is claimed and no affected RC is promoted to DONE solely from source-level work.
 
 Next safe work:
-- resolve Settings/PDF action-registry policy before runtime binding: sample PDF preview Free, professional PDF generation PRO
-- continue semantic RC ownership audit for remaining evidence families
-- decide/implement RC-0788 standalone `tarot_cards.csv` behavior without silently breaking schema-v1 compatibility
+- bind the FREE sample-PDF hub/preview and PRO professional PDF builder to real Settings runtime UI with canonical ACTION/Feature IDs
+- continue semantic RC ownership audit for evidence families not yet centrally guarded
+- verify Backup CSV and PDF Entitlement workflows when exact checks become visible; fix any red result in the same run
 - continue production UI bindings with canonical ACTION/Feature IDs and approved references when available
 - retain physical astronomy/EOP/ephemeris/Lahiri, GeoNames proof, 8,036 editorial daily messages, approved UI references, production PDF fonts and clean-checkout lockfile as explicit blockers
 - promote RC state only with actual workflow/test/evidence proof
