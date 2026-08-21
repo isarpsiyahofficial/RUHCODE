@@ -145,6 +145,12 @@ class _RecordsPage extends StatelessWidget {
 
   final FeatureAccessGuard featureAccess;
 
+  static const personalProfiles = _FeatureDefinition(
+    title: 'Profillerim',
+    icon: Icons.person_pin_outlined,
+    featureId: RuhFeatureIds.personalProfiles,
+  );
+
   static const professionalClients = _FeatureDefinition(
     title: 'Danışanlarım',
     icon: Icons.groups_outlined,
@@ -161,12 +167,17 @@ class _RecordsPage extends StatelessWidget {
         const SizedBox(height: 8),
         Text('Kendi kayıtların ve profesyonel çalışma alanın.', style: Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height: 20),
-        const Card(
+        Card(
           child: ListTile(
-            leading: Icon(Icons.person_pin_outlined),
-            title: Text('Profillerim'),
-            subtitle: Text('Kayıtlı kişisel profiller'),
-            trailing: Icon(Icons.chevron_right),
+            leading: const Icon(Icons.person_pin_outlined),
+            title: const Text('Profillerim'),
+            subtitle: const Text('Kayıtlı kişisel profiller'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _openGuardedFeature(
+              context,
+              featureAccess: featureAccess,
+              feature: personalProfiles,
+            ),
           ),
         ),
         Card(
