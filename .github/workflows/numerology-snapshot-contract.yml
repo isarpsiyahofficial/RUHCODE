@@ -1,0 +1,45 @@
+name: Numerology Snapshot Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/numerology/pythagorean_snapshot.dart'
+      - 'lib/src/calculation_core/numerology/pythagorean_profile.dart'
+      - 'lib/src/calculation_core/numerology/pythagorean_extended_name.dart'
+      - 'lib/src/calculation_core/numerology/pinnacles_challenges.dart'
+      - 'lib/src/calculation_core/numerology/personal_cycles.dart'
+      - 'lib/src/calculation_core/numerology/karmic_debt.dart'
+      - 'test/calculation_core/numerology/pythagorean_snapshot_test.dart'
+      - 'evidence/numerology/pythagorean_snapshot.json'
+      - 'tools/numerology/validate_pythagorean_snapshot.py'
+      - '.github/workflows/numerology-snapshot-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/numerology/pythagorean_snapshot.dart'
+      - 'lib/src/calculation_core/numerology/pythagorean_profile.dart'
+      - 'lib/src/calculation_core/numerology/pythagorean_extended_name.dart'
+      - 'lib/src/calculation_core/numerology/pinnacles_challenges.dart'
+      - 'lib/src/calculation_core/numerology/personal_cycles.dart'
+      - 'lib/src/calculation_core/numerology/karmic_debt.dart'
+      - 'test/calculation_core/numerology/pythagorean_snapshot_test.dart'
+      - 'evidence/numerology/pythagorean_snapshot.json'
+      - 'tools/numerology/validate_pythagorean_snapshot.py'
+      - '.github/workflows/numerology-snapshot-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Structural snapshot contract
+        run: python tools/numerology/validate_pythagorean_snapshot.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Canonical Pythagorean snapshot tests
+        run: flutter test test/calculation_core/numerology/pythagorean_snapshot_test.dart test/calculation_core/numerology/karmic_debt_test.dart test/calculation_core/numerology/personal_cycles_test.dart
