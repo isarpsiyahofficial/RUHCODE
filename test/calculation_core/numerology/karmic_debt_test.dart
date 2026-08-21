@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/numerology/karmic_debt.dart';
+import 'package:ruh_code/src/calculation_core/numerology/pythagorean_profile.dart';
+import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
 void main() {
   group('PythagoreanKarmicDebtEngine', () {
@@ -33,6 +35,35 @@ void main() {
 
       expect(findings.map((e) => e.compoundValue).toList(), <int>[13, 14, 16, 19]);
       expect(findings.map((e) => e.reducedValue).toList(), <int>[4, 5, 7, 1]);
+    });
+
+    test('builds observations only from compounds actually seen upstream', () {
+      final profile = PythagoreanProfileEngine.calculate(
+        birthDate: const CivilDate(year: 1990, month: 5, day: 19),
+        fullName: 'İbrahim Yeşilyurt',
+      );
+
+      final observations = PythagoreanKarmicDebtEngine.observationsFromProfile(profile);
+      final findings = PythagoreanKarmicDebtEngine.detect(observations);
+
+      expect(
+        observations.map((item) => item.metric).toSet(),
+        <KarmicDebtMetric>{
+          KarmicDebtMetric.expression,
+          KarmicDebtMetric.birthday,
+          KarmicDebtMetric.maturity,
+        },
+      );
+      expect(
+        findings.map((item) => item.compoundValue).toSet(),
+        <int>{16, 19, 14},
+      );
+      expect(
+        findings
+            .firstWhere((item) => item.metric == KarmicDebtMetric.expression)
+            .provenance,
+        'expression.full_name_value_sum',
+      );
     });
 
     test('reduced value alone never invents a Karmic Debt compound', () {
