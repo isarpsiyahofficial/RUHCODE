@@ -61,7 +61,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
       const _PlaceholderPage(title: 'Bugün'),
       _ToolsPage(featureAccess: widget.featureAccess),
       _RecordsPage(featureAccess: widget.featureAccess),
-      _ProfilePage(featureAccess: widget.featureAccess),
+      const _ProfilePage(),
     ];
 
     return Scaffold(
@@ -125,6 +125,7 @@ class _ActionListTile extends StatelessWidget {
     return Semantics(
       label: title,
       button: true,
+      excludeSemantics: true,
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 48),
         child: ListTile(
@@ -383,9 +384,7 @@ class _RecordsPage extends StatelessWidget {
 }
 
 class _ProfilePage extends StatelessWidget {
-  const _ProfilePage({required this.featureAccess});
-
-  final FeatureAccessGuard featureAccess;
+  const _ProfilePage();
 
   @override
   Widget build(BuildContext context) {
@@ -415,12 +414,7 @@ class _SettingsPlaceholderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Ayarlar')),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text('Ayarlar ekranı sıradaki UI fazında action registry üzerinden bağlanacak.'),
-        ),
-      ),
+      body: const Center(child: Text('Ayarlar')),
     );
   }
 }
