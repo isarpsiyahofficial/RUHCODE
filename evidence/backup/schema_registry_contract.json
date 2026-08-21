@@ -55,7 +55,6 @@
     "RC-0785",
     "RC-0786",
     "RC-0787",
-    "RC-0788",
     "RC-0789",
     "RC-0790",
     "RC-0791",
@@ -74,11 +73,13 @@
     "RC-0829",
     "RC-0830"
   ],
+  "scopeNotes": [
+    "RC-0788 tarot_cards.csv is not claimed by this schema contract because the current portable schema stores selected card IDs in tarot_sessions.csv and does not yet expose a standalone tarot_cards.csv table.",
+    "Professional presets and interpretation templates satisfy the extensibility intent of RC-0791 as separate CSV tables."
+  ],
   "remainingProof": [
-    "Exact Flutter test success on the tested commit",
-    "Package manifest/checksum/record-count implementation",
-    "Transactional import preview/merge/replace/rollback",
-    "Full export-clean-install-import round trip",
-    "Legacy schema migration proof"
+    "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
+    "Decide whether RC-0788 needs a standalone optional tarot_cards.csv export or remains intentionally unsupported by product decision",
+    "Release-candidate clean-checkout backup lifecycle evidence"
   ]
 }
