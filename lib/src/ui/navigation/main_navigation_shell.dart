@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../entitlements/feature_access_guard.dart';
 import '../../entitlements/feature_catalog.dart';
+import '../numerology/numerology_screen.dart';
 
 class MainNavigationShell extends StatefulWidget {
   const MainNavigationShell({
@@ -74,12 +75,27 @@ Future<void> _openGuardedFeature(
   }
   await Navigator.of(context).push<void>(
     MaterialPageRoute<void>(
-      builder: (_) => _FeaturePlaceholderPage(
-        title: feature.title,
-        featureId: feature.featureId,
+      builder: (_) => _buildFeatureScreen(
+        feature: feature,
         featureAccess: featureAccess,
       ),
     ),
+  );
+}
+
+Widget _buildFeatureScreen({
+  required _FeatureDefinition feature,
+  required FeatureAccessGuard featureAccess,
+}) {
+  if (feature.featureId == RuhFeatureIds.numerologyBasic) {
+    // The profile/calculation flow is not wired yet. Showing the real empty
+    // state is preferable to fabricating sample results or recalculating in UI.
+    return const NumerologyScreen(model: null);
+  }
+  return _FeaturePlaceholderPage(
+    title: feature.title,
+    featureId: feature.featureId,
+    featureAccess: featureAccess,
   );
 }
 
