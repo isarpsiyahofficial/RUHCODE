@@ -12,6 +12,9 @@ HIDDEN_EVIDENCE = ROOT / 'evidence/bazi/hidden_stems.json'
 TEN_GODS_SOURCE = ROOT / 'lib/src/calculation_core/bazi/ten_gods.dart'
 TEN_GODS_TEST = ROOT / 'test/calculation_core/bazi/ten_gods_test.dart'
 TEN_GODS_EVIDENCE = ROOT / 'evidence/bazi/ten_gods.json'
+FOUR_SOURCE = ROOT / 'lib/src/calculation_core/bazi/four_pillars_primitives.dart'
+FOUR_TEST = ROOT / 'test/calculation_core/bazi/four_pillars_primitives_test.dart'
+FOUR_EVIDENCE = ROOT / 'evidence/bazi/four_pillars_primitives.json'
 
 for path in (
     SOURCE,
@@ -23,15 +26,29 @@ for path in (
     TEN_GODS_SOURCE,
     TEN_GODS_TEST,
     TEN_GODS_EVIDENCE,
+    FOUR_SOURCE,
+    FOUR_TEST,
+    FOUR_EVIDENCE,
 ):
     if not path.is_file():
         raise SystemExit(f'missing BaZi contract artifact: {path.relative_to(ROOT)}')
 
-for evidence_path in (EVIDENCE, HIDDEN_EVIDENCE, TEN_GODS_EVIDENCE):
+expected_requirements = {
+    EVIDENCE: {'RC-0147', 'RC-0148'},
+    HIDDEN_EVIDENCE: {'RC-0149'},
+    FOUR_EVIDENCE: {'RC-0150', 'RC-0151', 'RC-0152'},
+    TEN_GODS_EVIDENCE: {'RC-0153'},
+}
+for evidence_path, requirement_ids in expected_requirements.items():
     evidence = json.loads(evidence_path.read_text(encoding='utf-8'))
     if evidence.get('status') != 'SOURCE_LEVEL_IMPLEMENTED' or evidence.get('done') is not False:
         raise SystemExit(
             f'{evidence_path.name} must remain source-level until runtime/reference proof exists'
+        )
+    if set(evidence.get('requirements', [])) != requirement_ids:
+        raise SystemExit(
+            f'{evidence_path.name} has incorrect requirement traceability: '
+            f'{evidence.get("requirements", [])}'
         )
 
 source = SOURCE.read_text(encoding='utf-8')
@@ -40,6 +57,8 @@ hidden = HIDDEN_SOURCE.read_text(encoding='utf-8')
 hidden_test = HIDDEN_TEST.read_text(encoding='utf-8')
 ten_gods = TEN_GODS_SOURCE.read_text(encoding='utf-8')
 ten_gods_test = TEN_GODS_TEST.read_text(encoding='utf-8')
+four_source = FOUR_SOURCE.read_text(encoding='utf-8')
+four_test = FOUR_TEST.read_text(encoding='utf-8')
 
 for token in (
     'enum HeavenlyStem',
@@ -53,12 +72,7 @@ for token in (
     if token not in source:
         raise SystemExit(f'missing BaZi sexagenary source contract token: {token}')
 
-for forbidden in (
-    'CivilDate',
-    'solarTerm',
-    'SolarTerm',
-    'DateTime.now',
-):
+for forbidden in ('CivilDate', 'solarTerm', 'SolarTerm', 'DateTime.now'):
     if forbidden in source:
         raise SystemExit(f'unverified date/solar-term logic leaked into pure sexagenary primitive: {forbidden}')
 
@@ -116,15 +130,7 @@ for token in (
     if token not in ten_gods:
         raise SystemExit(f'missing BaZi Ten Gods source contract token: {token}')
 
-for forbidden in (
-    'CivilDate',
-    'DateTime.now',
-    'solarTerm',
-    'SolarTerm',
-    'percentage',
-    'strengthScore',
-    'auspicious',
-):
+for forbidden in ('CivilDate', 'DateTime.now', 'solarTerm', 'SolarTerm', 'percentage', 'strengthScore', 'auspicious'):
     if forbidden in ten_gods:
         raise SystemExit(f'unverified policy/date logic leaked into Ten Gods primitive: {forbidden}')
 
@@ -137,4 +143,30 @@ for token in (
     if token not in ten_gods_test:
         raise SystemExit(f'missing BaZi Ten Gods regression: {token}')
 
-print('BaZi sexagenary + Hidden Stems + Ten Gods contract: OK')
+for token in (
+    'final class BaZiFourPillars',
+    'HeavenlyStem get dayMaster => day.stem;',
+    'final class BaZiElementDistribution',
+    'final class BaZiPolarityDistribution',
+    'static BaZiElementDistribution elementDistribution',
+    'static BaZiPolarityDistribution polarityDistribution',
+    'hiddenStemOccurrences',
+):
+    if token not in four_source:
+        raise SystemExit(f'missing BaZi Four Pillars primitive token: {token}')
+
+for forbidden in ('CivilDate', 'DateTime.now', 'solarTerm', 'SolarTerm', 'double weight', 'strengthScore', 'favorableElement'):
+    if forbidden in four_source:
+        raise SystemExit(f'unverified weighting/date logic leaked into Four Pillars primitive: {forbidden}')
+
+for token in (
+    'Day Master is the Heavenly Stem of the verified Day Pillar',
+    'visible Five Elements distribution counts exactly eight visible symbols',
+    'Hidden Stem occurrences stay separate from visible Five Elements counts',
+    'Yin Yang distribution counts exactly eight visible symbols',
+    'distribution maps are immutable',
+):
+    if token not in four_test:
+        raise SystemExit(f'missing BaZi Four Pillars regression: {token}')
+
+print('BaZi primitive contract: sexagenary + Hidden Stems + Five Elements/Yin-Yang/Day Master + Ten Gods OK')
