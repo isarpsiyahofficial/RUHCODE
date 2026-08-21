@@ -14,6 +14,10 @@ final class PythagoreanPersonalCycleResult {
     required this.personalYear,
     required this.personalMonth,
     required this.personalDay,
+    required this.universalYearTrace,
+    required this.personalYearTrace,
+    required this.personalMonthTrace,
+    required this.personalDayTrace,
   });
 
   final CivilDate birthDate;
@@ -23,11 +27,15 @@ final class PythagoreanPersonalCycleResult {
   final int personalYear;
   final int personalMonth;
   final int personalDay;
+  final PersonalCycleReductionTrace universalYearTrace;
+  final PersonalCycleReductionTrace personalYearTrace;
+  final PersonalCycleReductionTrace personalMonthTrace;
+  final PersonalCycleReductionTrace personalDayTrace;
 }
 
 abstract final class PythagoreanPersonalCycleEngine {
   static const String engineId = 'numerology.pythagorean.personal-cycles';
-  static const String engineVersion = '1';
+  static const String engineVersion = '2';
 
   static PythagoreanPersonalCycleResult calculate({
     required CivilDate birthDate,
@@ -49,6 +57,10 @@ abstract final class PythagoreanPersonalCycleEngine {
       personalYear: legacy.personalYear,
       personalMonth: legacy.personalMonth,
       personalDay: legacy.personalDay,
+      universalYearTrace: legacy.universalYearTrace,
+      personalYearTrace: legacy.personalYearTrace,
+      personalMonthTrace: legacy.personalMonthTrace,
+      personalDayTrace: legacy.personalDayTrace,
     );
   }
 }
