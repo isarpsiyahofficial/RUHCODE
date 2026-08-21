@@ -5,7 +5,7 @@ import 'package:ruh_code/src/calculation_core/numerology/pythagorean_profile.dar
 import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
 void main() {
-  const birthDate = CivilDate(year: 1990, month: 5, day: 19);
+  final birthDate = CivilDate(1990, 5, 19);
 
   test('compares only name-dependent metrics and preserves birth identity', () {
     final before = PythagoreanProfileEngine.calculate(
@@ -65,7 +65,7 @@ void main() {
       fullName: 'Ayşe Yılmaz',
     );
     final after = PythagoreanProfileEngine.calculate(
-      birthDate: const CivilDate(year: 1991, month: 5, day: 19),
+      birthDate: CivilDate(1991, 5, 19),
       fullName: 'Ayşe Kaya',
     );
 
