@@ -6,7 +6,7 @@
   "engine_version": "1",
   "requirements": [
     "RC-0181",
-    "RC-0369"
+    "RC-0329"
   ],
   "policy": {
     "compared_metrics": [
