@@ -22,11 +22,20 @@
   ],
   "sources": [
     "lib/src/pdf/pdf_report_contract.dart",
-    "lib/src/pdf/pdf_data_contract.dart"
+    "lib/src/pdf/pdf_data_contract.dart",
+    "lib/src/pdf/local_pdf_renderer.dart",
+    "lib/src/pdf/pdf_output_inspector.dart",
+    "lib/src/pdf/pdf_font_provider.dart",
+    "lib/src/pdf/western_chart_geometry.dart",
+    "lib/src/pdf/pdf_numerology_data.dart"
   ],
   "tests": [
     "test/pdf/pdf_report_contract_test.dart",
-    "test/pdf/pdf_data_contract_test.dart"
+    "test/pdf/pdf_data_contract_test.dart",
+    "test/pdf/local_pdf_renderer_test.dart",
+    "test/pdf/pdf_output_inspector_test.dart",
+    "test/pdf/western_chart_geometry_test.dart",
+    "test/pdf/pdf_numerology_data_test.dart"
   ],
   "page": {
     "format": "A4",
@@ -48,14 +57,19 @@
     "non-sample report cannot consume demo origin",
     "every section bound to one SHA-256 calculation snapshot identity",
     "cross-snapshot section mixing rejected before rendering",
-    "UI and PDF snapshot parity can be required explicitly"
+    "UI and PDF snapshot parity can be required explicitly",
+    "local PDF bytes are structurally inspected before return",
+    "5/25/50-plus page-count gates exist at source level",
+    "Western chart geometry is derived from the same calculation object rather than a screenshot",
+    "numerology PDF data is projected from the canonical numerology snapshot rather than recalculated"
   ],
   "releaseBlockers": [
-    "No production PDF byte renderer is implemented yet.",
-    "Unicode font assets and license manifest are not yet attached.",
-    "Vector Western/Vedic chart embedding is not yet implemented.",
-    "Pagination, orphan prevention, table split control and long-report memory tests are not yet implemented.",
-    "PDF parse/render/visual-regression proof is not yet attached.",
+    "Approved Unicode TR/EN font binaries, immutable SHA-256 values and license manifest are not yet attached.",
+    "Actual 5/25/50+ production byte-render runs with approved fonts are not yet proven.",
+    "Western geometry still needs the production vector painter and approved glyph assets; Vedic vector chart rendering is not yet implemented.",
+    "BaZi production table rendering is not yet implemented.",
+    "Low-memory Android PDF generation and full parser/glyph/crop/visual-regression proof are not yet attached.",
+    "Approved PDF reference pages are not yet available.",
     "Exact Flutter workflow success is not yet recorded in this evidence file."
   ]
 }
