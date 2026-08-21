@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+MASTER = ROOT / 'RUH_CODE_MASTER_SARTNAME.md'
 SOURCE = ROOT / 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
 TEST = ROOT / 'test/calculation_core/bazi/sexagenary_cycle_test.dart'
 EVIDENCE = ROOT / 'evidence/bazi/sexagenary_cycle.json'
@@ -17,6 +19,7 @@ FOUR_TEST = ROOT / 'test/calculation_core/bazi/four_pillars_primitives_test.dart
 FOUR_EVIDENCE = ROOT / 'evidence/bazi/four_pillars_primitives.json'
 
 for path in (
+    MASTER,
     SOURCE,
     TEST,
     EVIDENCE,
@@ -32,6 +35,28 @@ for path in (
 ):
     if not path.is_file():
         raise SystemExit(f'missing BaZi contract artifact: {path.relative_to(ROOT)}')
+
+master_items = {}
+for line in MASTER.read_text(encoding='utf-8').splitlines():
+    match = re.match(r'^(\d+)\.\s+(.*)$', line.strip())
+    if match:
+        master_items[int(match.group(1))] = match.group(2)
+
+expected_master = {
+    147: 'Heavenly Stems hesaplanacak.',
+    148: 'Earthly Branches hesaplanacak.',
+    149: 'Hidden Stems hesaplanacak.',
+    150: 'Five Elements dağılımı hesaplanacak.',
+    151: 'Yin/Yang dengesi hesaplanacak.',
+    152: 'Day Master tespit edilecek.',
+    153: 'Ten Gods hesaplanacak.',
+}
+for number, exact_text in expected_master.items():
+    actual = master_items.get(number)
+    if actual != exact_text:
+        raise SystemExit(
+            f'MASTER RC-{number:04d} ownership drift: expected {exact_text!r}, got {actual!r}'
+        )
 
 expected_requirements = {
     EVIDENCE: {'RC-0147', 'RC-0148'},
@@ -169,4 +194,4 @@ for token in (
     if token not in four_test:
         raise SystemExit(f'missing BaZi Four Pillars regression: {token}')
 
-print('BaZi primitive contract: sexagenary + Hidden Stems + Five Elements/Yin-Yang/Day Master + Ten Gods OK')
+print('BaZi primitive contract: MASTER RC-0147..0153 ownership + sexagenary + Hidden Stems + Five Elements/Yin-Yang/Day Master + Ten Gods OK')
