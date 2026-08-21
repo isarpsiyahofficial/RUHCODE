@@ -1,8 +1,8 @@
 {
-  "contractId": "personal-day-runtime-v1",
+  "contractId": "personal-day-runtime-v2",
   "engineId": "numerology.pythagorean.personal-day",
-  "engineVersion": "1",
-  "algorithm": "personalYear=reduce(birthMonth+birthDay+reduce(targetYear)); personalMonth=reduce(personalYear+targetMonth); personalDay=reduce(personalMonth+targetDay)",
+  "engineVersion": "2",
+  "algorithm": "universalYear=traceReduce(targetYear); personalYear=traceReduce(birthMonth+birthDay+universalYear); personalMonth=traceReduce(personalYear+targetMonth); personalDay=traceReduce(personalMonth+targetDay)",
   "defaultReductionPolicy": "singleDigit",
   "supportedReductionPolicies": [
     "singleDigit",
@@ -13,11 +13,20 @@
   "localeIndependent": true,
   "networkRequired": false,
   "dailySnapshotFactor": "personalDay",
+  "provenance": {
+    "traceType": "PersonalCycleReductionTrace",
+    "preservesSourceValue": true,
+    "preservesIntermediateSteps": true,
+    "preservesFinalReducedValue": true,
+    "preservesMetricIdentifier": true,
+    "reverseInferenceForbidden": true
+  },
   "rules": [
     "No random fallback",
     "No locale-dependent parsing",
     "Leap-day dates are accepted only when CivilDate validates them",
     "Policy is encoded into the factor result identity",
-    "Different target years are recomputed independently"
+    "Different target years are recomputed independently",
+    "Personal Year, Month and Day expose exact reduction traces for downstream audited calculations such as Karmic Debt"
   ]
 }
