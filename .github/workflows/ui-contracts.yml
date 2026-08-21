@@ -2,9 +2,9 @@ name: UI Contracts
 on:
   push:
     branches: [main]
-    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/ui/actions/**','lib/src/ui/navigation/**','test/ui/main_navigation_entitlement_wiring_test.dart','.github/workflows/ui-contracts.yml']
+    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/ui/actions/**','lib/src/ui/navigation/**','lib/src/ui/pdf/**','test/ui/main_navigation_entitlement_wiring_test.dart','.github/workflows/ui-contracts.yml']
   pull_request:
-    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/ui/actions/**','lib/src/ui/navigation/**','test/ui/main_navigation_entitlement_wiring_test.dart','.github/workflows/ui-contracts.yml']
+    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/ui/actions/**','lib/src/ui/navigation/**','lib/src/ui/pdf/**','test/ui/main_navigation_entitlement_wiring_test.dart','.github/workflows/ui-contracts.yml']
   workflow_dispatch:
 jobs:
   validate-ui-contracts:
@@ -20,6 +20,8 @@ jobs:
         run: python tools/ui/validate_accessibility_interactions.py
       - name: Validate runtime action bindings
         run: python tools/ui/validate_runtime_action_bindings.py
+      - name: Validate PDF entitlement policy
+        run: python tools/ui/validate_pdf_entitlement_policy.py
       - name: Validate portable backup action wording
         run: python tools/ui/validate_backup_action_labels.py
       - name: Validate static asset contracts
