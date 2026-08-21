@@ -1,0 +1,32 @@
+{
+  "contract_id": "NUM-PYTHAGOREAN-EXTENDED-NAME-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engine": "numerology.pythagorean.extended-name",
+  "engine_version": "1",
+  "requirements": [
+    "RC-0172",
+    "RC-0173",
+    "RC-0175",
+    "RC-0360",
+    "RC-0361",
+    "RC-0363"
+  ],
+  "policy": {
+    "balance": "Balance uses the Pythagorean values of each normalized name component's first letter; whitespace and hyphen delimit components.",
+    "karmic_lessons": "Karmic Lessons are the missing Pythagorean values 1 through 9 in the full normalized name.",
+    "hidden_passion": "Hidden Passion is every Pythagorean value tied for the highest letter-frequency count; ties are preserved rather than broken arbitrarily.",
+    "normalization": "The canonical TR/EN PythagoreanNameNormalizer is reused; unsupported characters are rejected rather than silently deleted."
+  },
+  "tests": [
+    "test/calculation_core/numerology/pythagorean_extended_name_test.dart"
+  ],
+  "source": [
+    "lib/src/calculation_core/numerology/pythagorean_extended_name.dart",
+    "lib/src/calculation_core/numerology/pythagorean_profile.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Karmic Debt remains a separate unfinished requirement and is not implied by this contract."
+  ]
+}
