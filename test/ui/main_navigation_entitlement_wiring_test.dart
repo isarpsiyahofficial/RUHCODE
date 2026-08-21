@@ -43,6 +43,13 @@ Widget _app(FeatureAccessGuard guard, {double textScale = 1}) {
   );
 }
 
+Future<void> _openAstrologyHub(WidgetTester tester) async {
+  await tester.tap(find.text('Araçlar'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Astroloji'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('bottom navigation exposes the four canonical destinations', (tester) async {
     const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
@@ -73,10 +80,7 @@ void main() {
     const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
     await tester.pumpWidget(_app(guard));
 
-    await tester.tap(find.text('Araçlar'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Astroloji'));
-    await tester.pumpAndSettle();
+    await _openAstrologyHub(tester);
 
     expect(find.text('Batı Astrolojisi'), findsOneWidget);
     expect(find.text('Vedik Astroloji'), findsOneWidget);
@@ -87,6 +91,23 @@ void main() {
     await tester.tap(find.text('Batı Astrolojisi'));
     await tester.pumpAndSettle();
     expect(find.text('Batı Astrolojisi ekranı'), findsOneWidget);
+  });
+
+  testWidgets('Chinese astrology remains Free while BaZi is PRO', (tester) async {
+    const guard = FeatureAccessGuard(entitlements: _FreeOnlyEntitlements());
+    await tester.pumpWidget(_app(guard));
+
+    await _openAstrologyHub(tester);
+    await tester.tap(find.text('Çin Astrolojisi'));
+    await tester.pumpAndSettle();
+    expect(find.text('Çin Astrolojisi ekranı'), findsOneWidget);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('BaZi'));
+    await tester.pumpAndSettle();
+    expect(find.text('Bu özellik için PRO erişimi gerekiyor.'), findsOneWidget);
+    expect(find.text('BaZi ekranı'), findsNothing);
   });
 
   testWidgets('personal profiles action is live and remains free', (tester) async {
