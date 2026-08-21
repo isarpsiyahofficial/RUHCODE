@@ -26,6 +26,16 @@ def main():
 
     if nav["primaryTabs"] != ["Bugün", "Araçlar", "Kayıtlar", "Profil"]:
         die("primary navigation drifted from Bugün · Araçlar · Kayıtlar · Profil")
+    if nav.get("toolsCategories") != ["Astroloji", "Numeroloji", "Spiritüel", "Kişisel Gelişim"]:
+        die("Tools must expose the four canonical top-level categories")
+    if nav.get("astrologyChildren") != [
+        "Batı Astrolojisi",
+        "Vedik Astroloji",
+        "Çin Astrolojisi",
+        "BaZi",
+        "Gezegen Saatleri",
+    ]:
+        die("Astrology hub child list drifted from the canonical information architecture")
     if "Hesapla" not in nav["forbiddenAmbiguousExactLabels"]:
         die("ambiguous exact Hesapla label must remain forbidden")
     if a11y["minimumTouchTargetDp"] < 48:
@@ -40,6 +50,14 @@ def main():
         die("screen-reader labels must be mandatory")
     if not a11y["informationMayNotDependOnColorAlone"]:
         die("information may not depend on color alone")
+    if reg.get("runtimeBindings") != "ui/runtime_action_bindings.csv":
+        die("runtime action binding manifest must remain explicit")
+    if reg.get("runtimeActionConstants") != "lib/src/ui/actions/ruh_action_ids.dart":
+        die("runtime ACTION-ID source must remain explicit")
+    if not reg.get("runtimeBindingMustReferenceActiveRegistryAction"):
+        die("runtime binding must reference ACTIVE registry actions")
+    if not reg.get("runtimeGuardedFeatureMustMatchRegistryEntitlement"):
+        die("runtime guarded features must match registry entitlement")
 
     allowed_entitlements = set(reg["allowedEntitlements"])
     allowed_offline = set(reg["allowedOfflineBehaviors"])
