@@ -9,6 +9,21 @@ void main() {
 
   Uint8List bytes(String value) => Uint8List.fromList(latin1.encode(value));
 
+  Uint8List fakePdfWithPages(int pageCount) {
+    final pageObjects = List<String>.generate(
+      pageCount,
+      (index) => '${index + 3} 0 obj << /Type /Page /Parent 2 0 R >> endobj',
+    ).join('\n');
+    return bytes(
+      '%PDF-1.7\n'
+      '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
+      '2 0 obj << /Type /Pages /Count $pageCount >> endobj\n'
+      '$pageObjects\n'
+      'trailer << /Root 1 0 R >>\n'
+      '%%EOF',
+    );
+  }
+
   test('accepts a minimal structurally usable PDF shape', () {
     final inspection = inspector.requireUsable(bytes(
       '%PDF-1.7\n'
@@ -48,5 +63,44 @@ void main() {
 
     expect(inspection.pageObjectCount, 0);
     expect(inspection.structurallyUsable, isFalse);
+  });
+
+  test('page-count gate verifies 5 page regression fixture', () {
+    expect(
+      inspector.requirePageCount(fakePdfWithPages(5), exact: 5).pageObjectCount,
+      5,
+    );
+  });
+
+  test('page-count gate verifies 25 page regression fixture', () {
+    expect(
+      inspector.requirePageCount(fakePdfWithPages(25), exact: 25).pageObjectCount,
+      25,
+    );
+  });
+
+  test('page-count gate verifies 50+ page regression fixture', () {
+    expect(
+      inspector.requirePageCount(fakePdfWithPages(52), minimum: 50).pageObjectCount,
+      52,
+    );
+  });
+
+  test('page-count gate rejects silently dropped pages', () {
+    expect(
+      () => inspector.requirePageCount(fakePdfWithPages(24), exact: 25),
+      throwsStateError,
+    );
+  });
+
+  test('page-count contract rejects contradictory limits', () {
+    expect(
+      () => inspector.requirePageCount(fakePdfWithPages(5), exact: 5, minimum: 1),
+      throwsArgumentError,
+    );
+    expect(
+      () => inspector.requirePageCount(fakePdfWithPages(5), minimum: 6, maximum: 5),
+      throwsArgumentError,
+    );
   });
 }
