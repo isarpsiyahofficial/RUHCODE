@@ -1,0 +1,35 @@
+{
+  "contract_id": "INTERPRETATION-QUALITY-GUARD-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-1066",
+    "RC-1067",
+    "RC-1068",
+    "RC-1069",
+    "RC-1072",
+    "RC-1073",
+    "RC-1074",
+    "RC-1075",
+    "RC-1076"
+  ],
+  "invariants": [
+    "Every validated InterpretationBundle carries an explicit interpretationVersion independent from calculation engine versions.",
+    "Rendered interpretation item count must equal source rule ID count.",
+    "Blank items, blank rule IDs, duplicate rule IDs and unresolved {placeholder} tokens fail closed.",
+    "Exact duplicate normalized interpretation items fail closed.",
+    "Repeated normalized sentences beyond the configured frequency fail closed.",
+    "This structural guard does not claim semantic contradiction detection; domain-specific engines must model conflicting claims explicitly."
+  ],
+  "source": [
+    "lib/src/interpretation/interpretation_engine.dart"
+  ],
+  "tests": [
+    "test/interpretation/interpretation_quality_guard_test.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "Domain-specific contradiction metadata/aggregation remains required for RC-1077 and RC-1078.",
+    "Production interpretation catalogs must pass their own TR/EN editorial and coverage audits."
+  ]
+}
