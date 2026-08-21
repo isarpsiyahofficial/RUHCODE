@@ -1,0 +1,33 @@
+{
+  "id": "NUM-PYTHAGOREAN-SNAPSHOT-FINGERPRINT-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "source": "lib/src/calculation_core/numerology/pythagorean_snapshot_fingerprint.dart",
+  "tests": [
+    "test/calculation_core/numerology/pythagorean_snapshot_fingerprint_test.dart"
+  ],
+  "requirements": [
+    "RC-0724",
+    "RC-0725",
+    "RC-0726",
+    "RC-0727",
+    "RC-0930",
+    "RC-0954",
+    "RC-1224",
+    "RC-1225"
+  ],
+  "invariants": [
+    "same canonical Pythagorean snapshot produces the same lowercase SHA-256 digest",
+    "exact target-date changes produce a different digest",
+    "name/calculation changes produce a different digest",
+    "translated labels and interpretation prose are excluded from the calculation fingerprint",
+    "profile/cycle values and exact reduction traces are included in the fingerprint payload",
+    "UI, PDF and cache layers can use this digest as a parity identity without recomputing numerology"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "production UI wiring to the canonical digest",
+    "production PDF wiring to the canonical digest",
+    "full calculation-manifest persistence of this digest"
+  ]
+}
