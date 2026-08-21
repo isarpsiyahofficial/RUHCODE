@@ -25,24 +25,30 @@
   ],
   "sources": [
     "lib/src/ui/numerology/numerology_presentation.dart",
+    "lib/src/ui/numerology/numerology_screen.dart",
+    "lib/src/ui/navigation/main_navigation_shell.dart",
     "lib/src/pdf/pdf_numerology_data.dart",
     "lib/src/pdf/pdf_numerology_section.dart"
   ],
   "tests": [
     "test/ui/numerology/numerology_presentation_test.dart",
+    "test/ui/numerology/numerology_screen_test.dart",
     "test/pdf/pdf_numerology_section_test.dart"
   ],
   "invariants": [
     "UI and PDF consume the same canonical PythagoreanNumerologySnapshot and SHA-256 digest",
-    "UI presentation does not recalculate numerology values",
+    "UI presentation and functional screen do not recalculate numerology values",
     "PDF table section does not recalculate numerology values",
-    "metric IDs are locale-neutral and human-readable labels are supplied by localization",
+    "metric IDs are locale-neutral and human-readable labels are supplied separately for Turkish and English",
+    "unknown locale, section ID or metric ID fails closed instead of leaking technical IDs or cross-language fallback",
     "date-dependent cycle rows exist only when the canonical snapshot has an explicit target date",
     "PDF render section digest must equal the canonical numerology payload digest",
-    "missing localized PDF labels are rejected before rendering"
+    "missing localized PDF labels are rejected before rendering",
+    "the real Numerology route opens a functional empty state when no canonical calculation model exists instead of fabricating sample results"
   ],
   "notProvenYet": [
     "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "profile-selection/application-service wiring that supplies a real canonical snapshot to the screen",
     "approved final Numerology screen visual reference and pixel/golden comparison",
     "production Unicode PDF font artifact and full rendered-PDF glyph regression"
   ]
