@@ -36,6 +36,8 @@ jobs:
         run: python tools/numerology/validate_pinnacles_challenges.py
       - name: Validate extended Pythagorean name contract
         run: python tools/numerology/validate_pythagorean_extended_name.py
+      - name: Validate Karmic Debt structural contract
+        run: python tools/numerology/validate_karmic_debt.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
