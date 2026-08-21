@@ -1,0 +1,28 @@
+{
+  "id": "BAZI-HIDDEN-STEMS-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0341"
+  ],
+  "source": "lib/src/calculation_core/bazi/hidden_stems.dart",
+  "tests": [
+    "test/calculation_core/bazi/hidden_stems_test.dart"
+  ],
+  "provenScope": [
+    "all twelve Earthly Branches have an explicit non-empty Hidden Stems mapping",
+    "Hidden Stems are ordered main qi first and returned immutably",
+    "single-stem and multi-stem branches have regression coverage",
+    "no school-specific percentage weights are invented in the calculation core"
+  ],
+  "explicitlyNotImplementedHere": [
+    "Hidden Stem strength percentages",
+    "seasonal strength weighting",
+    "Ten Gods classification",
+    "civil-date to Four Pillars conversion"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "independent reference review of the final production BaZi interpretation policy"
+  ]
+}
