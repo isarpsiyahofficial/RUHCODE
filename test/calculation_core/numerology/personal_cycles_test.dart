@@ -22,6 +22,19 @@ void main() {
       expect(result.targetDate.isoKey, '2026-08-16');
     });
 
+    test('preserves exact compound reduction traces for cycle provenance', () {
+      final result = PythagoreanPersonalCycleEngine.calculate(
+        birthDate: birthDate,
+        targetDate: targetDate,
+      );
+
+      expect(result.universalYearTrace.steps, <int>[2026, 10, 1]);
+      expect(result.personalYearTrace.steps, <int>[25, 7]);
+      expect(result.personalMonthTrace.steps, <int>[15, 6]);
+      expect(result.personalDayTrace.steps, <int>[22, 4]);
+      expect(result.personalDayTrace.provenance, 'personal_cycle.personal_day');
+    });
+
     test('master-number policy is explicit and deterministic', () {
       final result = PythagoreanPersonalCycleEngine.calculate(
         birthDate: birthDate,
@@ -32,6 +45,7 @@ void main() {
       expect(result.personalYear, 7);
       expect(result.personalMonth, 6);
       expect(result.personalDay, 22);
+      expect(result.personalDayTrace.steps, <int>[22]);
     });
 
     test('public cycle API remains in parity with DailySnapshot adapter', () {
