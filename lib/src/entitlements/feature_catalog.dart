@@ -101,7 +101,7 @@ abstract final class RuhFeatureCatalog {
     ),
     RuhFeatureIds.baziBasic: FeaturePolicy(
       id: RuhFeatureIds.baziBasic,
-      baseAccess: FeatureBaseAccess.free,
+      baseAccess: FeatureBaseAccess.pro,
     ),
     RuhFeatureIds.baziAdvanced: FeaturePolicy(
       id: RuhFeatureIds.baziAdvanced,
