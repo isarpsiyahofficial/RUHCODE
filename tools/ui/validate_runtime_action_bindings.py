@@ -8,11 +8,35 @@ ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / 'ui/action_registry.csv'
 BINDINGS = ROOT / 'ui/runtime_action_bindings.csv'
 ACTION_IDS = ROOT / 'lib/src/ui/actions/ruh_action_ids.dart'
+FEATURE_CATALOG = ROOT / 'lib/src/entitlements/feature_catalog.dart'
 
 
 def die(message: str) -> None:
     print(f'ERROR: {message}', file=sys.stderr)
     raise SystemExit(1)
+
+
+def parse_feature_policies() -> dict[str, str]:
+    source = FEATURE_CATALOG.read_text(encoding='utf-8')
+    id_pairs = dict(
+        re.findall(r"static const\s+(\w+)\s*=\s*'([a-z0-9_.]+)';", source)
+    )
+    policy_pairs = re.findall(
+        r"RuhFeatureIds\.(\w+):\s*FeaturePolicy\(.*?baseAccess:\s*FeatureBaseAccess\.(free|pro)",
+        source,
+        flags=re.DOTALL,
+    )
+    policies: dict[str, str] = {}
+    for constant_name, access in policy_pairs:
+        feature_id = id_pairs.get(constant_name)
+        if feature_id is None:
+            die(f'feature policy references unknown canonical ID constant: {constant_name}')
+        if feature_id in policies:
+            die(f'duplicate feature policy: {feature_id}')
+        policies[feature_id] = access.upper()
+    if not policies:
+        die('no canonical feature policies parsed')
+    return policies
 
 
 def main() -> None:
@@ -28,6 +52,7 @@ def main() -> None:
     if not constant_pairs:
         die('no canonical runtime action constants found')
 
+    feature_policies = parse_feature_policies()
     bindings = list(csv.DictReader(BINDINGS.open(encoding='utf-8', newline='')))
     seen_actions = set()
     seen_constants = set()
@@ -38,6 +63,7 @@ def main() -> None:
         constant_name = row['constant_name'].strip()
         binding_file = row['binding_file'].strip()
         binding_kind = row['binding_kind'].strip()
+        feature_id = row['feature_id'].strip()
         status = row['status'].strip()
 
         if status != 'IMPLEMENTED':
@@ -74,6 +100,17 @@ def main() -> None:
         if marker not in text:
             die(f'binding file does not reference {marker} for {action_id}')
 
+        if feature_id:
+            runtime_access = feature_policies.get(feature_id)
+            if runtime_access is None:
+                die(f'bound feature ID has no canonical policy: {action_id} -> {feature_id}')
+            registry_access = registry_row['entitlement'].strip()
+            if runtime_access != registry_access:
+                die(
+                    f'entitlement drift for {action_id}: registry={registry_access}, '
+                    f'feature_catalog={runtime_access}, feature_id={feature_id}'
+                )
+
     scalar_constants = set(constant_pairs)
     missing = scalar_constants - seen_constants
     extra = seen_constants - scalar_constants
@@ -84,7 +121,7 @@ def main() -> None:
 
     print(
         f'OK: runtime action bindings validated; implemented_actions={len(bindings)}, '
-        f'registry_actions={len(registry_rows)}'
+        f'registry_actions={len(registry_rows)}, guarded_features={sum(bool(r["feature_id"].strip()) for r in bindings)}'
     )
 
 
