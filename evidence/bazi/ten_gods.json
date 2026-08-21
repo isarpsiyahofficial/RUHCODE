@@ -1,0 +1,31 @@
+{
+  "id": "BAZI-TEN-GODS-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0344"
+  ],
+  "source": "lib/src/calculation_core/bazi/ten_gods.dart",
+  "tests": [
+    "test/calculation_core/bazi/ten_gods_test.dart"
+  ],
+  "provenScope": [
+    "all ten Day-Master-to-stem relationship identities are explicitly represented",
+    "Wu Xing generate/control direction is separated from Yin/Yang same/opposite polarity",
+    "both Yang and Yin Day Master regression matrices are covered",
+    "every one of the ten Day Masters produces all ten Ten Gods identities across the ten target stems",
+    "Hidden Stems can be classified in their existing canonical main-qi-first order",
+    "no civil-date, solar-term, pillar-boundary, strength percentage, auspiciousness or interpretation policy is invented in this primitive"
+  ],
+  "explicitlyNotImplementedHere": [
+    "civil-date to Day Pillar or Four Pillars conversion",
+    "solar-term month boundaries",
+    "Ten Gods strength scoring or seasonal weighting",
+    "Ten Gods interpretation text",
+    "favorable/unfavorable element policy"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "independent reference review of the final production BaZi interpretation policy"
+  ]
+}
