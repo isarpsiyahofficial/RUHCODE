@@ -6,25 +6,13 @@ import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 void main() {
   group('PythagoreanNameNormalizer', () {
     test('normalizes Turkish letters explicitly without silent deletion', () {
-      expect(
-        PythagoreanNameNormalizer.normalize('İbrahim Yeşilyurt'),
-        'IBRAHIMYESILYURT',
-      );
-      expect(
-        PythagoreanNameNormalizer.normalize("Çağrı Öztürk-Şen"),
-        'CAGRIOZTURKSEN',
-      );
+      expect(PythagoreanNameNormalizer.normalize('İbrahim Yeşilyurt'), 'IBRAHIMYESILYURT');
+      expect(PythagoreanNameNormalizer.normalize("Çağrı Öztürk-Şen"), 'CAGRIOZTURKSEN');
     });
 
     test('rejects unsupported alphabet characters instead of guessing', () {
-      expect(
-        () => PythagoreanNameNormalizer.normalize('Renée'),
-        throwsA(isA<FormatException>()),
-      );
-      expect(
-        () => PythagoreanNameNormalizer.normalize('123'),
-        throwsA(isA<FormatException>()),
-      );
+      expect(() => PythagoreanNameNormalizer.normalize('Renée'), throwsA(isA<FormatException>()));
+      expect(() => PythagoreanNameNormalizer.normalize('123'), throwsA(isA<FormatException>()));
     });
   });
 
@@ -39,10 +27,9 @@ void main() {
 
     test('calculates core profile values deterministically', () {
       final result = PythagoreanProfileEngine.calculate(
-        birthDate: const CivilDate(year: 1990, month: 5, day: 19),
+        birthDate: CivilDate(1990, 5, 19),
         fullName: 'İbrahim Yeşilyurt',
       );
-
       expect(result.normalizedName, 'IBRAHIMYESILYURT');
       expect(result.lifePath, 7);
       expect(result.expression, 7);
@@ -54,10 +41,9 @@ void main() {
 
     test('preserves exact reduction traces for downstream provenance', () {
       final result = PythagoreanProfileEngine.calculate(
-        birthDate: const CivilDate(year: 1990, month: 5, day: 19),
+        birthDate: CivilDate(1990, 5, 19),
         fullName: 'İbrahim Yeşilyurt',
       );
-
       expect(result.expressionTrace.sourceValue, 88);
       expect(result.expressionTrace.steps, <int>[88, 16, 7]);
       expect(result.expressionTrace.reducedValue, result.expression);
@@ -70,15 +56,14 @@ void main() {
 
     test('preserves master numbers only when policy requests it', () {
       final preserved = PythagoreanProfileEngine.calculate(
-        birthDate: const CivilDate(year: 2000, month: 1, day: 11),
+        birthDate: CivilDate(2000, 1, 11),
         fullName: 'AJA',
       );
       final reduced = PythagoreanProfileEngine.calculate(
-        birthDate: const CivilDate(year: 2000, month: 1, day: 11),
+        birthDate: CivilDate(2000, 1, 11),
         fullName: 'AJA',
         policy: PersonalCycleReductionPolicy.singleDigit,
       );
-
       expect(preserved.birthday, 11);
       expect(preserved.birthdayTrace.steps, <int>[11]);
       expect(reduced.birthday, 2);
@@ -87,10 +72,9 @@ void main() {
 
     test('Y is treated consistently as a consonant in v1 policy', () {
       final result = PythagoreanProfileEngine.calculate(
-        birthDate: const CivilDate(year: 1999, month: 8, day: 20),
+        birthDate: CivilDate(1999, 8, 20),
         fullName: 'AY',
       );
-
       expect(result.soulUrge, 1);
       expect(result.personality, 7);
     });
