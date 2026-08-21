@@ -50,6 +50,15 @@ Future<void> _openAstrologyHub(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _openPdfReports(WidgetTester tester) async {
+  await tester.tap(find.text('Profil'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Ayarlar'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('PDF Raporları'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('bottom navigation exposes the four canonical destinations', (tester) async {
     const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
@@ -146,16 +155,52 @@ void main() {
     expect(find.text('Danışanlarım ekranı'), findsOneWidget);
   });
 
-  testWidgets('profile settings action is live', (tester) async {
+  testWidgets('profile settings exposes the PDF reports hub', (tester) async {
     const guard = FeatureAccessGuard(entitlements: _FreeOnlyEntitlements());
     await tester.pumpWidget(_app(guard));
 
-    await tester.tap(find.text('Profil'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Ayarlar'));
+    await _openPdfReports(tester);
+
+    expect(find.widgetWithText(AppBar, 'PDF Raporları'), findsOneWidget);
+    expect(find.byKey(const ValueKey(RuhActionIds.pdfPreview)), findsOneWidget);
+    expect(find.byKey(const ValueKey(RuhActionIds.pdfBuild)), findsOneWidget);
+  });
+
+  testWidgets('Free user can inspect sample PDF preview', (tester) async {
+    const guard = FeatureAccessGuard(entitlements: _FreeOnlyEntitlements());
+    await tester.pumpWidget(_app(guard));
+
+    await _openPdfReports(tester);
+    await tester.tap(find.text('Örnek PDF Önizle'));
     await tester.pumpAndSettle();
 
-    expect(find.widgetWithText(AppBar, 'Ayarlar'), findsOneWidget);
+    expect(find.widgetWithText(AppBar, 'Örnek PDF Önizleme'), findsOneWidget);
+    expect(find.text('ÖRNEK RAPOR'), findsOneWidget);
+    expect(find.textContaining('kişisel veri içermez'), findsOneWidget);
+  });
+
+  testWidgets('Free user cannot enter professional PDF builder', (tester) async {
+    const guard = FeatureAccessGuard(entitlements: _FreeOnlyEntitlements());
+    await tester.pumpWidget(_app(guard));
+
+    await _openPdfReports(tester);
+    await tester.tap(find.text('Profesyonel PDF Oluştur'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Profesyonel PDF oluşturma PRO kullanıcılar içindir.'), findsOneWidget);
+    expect(find.widgetWithText(AppBar, 'Profesyonel PDF Oluştur'), findsNothing);
+  });
+
+  testWidgets('PRO user can enter professional PDF builder', (tester) async {
+    const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
+    await tester.pumpWidget(_app(guard));
+
+    await _openPdfReports(tester);
+    await tester.tap(find.text('Profesyonel PDF Oluştur'));
+    await tester.pumpAndSettle();
+
+    expect(find.widgetWithText(AppBar, 'Profesyonel PDF Oluştur'), findsOneWidget);
+    expect(find.text('Rapor Bölümleri'), findsOneWidget);
   });
 
   testWidgets('implemented action tiles expose semantics and 48dp minimum target', (tester) async {
@@ -171,6 +216,12 @@ void main() {
     final astrologyTile = find.byKey(const ValueKey(RuhActionIds.toolsAstrology));
     expect(astrologyTile, findsOneWidget);
     expect(tester.getSize(astrologyTile).height, greaterThanOrEqualTo(48));
+
+    await tester.tap(find.text('Profil'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ayarlar'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('PDF Raporları'), findsOneWidget);
   });
 
   testWidgets('critical navigation remains usable at 2.0x text scale', (tester) async {
