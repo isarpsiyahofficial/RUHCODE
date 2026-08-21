@@ -1,0 +1,31 @@
+{
+  "contract_id": "NUM-PYTHAGOREAN-NAME-CHANGE-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engine": "numerology.pythagorean.name-change-comparison",
+  "engine_version": "1",
+  "requirements": [
+    "RC-0182",
+    "RC-0183"
+  ],
+  "todo_scope": "Faz 14 — İsim değişikliği karşılaştırma desteği",
+  "invariants": [
+    "The before and after profiles must use the exact same birth date and reduction policy.",
+    "The normalized names must actually differ.",
+    "Only name-dependent metrics are compared directly: Expression, Soul Urge, Personality and Maturity.",
+    "Life Path and Birthday remain unchanged birth-date-derived values and are not falsely presented as name-change effects.",
+    "The result exposes before/after values and changed flags; no synthetic improvement, compatibility or desirability score is invented."
+  ],
+  "source": [
+    "lib/src/calculation_core/numerology/name_change_comparison.dart",
+    "lib/src/calculation_core/numerology/pythagorean_profile.dart"
+  ],
+  "tests": [
+    "test/calculation_core/numerology/name_change_comparison_test.dart"
+  ],
+  "remaining_before_done": [
+    "Exact Flutter test SUCCESS must be visible on the tested commit.",
+    "User-facing UI must identify the Pythagorean system and reduction policy when this comparison is displayed.",
+    "Any explanatory copy remains separate CONTENT logic and cannot change the calculation values."
+  ]
+}
