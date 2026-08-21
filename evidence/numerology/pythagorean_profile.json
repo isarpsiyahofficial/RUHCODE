@@ -1,0 +1,56 @@
+{
+  "contractId": "NUM-PYTH-PROFILE-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engineId": "numerology.pythagorean.profile",
+  "engineVersion": "1",
+  "requirements": [
+    "RC-0161",
+    "RC-0162",
+    "RC-0165",
+    "RC-0166",
+    "RC-0167",
+    "RC-0168",
+    "RC-0169",
+    "RC-0170",
+    "RC-0171",
+    "RC-0182",
+    "RC-0183",
+    "RC-0329"
+  ],
+  "source": "lib/src/calculation_core/numerology/pythagorean_profile.dart",
+  "tests": [
+    "test/calculation_core/numerology/pythagorean_profile_test.dart"
+  ],
+  "policy": {
+    "alphabet": "Pythagorean A-Z repeating 1..9",
+    "supportedNameLanguages": ["tr", "en"],
+    "turkishTransliteration": {
+      "Ç": "C",
+      "Ğ": "G",
+      "I": "I",
+      "İ": "I",
+      "Ö": "O",
+      "Ş": "S",
+      "Ü": "U"
+    },
+    "unsupportedCharacters": "reject; never silently delete or guess",
+    "vowelsV1": ["A", "E", "I", "O", "U"],
+    "yPolicyV1": "consonant",
+    "defaultReduction": "preserve 11/22/33 master numbers"
+  },
+  "calculations": [
+    "lifePath",
+    "expression",
+    "soulUrge",
+    "personality",
+    "birthday",
+    "maturity"
+  ],
+  "openBeforeDone": [
+    "Flutter test success on exact commit",
+    "independent numerology reference dataset",
+    "interpretation coverage remains separate",
+    "Chaldean and Lo Shu must remain separate engines"
+  ]
+}
