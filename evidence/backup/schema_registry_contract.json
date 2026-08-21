@@ -1,5 +1,5 @@
 {
-  "contractVersion": 1,
+  "contractVersion": 2,
   "schemaVersion": 1,
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
@@ -14,6 +14,7 @@
     "goals.csv",
     "habits.csv",
     "tarot_sessions.csv",
+    "tarot_cards.csv",
     "favorites.csv",
     "settings.csv",
     "professional_presets.csv",
@@ -31,14 +32,19 @@
     "foreignKeysDeclared": true,
     "unknownEnumRejected": true,
     "duplicatePrimaryKeyRejected": true,
-    "unresolvedForeignKeyRejected": true
+    "unresolvedForeignKeyRejected": true,
+    "tarotCardsNormalizedBySession": true,
+    "legacySchemaV1WithoutTarotCardsAcceptedAsEmpty": true,
+    "newSchemaV1WriterAlwaysEmitsTarotCards": true
   },
   "sourceFiles": [
     "lib/src/backup/backup_schema.dart",
-    "lib/src/backup/backup_schema_validator.dart"
+    "lib/src/backup/backup_schema_validator.dart",
+    "lib/src/backup/backup_package_codec.dart"
   ],
   "testFiles": [
-    "test/backup/backup_schema_test.dart"
+    "test/backup/backup_schema_test.dart",
+    "test/backup/backup_package_codec_test.dart"
   ],
   "requirements": [
     "RC-0774",
@@ -55,6 +61,7 @@
     "RC-0785",
     "RC-0786",
     "RC-0787",
+    "RC-0788",
     "RC-0789",
     "RC-0790",
     "RC-0791",
@@ -74,12 +81,14 @@
     "RC-0830"
   ],
   "scopeNotes": [
-    "RC-0788 tarot_cards.csv is not claimed by this schema contract because the current portable schema stores selected card IDs in tarot_sessions.csv and does not yet expose a standalone tarot_cards.csv table.",
+    "RC-0788 is now represented by standalone tarot_cards.csv rows linked to tarot_sessions.csv with position_index, card_id and locale-independent upright/reversed orientation IDs.",
+    "Older schema-v1 packages created before tarot_cards.csv was introduced remain readable; the missing additive member is materialized as an empty table. New writers always emit tarot_cards.csv.",
+    "The legacy card_ids_json field remains in tarot_sessions.csv for backward compatibility and is not silently rewritten during this source-level change.",
     "Professional presets and interpretation templates satisfy the extensibility intent of RC-0791 as separate CSV tables."
   ],
   "remainingProof": [
     "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
-    "Decide whether RC-0788 needs a standalone optional tarot_cards.csv export or remains intentionally unsupported by product decision",
+    "End-to-end non-empty tarot_cards.csv SQLite export/import lifecycle proof",
     "Release-candidate clean-checkout backup lifecycle evidence"
   ]
 }
