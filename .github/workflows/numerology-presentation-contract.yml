@@ -4,9 +4,12 @@ on:
   push:
     paths:
       - 'lib/src/ui/numerology/numerology_presentation.dart'
+      - 'lib/src/ui/numerology/numerology_screen.dart'
+      - 'lib/src/ui/navigation/main_navigation_shell.dart'
       - 'lib/src/pdf/pdf_numerology_data.dart'
       - 'lib/src/pdf/pdf_numerology_section.dart'
       - 'test/ui/numerology/numerology_presentation_test.dart'
+      - 'test/ui/numerology/numerology_screen_test.dart'
       - 'test/pdf/pdf_numerology_section_test.dart'
       - 'evidence/numerology/ui_pdf_presentation_parity.json'
       - 'tools/numerology/validate_ui_pdf_presentation_parity.py'
@@ -14,9 +17,12 @@ on:
   pull_request:
     paths:
       - 'lib/src/ui/numerology/numerology_presentation.dart'
+      - 'lib/src/ui/numerology/numerology_screen.dart'
+      - 'lib/src/ui/navigation/main_navigation_shell.dart'
       - 'lib/src/pdf/pdf_numerology_data.dart'
       - 'lib/src/pdf/pdf_numerology_section.dart'
       - 'test/ui/numerology/numerology_presentation_test.dart'
+      - 'test/ui/numerology/numerology_screen_test.dart'
       - 'test/pdf/pdf_numerology_section_test.dart'
       - 'evidence/numerology/ui_pdf_presentation_parity.json'
       - 'tools/numerology/validate_ui_pdf_presentation_parity.py'
@@ -38,4 +44,4 @@ jobs:
       - name: Resolve Flutter dependencies
         run: flutter pub get
       - name: Numerology presentation parity tests
-        run: flutter test test/ui/numerology/numerology_presentation_test.dart test/pdf/pdf_numerology_section_test.dart
+        run: flutter test test/ui/numerology/numerology_presentation_test.dart test/ui/numerology/numerology_screen_test.dart test/pdf/pdf_numerology_section_test.dart
