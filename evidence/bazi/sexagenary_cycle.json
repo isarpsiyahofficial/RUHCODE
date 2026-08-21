@@ -3,17 +3,8 @@
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "requirements": [
-    "RC-0195",
-    "RC-0196",
-    "RC-0197",
-    "RC-0198",
-    "RC-0335",
-    "RC-0337",
-    "RC-0338",
-    "RC-0339",
-    "RC-0340",
-    "RC-0342",
-    "RC-0343"
+    "RC-0147",
+    "RC-0148"
   ],
   "source": "lib/src/calculation_core/bazi/sexagenary_cycle.dart",
   "tests": [
