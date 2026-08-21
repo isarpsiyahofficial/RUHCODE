@@ -22,8 +22,8 @@ void main() {
       final result = ChaldeanNameEngine.calculate(fullName: 'İbrahim Yeşilyurt');
 
       expect(result.normalizedName, 'IBRAHIMYESILYURT');
-      expect(result.compoundTotal, greaterThan(0));
-      expect(result.reducedNumber, inInclusiveRange(1, 33));
+      expect(result.compoundTotal, 42);
+      expect(result.reducedNumber, 6);
     });
 
     test('rejects unsupported characters through the shared name policy', () {
