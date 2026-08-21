@@ -1,0 +1,44 @@
+{
+  "id": "BAZI-SEXAGENARY-CYCLE-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0195",
+    "RC-0196",
+    "RC-0197",
+    "RC-0198",
+    "RC-0335",
+    "RC-0337",
+    "RC-0338",
+    "RC-0339",
+    "RC-0340",
+    "RC-0342",
+    "RC-0343"
+  ],
+  "source": "lib/src/calculation_core/bazi/sexagenary_cycle.dart",
+  "tests": [
+    "test/calculation_core/bazi/sexagenary_cycle_test.dart"
+  ],
+  "provenScope": [
+    "10 Heavenly Stems with explicit Five-Element and Yin/Yang mappings",
+    "12 Earthly Branches with explicit Five-Element and Yin/Yang mappings",
+    "canonical zero-based 60-pair cycle arithmetic where index 0 is Jia-Zi and 59 is Gui-Hai",
+    "negative and positive cycle wrapping",
+    "stem/branch parity validation and unique reverse lookup"
+  ],
+  "explicitlyNotImplementedHere": [
+    "civil-date to BaZi Year Pillar conversion",
+    "solar-term based BaZi Month Pillar conversion",
+    "verified Day Pillar epoch arithmetic",
+    "local-time/timezone based Hour Pillar conversion",
+    "Hidden Stems",
+    "Ten Gods",
+    "Da Yun",
+    "annual or monthly influence"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "independent golden/reference validation for date-to-pillar boundary algorithms",
+    "verified solar-term physical dataset"
+  ]
+}
