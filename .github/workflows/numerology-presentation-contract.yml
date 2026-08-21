@@ -1,0 +1,41 @@
+name: Numerology Presentation Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/ui/numerology/numerology_presentation.dart'
+      - 'lib/src/pdf/pdf_numerology_data.dart'
+      - 'lib/src/pdf/pdf_numerology_section.dart'
+      - 'test/ui/numerology/numerology_presentation_test.dart'
+      - 'test/pdf/pdf_numerology_section_test.dart'
+      - 'evidence/numerology/ui_pdf_presentation_parity.json'
+      - 'tools/numerology/validate_ui_pdf_presentation_parity.py'
+      - '.github/workflows/numerology-presentation-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/ui/numerology/numerology_presentation.dart'
+      - 'lib/src/pdf/pdf_numerology_data.dart'
+      - 'lib/src/pdf/pdf_numerology_section.dart'
+      - 'test/ui/numerology/numerology_presentation_test.dart'
+      - 'test/pdf/pdf_numerology_section_test.dart'
+      - 'evidence/numerology/ui_pdf_presentation_parity.json'
+      - 'tools/numerology/validate_ui_pdf_presentation_parity.py'
+      - '.github/workflows/numerology-presentation-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Structural UI/PDF parity contract
+        run: python tools/numerology/validate_ui_pdf_presentation_parity.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Numerology presentation parity tests
+        run: flutter test test/ui/numerology/numerology_presentation_test.dart test/pdf/pdf_numerology_section_test.dart
