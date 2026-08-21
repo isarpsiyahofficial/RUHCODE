@@ -38,7 +38,8 @@
   "invariants": {
     "real_sqlite_source_and_target": true,
     "all_registered_backup_tables_compared": true,
-    "all_14_tables_non_empty_representative_fixture": true,
+    "all_15_tables_non_empty_representative_fixture": true,
+    "tarot_cards_non_empty_and_session_linked": true,
     "cross_table_foreign_keys_in_fixture": true,
     "portable_zip_round_trip": true,
     "strict_preview_before_mutation": true,
@@ -55,7 +56,8 @@
     "native_save_picker_share_is_covered_by_separate_platform_contract": true
   },
   "scopeNotes": [
-    "RC-1442 clean-checkout reproducible build is intentionally not claimed by this backup lifecycle evidence; it belongs to the release/build contract."
+    "RC-1442 clean-checkout reproducible build is intentionally not claimed by this backup lifecycle evidence; it belongs to the release/build contract.",
+    "tarot_cards.csv is now present as a non-empty normalized session-linked fixture in the all-tables SQLite lifecycle; this strengthens RC-0788 proof but RC-0788 remains SOURCE_LEVEL until exact workflow success is visible."
   ],
   "remaining_before_done": [
     "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
