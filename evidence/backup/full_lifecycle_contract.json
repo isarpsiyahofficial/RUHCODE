@@ -18,8 +18,7 @@
     "RC-1296",
     "RC-1297",
     "RC-1298",
-    "RC-1299",
-    "RC-1442"
+    "RC-1299"
   ],
   "pipeline": [
     "SqfliteLocalDatabase source",
@@ -51,11 +50,16 @@
     "tr_en_manifest_locale_does_not_mutate_machine_storage": true,
     "large_data_2500_record_replace_restore": true,
     "unicode_stress_payload": true,
-    "offline_only": true
+    "offline_only": true,
+    "legacy_v0_migration_is_covered_by_separate_contract": true,
+    "native_save_picker_share_is_covered_by_separate_platform_contract": true
   },
+  "scopeNotes": [
+    "RC-1442 clean-checkout reproducible build is intentionally not claimed by this backup lifecycle evidence; it belongs to the release/build contract."
+  ],
   "remaining_before_done": [
     "Exact Flutter/GitHub Actions SUCCESS on the tested commit",
-    "Legacy schema migration/adoption proof",
-    "Android document picker/share-sheet integration"
+    "Android real-device document picker/save/share smoke test",
+    "Release-candidate clean install export erase restore verification"
   ]
 }
