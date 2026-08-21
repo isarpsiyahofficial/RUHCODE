@@ -1,0 +1,49 @@
+{
+  "id": "NUM-UI-PDF-PARITY-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0165",
+    "RC-0170",
+    "RC-0171",
+    "RC-0172",
+    "RC-0173",
+    "RC-0175",
+    "RC-0176",
+    "RC-0177",
+    "RC-0360",
+    "RC-0361",
+    "RC-0363",
+    "RC-0364",
+    "RC-0365",
+    "RC-0366",
+    "RC-0367",
+    "RC-0368",
+    "RC-0918",
+    "RC-0925",
+    "RC-1431"
+  ],
+  "sources": [
+    "lib/src/ui/numerology/numerology_presentation.dart",
+    "lib/src/pdf/pdf_numerology_data.dart",
+    "lib/src/pdf/pdf_numerology_section.dart"
+  ],
+  "tests": [
+    "test/ui/numerology/numerology_presentation_test.dart",
+    "test/pdf/pdf_numerology_section_test.dart"
+  ],
+  "invariants": [
+    "UI and PDF consume the same canonical PythagoreanNumerologySnapshot and SHA-256 digest",
+    "UI presentation does not recalculate numerology values",
+    "PDF table section does not recalculate numerology values",
+    "metric IDs are locale-neutral and human-readable labels are supplied by localization",
+    "date-dependent cycle rows exist only when the canonical snapshot has an explicit target date",
+    "PDF render section digest must equal the canonical numerology payload digest",
+    "missing localized PDF labels are rejected before rendering"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "approved final Numerology screen visual reference and pixel/golden comparison",
+    "production Unicode PDF font artifact and full rendered-PDF glyph regression"
+  ]
+}
