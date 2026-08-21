@@ -67,4 +67,44 @@ final class PdfOutputInspector {
     }
     return inspection;
   }
+
+  /// Enforces an explicit page-count contract after structural validation.
+  ///
+  /// This is used by 5/25/50+ report regression fixtures so a renderer cannot
+  /// silently drop pages while still returning superficially valid PDF bytes.
+  PdfOutputInspection requirePageCount(
+    Uint8List bytes, {
+    int? exact,
+    int? minimum,
+    int? maximum,
+  }) {
+    if (exact != null && (minimum != null || maximum != null)) {
+      throw ArgumentError('exact page count cannot be combined with min/max.');
+    }
+    if (exact != null && exact <= 0) {
+      throw ArgumentError.value(exact, 'exact', 'Page count must be positive.');
+    }
+    if (minimum != null && minimum <= 0) {
+      throw ArgumentError.value(minimum, 'minimum', 'Minimum must be positive.');
+    }
+    if (maximum != null && maximum <= 0) {
+      throw ArgumentError.value(maximum, 'maximum', 'Maximum must be positive.');
+    }
+    if (minimum != null && maximum != null && minimum > maximum) {
+      throw ArgumentError('minimum page count cannot exceed maximum.');
+    }
+
+    final inspection = requireUsable(bytes);
+    final pages = inspection.pageObjectCount;
+    if (exact != null && pages != exact) {
+      throw StateError('Generated PDF page count mismatch: expected=$exact actual=$pages.');
+    }
+    if (minimum != null && pages < minimum) {
+      throw StateError('Generated PDF has too few pages: minimum=$minimum actual=$pages.');
+    }
+    if (maximum != null && pages > maximum) {
+      throw StateError('Generated PDF has too many pages: maximum=$maximum actual=$pages.');
+    }
+    return inspection;
+  }
 }
