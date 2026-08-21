@@ -69,6 +69,31 @@ abstract final class PythagoreanNameNormalizer {
   }
 }
 
+/// Exact reduction history for a calculated numerology metric.
+///
+/// The trace preserves the unreduced source and every intermediate digit-sum
+/// so downstream features such as Karmic Debt can use observed compounds
+/// instead of reverse-inventing a compound from the final reduced number.
+final class PythagoreanReductionTrace {
+  const PythagoreanReductionTrace({
+    required this.sourceValue,
+    required this.steps,
+    required this.reducedValue,
+    required this.provenance,
+  });
+
+  final int sourceValue;
+  final List<int> steps;
+  final int reducedValue;
+  final String provenance;
+
+  Iterable<int> get observedCompounds sync* {
+    for (final value in steps) {
+      if (value > 9) yield value;
+    }
+  }
+}
+
 final class PythagoreanProfileResult {
   const PythagoreanProfileResult({
     required this.birthDate,
@@ -80,6 +105,12 @@ final class PythagoreanProfileResult {
     required this.personality,
     required this.birthday,
     required this.maturity,
+    required this.lifePathTrace,
+    required this.expressionTrace,
+    required this.soulUrgeTrace,
+    required this.personalityTrace,
+    required this.birthdayTrace,
+    required this.maturityTrace,
   });
 
   final CivilDate birthDate;
@@ -91,11 +122,18 @@ final class PythagoreanProfileResult {
   final int personality;
   final int birthday;
   final int maturity;
+
+  final PythagoreanReductionTrace lifePathTrace;
+  final PythagoreanReductionTrace expressionTrace;
+  final PythagoreanReductionTrace soulUrgeTrace;
+  final PythagoreanReductionTrace personalityTrace;
+  final PythagoreanReductionTrace birthdayTrace;
+  final PythagoreanReductionTrace maturityTrace;
 }
 
 abstract final class PythagoreanProfileEngine {
   static const String engineId = 'numerology.pythagorean.profile';
-  static const String engineVersion = '1';
+  static const String engineVersion = '2';
   static const Set<String> vowels = <String>{'A', 'E', 'I', 'O', 'U'};
 
   static PythagoreanProfileResult calculate({
@@ -105,37 +143,69 @@ abstract final class PythagoreanProfileEngine {
         PersonalCycleReductionPolicy.preserveMasterNumbers,
   }) {
     final normalized = PythagoreanNameNormalizer.normalize(fullName);
-    final lifePath = _lifePath(birthDate, policy);
-    final expression = _reduceLetterTotal(normalized, policy: policy);
-    final soulUrge = _reduceLetterTotal(
-      normalized,
+
+    final reducedMonth = PythagoreanPersonalDayEngine.reduce(
+      birthDate.month,
       policy: policy,
-      include: (letter) => vowels.contains(letter),
     );
-    final personality = _reduceLetterTotal(
-      normalized,
-      policy: policy,
-      include: (letter) => !vowels.contains(letter),
-    );
-    final birthday = PythagoreanPersonalDayEngine.reduce(
+    final reducedDay = PythagoreanPersonalDayEngine.reduce(
       birthDate.day,
       policy: policy,
     );
-    final maturity = PythagoreanPersonalDayEngine.reduce(
-      lifePath + expression,
+    final reducedYear = PythagoreanPersonalDayEngine.reduce(
+      birthDate.year,
       policy: policy,
+    );
+    final lifePathTrace = _traceReduction(
+      reducedMonth + reducedDay + reducedYear,
+      policy: policy,
+      provenance: 'life_path.reduced_month_day_year_sum',
+    );
+
+    final expressionTrace = _traceLetterTotal(
+      normalized,
+      policy: policy,
+      provenance: 'expression.full_name_value_sum',
+    );
+    final soulUrgeTrace = _traceLetterTotal(
+      normalized,
+      policy: policy,
+      provenance: 'soul_urge.vowel_value_sum',
+      include: (letter) => vowels.contains(letter),
+    );
+    final personalityTrace = _traceLetterTotal(
+      normalized,
+      policy: policy,
+      provenance: 'personality.consonant_value_sum',
+      include: (letter) => !vowels.contains(letter),
+    );
+    final birthdayTrace = _traceReduction(
+      birthDate.day,
+      policy: policy,
+      provenance: 'birthday.calendar_day',
+    );
+    final maturityTrace = _traceReduction(
+      lifePathTrace.reducedValue + expressionTrace.reducedValue,
+      policy: policy,
+      provenance: 'maturity.life_path_plus_expression',
     );
 
     return PythagoreanProfileResult(
       birthDate: birthDate,
       normalizedName: normalized,
       policy: policy,
-      lifePath: lifePath,
-      expression: expression,
-      soulUrge: soulUrge,
-      personality: personality,
-      birthday: birthday,
-      maturity: maturity,
+      lifePath: lifePathTrace.reducedValue,
+      expression: expressionTrace.reducedValue,
+      soulUrge: soulUrgeTrace.reducedValue,
+      personality: personalityTrace.reducedValue,
+      birthday: birthdayTrace.reducedValue,
+      maturity: maturityTrace.reducedValue,
+      lifePathTrace: lifePathTrace,
+      expressionTrace: expressionTrace,
+      soulUrgeTrace: soulUrgeTrace,
+      personalityTrace: personalityTrace,
+      birthdayTrace: birthdayTrace,
+      maturityTrace: maturityTrace,
     );
   }
 
@@ -152,31 +222,10 @@ abstract final class PythagoreanProfileEngine {
     return ((code - 65) % 9) + 1;
   }
 
-  static int _lifePath(
-    CivilDate birthDate,
-    PersonalCycleReductionPolicy policy,
-  ) {
-    final month = PythagoreanPersonalDayEngine.reduce(
-      birthDate.month,
-      policy: policy,
-    );
-    final day = PythagoreanPersonalDayEngine.reduce(
-      birthDate.day,
-      policy: policy,
-    );
-    final year = PythagoreanPersonalDayEngine.reduce(
-      birthDate.year,
-      policy: policy,
-    );
-    return PythagoreanPersonalDayEngine.reduce(
-      month + day + year,
-      policy: policy,
-    );
-  }
-
-  static int _reduceLetterTotal(
+  static PythagoreanReductionTrace _traceLetterTotal(
     String normalized, {
     required PersonalCycleReductionPolicy policy,
+    required String provenance,
     bool Function(String letter)? include,
   }) {
     var total = 0;
@@ -191,6 +240,55 @@ abstract final class PythagoreanProfileEngine {
         'Numerology name does not contain letters for the requested calculation.',
       );
     }
-    return PythagoreanPersonalDayEngine.reduce(total, policy: policy);
+    return _traceReduction(total, policy: policy, provenance: provenance);
+  }
+
+  static PythagoreanReductionTrace _traceReduction(
+    int sourceValue, {
+    required PersonalCycleReductionPolicy policy,
+    required String provenance,
+  }) {
+    if (sourceValue <= 0) {
+      throw RangeError.value(sourceValue, 'sourceValue', 'Must be positive.');
+    }
+    if (provenance.trim().isEmpty) {
+      throw const FormatException('Reduction provenance cannot be blank.');
+    }
+
+    final steps = <int>[sourceValue];
+    var current = sourceValue;
+    while (!_isTerminal(current, policy)) {
+      current = _digitSum(current);
+      steps.add(current);
+    }
+
+    return PythagoreanReductionTrace(
+      sourceValue: sourceValue,
+      steps: List<int>.unmodifiable(steps),
+      reducedValue: current,
+      provenance: provenance,
+    );
+  }
+
+  static bool _isTerminal(
+    int value,
+    PersonalCycleReductionPolicy policy,
+  ) {
+    if (value >= 1 && value <= 9) return true;
+    if (policy == PersonalCycleReductionPolicy.preserveMasterNumbers &&
+        (value == 11 || value == 22 || value == 33)) {
+      return true;
+    }
+    return false;
+  }
+
+  static int _digitSum(int value) {
+    var remaining = value;
+    var sum = 0;
+    while (remaining > 0) {
+      sum += remaining % 10;
+      remaining ~/= 10;
+    }
+    return sum;
   }
 }
