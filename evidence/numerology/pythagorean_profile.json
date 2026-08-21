@@ -1,9 +1,9 @@
 {
-  "contractId": "NUM-PYTH-PROFILE-V1",
+  "contractId": "NUM-PYTH-PROFILE-V2",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "engineId": "numerology.pythagorean.profile",
-  "engineVersion": "1",
+  "engineVersion": "2",
   "requirements": [
     "RC-0161",
     "RC-0162",
@@ -14,13 +14,16 @@
     "RC-0169",
     "RC-0170",
     "RC-0171",
+    "RC-0174",
     "RC-0182",
     "RC-0183",
-    "RC-0329"
+    "RC-0329",
+    "RC-0362"
   ],
   "source": "lib/src/calculation_core/numerology/pythagorean_profile.dart",
   "tests": [
-    "test/calculation_core/numerology/pythagorean_profile_test.dart"
+    "test/calculation_core/numerology/pythagorean_profile_test.dart",
+    "test/calculation_core/numerology/karmic_debt_test.dart"
   ],
   "policy": {
     "alphabet": "Pythagorean A-Z repeating 1..9",
@@ -37,7 +40,8 @@
     "unsupportedCharacters": "reject; never silently delete or guess",
     "vowelsV1": ["A", "E", "I", "O", "U"],
     "yPolicyV1": "consonant",
-    "defaultReduction": "preserve 11/22/33 master numbers"
+    "defaultReduction": "preserve 11/22/33 master numbers",
+    "reductionTrace": "Each canonical metric preserves the unreduced source, every intermediate digit-sum step, the final reduced value and a non-empty provenance identifier. Downstream Karmic Debt logic may inspect only these observed compounds and may not reverse-infer a compound from a final reduced number."
   },
   "calculations": [
     "lifePath",
