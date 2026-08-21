@@ -1,10 +1,12 @@
 {
   "id": "UI-ACCESSIBILITY-INTERACTION-001",
-  "status": "SPECIFIED",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "requirements": ["RC-1432", "RC-1440", "RC-1441"],
   "navigation": {
     "primaryTabs": ["Bugün", "Araçlar", "Kayıtlar", "Profil"],
+    "toolsCategories": ["Astroloji", "Numeroloji", "Spiritüel", "Kişisel Gelişim"],
+    "astrologyChildren": ["Batı Astrolojisi", "Vedik Astroloji", "Çin Astrolojisi", "BaZi", "Gezegen Saatleri"],
     "forbiddenAmbiguousExactLabels": ["Hesapla"],
     "activeActionMustHavePurpose": true,
     "activeActionMustHaveAccessibilityLabel": true,
@@ -20,15 +22,28 @@
   },
   "interactionRegistry": {
     "source": "ui/action_registry.csv",
+    "runtimeBindings": "ui/runtime_action_bindings.csv",
+    "runtimeActionConstants": "lib/src/ui/actions/ruh_action_ids.dart",
     "activeStatuses": ["ACTIVE"],
     "allowedEntitlements": ["FREE", "PRO"],
-    "allowedOfflineBehaviors": ["AVAILABLE", "REQUIRES_NETWORK", "UNAVAILABLE"]
+    "allowedOfflineBehaviors": ["AVAILABLE", "REQUIRES_NETWORK", "UNAVAILABLE"],
+    "runtimeBindingMustReferenceActiveRegistryAction": true,
+    "runtimeGuardedFeatureMustMatchRegistryEntitlement": true
   },
+  "sourceLevelProof": [
+    "implemented runtime controls carry canonical ACTION IDs",
+    "current Tools runtime follows Tools -> category -> astrology child hierarchy rather than flattening all calculations into one menu",
+    "implemented action tiles use explicit Semantics button labels and a 48dp minimum height constraint",
+    "widget contract exercises critical Tools -> Astrology navigation at 2.0x text scale on a 360x800 viewport",
+    "widget contract checks a live action tile exposes a semantics label and at least 48dp height",
+    "runtime binding validator cross-checks ACTION ID constants against ACTIVE registry rows and canonical Feature Catalog Free/PRO policy"
+  ],
   "notProvenYet": [
     "real-device minimum touch-target measurement for every rendered control",
     "screen-reader traversal on Android release build",
     "2.0x text-scale screenshot/overflow regression across every required screen state",
     "approved UI reference PNG visual regression",
+    "all planned ACTIVE registry actions having production runtime bindings",
     "exact GitHub Actions SUCCESS for the workflow target commit"
   ]
 }
