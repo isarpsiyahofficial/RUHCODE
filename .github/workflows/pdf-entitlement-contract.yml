@@ -4,14 +4,32 @@ on:
   push:
     paths:
       - 'ui/action_registry.csv'
+      - 'ui/runtime_action_bindings.csv'
       - 'lib/src/entitlements/feature_catalog.dart'
+      - 'lib/src/entitlements/feature_access_guard.dart'
+      - 'lib/src/ui/actions/**'
+      - 'lib/src/ui/navigation/**'
+      - 'lib/src/ui/pdf/**'
+      - 'test/ui/main_navigation_entitlement_wiring_test.dart'
       - 'tools/ui/validate_pdf_entitlement_policy.py'
+      - 'tools/ui/validate_runtime_action_bindings.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
       - '.github/workflows/pdf-entitlement-contract.yml'
   pull_request:
     paths:
       - 'ui/action_registry.csv'
+      - 'ui/runtime_action_bindings.csv'
       - 'lib/src/entitlements/feature_catalog.dart'
+      - 'lib/src/entitlements/feature_access_guard.dart'
+      - 'lib/src/ui/actions/**'
+      - 'lib/src/ui/navigation/**'
+      - 'lib/src/ui/pdf/**'
+      - 'test/ui/main_navigation_entitlement_wiring_test.dart'
       - 'tools/ui/validate_pdf_entitlement_policy.py'
+      - 'tools/ui/validate_runtime_action_bindings.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
       - '.github/workflows/pdf-entitlement-contract.yml'
 
 jobs:
@@ -24,3 +42,12 @@ jobs:
           python-version: '3.12'
       - name: Validate sample preview and professional PDF access policy
         run: python tools/ui/validate_pdf_entitlement_policy.py
+      - name: Validate runtime PDF action bindings
+        run: python tools/ui/validate_runtime_action_bindings.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run PDF Free and PRO route matrix
+        run: flutter test test/ui/main_navigation_entitlement_wiring_test.dart
