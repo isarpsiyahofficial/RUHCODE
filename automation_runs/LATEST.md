@@ -10,16 +10,16 @@ Latest completed source-level work:
    - tests + evidence + structural validator + BaZi CI wiring expanded
    - critical traceability repair: earlier TODO-index-as-RC mappings corrected against the literal MASTER specification
    - corrected BaZi requirement mapping is RC-0147..RC-0153 for Heavenly Stems, Earthly Branches, Hidden Stems, Five Elements, Yin/Yang, Day Master and Ten Gods
-   - structural validator now rejects future drift in those evidence requirement IDs
+   - structural validator now parses the MASTER file and rejects future ownership drift for those requirement IDs
 
 Latest workflow-target source commit:
-- BaZi Primitive Contract: `2e874ac8448f36e9914304406f1f3f73298988f4`
+- BaZi Primitive Contract: `eb804117b7bbe0921d2565fbcfc31ebad6e2ab5d`
 
 GitHub combined-status returned `statuses=[]` for the exact workflow-target commit. No SUCCESS is claimed and no related RC is promoted to DONE solely from source-level implementation.
 
 Next safe work:
 - audit recently-added evidence for any other TODO-index-vs-RC traceability mistakes before state promotion
-- add stronger machine cross-checks between evidence requirement IDs and literal MASTER requirement ownership where deterministic
+- generalize literal MASTER ownership cross-checks to other evidence families where deterministic mapping exists
 - keep BaZi Year/Month/Day/Hour Pillar conversion blocked until verified solar-term/day-boundary contracts exist
 - continue blocker-independent numerology/application-service and PDF/backup/accessibility work
 - retain physical astronomy/EOP/ephemeris/Lahiri, GeoNames proof, 8,036 editorial daily messages, approved UI references and production PDF font artifacts as explicit blockers
