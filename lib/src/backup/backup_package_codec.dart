@@ -119,11 +119,12 @@ final class BackupPackageReader {
     final manifestNames = manifest.files.map((file) => file.fileName).toSet();
     final unexpected = manifestNames.difference(expectedTableNames);
     final missing = expectedTableNames.difference(manifestNames);
+    final missingRequired = missing.difference(BackupSchemaRegistry.additiveOptionalForLegacyV1);
     if (unexpected.isNotEmpty) {
       throw FormatException('Backup manifest contains unexpected files: ${unexpected.toList()..sort()}.');
     }
-    if (missing.isNotEmpty) {
-      throw FormatException('Backup manifest is missing required files: ${missing.toList()..sort()}.');
+    if (missingRequired.isNotEmpty) {
+      throw FormatException('Backup manifest is missing required files: ${missingRequired.toList()..sort()}.');
     }
 
     final packagePayloadNames = package.files.keys.where((name) => name != 'manifest.json').toSet();
@@ -165,6 +166,15 @@ final class BackupPackageReader {
       issues.addAll(tableResult.issues);
       rowsByTable[entry.fileName] = List<List<String?>>.unmodifiable(rows);
       recordCounts[entry.fileName] = rows.length;
+    }
+
+    // `tarot_cards.csv` was added to schema-v1 before the first final release.
+    // Older schema-v1 backups remain importable and get an explicit empty table;
+    // new writers always include the member, so no card detail is silently lost
+    // once the table exists in a generated backup.
+    for (final optionalName in BackupSchemaRegistry.additiveOptionalForLegacyV1) {
+      rowsByTable.putIfAbsent(optionalName, () => const <List<String?>>[]);
+      recordCounts.putIfAbsent(optionalName, () => 0);
     }
 
     issues.addAll(schemaValidator.validateForeignKeys(rowsByTable: rowsByTable));
