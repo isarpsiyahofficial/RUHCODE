@@ -1,0 +1,33 @@
+{
+  "id": "BAZI-FOUR-PILLARS-PRIMITIVES-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0150",
+    "RC-0151",
+    "RC-0152"
+  ],
+  "source": "lib/src/calculation_core/bazi/four_pillars_primitives.dart",
+  "tests": [
+    "test/calculation_core/bazi/four_pillars_primitives_test.dart"
+  ],
+  "provenScope": [
+    "Day Master identity is exactly the Heavenly Stem of an already-verified Day Pillar",
+    "Five Elements visible distribution is an explicit unweighted count across four stems plus four branches",
+    "Hidden Stem element occurrences are counted separately and never silently mixed into visible counts",
+    "Yin/Yang visible distribution is an explicit unweighted count across the eight visible pillar symbols",
+    "all returned distribution maps are immutable",
+    "no civil-date, solar-term, strength percentage or favorable-element policy is invented"
+  ],
+  "explicitlyNotImplementedHere": [
+    "civil-date to Year/Month/Day/Hour Pillar conversion",
+    "school-specific Hidden Stem weights",
+    "seasonal strength scoring",
+    "element balance interpretation",
+    "favorable/unfavorable element selection"
+  ],
+  "notProvenYet": [
+    "exact GitHub Actions/Flutter SUCCESS for the workflow target commit",
+    "independent reference validation of complete date-to-Four-Pillars conversion"
+  ]
+}
