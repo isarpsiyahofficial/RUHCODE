@@ -23,6 +23,9 @@ abstract final class RuhActionIds {
   static const recordsProfiles = 'ACTION-RECORDS-PROFILES';
   static const recordsClients = 'ACTION-RECORDS-CLIENTS';
   static const profileSettings = 'ACTION-PROFILE-SETTINGS';
+  static const settingsPdf = 'ACTION-SETTINGS-PDF';
+  static const pdfPreview = 'ACTION-PDF-PREVIEW';
+  static const pdfBuild = 'ACTION-PDF-BUILD';
 
   static const allRuntimeBindings = <String>{
     navigationToday,
@@ -41,5 +44,8 @@ abstract final class RuhActionIds {
     recordsProfiles,
     recordsClients,
     profileSettings,
+    settingsPdf,
+    pdfPreview,
+    pdfBuild,
   };
 }
