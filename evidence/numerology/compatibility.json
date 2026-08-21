@@ -19,7 +19,8 @@
     ],
     "score_semantics": "No synthetic percentage or hidden weighted score is produced. The calculation exposes exact core-number pairs, exact-match flags, absolute numeric differences and an exact-match count.",
     "reduction_policy": "Both profiles must use the same explicit Pythagorean reduction policy; mixed policies are rejected.",
-    "interpretation_boundary": "Human-readable relationship interpretation is separate CONTENT logic and cannot change the calculation result."
+    "interpretation_boundary": "Human-readable relationship interpretation is separate CONTENT logic and cannot change the calculation result.",
+    "content_contract": "evidence/numerology/compatibility_interpretation.json"
   },
   "tests": [
     "test/calculation_core/numerology/compatibility_test.dart"
@@ -30,7 +31,7 @@
   ],
   "remaining_before_done": [
     "Exact Flutter test SUCCESS must be visible on the tested commit.",
-    "TR/EN compatibility interpretation coverage must be proven separately if shown to users.",
+    "Production editorial TR/EN compatibility copy must pass the separate compatibility interpretation content contract before user-facing interpretation is DONE.",
     "UI must disclose the compared numerology system and reduction policy rather than presenting a hidden universal compatibility percentage."
   ]
 }
