@@ -1,0 +1,30 @@
+{
+  "contractId": "NUM-LO-SHU-GRID-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "engineId": "numerology.lo-shu.birth-grid",
+  "engineVersion": "1",
+  "requirements": [
+    "RC-0161",
+    "RC-0164",
+    "RC-0165",
+    "RC-0185",
+    "RC-0329"
+  ],
+  "source": "lib/src/calculation_core/numerology/lo_shu_grid.dart",
+  "tests": [
+    "test/calculation_core/numerology/lo_shu_grid_test.dart"
+  ],
+  "policy": {
+    "input": "exact Gregorian birth-date digits",
+    "zero": "ignored; no Lo Shu cell",
+    "canonicalGrid": [[4, 9, 2], [3, 5, 7], [8, 1, 6]],
+    "pythagoreanTableReuse": false,
+    "chaldeanTableReuse": false
+  },
+  "openBeforeDone": [
+    "Flutter test success on exact commit",
+    "independent Lo Shu reference dataset",
+    "interpretation coverage remains separate"
+  ]
+}
