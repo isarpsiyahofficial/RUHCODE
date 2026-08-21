@@ -57,7 +57,7 @@ EXPECTED = {
     },
     "evidence/backup/schema_registry_contract.json": {
         774, 775, 776, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787,
-        789, 790, 791, 805, 806, 809, 810, 811, 812, 813, 814, 815, 816, 817,
+        788, 789, 790, 791, 805, 806, 809, 810, 811, 812, 813, 814, 815, 816, 817,
         828, 829, 830,
     },
     "evidence/backup/full_lifecycle_contract.json": {
@@ -81,7 +81,7 @@ KEYWORDS = {
     329: "Numeroloji motorlarının", 337: "Leap year",
     757: "PRO durumundaki değişiklik", 760: "Free → PRO", 761: "PRO → Free", 762: "tekrar PRO",
     774: "CSV tabanlı", 775: "tek bir düz CSV", 776: "paket halinde", 777: "UTF-8 CSV",
-    778: "profiles.csv", 789: "favorites.csv", 790: "settings.csv", 791: "ayrı CSV",
+    778: "profiles.csv", 788: "tarot_cards.csv", 789: "favorites.csv", 790: "settings.csv", 791: "ayrı CSV",
     792: "ZIP", 793: "insan tarafından", 795: "tüm Ruh Code verilerini", 796: "UTF-8",
     800: "virgül", 801: "çift tırnak", 802: "yeni satır", 803: "Boş değer ile sıfır",
     804: "null", 805: "locale formatına", 809: "ISO formatında", 812: "çeviri metinleriyle",
