@@ -8,7 +8,9 @@ on:
       - 'test/calculation_core/numerology/**'
       - 'test/interpretation/**'
       - 'evidence/numerology/**'
+      - 'evidence/interpretation/**'
       - 'tools/numerology/**'
+      - 'tools/interpretation/**'
       - '.github/workflows/numerology-compatibility-content-contract.yml'
   pull_request:
     paths:
@@ -17,7 +19,9 @@ on:
       - 'test/calculation_core/numerology/**'
       - 'test/interpretation/**'
       - 'evidence/numerology/**'
+      - 'evidence/interpretation/**'
       - 'tools/numerology/**'
+      - 'tools/interpretation/**'
       - '.github/workflows/numerology-compatibility-content-contract.yml'
 
 jobs:
@@ -30,6 +34,8 @@ jobs:
           python-version: '3.12'
       - name: Structural compatibility content contract
         run: python tools/numerology/validate_compatibility_interpretation.py
+      - name: Structural interpretation quality contract
+        run: python tools/interpretation/validate_interpretation_quality.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -40,3 +46,4 @@ jobs:
           flutter test
           test/calculation_core/numerology/compatibility_test.dart
           test/interpretation/numerology_compatibility_interpretation_test.dart
+          test/interpretation/interpretation_quality_guard_test.dart
