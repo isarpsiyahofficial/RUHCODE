@@ -88,6 +88,7 @@ EXPECTED = {
         757, 760, 761, 762, 1085, 1086, 1088, 1089, 1090, 1091, 1092, 1093,
         1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1104, 1105, 1107, 1108,
     },
+    "evidence/ui/design_token_contrast_contract.json": {1441},
 }
 
 KEYWORDS = {
@@ -137,7 +138,7 @@ KEYWORDS = {
     1099: "satın alma doğrulama", 1100: "restore", 1101: "Satın alma başarısızlığında",
     1104: "Offline durumda PRO", 1105: "İnternet yalnız", 1107: "sonsuz loading", 1108: "Yerel özellikler",
     1296: "Cihazlar arası veri transferi", 1297: "eski telefondan", 1298: "Yeni telefonda",
-    1299: "internet sunucumuza", 1436: "doğruluk toleransı",
+    1299: "internet sunucumuza", 1436: "doğruluk toleransı", 1441: "Accessibility zorunlu olacak",
 }
 
 
