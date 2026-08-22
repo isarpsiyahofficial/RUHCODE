@@ -47,6 +47,15 @@ void main() {
         expect(copy.mergeLabel, isNot(copy.replaceLabel));
       }
     });
+
+    test('failed rollback never claims that existing data is preserved', () {
+      final tr = backupUiCopy[RuhLocale.tr]!.status(BackupUiPhase.rollbackFailed).toLowerCase();
+      final en = backupUiCopy[RuhLocale.en]!.status(BackupUiPhase.rollbackFailed).toLowerCase();
+      expect(tr, contains('veri bütünlüğü'));
+      expect(tr, isNot(contains('veriler korundu')));
+      expect(en, contains('data integrity'));
+      expect(en, isNot(contains('data was preserved')));
+    });
   });
 
   group('Backup UI state mapping', () {
@@ -101,7 +110,7 @@ void main() {
       expect(state.canApplyRestore, isFalse);
     });
 
-    test('UI claims rollback restoration only when coordinator proves it', () {
+    test('UI distinguishes restored rollback from failed rollback', () {
       expect(
         phaseForRestoreError(
           BackupRestoreException(
@@ -119,7 +128,7 @@ void main() {
             rollbackFailure: StateError('snapshot restore failed'),
           ),
         ),
-        BackupUiPhase.failed,
+        BackupUiPhase.rollbackFailed,
       );
     });
   });
