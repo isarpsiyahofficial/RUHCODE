@@ -1,0 +1,33 @@
+{
+  "contract": "ruh-code-accessibility-text-scale-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-1441"],
+  "sources": [
+    "lib/src/ui/navigation/main_navigation_shell.dart",
+    "lib/src/ui/theme/ruh_design_tokens.dart",
+    "ui/accessibility_interaction_contract.json"
+  ],
+  "tests": [
+    "test/ui/main_navigation_entitlement_wiring_test.dart",
+    "test/ui/accessibility_text_scale_test.dart"
+  ],
+  "validators": [
+    "tools/ui/validate_accessibility_interactions.py",
+    "tools/ui/validate_runtime_theme_tokens.py"
+  ],
+  "requiredProperties": [
+    "the canonical bottom navigation remains usable at 2.0x text scale on a 360x800 logical surface",
+    "Tools exposes all four top-level disciplines without RenderFlex or layout exceptions at 2.0x",
+    "Records keeps both personal profiles and professional clients reachable at 2.0x",
+    "Profile to Settings to PDF Reports remains navigable at 2.0x",
+    "sample PDF preview and professional PDF builder actions remain present at 2.0x",
+    "the regression uses the same canonical RuhAppTheme used by production"
+  ],
+  "remainingBeforeDone": [
+    "extend 2.0x coverage to every required screen and state after approved UI references exist",
+    "run real-device screen-reader traversal and focus-order verification",
+    "run rendered contrast and visual overflow regression on production devices",
+    "obtain exact visible CI success"
+  ]
+}
