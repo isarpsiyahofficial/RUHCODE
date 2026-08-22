@@ -6,10 +6,11 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 
 - MASTER: `RC-0001 → RC-1442`.
 - Requirement traceability ve semantic evidence denetimi mevcut; kanıtsız DONE yasak.
-- **Yeni repository-wide evidence integrity gate** bütün `evidence/**/*.json` ağacını RC token/path/JSON bütünlüğü açısından tarıyor.
+- Repository-wide evidence integrity gate bütün `evidence/**/*.json` ağacını RC token/path/JSON bütünlüğü açısından tarıyor.
 - Ana bilgi mimarisi: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Araçlar: Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim; Astroloji altında Batı / Vedik / Çin / BaZi / Gezegen Saatleri ayrı.
 - Canonical SCREEN-ID / ACTION-ID / Feature-ID sözleşmeleri mevcut.
+- UI design-token kontrastı artık gerçek sRGB relative-luminance hesabıyla ölçülüyor; RC-1441 semantic evidence altında.
 - APPROVED final UI PNG/reference/hash seti henüz tamamlanmadı; visual regression final kapısı açık.
 
 ## Source-level ilerlemiş ana bloklar
@@ -23,19 +24,36 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline snapshot/time anchor, Google Play lifetime restore composition, rewarded-ad cancel/failure safety.
 - Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration.
 - Professional PDF: local A4 planning/renderer contracts, structural inspector, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection.
+- Accessibility: 48dp touch target, 4.5:1 normal-text / 3.0:1 large-text contract, measured design-token contrast and low-contrast accent restrictions.
 
 ## Evidence / requirement audit — güncel durum
 
 - [x] Seçilmiş evidence sözleşmeleri için exact MASTER-aware semantic RC ownership denetimi mevcut.
 - [x] Persisted Western snapshot / technical manifest / PDF service ayrı semantic audit altında.
 - [x] Western production calculation write-boundary structural audit mevcut.
-- [x] **Yeni genel integrity validator:** `tools/requirements/validate_evidence_integrity.py`.
+- [x] Genel integrity validator: `tools/requirements/validate_evidence_integrity.py`.
 - [x] Bütün evidence JSON dosyalarında invalid RC formatı, out-of-range RC, duplicate RC ve çelişen `requirements` / `requirement_ids` setleri fail-closed.
 - [x] Evidence içindeki local `sources` / `tests` / `validators` yolları gerçek repository dosyasına çözülmek zorunda; absolute/traversal path reddediliyor.
 - [x] Invalid UTF-8/JSON ve `done=true` + açık release blocker kombinasyonu reddediliyor.
 - [x] Merkezi `Requirements Contract` genel integrity gate'ini semantic auditlerden önce çalıştıracak şekilde bağlı.
-- [ ] İlk görünür CI koşusunda yeni genel gate'in bütün mevcut evidence ağacını yeşil geçtiği exact commit kanıtı henüz yok.
+- [x] `evidence/ui/design_token_contrast_contract.json` exact `RC-1441` semantic ownership denetimine bağlı.
+- [ ] İlk görünür CI koşusunda yeni genel gate + UI contrast gate'in bütün mevcut evidence ağacını yeşil geçtiği exact commit kanıtı henüz yok.
 - [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak MASTER-aware exact ownership denetimine alınmaya devam edecek.
+
+## UI / Accessibility — güncel durum
+
+- [x] Primary nav sözleşmesi `Bugün · Araçlar · Kayıtlar · Profil` olarak kilitli.
+- [x] Minimum touch target 48dp.
+- [x] Normal metin minimum kontrast 4.5:1; büyük metin 3.0:1.
+- [x] `tools/ui/validate_design_tokens.py` required token çiftlerini gerçek sRGB relative luminance ile ölçüyor.
+- [x] `textPrimary`, `textMuted`, `primary`, `primaryStrong`, `danger` için canonical light-surface text pair contract mevcut.
+- [x] `gold` ve `success` canonical light surfaces üzerinde normal-text tokenı olarak kullanılamaz; non-text accent olarak kilitli.
+- [x] Accessibility contract measured contrast gate'e bağlı ve Requirements Contract bu validatorları çalıştırıyor.
+- [ ] Rendered widget kaynaklarında ad-hoc low-contrast color kullanımının repository-wide taraması henüz yok.
+- [ ] Real-device screen-reader traversal.
+- [ ] Tüm gerekli ekran state'lerinde 2.0x text-scale overflow/golden regression.
+- [ ] APPROVED UI visual regression.
+- [ ] Exact visible accessibility workflow SUCCESS.
 
 ## Western persistence / PDF — güncel durum
 
@@ -73,19 +91,19 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Play/rewarded-ad gerçek cihaz kanıtları.
 - Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-22 20:53
+## Son checkpoint — 2026-08-22 22:53
 
-Checkpoint: `automation_runs/2026-08-22_2053_evidence_integrity_gate.md`
+Checkpoint: `automation_runs/2026-08-22_2253_ui_contrast_semantic_gate.md`
 
-Workflow-target commit: `ab1956ac0836e042605438fae8cd909e58941001`.
-GitHub combined status sorgusu individual status göstermedi (`statuses=[]`); çalışma container'ı da `github.com` DNS çözümleyemedi. Bu yüzden ilgili RC'ler DONE yapılmadı.
+Workflow-target source commit: `b4c7aad7d13ea3282589567e0da5b481889e7b5f`.
+Exact görünür GitHub Actions SUCCESS henüz kanıtlanmadı. Bu yüzden `RC-1441` DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Yeni evidence integrity gate'in ilk görünür CI sonucunda yakalanan gerçek path/schema drift'leri varsa düzelt.
-2. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
-3. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
-4. UI interaction/accessibility ve backup blocker-independent açıklarını ilerlet.
+1. Rendered UI kaynaklarında ad-hoc low-contrast renk kullanımını yakalayan source-level validator ekle.
+2. 2.0x text-scale/widget semantics kapsamını genişlet.
+3. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
+4. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
 5. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
 **FINAL: NO.**
