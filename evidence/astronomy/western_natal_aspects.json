@@ -1,7 +1,7 @@
 {
   "contract": "western_natal_aspects",
   "version": 1,
-  "requirements": ["RC-0037", "RC-0038", "RC-0039", "RC-0040", "RC-0041", "RC-0043", "RC-0044", "RC-0051", "RC-0271", "RC-0272", "RC-0273", "RC-0278"],
+  "requirements": ["RC-0037", "RC-0038", "RC-0039", "RC-0040", "RC-0041", "RC-0043", "RC-0044", "RC-0051"],
   "inputs": ["validated NatalPlacementSet", "configurable AspectOrbPolicy"],
   "outputs": ["major aspect type", "shortest separation", "orb", "deterministic NatalAspectSet", "WesternNatalChart snapshot"],
   "hard_rules": [
