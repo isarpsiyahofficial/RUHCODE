@@ -2,33 +2,32 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-23_0052_runtime_theme_text_scale_gate.md`
+`automation_runs/2026-08-23_0252_backup_restore_preview_accessibility.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Runtime theme / RC-1441**
-   - canonical JSON design tokens Flutter runtime bridge'e taşındı
-   - `RuhCodeApp` ad-hoc raw renklerden `RuhAppTheme.light()` temasına geçirildi
-   - token bridge dışı raw Flutter color kullanımı fail-closed CI kapısına bağlandı
-2. **2.0x accessibility + critical semantics / RC-1441**
-   - Araçlar, Kayıtlar, Profil→Ayarlar→PDF 2.0x text-scale regression'a alındı
-   - Numeroloji metric/value semantics, Professional PDF oluştur/paylaş ve Backup oluştur/paylaş/seç action'ları Semantics + 48dp testlerine bağlandı
-3. **MASTER-aware accessibility evidence audit**
-   - dört UI accessibility evidence sözleşmesi exact `RC-1441` sahipliğinde kilitlendi
-4. **Native full-backup sharing / RC-1300 + RC-1301**
-   - gerçek Backup ekranına `Yedeği Paylaş` eklendi
-   - canonical `ACTION-BACKUP-SHARE` runtime extension + binding kayıtları eklendi
-   - native share application boundary çağrısı, `.ruhcode.zip` dosya adı ve cancellation state widget regression'a bağlandı
-   - backup action validator artık create/share/restore üçlüsünü denetliyor
-   - exact RC-1300/1301 semantic evidence validator Requirements CI'a eklendi
+1. **Backup restore preview / RC-0832→RC-0839**
+   - valid backup preview üzerinden profil, danışan, danışmanlık, günlük ve hesaplama sayımları korunuyor
+   - `Birleştir` ve `Değiştir` gerçek runtime action olarak ayrıldı
+2. **Interaction contract / RC-1440**
+   - `ACTION-BACKUP-RESTORE-MERGE` ve `ACTION-BACKUP-RESTORE-REPLACE` canonical runtime registry + binding manifestine eklendi
+   - merge/replace gerçek `BackupImportMode` çağrılarına bağlı
+3. **Accessibility / RC-1441**
+   - merge/replace explicit Semantics button label taşıyor
+   - minimum 48dp touch target var
+   - deterministic focus order merge → replace olarak `OrderedTraversalPolicy` + `NumericFocusOrder` ile kilitli
+   - valid-preview widget regression bu sözleşmeyi test ediyor
+4. **CI / evidence gate**
+   - MASTER-aware restore-preview evidence + structural validator eklendi
+   - Backup workflow artık runtime action extension registry değişikliklerinde de tetikleniyor
+   - Requirements Contract restore-preview semantic/action validator’ını da çalıştırıyor
 
 ## Validation limitation
 
-Exact latest commit için GitHub combined-status yine `statuses=[]` döndürdü. Actions REST run query connector politikası tarafından reddedildi. Bu nedenle `RC-1441`, `RC-1300`, `RC-1301` DONE yapılmadı.
+Workflow-target commit `330a9cc307afce51f2bf22a067975ea5c634237a` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için ilgili RC’ler DONE yapılmadı.
 
 ## Next safe work
 
-- valid backup preview fixture üzerinden merge/replace action Semantics + 48dp/focus coverage ekle
 - remaining requirement-bearing evidence ailelerini MASTER-aware semantic audit'e al
 - approved font gerektirmeyen PDF structural/page/parity regresyonlarını genişlet
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout release proof remain open blockers
