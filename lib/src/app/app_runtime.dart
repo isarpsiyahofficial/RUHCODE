@@ -1,3 +1,12 @@
+import 'dart:io';
+
+import 'package:path/path.dart' as p;
+
+import '../backup/backup_application_service.dart';
+import '../backup/backup_import_coordinator.dart';
+import '../backup/backup_platform_gateway.dart';
+import '../backup/local_database_backup_exporter.dart';
+import '../backup/local_database_backup_import_store.dart';
 import '../data/local/core_repositories.dart';
 import '../data/local/sqflite_local_database.dart';
 import '../entitlements/entitlement_service.dart';
@@ -14,6 +23,7 @@ final class RuhCodeRuntime {
     required this.professionalRepositories,
     required this.entitlements,
     required this.featureAccess,
+    required this.backupActions,
     required this.startupOwnershipSync,
   });
 
@@ -22,6 +32,7 @@ final class RuhCodeRuntime {
   final ProfessionalRepositoryBundle professionalRepositories;
   final EntitlementService entitlements;
   final FeatureAccessGuard featureAccess;
+  final BackupApplicationActions backupActions;
 
   /// Best-effort Google Play ownership refresh performed during startup.
   ///
@@ -55,6 +66,22 @@ final class RuhCodeRuntime {
       core: coreRepositories,
     );
 
+    final backupExporter = LocalDatabaseBackupExporter(database: database);
+    final backupImportStore = LocalDatabaseBackupImportStore(
+      database: database,
+      snapshotDirectory: Directory(
+        p.join(
+          p.dirname(database.openedDatabasePath),
+          'ruh_code_backup_safety_snapshots',
+        ),
+      ),
+    );
+    final backupActions = BackupApplicationService(
+      packageSource: LocalDatabaseBackupPackageSource(backupExporter),
+      platformGateway: const NativeBackupPlatformGateway(),
+      importCoordinator: BackupImportCoordinator(store: backupImportStore),
+    );
+
     final ownershipSynchronizer = GooglePlayLifetimeOwnershipSynchronizer(
       query: lifetimeOwnershipQuery ?? const GooglePlayLifetimeOwnershipQuery(),
       cache: ownershipCache,
@@ -76,6 +103,7 @@ final class RuhCodeRuntime {
       professionalRepositories: professionalRepositories,
       entitlements: entitlementService,
       featureAccess: featureAccess,
+      backupActions: backupActions,
       startupOwnershipSync: startupOwnershipSync,
     );
   }
