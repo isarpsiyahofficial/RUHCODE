@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../../lib/src/backup/backup_application_service.dart';
 import '../../../lib/src/backup/backup_import_coordinator.dart';
+import '../../../lib/src/backup/backup_package_codec.dart';
+import '../../../lib/src/backup/backup_package_manifest.dart';
 import '../../../lib/src/backup/backup_service.dart';
 import '../../../lib/src/domain/models/core_models.dart';
 import '../../../lib/src/entitlements/entitlement_service.dart';
@@ -21,8 +23,38 @@ final class _AllowAllEntitlements implements EntitlementService {
       FeatureEntitlement(featureId: featureId, tier: EntitlementTier.pro);
 }
 
+BackupRestoreSelection _validSelection() {
+  return BackupRestoreSelection(
+    fileName: 'fixture.ruhcode.zip',
+    preview: BackupImportPreview(
+      manifest: BackupPackageManifestV1(
+        schemaVersion: 1,
+        appVersion: '0.1.0+1',
+        engineVersion: 'ruh-core.v1',
+        exportedAtUtc: DateTime.utc(2026, 8, 22),
+        localeTag: 'tr',
+        files: const [],
+      ),
+      rowsByTable: const {},
+      recordCounts: const {
+        'profiles.csv': 2,
+        'clients.csv': 3,
+        'consultations.csv': 4,
+        'journal_entries.csv': 5,
+        'calculations.csv': 6,
+      },
+      issues: const [],
+    ),
+  );
+}
+
 final class _FakeBackupActions implements BackupApplicationActions {
   BackupUserOperationStatus saveStatus = BackupUserOperationStatus.cancelled;
+  BackupPickResult pickResult = const BackupPickResult(
+    status: BackupUserOperationStatus.cancelled,
+  );
+  Object? applyError;
+  BackupImportMode? appliedMode;
   String? suggestedFileName;
   String? appVersion;
   String? engineVersion;
@@ -64,15 +96,21 @@ final class _FakeBackupActions implements BackupApplicationActions {
   }
 
   @override
-  Future<BackupPickResult> pickAndPreviewRestore() async =>
-      const BackupPickResult(status: BackupUserOperationStatus.cancelled);
+  Future<BackupPickResult> pickAndPreviewRestore() async => pickResult;
 
   @override
   Future<BackupImportResult> applyRestore({
     required BackupRestoreSelection selection,
     required BackupImportMode mode,
-  }) {
-    throw UnimplementedError();
+  }) async {
+    final error = applyError;
+    if (error != null) throw error;
+    appliedMode = mode;
+    return BackupImportResult(
+      mode: mode,
+      importedRecordCount: selection.preview.totalRecords,
+      safetySnapshotCreated: mode == BackupImportMode.replace,
+    );
   }
 }
 
@@ -87,8 +125,8 @@ Widget _app(_FakeBackupActions backup, {Locale locale = const Locale('tr')}) {
   );
 }
 
-Future<void> _openBackupPage(WidgetTester tester, {bool english = false}) async {
-  await tester.tap(find.text(english ? 'Profil' : 'Profil'));
+Future<void> _openBackupPage(WidgetTester tester) async {
+  await tester.tap(find.text('Profil'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Ayarlar'));
   await tester.pumpAndSettle();
@@ -139,6 +177,51 @@ void main() {
     expect(find.text('İşlem iptal edildi. Verilerinde değişiklik yapılmadı.'), findsOneWidget);
     expect(find.text('Mevcut Verilerle Birleştir'), findsNothing);
     expect(find.text('Mevcut Verileri Değiştir'), findsNothing);
+  });
+
+  testWidgets('valid preview exposes the five required record counts before mutation', (tester) async {
+    final backup = _FakeBackupActions()
+      ..pickResult = BackupPickResult(
+        status: BackupUserOperationStatus.completed,
+        selection: _validSelection(),
+      );
+    await tester.pumpWidget(_app(backup));
+
+    await _openBackupPage(tester);
+    await tester.tap(find.text('Yedek Dosyası Seç'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Profiller'), findsOneWidget);
+    expect(find.text('Danışanlar'), findsOneWidget);
+    expect(find.text('Danışmanlıklar'), findsOneWidget);
+    expect(find.text('Günlük Kayıtları'), findsOneWidget);
+    expect(find.text('Hesaplamalar'), findsOneWidget);
+    expect(find.text('Mevcut Verilerle Birleştir'), findsOneWidget);
+    expect(find.text('Mevcut Verileri Değiştir'), findsOneWidget);
+    expect(backup.appliedMode, isNull);
+  });
+
+  testWidgets('failed replace rollback surfaces critical integrity state', (tester) async {
+    final backup = _FakeBackupActions()
+      ..pickResult = BackupPickResult(
+        status: BackupUserOperationStatus.completed,
+        selection: _validSelection(),
+      )
+      ..applyError = BackupRestoreException(
+        cause: StateError('replace failed'),
+        rollbackRestored: false,
+        rollbackFailure: StateError('snapshot restore failed'),
+      );
+    await tester.pumpWidget(_app(backup));
+
+    await _openBackupPage(tester);
+    await tester.tap(find.text('Yedek Dosyası Seç'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mevcut Verileri Değiştir'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Veri bütünlüğü kontrol edilmeli'), findsOneWidget);
+    expect(find.textContaining('Veriler korundu'), findsNothing);
   });
 
   testWidgets('English locale uses the independent English backup copy', (tester) async {
