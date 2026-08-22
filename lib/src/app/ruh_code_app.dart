@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../backup/backup_application_service.dart';
 import '../entitlements/feature_access_guard.dart';
 import '../ui/navigation/main_navigation_shell.dart';
 
@@ -7,9 +8,11 @@ class RuhCodeApp extends StatelessWidget {
   const RuhCodeApp({
     super.key,
     required this.featureAccess,
+    required this.backupActions,
   });
 
   final FeatureAccessGuard featureAccess;
+  final BackupApplicationActions backupActions;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,10 @@ class RuhCodeApp extends StatelessWidget {
           surface: Colors.white,
         ),
       ),
-      home: MainNavigationShell(featureAccess: featureAccess),
+      home: MainNavigationShell(
+        featureAccess: featureAccess,
+        backupActions: backupActions,
+      ),
     );
   }
 }
