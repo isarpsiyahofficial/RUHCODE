@@ -52,10 +52,7 @@ def main() -> None:
             "BackupImportCoordinator(store: backupImportStore)",
         ),
     )
-    require(
-        "lib/main.dart",
-        ("backupActions: runtime.backupActions",),
-    )
+    require("lib/main.dart", ("backupActions: runtime.backupActions",))
     require(
         "lib/src/ui/navigation/main_navigation_shell.dart",
         (
@@ -69,13 +66,23 @@ def main() -> None:
         (
             "RuhActionIds.backupExport",
             "RuhActionIds.backupImport",
-            "Tam Yedek Oluştur",
-            "Yedekten Geri Yükle",
-            "if (!selection.preview.valid) return;",
-            "BackupRestoreException",
-            "rollbackRestored",
-            "güvenlik kopyasından geri getirildi",
-            "Mevcut veriler değiştirilmedi",
+            "backupUiCopy[_ruhLocale]!",
+            "phaseForSaveResult(result)",
+            "stateForPickResult(result)",
+            "if (selection == null || !selection.preview.valid) return;",
+            "phaseForRestoreError(error)",
+            "RuhCodeBuildMetadata.appVersion",
+            "RuhCodeBuildMetadata.engineVersion",
+        ),
+    )
+    require(
+        "lib/src/ui/backup/backup_ui_contract.dart",
+        (
+            "BackupUiPhase.rollbackRestored",
+            "BackupUiPhase.rollbackFailed",
+            "veri bütünlüğü kontrol edilmeli",
+            "Data integrity must be checked",
+            "? BackupUiPhase.rollbackRestored\n        : BackupUiPhase.rollbackFailed",
         ),
     )
 
@@ -94,7 +101,10 @@ def main() -> None:
         if actual != values or row["status"] != "IMPLEMENTED":
             fail(f"runtime binding drift for {action_id}: {row}")
 
-    print("Runtime backup wiring OK: SQLite export/import, durable snapshot, native gateway and Settings actions are connected.")
+    print(
+        "Runtime backup wiring OK: SQLite export/import, durable snapshot, native gateway, "
+        "TR/EN state contract and Settings actions are connected."
+    )
 
 
 if __name__ == "__main__":
