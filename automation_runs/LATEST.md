@@ -1,41 +1,42 @@
 # Ruh Code — Latest Automation Checkpoint
 
-Latest completed source-level work:
+Latest source-level checkpoint:
 
-1. `automation_runs/2026-08-22_0054_pdf_policy_tarot_backup.md`
-   - PDF action registry now matches canonical product policy: example PDF preview is FREE; professional PDF generation/export/share remains PRO
-   - explicit `PDF Entitlement Contract` validator/workflow added so registry and Feature Catalog cannot silently drift again
-   - standalone `tarot_cards.csv` added for RC-0788 with session foreign key, position index, card ID and locale-independent upright/reversed orientation IDs
-   - new schema-v1 writers always emit `tarot_cards.csv`
-   - older schema-v1 packages that predate the additive member remain readable and materialize an empty tarot-card table
-   - schema/package tests cover tarot_cards presence, session FK, orientation enum and old-v1 missing-member compatibility
-   - full SQLite portable backup fixture now contains 15 non-empty logical tables, including a real tarot card linked to its tarot session
-   - schema/full-lifecycle evidence and structural validators updated; semantic evidence traceability now owns and verifies literal MASTER RC-0788
+`automation_runs/2026-08-22_0254_pdf_runtime_semantic_traceability.md`
 
-Latest relevant source commits:
-- PDF registry policy correction: `bae8b2e64d4000cec99d58fa4f0e88c64871643f`
-- PDF entitlement structural validator: `b3a5a85be52564d27a7489ee7ab80781377c4a00`
-- PDF entitlement CI gate: `2b3dcab2235104d1a891836c5865c007c54a5e2b`
-- `tarot_cards.csv` schema: `b1e9648630f398c3462c4beaaca17a182215e105`
-- schema-v1 additive compatibility reader: `08907e8af38bcb7d41629418a2900f9294019bf4`
-- backup schema tests: `743b9f3043b367210ef382b1f297d8cb84dabf09`
-- legacy current-package compatibility test: `3aecb130bf4c13891b91725b9bdf8cdd825b5513`
-- schema evidence RC-0788 claim: `a0e65047bdc0a6f151adb0bce21d90d10134c748`
-- semantic traceability RC-0788 extension: `fbe9fbfdf71f44de9947799304a8a5be23c5f20c`
-- 15-table non-empty SQLite lifecycle fixture: `fc14a56000fb3a2613332148276a6758301f2c0a`
-- full-lifecycle evidence/validator: `89578d6795dded5ad285d297733f59e19092fc45`, `2396707c7555b33ac68639695e2024d3263216c0`
-- checkpoint: `f7f4ea3a93eb3c006651b3ea4bf1828a9b69cccd`
+## Bu turda ilerleyen ana bloklar
 
-Validation limitation:
-- GitHub combined-status still exposes no individual statuses for the latest exact source commit (`statuses=[]`).
-- No SUCCESS is claimed and no affected RC is promoted to DONE solely from source-level work.
+1. **Settings → PDF runtime**
+   - Profil → Ayarlar artık gerçek Settings ekranına gider.
+   - `PDF Raporları` gerçek runtime route'una bağlıdır.
+   - FREE `Örnek PDF Önizle` canonical `pdf.sample_preview` feature ID + `FeatureAccessGuard` kullanır.
+   - PRO `Profesyonel PDF Oluştur` canonical `pdf.professional_export` feature ID + aynı guard kullanır.
+   - Demo preview açıkça `Örnek Kişi — Demo Profil` olarak işaretlenir ve gerçek kullanıcı/danışan/kayıt verisi içermediğini belirtir.
+   - Runtime action registry/bindings ve Free/PRO widget route testleri genişletildi.
 
-Next safe work:
-- bind the FREE sample-PDF hub/preview and PRO professional PDF builder to real Settings runtime UI with canonical ACTION/Feature IDs
-- continue semantic RC ownership audit for evidence families not yet centrally guarded
-- verify Backup CSV and PDF Entitlement workflows when exact checks become visible; fix any red result in the same run
-- continue production UI bindings with canonical ACTION/Feature IDs and approved references when available
-- retain physical astronomy/EOP/ephemeris/Lahiri, GeoNames proof, 8,036 editorial daily messages, approved UI references, production PDF fonts and clean-checkout lockfile as explicit blockers
-- promote RC state only with actual workflow/test/evidence proof
+2. **PDF/UI CI sözleşmeleri**
+   - UI Contracts `lib/src/ui/pdf/**` değişikliklerini kapsar.
+   - PDF Entitlement Contract runtime bindings + Flutter Free/PRO route matrisini çalıştıracak şekilde genişletildi.
+   - Feature Entitlement Contract runtime PDF UI/policy doğrulamasını kapsar.
+   - PDF policy validator demo-data isolation marker'larını ve exact runtime bindingleri zorunlu kılar.
+
+3. **Semantic RC ownership audit**
+   - Terminology evidence'daki yanlış `RC-0539/0540/0541` sahiplikleri kaldırıldı; gerçek sahiplik `RC-1059→1065` olarak kilitlendi.
+   - Interpretation evidence aileleri merkezi semantic validator'a eklendi.
+   - Western astronomy evidence'larında eski TODO sıra numaralarının RC sanıldığı yanlış `RC-02xx` sahiplikleri temizlendi.
+   - ASC/MC, aspect grid, dignity, natal aspect, distribution, placement, Placidus ve Porphyry evidence'ları gerçek MASTER maddelerine indirildi ve merkezi validator'a bağlandı.
+
+## Validation limitation
+- Exact HEAD için GitHub combined status yine `statuses=[]` gösterdi.
+- Container üzerinden clean clone denemesi `github.com` DNS çözümleme hatası nedeniyle çalışmadı.
+- Bu nedenle CI SUCCESS veya affected RC DONE iddiası yapılmadı.
+
+## Next safe work
+- semantic RC audit'i kalan requirement-bearing evidence dosyalarına genişlet
+- professional PDF builder'ı gerçek guarded PDF application service'e bağla
+- Settings backup aksiyonlarını mevcut BackupApplicationService'e bağla ve cancel/success/invalid-preview/rollback UI state'lerini gerçek runtime'a taşı
+- APPROVED UI references geldiğinde runtime UI'yi görsel golden sözleşmesine bağla
+- Actions görünür olduğunda exact PDF/UI/Requirements/Entitlement run'larını doğrula ve kırmızıyı aynı turda düzelt
+- fiziksel ephemeris/EOP/Lahiri/GeoNames, 8.036 editoryal günlük mesaj, APPROVED UI reference/hash, production Unicode PDF fontları ve clean-checkout lockfile blocker'larını açık tut
 
 **FINAL: NO.**
