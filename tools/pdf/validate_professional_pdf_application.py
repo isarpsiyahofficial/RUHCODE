@@ -16,6 +16,7 @@ GUARD = ROOT / 'lib/src/pdf/guarded_pdf_service.dart'
 UI_ACTIONS = ROOT / 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
 UI_PAGE = ROOT / 'lib/src/ui/pdf/pdf_reports_pages.dart'
 ACTION_IDS = ROOT / 'lib/src/ui/actions/ruh_action_ids.dart'
+RUNTIME_BINDINGS = ROOT / 'ui/runtime_action_bindings.csv'
 TEST = ROOT / 'test/pdf/professional_pdf_application_service_test.dart'
 SOURCE_TEST = ROOT / 'test/pdf/persisted_calculation_pdf_source_test.dart'
 ROUTER_TEST = ROOT / 'test/pdf/persisted_calculation_pdf_router_test.dart'
@@ -33,8 +34,8 @@ def require(condition: bool, message: str) -> None:
 def main() -> None:
     required_paths = (
         SERVICE, PERSISTED_SOURCE, ROUTER, DELIVERY, PLATFORM, RUNTIME, MAIN,
-        GUARD, UI_ACTIONS, UI_PAGE, ACTION_IDS, TEST, SOURCE_TEST, ROUTER_TEST,
-        DELIVERY_TEST, WIDGET_TEST, EVIDENCE, MASTER,
+        GUARD, UI_ACTIONS, UI_PAGE, ACTION_IDS, RUNTIME_BINDINGS, TEST,
+        SOURCE_TEST, ROUTER_TEST, DELIVERY_TEST, WIDGET_TEST, EVIDENCE, MASTER,
     )
     for path in required_paths:
         require(path.exists(), f'missing required file: {path.relative_to(ROOT)}')
@@ -50,6 +51,7 @@ def main() -> None:
     ui_actions = UI_ACTIONS.read_text(encoding='utf-8')
     ui_page = UI_PAGE.read_text(encoding='utf-8')
     action_ids = ACTION_IDS.read_text(encoding='utf-8')
+    runtime_bindings = RUNTIME_BINDINGS.read_text(encoding='utf-8')
     test = TEST.read_text(encoding='utf-8')
     source_test = SOURCE_TEST.read_text(encoding='utf-8')
     router_test = ROUTER_TEST.read_text(encoding='utf-8')
@@ -111,8 +113,10 @@ def main() -> None:
 
     for marker in (
         'ProfessionalPdfBuildActions', 'ProfessionalPdfApplicationActions',
+        'ProfessionalPdfDeliveryActions', 'ProfessionalPdfDeliveryUiActions',
         'ProfessionalPdfRecordActions', 'ProfessionalPdfCatalogActions',
-        'ProfessionalPdfUiRuntimeBindings', 'service.build(',
+        'ProfessionalPdfUiRuntimeBindings', 'service.build(', 'service.share(',
+        'ProfessionalPdfUiDeliveryOutcome.cancelled',
     ):
         require(marker in ui_actions, f'missing PDF UI action adapter marker: {marker}')
 
@@ -123,12 +127,23 @@ def main() -> None:
     )
 
     require("static const pdfCreate = 'ACTION-PDF-PREVIEW-CREATE';" in action_ids, 'canonical PDF create action ID is missing')
+    require("static const pdfShare = 'ACTION-PDF-PREVIEW-SHARE';" in action_ids, 'canonical PDF share action ID is missing')
     require('ValueKey(RuhActionIds.pdfCreate)' in ui_page, 'professional builder create control must use canonical action ID')
+    require('ValueKey(RuhActionIds.pdfShare)' in ui_page, 'professional builder share control must use canonical action ID')
     require('ProfessionalPdfBuilderPage(' in ui_page and 'records: professionalRecords' in ui_page, 'PDF hub must pass explicit record actions when supplied')
     require('ProfessionalPdfUiRuntimeBindings.records' in ui_page, 'builder must fall back to the production runtime record catalog')
+    require('ProfessionalPdfUiRuntimeBindings.build' in ui_page, 'builder must support trusted runtime build binding')
+    require('ProfessionalPdfUiRuntimeBindings.delivery' in ui_page, 'builder must support trusted runtime delivery binding')
     require("ValueKey('professional-pdf-record-selector')" in ui_page, 'typed saved-calculation selector is missing')
     require('Kayıt kimliği' not in ui_page, 'raw record ID input must not return to professional PDF builder')
     require('PDF üretim kaynağı henüz production runtime’a bağlanmadı.' in ui_page, 'builder must fail honestly when production build actions are absent')
+    require("ProfessionalPdfUiDeliveryOutcome.cancelled => 'Paylaşım iptal edildi.'" in ui_page, 'share dismissal must remain a normal UI cancellation state')
+
+    for marker in (
+        'ACTION-PDF-PREVIEW-CREATE,pdfCreate',
+        'ACTION-PDF-PREVIEW-SHARE,pdfShare',
+    ):
+        require(marker in runtime_bindings, f'missing canonical runtime PDF binding: {marker}')
 
     for marker in (
         'FREE user cannot execute professional PDF delegate',
@@ -161,9 +176,11 @@ def main() -> None:
 
     for marker in (
         'builder invokes application actions with typed selected record and section order',
+        'verified PDF exposes canonical share action when delivery is bound',
+        'dismissed PDF share is a normal cancellation state',
         'builder never fakes output when production build actions are absent',
         'builder does not expose raw record ID field',
-        'professional-pdf-record-selector', 'RuhActionIds.pdfCreate',
+        'professional-pdf-record-selector', 'RuhActionIds.pdfCreate', 'RuhActionIds.pdfShare',
         "expect(find.text('PDF doğrulandı'), findsNothing)",
     ):
         require(marker in widget_test, f'missing professional PDF widget regression marker: {marker}')
