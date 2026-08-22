@@ -37,6 +37,8 @@ abstract final class RuhActionIds {
   static const backupExport = 'ACTION-BACKUP-EXPORT';
   static const backupShare = 'ACTION-BACKUP-SHARE';
   static const backupImport = 'ACTION-BACKUP-IMPORT';
+  static const backupRestoreMerge = 'ACTION-BACKUP-RESTORE-MERGE';
+  static const backupRestoreReplace = 'ACTION-BACKUP-RESTORE-REPLACE';
 
   static const allRuntimeBindings = <String>{
     navigationToday,
@@ -64,5 +66,7 @@ abstract final class RuhActionIds {
     backupExport,
     backupShare,
     backupImport,
+    backupRestoreMerge,
+    backupRestoreReplace,
   };
 }
