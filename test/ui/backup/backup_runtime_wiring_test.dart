@@ -76,9 +76,10 @@ final class _FakeBackupActions implements BackupApplicationActions {
   }
 }
 
-Widget _app(_FakeBackupActions backup) {
+Widget _app(_FakeBackupActions backup, {Locale locale = const Locale('tr')}) {
   const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
   return MaterialApp(
+    locale: locale,
     home: MainNavigationShell(
       featureAccess: guard,
       backupActions: backup,
@@ -86,8 +87,8 @@ Widget _app(_FakeBackupActions backup) {
   );
 }
 
-Future<void> _openBackupPage(WidgetTester tester) async {
-  await tester.tap(find.text('Profil'));
+Future<void> _openBackupPage(WidgetTester tester, {bool english = false}) async {
+  await tester.tap(find.text(english ? 'Profil' : 'Profil'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Ayarlar'));
   await tester.pumpAndSettle();
@@ -105,6 +106,8 @@ void main() {
     expect(find.widgetWithText(AppBar, 'Yedekleme ve Aktarma'), findsOneWidget);
     expect(find.byKey(const ValueKey(RuhActionIds.backupExport)), findsOneWidget);
     expect(find.byKey(const ValueKey(RuhActionIds.backupImport)), findsOneWidget);
+    expect(find.text('Tam Yedek Oluştur'), findsOneWidget);
+    expect(find.text('Yedek Dosyası Seç'), findsOneWidget);
     expect(find.text('CSV Dışa Aktar'), findsNothing);
     expect(find.text('CSV İçe Aktar'), findsNothing);
   });
@@ -117,7 +120,7 @@ void main() {
     await tester.tap(find.text('Tam Yedek Oluştur'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Yedekleme iptal edildi.'), findsOneWidget);
+    expect(find.text('İşlem iptal edildi. Verilerinde değişiklik yapılmadı.'), findsOneWidget);
     expect(backup.suggestedFileName, endsWith('.ruhcode.zip'));
     expect(backup.appVersion, '0.1.0+1');
     expect(backup.engineVersion, 'ruh-core.v1');
@@ -130,11 +133,23 @@ void main() {
     await tester.pumpWidget(_app(backup));
 
     await _openBackupPage(tester);
-    await tester.tap(find.text('Yedekten Geri Yükle'));
+    await tester.tap(find.text('Yedek Dosyası Seç'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Yedek seçimi iptal edildi.'), findsOneWidget);
-    expect(find.text('Birleştir'), findsNothing);
-    expect(find.text('Mevcut Veriyi Değiştir'), findsNothing);
+    expect(find.text('İşlem iptal edildi. Verilerinde değişiklik yapılmadı.'), findsOneWidget);
+    expect(find.text('Mevcut Verilerle Birleştir'), findsNothing);
+    expect(find.text('Mevcut Verileri Değiştir'), findsNothing);
+  });
+
+  testWidgets('English locale uses the independent English backup copy', (tester) async {
+    final backup = _FakeBackupActions();
+    await tester.pumpWidget(_app(backup, locale: const Locale('en')));
+
+    await _openBackupPage(tester);
+
+    expect(find.widgetWithText(AppBar, 'Backup & Transfer'), findsOneWidget);
+    expect(find.text('Create Full Backup'), findsOneWidget);
+    expect(find.text('Choose Backup File'), findsOneWidget);
+    expect(find.text('Tam Yedek Oluştur'), findsNothing);
   });
 }
