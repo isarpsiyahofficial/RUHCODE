@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "ui" / "action_registry.csv"
 RUNTIME_BINDINGS = ROOT / "ui" / "runtime_action_bindings.csv"
 FEATURE_CATALOG = ROOT / "lib" / "src" / "entitlements" / "feature_catalog.dart"
+PDF_RUNTIME_PAGE = ROOT / "lib" / "src" / "ui" / "pdf" / "pdf_reports_pages.dart"
 
 EXPECTED_ACTION_ACCESS = {
     "ACTION-SETTINGS-PDF": "FREE",
@@ -79,9 +80,22 @@ def main() -> None:
         if fragment not in source:
             fail(f"feature catalog missing canonical fragment: {fragment!r}")
 
+    runtime_source = PDF_RUNTIME_PAGE.read_text(encoding="utf-8")
+    runtime_fragments = (
+        "featureId: RuhFeatureIds.pdfSamplePreview",
+        "featureId: RuhFeatureIds.pdfProfessionalExport",
+        "Örnek Kişi — Demo Profil",
+        "kişisel veri içermez",
+        "Demo içerik gerçek bir kullanıcı, danışan veya kayıtla ilişkilendirilmez.",
+        "Profesyonel PDF oluşturma PRO kullanıcılar içindir.",
+    )
+    for fragment in runtime_fragments:
+        if fragment not in runtime_source:
+            fail(f"runtime PDF UI missing data-isolation/access fragment: {fragment!r}")
+
     print(
         "PDF entitlement contract OK: sample preview FREE, professional generation/export PRO, "
-        "and runtime Settings/preview/build bindings are canonical."
+        "runtime bindings canonical, and demo preview explicitly isolated from real user data."
     )
 
 
