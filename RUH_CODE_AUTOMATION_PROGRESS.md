@@ -6,10 +6,11 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 
 - MASTER: `RC-0001 → RC-1442`.
 - Requirement traceability altyapısı mevcut; kanıtsız DONE yasak.
+- `requirement_state.csv` sparse override dosyasıdır; 1.442 satırlık matrix `build_requirement_matrix.py` ile şartnameden üretilir.
 - Ana bilgi mimarisi: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Araçlar: Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim; Astroloji altında Batı / Vedik / Çin / BaZi / Gezegen Saatleri ayrı.
 - Canonical SCREEN-ID / ACTION-ID / Feature-ID sözleşmeleri mevcut.
-- APPROVED final UI PNG/reference seti henüz tamamlanmadı; visual regression final kapısı bu nedenle açık.
+- APPROVED final UI PNG/reference seti henüz tamamlanmadı; visual regression final kapısı açık.
 
 ## DailySnapshot / içerik
 
@@ -28,6 +29,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Strict EphemerisProvider / EarthOrientationProvider sözleşmeleri.
 - [x] Solar events + Gezegen Saatleri.
 - [x] Western Whole Sign / Equal / Porphyry / strict Placidus, ASC/MC, placements, aspects, orbs, elements, modalities, aspect-grid, classical dignity/rulership.
+- [x] Western astronomy evidence RC sahiplikleri MASTER ile yeniden denetlendi; yanlış TODO-index→RC eşlemeleri temizlendi.
 - [x] Numeroloji: Pythagorean, Chaldean, Lo Shu, cycles, Pinnacles/Challenges, Balance/Karmic Lessons/Hidden Passion, Karmic Debt, compatibility, canonical snapshot/fingerprint, UI/PDF parity source-level.
 - [x] BaZi primitives: Heavenly Stems, Earthly Branches, sexagenary cycle, Hidden Stems, Five Elements, Yin/Yang, Day Master, Ten Gods.
 - [ ] Fiziksel IERS EOP / offline ephemeris / Lahiri / GeoNames artifacts + checksums.
@@ -43,9 +45,11 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Professional client/preset ve PDF servis seviyesinde guard.
 - [x] Runtime Tools/Records route'ları canonical Feature ID kullanıyor.
 - [x] Çin basic FREE ve BaZi basic PRO drift'i giderildi.
-- [x] PDF policy netleştirildi: `pdf.sample_preview` FREE; `pdf.professional_export` PRO.
-- [x] `ui/action_registry.csv` PDF policy ile hizalandı: `PDF Raporları` hub FREE, `Örnek PDF Önizle` FREE, gerçek profesyonel üretim/paylaşım PRO.
-- [x] Ayrı `PDF Entitlement Contract` validator + CI workflow eklendi.
+- [x] PDF policy: `pdf.sample_preview` FREE; `pdf.professional_export` PRO.
+- [x] Settings → PDF Raporları → FREE preview / PRO builder gerçek runtime route'larına canonical ACTION/Feature ID ve `FeatureAccessGuard` ile bağlandı.
+- [x] Runtime action bindings ve Free/PRO widget route matrisi genişletildi.
+- [x] PDF Entitlement validator runtime bindingleri ve demo-data isolation marker'larını zorunlu kılıyor.
+- [x] UI / PDF Entitlement / Feature Entitlement workflow kapsamı `lib/src/ui/pdf/**` ve runtime route testlerini içeriyor.
 - [ ] Gerçek Play-distributed reinstall/device-change device proof.
 - [ ] Gerçek rewarded-ad SDK device proof.
 - [ ] Exact release-mode Free/PRO/temporary workflow görünür SUCCESS.
@@ -60,15 +64,13 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Native Save As / picker / share gateway ve application service.
 - [x] TR/EN backup UI state/copy contract; rollback sonucu typed.
 - [x] Legacy v0 migrator; unknown birth time midnight'e uydurulmuyor.
-- [x] Schema-v1 registry artık 15 logical CSV tablo içeriyor.
-- [x] `tarot_cards.csv` RC-0788 için standalone normalized tablo: `session_id → tarot_sessions.id`, `position_index`, `card_id`, `upright/reversed` orientation.
-- [x] Yeni writer `tarot_cards.csv` dosyasını her zaman üretir.
-- [x] Eski schema-v1 package dosyayı içermiyorsa geriye uyumlu biçimde explicit boş tarot-card tablosu materialize edilir; diğer eksik üyeler hata kalır.
-- [x] Full SQLite all-table lifecycle fixture artık 15/15 non-empty; tarot card gerçek session'a bağlı ve raw table equality restore sonrası karşılaştırılır.
-- [x] Backup schema/full-lifecycle evidence + validators ve semantic RC traceability RC-0788'e genişletildi.
-- [ ] Exact Backup CSV workflow SUCCESS görünür değil; RC-0788 dahil ilgili RC'ler DONE değil.
+- [x] Schema-v1 registry 15 logical CSV tablo içeriyor.
+- [x] `tarot_cards.csv` RC-0788 standalone normalized tablo.
+- [x] Eski schema-v1 package additive `tarot_cards.csv` eksikliğini boş tablo olarak materialize edebiliyor; diğer eksik üyeler hata kalıyor.
+- [x] Full SQLite all-table lifecycle fixture 15/15 non-empty.
+- [ ] Exact Backup CSV workflow SUCCESS görünür değil; ilgili RC'ler DONE değil.
 - [ ] Android gerçek cihaz save/open/share smoke testi.
-- [ ] Released historical backup fixture bulunduğunda gerçek fixture doğrulaması.
+- [ ] Released historical backup fixture doğrulaması.
 - [ ] `pubspec.lock` yalnız gerçek `flutter pub get` çözümlemesinden sonra commit edilmeli.
 
 ## Profesyonel PDF — source-level
@@ -77,8 +79,10 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] PDF output structural inspector + table chunking + page safety.
 - [x] Western vector geometry adapter source-level.
 - [x] Numerology canonical snapshot → PDF data parity source-level.
-- [x] Free sample preview ve PRO professional export ayrımı canonical feature + action registry seviyesinde kilitli.
-- [ ] Free sample PDF hub/preview ve PRO builder gerçek Settings runtime UI'a bağlanmalı.
+- [x] Free sample preview / PRO professional export policy canonical Feature Catalog + action registry seviyesinde kilitli.
+- [x] Free sample PDF hub/preview ve PRO builder gerçek Settings runtime UI'a bağlandı.
+- [x] Demo preview açıkça `Örnek Kişi — Demo Profil` ve gerçek kullanıcı/danışan/kayıt verisinden ayrılmış içerik olarak işaretlendi.
+- [ ] Runtime professional builder henüz gerçek guarded PDF application service'e bağlanmadı; route var olması export DONE değildir.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + approved glyph assets.
 - [ ] Vedik vector chart embedding; BaZi/Numerology production table renderers.
@@ -88,10 +92,13 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 ## Semantic evidence / UI quality
 
 - [x] Merkezi semantic evidence validator Numeroloji, BaZi, PDF, Backup ve Entitlement ailelerini denetliyor.
-- [x] Backup schema evidence artık literal MASTER `RC-0788 tarot_cards.csv` sahipliğini de kontrol ediyor.
+- [x] Terminology evidence'daki yanlış `RC-0539/0540/0541` sahiplikleri kaldırıldı; gerçek `RC-1059→1065` ile kilitlendi.
+- [x] Interpretation claim/quality evidence merkezi semantic ownership validator'a bağlandı.
+- [x] Western astronomy evidence aileleri semantic validator'a bağlandı; yanlış `RC-026x/027x` TODO-index kaymaları temizlendi.
+- [x] Backup schema evidence literal MASTER `RC-0788 tarot_cards.csv` sahipliğini kontrol ediyor.
 - [x] Runtime action bindings registry + Feature Catalog Free/PRO parity ile çaprazlanıyor.
 - [x] 48dp minimum touch target, Semantics labels, 2.0x critical navigation contract source-level.
-- [ ] Kalan evidence ailelerini semantic RC drift açısından taramaya devam et.
+- [ ] Requirement-bearing diğer evidence dosyalarını semantic RC drift açısından taramaya devam et.
 - [ ] APPROVED UI reference/hash seti olmadan UI visual DONE verme.
 
 ## Açık fiziksel / harici kanıt blocker'ları
@@ -105,33 +112,28 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [ ] Production Unicode PDF font binary + lisans/hash.
 - [ ] Clean-checkout lockfile/release build kanıtı.
 
-## Son tur — 2026-08-22 00:54
+## Son tur — 2026-08-22 02:54
 
-Checkpoint: `automation_runs/2026-08-22_0054_pdf_policy_tarot_backup.md`
+Checkpoint: `automation_runs/2026-08-22_0254_pdf_runtime_semantic_traceability.md`
 
-Öne çıkan commitler:
-- `bae8b2e64d4000cec99d58fa4f0e88c64871643f` PDF action Free/PRO policy düzeltmesi
-- `b3a5a85be52564d27a7489ee7ab80781377c4a00` PDF entitlement validator
-- `2b3dcab2235104d1a891836c5865c007c54a5e2b` PDF entitlement CI
-- `b1e9648630f398c3462c4beaaca17a182215e105` tarot_cards schema
-- `08907e8af38bcb7d41629418a2900f9294019bf4` schema-v1 additive compatibility reader
-- `743b9f3043b367210ef382b1f297d8cb84dabf09` backup schema tests
-- `3aecb130bf4c13891b91725b9bdf8cdd825b5513` old-v1 package compatibility test
-- `a0e65047bdc0a6f151adb0bce21d90d10134c748` RC-0788 evidence
-- `fbe9fbfdf71f44de9947799304a8a5be23c5f20c` semantic traceability extension
-- `fc14a56000fb3a2613332148276a6758301f2c0a` 15-table SQLite lifecycle fixture
-- `89578d6795dded5ad285d297733f59e19092fc45` lifecycle evidence update
-- `2396707c7555b33ac68639695e2024d3263216c0` lifecycle validator update
+Öne çıkan işler:
+- Settings PDF runtime wiring + canonical ACTION/Feature guards.
+- Free/PRO PDF widget route tests.
+- UI/PDF/Entitlement workflow kapsam genişletmesi.
+- Demo person/data isolation marker ve validator.
+- Terminology + interpretation semantic evidence audit.
+- Western astronomy evidence RC ownership audit ve toplu drift düzeltmesi.
 
-GitHub combined-status son exact source commit için yine `statuses=[]` döndürdü. SUCCESS uydurulmadı ve bu turdaki RC'ler DONE yapılmadı.
+GitHub combined-status exact HEAD için yine `statuses=[]` döndürdü. Container clean-clone denemesi de `github.com` DNS çözümleme hatasıyla başarısız oldu. SUCCESS uydurulmadı ve bu turdaki RC'ler DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. PDF sample preview FREE / professional builder PRO ayrımını gerçek Settings runtime UI ve canonical ACTION bindings'e bağla.
-2. Exact Backup CSV / PDF Entitlement workflow sonucu görünürse kırmızıları aynı turda düzelt.
-3. Kalan evidence ailelerinde semantic RC ownership drift taramasını sürdür.
-4. Blocker gerektirmeyen UI/backup/PDF/accessibility işlerini ilerlet.
-5. Requirement state'i yalnız görünür test/workflow/evidence kanıtıyla yükselt.
+1. Requirement-bearing kalan evidence dosyalarını semantic RC ownership audit'e al.
+2. Professional PDF builder'ı gerçek guarded PDF application service'e bağla.
+3. Settings backup aksiyonlarını mevcut `BackupApplicationService` ile gerçek runtime'a bağla; cancel/success/invalid-preview/rollback state'lerini göster.
+4. Exact Actions sonuçları görünürse Requirements/UI/PDF Entitlement/Feature Entitlement kırmızılarını aynı turda düzelt.
+5. Blocker gerektirmeyen UI/backup/PDF/accessibility işlerini ilerlet.
+6. Requirement state'i yalnız görünür test/workflow/evidence kanıtıyla yükselt.
 
 ## Final durumu
 
