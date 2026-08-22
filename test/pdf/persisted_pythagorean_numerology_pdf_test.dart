@@ -42,7 +42,8 @@ void main() {
       calculationType: original.calculationType,
       payload: <String, Object?>{
         ...original.payload,
-        PersistedPythagoreanNumerologyPdfContract.digestKey: '0' * 64,
+        PersistedPythagoreanNumerologyPdfContract.digestKey:
+            List<String>.filled(64, '0').join(),
       },
       createdAtUtc: original.createdAtUtc,
       manifest: original.manifest,
@@ -154,7 +155,15 @@ PersistedCalculationPdfSnapshot _snapshot() {
       'karmicLessons': <int>[2, 8],
       'hiddenPassions': <int>[1, 5],
       'valueFrequencies': <String, int>{
-        '1': 3, '2': 0, '3': 1, '4': 2, '5': 3, '6': 1, '7': 2, '8': 0, '9': 2,
+        '1': 3,
+        '2': 0,
+        '3': 1,
+        '4': 2,
+        '5': 3,
+        '6': 1,
+        '7': 2,
+        '8': 0,
+        '9': 2,
       },
     },
     'periods': <String, Object?>{
