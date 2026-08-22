@@ -1,0 +1,32 @@
+{
+  "id": "PDF-PERSISTED-PYTHAGOREAN-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirement_ids": ["RC-0875", "RC-0925", "RC-0964"],
+  "source_files": [
+    "lib/src/pdf/persisted_pythagorean_numerology_pdf.dart",
+    "lib/src/pdf/persisted_calculation_pdf_router.dart",
+    "lib/src/pdf/persisted_calculation_pdf_source.dart",
+    "lib/src/pdf/pdf_numerology_section.dart"
+  ],
+  "test_files": [
+    "test/pdf/persisted_pythagorean_numerology_pdf_test.dart",
+    "test/pdf/persisted_calculation_pdf_router_test.dart"
+  ],
+  "contracts": {
+    "calculation_type": "numerology.pythagorean",
+    "payload_schema": "ruhcode.numerology.pythagorean.snapshot.v1",
+    "recalculation_forbidden": true,
+    "canonical_snapshot_sha256_required": true,
+    "manifest_engine_version_must_match": true,
+    "unknown_or_tampered_payload_fails_closed": true,
+    "tr_en_labels_are_separate": true,
+    "local_renderer_only": true
+  },
+  "open_gates": [
+    "Exact Flutter test SUCCESS is not yet visible.",
+    "Approved production Unicode font artifact/license/SHA is still required before real PDF bytes are accepted as production-ready.",
+    "5/25/50+ real rendered-page and visual-regression evidence remains open.",
+    "The runtime router must register this handler only together with the approved production font provider."
+  ]
+}
