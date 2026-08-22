@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../backup/backup_application_service.dart';
 import '../../entitlements/feature_access_guard.dart';
 import '../../entitlements/feature_catalog.dart';
 import '../actions/ruh_action_ids.dart';
+import '../backup/backup_settings_page.dart';
 import '../numerology/numerology_screen.dart';
 import '../pdf/pdf_reports_pages.dart';
 
@@ -10,9 +12,11 @@ class MainNavigationShell extends StatefulWidget {
   const MainNavigationShell({
     super.key,
     required this.featureAccess,
+    this.backupActions,
   });
 
   final FeatureAccessGuard featureAccess;
+  final BackupApplicationActions? backupActions;
 
   @override
   State<MainNavigationShell> createState() => _MainNavigationShellState();
@@ -62,7 +66,10 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
       const _PlaceholderPage(title: 'Bugün'),
       _ToolsPage(featureAccess: widget.featureAccess),
       _RecordsPage(featureAccess: widget.featureAccess),
-      _ProfilePage(featureAccess: widget.featureAccess),
+      _ProfilePage(
+        featureAccess: widget.featureAccess,
+        backupActions: widget.backupActions,
+      ),
     ];
 
     return Scaffold(
@@ -383,9 +390,13 @@ class _RecordsPage extends StatelessWidget {
 }
 
 class _ProfilePage extends StatelessWidget {
-  const _ProfilePage({required this.featureAccess});
+  const _ProfilePage({
+    required this.featureAccess,
+    required this.backupActions,
+  });
 
   final FeatureAccessGuard featureAccess;
+  final BackupApplicationActions? backupActions;
 
   @override
   Widget build(BuildContext context) {
@@ -402,7 +413,10 @@ class _ProfilePage extends StatelessWidget {
             icon: Icons.settings_outlined,
             onTap: () => _pushPage(
               context,
-              _SettingsPage(featureAccess: featureAccess),
+              _SettingsPage(
+                featureAccess: featureAccess,
+                backupActions: backupActions,
+              ),
             ),
           ),
         ),
@@ -412,9 +426,13 @@ class _ProfilePage extends StatelessWidget {
 }
 
 class _SettingsPage extends StatelessWidget {
-  const _SettingsPage({required this.featureAccess});
+  const _SettingsPage({
+    required this.featureAccess,
+    required this.backupActions,
+  });
 
   final FeatureAccessGuard featureAccess;
+  final BackupApplicationActions? backupActions;
 
   @override
   Widget build(BuildContext context) {
@@ -423,6 +441,19 @@ class _SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          if (backupActions != null)
+            Card(
+              child: _ActionListTile(
+                actionId: RuhActionIds.settingsBackup,
+                title: 'Yedekleme ve Aktarma',
+                subtitle: 'Tam yedek oluştur veya doğrulanmış yedekten geri yükle',
+                icon: Icons.backup_outlined,
+                onTap: () => _pushPage(
+                  context,
+                  BackupSettingsPage(backupActions: backupActions!),
+                ),
+              ),
+            ),
           Card(
             child: _ActionListTile(
               actionId: RuhActionIds.settingsPdf,
