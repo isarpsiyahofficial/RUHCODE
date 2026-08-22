@@ -1,0 +1,29 @@
+{
+  "contract": "ruh-code-runtime-theme-token-bridge-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-1441"],
+  "sources": [
+    "ui/design_tokens.json",
+    "lib/src/ui/theme/ruh_design_tokens.dart",
+    "lib/src/app/ruh_code_app.dart"
+  ],
+  "validators": [
+    "tools/ui/validate_design_tokens.py",
+    "tools/ui/validate_runtime_theme_tokens.py"
+  ],
+  "requiredProperties": [
+    "the runtime Flutter palette is an exact bridge of the canonical machine-readable design tokens",
+    "RuhCodeApp consumes one centralized RuhAppTheme instead of recreating raw palette values",
+    "runtime and rendered UI sources may not bypass the token bridge with Color(0x...), Color.fromARGB/fromRGBO or Material Colors.* literals",
+    "radius, spacing and minimum touch-target constants in the Flutter bridge remain synchronized with the canonical contract",
+    "gold and success remain accent tokens rather than ad-hoc normal-text colors on light surfaces"
+  ],
+  "remainingBeforeDone": [
+    "run rendered-widget contrast verification for every required UI state",
+    "run real-device screen-reader traversal",
+    "run 2.0x text-scale overflow regression on every required screen state",
+    "obtain approved UI reference images and visual-regression evidence",
+    "obtain exact visible CI success for this contract"
+  ]
+}
