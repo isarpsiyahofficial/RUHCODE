@@ -2,40 +2,38 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-22_0654_persisted_numerology_pdf_handler.md`
+`automation_runs/2026-08-22_0853_pdf_share_ui_contract.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Persisted Pythagorean Numerology → professional PDF**
-   - exact `numerology.pythagorean` handler
-   - canonical snapshot JSON tüketimi; yeniden hesaplama yok
-   - persisted SHA-256 tamper kontrolü
-   - fingerprint schema/engine/version doğrulaması
-   - CalculationManifest engine-version parity
-2. **Fail-closed production contract**
-   - yanlış calculation type reddediliyor
-   - tampered snapshot render öncesi reddediliyor
-   - manifest/version drift render öncesi reddediliyor
-3. **PDF projection**
-   - canonical profile / extended-name / Pinnacles-Challenges / Personal Cycles değerleri doğrudan PDF metric satırlarına
-   - TR/EN etiket sözleşmesi ayrı
-   - mevcut local PDF renderer zinciri kullanılıyor
-4. **Kanıt zinciri**
-   - regression tests
-   - evidence JSON
-   - structural validator
-   - ayrı GitHub Actions contract
+1. **Professional PDF native delivery → UI boundary**
+   - typed `ProfessionalPdfDeliveryActions`
+   - verified application/delivery service zinciri korunuyor
+   - exact selected record + exact section order share katmanına taşınıyor
+   - user-dismissed share normal cancellation; fake success/error yok
+2. **Builder interaction contract**
+   - verified result sonrası delivery gerçekten bağlıysa canonical share control
+   - 48dp minimum target + Semantics label
+   - runtime build/delivery binding fallback'leri
+3. **Regression/evidence/CI**
+   - share success + dismissal widget regressions
+   - UI delivery adapter safe filename/exact record test
+   - professional PDF evidence genişletildi
+   - professional PDF structural validator ve runtime-action validator aynı CI kapısında
+4. **Aynı turda düzeltme**
+   - `ProfessionalPdfDeliveryService.save/share` named `request:` kullanım hatası source review ile yakalanıp düzeltildi
 
 ## Validation limitation
 
-- Workflow-target commit `9636cf115283679def8b2e8922d53fc549077551`: combined-status `statuses=[]`.
+- Latest tested-source commit `bc964feb18f2de998127e0ba292208027bb72d2d`: combined-status `statuses=[]`.
 - Exact visible SUCCESS olmadan evidence `done=false`; ilgili RC'ler DONE değil.
+- Historical `ACTION-PDF-PREVIEW-SHARE` registry source-screen terminolojisi builder kullanımıyla semantic olarak yeniden ele alınmalı; RC-1440 DONE değil.
 
 ## Next safe work
 
-- approved production Unicode font provider/artifact gelmeden runtime production PDF build action'ı bağlama
-- persisted Western payload için gerçek saved schema'yı bul/oluştur; schema yoksa uydurma yapma
-- professional PDF native save/share UI state regressions ve blocker-independent table/parity tests
+- PDF action registry preview/builder semantic ayrımını güvenli full-registry edit ortamında canonical ID ile çöz
+- blocker-independent PDF table/page/parity testlerini genişlet
+- Western persisted snapshot için açık versioned persistence schema tasarla; mevcut olmayan şema varmış gibi davranma
 - remaining semantic evidence ownership audit
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout lockfile remain open blockers
 
