@@ -8,6 +8,9 @@
     "lib/src/ui/theme/ruh_design_tokens.dart",
     "lib/src/app/ruh_code_app.dart"
   ],
+  "tests": [
+    "test/ui/runtime_theme_tokens_test.dart"
+  ],
   "validators": [
     "tools/ui/validate_design_tokens.py",
     "tools/ui/validate_runtime_theme_tokens.py"
@@ -17,6 +20,7 @@
     "RuhCodeApp consumes one centralized RuhAppTheme instead of recreating raw palette values",
     "runtime and rendered UI sources may not bypass the token bridge with Color(0x...), Color.fromARGB/fromRGBO or Material Colors.* literals",
     "radius, spacing and minimum touch-target constants in the Flutter bridge remain synchronized with the canonical contract",
+    "ThemeData exposes the canonical palette through scaffold, card, divider and ColorScheme values",
     "gold and success remain accent tokens rather than ad-hoc normal-text colors on light surfaces"
   ],
   "remainingBeforeDone": [
