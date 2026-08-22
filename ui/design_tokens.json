@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "colors": {
     "background": "#FBF8F3",
     "surface": "#FFFFFF",
@@ -45,6 +45,29 @@
       "headlineSp": 28,
       "displaySp": 34
     }
+  },
+  "accessibilityContrast": {
+    "normalTextMinimumRatio": 4.5,
+    "largeTextMinimumRatio": 3.0,
+    "requiredNormalTextPairs": [
+      ["textPrimary", "background"],
+      ["textPrimary", "surface"],
+      ["textPrimary", "surfaceSoft"],
+      ["textMuted", "background"],
+      ["textMuted", "surface"],
+      ["textMuted", "surfaceSoft"],
+      ["primary", "background"],
+      ["primary", "surface"],
+      ["primary", "surfaceSoft"],
+      ["primaryStrong", "background"],
+      ["primaryStrong", "surface"],
+      ["primaryStrong", "surfaceSoft"],
+      ["danger", "background"],
+      ["danger", "surface"],
+      ["danger", "surfaceSoft"]
+    ],
+    "nonTextAccentTokensOnLightSurfaces": ["gold", "success"],
+    "lightSurfaceTokens": ["background", "surface", "surfaceSoft"]
   },
   "elevation": {
     "card": "soft",
