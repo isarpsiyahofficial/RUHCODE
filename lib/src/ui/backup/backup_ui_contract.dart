@@ -17,6 +17,7 @@ enum BackupUiPhase {
   cancelled,
   invalidBackup,
   rollbackRestored,
+  rollbackFailed,
   shareUnavailable,
   failed,
 }
@@ -79,6 +80,7 @@ const backupUiCopy = <RuhLocale, BackupUiCopy>{
       BackupUiPhase.cancelled: 'İşlem iptal edildi. Verilerinde değişiklik yapılmadı.',
       BackupUiPhase.invalidBackup: 'Bu yedek doğrulanamadı. Mevcut verilerinde değişiklik yapılmadı.',
       BackupUiPhase.rollbackRestored: 'Geri yükleme tamamlanamadı. Güvenlik kopyası geri yüklendi.',
+      BackupUiPhase.rollbackFailed: 'Geri yükleme ve güvenlik kopyasını geri alma tamamlanamadı. Veri bütünlüğü kontrol edilmeli; uygulamayı kapatmadan önce yeni işlem yapma.',
       BackupUiPhase.shareUnavailable: 'Bu cihazda paylaşım kullanılamıyor. Yedeği cihazına kaydedebilirsin.',
       BackupUiPhase.failed: 'İşlem tamamlanamadı. Mevcut veriler korundu.',
     },
@@ -105,6 +107,7 @@ const backupUiCopy = <RuhLocale, BackupUiCopy>{
       BackupUiPhase.cancelled: 'Operation cancelled. Your data was not changed.',
       BackupUiPhase.invalidBackup: 'This backup could not be verified. Your existing data was not changed.',
       BackupUiPhase.rollbackRestored: 'Restore could not finish. The safety snapshot was restored.',
+      BackupUiPhase.rollbackFailed: 'Restore and safety-snapshot recovery both failed. Data integrity must be checked; do not start another operation before closing the app.',
       BackupUiPhase.shareUnavailable: 'Sharing is unavailable on this device. You can save the backup instead.',
       BackupUiPhase.failed: 'The operation could not be completed. Your existing data was preserved.',
     },
@@ -164,8 +167,10 @@ BackupUiPhase phaseForImportResult(BackupImportResult result) {
 }
 
 BackupUiPhase phaseForRestoreError(Object error) {
-  if (error is BackupRestoreException && error.rollbackRestored) {
-    return BackupUiPhase.rollbackRestored;
+  if (error is BackupRestoreException) {
+    return error.rollbackRestored
+        ? BackupUiPhase.rollbackRestored
+        : BackupUiPhase.rollbackFailed;
   }
   return BackupUiPhase.failed;
 }
