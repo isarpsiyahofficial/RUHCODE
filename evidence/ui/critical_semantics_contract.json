@@ -22,6 +22,7 @@
     "professional PDF create action exposes an explicit semantics label and at least 48dp target",
     "professional PDF share action exposes an explicit semantics label and at least 48dp target after a verified build",
     "backup full-export action exposes localized semantics and at least 48dp target",
+    "backup native-share action exposes localized semantics and at least 48dp target",
     "backup file-selection action exposes localized semantics and at least 48dp target",
     "critical semantics regressions render with the canonical production theme"
   ],
