@@ -9,24 +9,26 @@ Latest source-level checkpoint:
 1. **Runtime theme / RC-1441**
    - canonical JSON design tokens Flutter runtime bridge'e taşındı
    - `RuhCodeApp` ad-hoc raw renklerden `RuhAppTheme.light()` temasına geçirildi
-   - rendered/runtime UI'da token bridge dışı `Color(0x...)`, `Color.fromARGB/fromRGBO` ve `Colors.*` kullanımı fail-closed CI kapısına bağlandı
-   - ThemeData canonical palette regression testi eklendi
-2. **2.0x accessibility coverage / RC-1441**
-   - 360x800 + 2.0x text-scale regression; Araçlar, Kayıtlar, Profil→Ayarlar→PDF yollarını kapsıyor
-3. **Critical widget semantics / RC-1441**
-   - Numeroloji localized metric/value semantics test edildi
-   - Professional PDF oluştur/paylaş action'ları explicit Semantics + 48dp target regression'a bağlandı
-4. **MASTER-aware accessibility evidence audit**
-   - design-token contrast, runtime-theme, text-scale ve critical-semantics evidence dosyaları exact `RC-1441` sahipliğinde kilitlendi
-   - Requirements CI ve UI Contracts workflow wiring genişletildi
+   - token bridge dışı raw Flutter color kullanımı fail-closed CI kapısına bağlandı
+2. **2.0x accessibility + critical semantics / RC-1441**
+   - Araçlar, Kayıtlar, Profil→Ayarlar→PDF 2.0x text-scale regression'a alındı
+   - Numeroloji metric/value semantics, Professional PDF oluştur/paylaş ve Backup oluştur/paylaş/seç action'ları Semantics + 48dp testlerine bağlandı
+3. **MASTER-aware accessibility evidence audit**
+   - dört UI accessibility evidence sözleşmesi exact `RC-1441` sahipliğinde kilitlendi
+4. **Native full-backup sharing / RC-1300 + RC-1301**
+   - gerçek Backup ekranına `Yedeği Paylaş` eklendi
+   - canonical `ACTION-BACKUP-SHARE` runtime extension + binding kayıtları eklendi
+   - native share application boundary çağrısı, `.ruhcode.zip` dosya adı ve cancellation state widget regression'a bağlandı
+   - backup action validator artık create/share/restore üçlüsünü denetliyor
+   - exact RC-1300/1301 semantic evidence validator Requirements CI'a eklendi
 
 ## Validation limitation
 
-Exact workflow-target commitler için GitHub combined-status yine `statuses=[]` döndürdü. Actions REST run query connector politikası tarafından reddedildi. Bu nedenle `RC-1441` DONE yapılmadı.
+Exact latest commit için GitHub combined-status yine `statuses=[]` döndürdü. Actions REST run query connector politikası tarafından reddedildi. Bu nedenle `RC-1441`, `RC-1300`, `RC-1301` DONE yapılmadı.
 
 ## Next safe work
 
-- Backup export/import/merge/replace action'larını widget-level semantics/focus regression'a bağla
+- valid backup preview fixture üzerinden merge/replace action Semantics + 48dp/focus coverage ekle
 - remaining requirement-bearing evidence ailelerini MASTER-aware semantic audit'e al
 - approved font gerektirmeyen PDF structural/page/parity regresyonlarını genişlet
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout release proof remain open blockers
