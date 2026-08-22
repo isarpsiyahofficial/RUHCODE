@@ -7,7 +7,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SERVICE = ROOT / 'lib/src/pdf/professional_pdf_application_service.dart'
 GUARD = ROOT / 'lib/src/pdf/guarded_pdf_service.dart'
+UI_ACTIONS = ROOT / 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
+UI_PAGE = ROOT / 'lib/src/ui/pdf/pdf_reports_pages.dart'
+ACTION_IDS = ROOT / 'lib/src/ui/actions/ruh_action_ids.dart'
 TEST = ROOT / 'test/pdf/professional_pdf_application_service_test.dart'
+WIDGET_TEST = ROOT / 'test/ui/professional_pdf_builder_page_test.dart'
 EVIDENCE = ROOT / 'evidence/pdf/professional_application_service.json'
 MASTER = ROOT / 'RUH_CODE_MASTER_SARTNAME.md'
 
@@ -18,12 +22,27 @@ def require(condition: bool, message: str) -> None:
 
 
 def main() -> None:
-    for path in (SERVICE, GUARD, TEST, EVIDENCE, MASTER):
+    required_paths = (
+        SERVICE,
+        GUARD,
+        UI_ACTIONS,
+        UI_PAGE,
+        ACTION_IDS,
+        TEST,
+        WIDGET_TEST,
+        EVIDENCE,
+        MASTER,
+    )
+    for path in required_paths:
         require(path.exists(), f'missing required file: {path.relative_to(ROOT)}')
 
     service = SERVICE.read_text(encoding='utf-8')
     guard = GUARD.read_text(encoding='utf-8')
+    ui_actions = UI_ACTIONS.read_text(encoding='utf-8')
+    ui_page = UI_PAGE.read_text(encoding='utf-8')
+    action_ids = ACTION_IDS.read_text(encoding='utf-8')
     test = TEST.read_text(encoding='utf-8')
+    widget_test = WIDGET_TEST.read_text(encoding='utf-8')
     evidence = json.loads(EVIDENCE.read_text(encoding='utf-8'))
     master = MASTER.read_text(encoding='utf-8')
 
@@ -42,12 +61,32 @@ def main() -> None:
     require('runService<List<int>>' in guard, 'professional PDF delegate must execute through service guard')
 
     for marker in (
+        'ProfessionalPdfBuildActions',
+        'ProfessionalPdfApplicationActions',
+        'service.build(',
+    ):
+        require(marker in ui_actions, f'missing PDF UI action adapter marker: {marker}')
+
+    require("static const pdfCreate = 'ACTION-PDF-PREVIEW-CREATE';" in action_ids, 'canonical PDF create action ID is missing')
+    require('ValueKey(RuhActionIds.pdfCreate)' in ui_page, 'professional builder create control must use canonical action ID')
+    require('ProfessionalPdfBuilderPage(actions: professionalActions)' in ui_page, 'PDF hub must pass application actions to builder')
+    require('PDF üretim kaynağı henüz production runtime’a bağlanmadı.' in ui_page, 'builder must fail honestly when production actions are absent')
+
+    for marker in (
         'FREE user cannot execute professional PDF delegate',
         'PRO build loads exact record, preserves section order and inspects PDF',
         'expect(delegate.calls, 0)',
         'result.inspection.structurallyUsable',
     ):
         require(marker in test, f'missing professional PDF regression marker: {marker}')
+
+    for marker in (
+        'builder invokes application actions with exact record and section order',
+        'builder never fakes output when production actions are absent',
+        'RuhActionIds.pdfCreate',
+        "expect(find.text('PDF doğrulandı'), findsNothing)",
+    ):
+        require(marker in widget_test, f'missing professional PDF widget regression marker: {marker}')
 
     expected_rc = {
         'RC-0918', 'RC-0950', 'RC-0951', 'RC-0952', 'RC-0953', 'RC-0964',
