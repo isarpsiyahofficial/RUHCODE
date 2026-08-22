@@ -25,10 +25,14 @@
   ],
   "sources": [
     "lib/src/ui/backup/backup_ui_contract.dart",
-    "lib/src/backup/backup_import_coordinator.dart"
+    "lib/src/ui/backup/backup_settings_page.dart",
+    "lib/src/backup/backup_application_service.dart",
+    "lib/src/backup/backup_import_coordinator.dart",
+    "lib/src/app/app_runtime.dart"
   ],
   "tests": [
     "test/ui/backup/backup_ui_contract_test.dart",
+    "test/ui/backup/backup_runtime_wiring_test.dart",
     "test/backup/backup_import_coordinator_test.dart"
   ],
   "requiredActions": [
@@ -52,6 +56,7 @@
     "cancelled",
     "invalidBackup",
     "rollbackRestored",
+    "rollbackFailed",
     "shareUnavailable",
     "failed"
   ],
@@ -64,12 +69,20 @@
   "rollbackContract": {
     "typedException": "BackupRestoreException",
     "uiMayClaimRollbackOnlyWhenRollbackRestoredIsTrue": true,
-    "rollbackFailureMustNotBeReportedAsRestored": true
+    "rollbackFailureHasDedicatedCriticalState": true,
+    "rollbackFailureMustNotClaimDataWasPreserved": true
+  },
+  "runtimeContract": {
+    "settingsActionId": "ACTION-SETTINGS-BACKUP",
+    "exportActionId": "ACTION-BACKUP-EXPORT",
+    "importActionId": "ACTION-BACKUP-IMPORT",
+    "productionApplicationServiceInjected": true,
+    "durableSafetySnapshotDirectoryDerivedFromDatabaseDirectory": true
   },
   "releaseBlockers": [
     "Exact Flutter workflow success is not yet recorded in this evidence file.",
-    "Primary ui/action_registry.csv still contains legacy CSV wording and must be migrated to portable-backup labels.",
-    "Approved UI reference image for backup screens is not yet available.",
-    "Android real-device save/open/share smoke proof is not yet attached."
+    "Approved UI reference image/hash for backup screens is not yet available.",
+    "Android real-device save/open/share smoke proof is not yet attached.",
+    "Share action exists in the application-service/UI contract but is not yet exposed as a dedicated runtime button in the current backup page."
   ]
 }
