@@ -3,17 +3,32 @@ import csv
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REGISTRY = ROOT / 'ui/action_registry.csv'
+REGISTRIES = (
+    ROOT / 'ui/action_registry.csv',
+    ROOT / 'ui/action_registry_runtime_extensions.csv',
+)
 
-rows = list(csv.DictReader(REGISTRY.open(encoding='utf-8', newline='')))
-by_id = {row['action_id'].strip(): row for row in rows}
+rows = []
+for registry in REGISTRIES:
+    rows.extend(csv.DictReader(registry.open(encoding='utf-8', newline='')))
+
+by_id = {}
+duplicates = []
+for row in rows:
+    action_id = row['action_id'].strip()
+    if action_id in by_id:
+        duplicates.append(action_id)
+    by_id[action_id] = row
 
 required = {
     'ACTION-BACKUP-EXPORT': ('Tam Yedek Oluştur', 'EFFECT:EXPORT_FULL_BACKUP'),
+    'ACTION-BACKUP-SHARE': ('Yedeği Paylaş', 'EFFECT:SHARE_FULL_BACKUP'),
     'ACTION-BACKUP-IMPORT': ('Yedekten Geri Yükle', 'SCR-BACKUP-IMPORT-001'),
 }
 
 errors = []
+if duplicates:
+    errors.append('duplicate action IDs across backup registries: ' + ', '.join(sorted(duplicates)))
 for action_id, (label, target) in required.items():
     row = by_id.get(action_id)
     if row is None:
@@ -25,6 +40,10 @@ for action_id, (label, target) in required.items():
         errors.append(f'{action_id} must target {target!r}')
     if row['offline_behavior'].strip() != 'AVAILABLE':
         errors.append(f'{action_id} must remain fully offline')
+    if row['a11y_label_required'].strip().lower() != 'true':
+        errors.append(f'{action_id} must require an accessibility label')
+    if row['status'].strip() != 'ACTIVE':
+        errors.append(f'{action_id} must remain ACTIVE')
 
 legacy_visible = {'CSV Dışa Aktar', 'CSV İçe Aktar'}
 for row in rows:
@@ -36,4 +55,4 @@ for row in rows:
 if errors:
     raise SystemExit('\n'.join(f'ERROR: {error}' for error in errors))
 
-print('Portable backup action wording OK: full .ruhcode.zip backup is not mislabeled as CSV-only.')
+print('Portable backup actions OK: create/share/restore use canonical offline .ruhcode.zip wording and a11y labels.')
