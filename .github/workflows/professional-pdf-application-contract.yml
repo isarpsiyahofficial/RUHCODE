@@ -15,6 +15,8 @@ on:
       - 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
       - 'lib/src/ui/pdf/pdf_reports_pages.dart'
       - 'lib/src/ui/actions/ruh_action_ids.dart'
+      - 'ui/action_registry.csv'
+      - 'ui/runtime_action_bindings.csv'
       - 'test/pdf/professional_pdf_application_service_test.dart'
       - 'test/pdf/persisted_calculation_pdf_source_test.dart'
       - 'test/pdf/persisted_calculation_pdf_router_test.dart'
@@ -22,6 +24,7 @@ on:
       - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
       - 'tools/pdf/validate_professional_pdf_application.py'
+      - 'tools/ui/validate_runtime_action_bindings.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - '.github/workflows/professional-pdf-application-contract.yml'
   pull_request:
@@ -38,6 +41,8 @@ on:
       - 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
       - 'lib/src/ui/pdf/pdf_reports_pages.dart'
       - 'lib/src/ui/actions/ruh_action_ids.dart'
+      - 'ui/action_registry.csv'
+      - 'ui/runtime_action_bindings.csv'
       - 'test/pdf/professional_pdf_application_service_test.dart'
       - 'test/pdf/persisted_calculation_pdf_source_test.dart'
       - 'test/pdf/persisted_calculation_pdf_router_test.dart'
@@ -45,6 +50,7 @@ on:
       - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
       - 'tools/pdf/validate_professional_pdf_application.py'
+      - 'tools/ui/validate_runtime_action_bindings.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - '.github/workflows/professional-pdf-application-contract.yml'
 
@@ -58,6 +64,7 @@ jobs:
           channel: stable
           cache: true
       - run: python tools/pdf/validate_professional_pdf_application.py
+      - run: python tools/ui/validate_runtime_action_bindings.py
       - run: flutter pub get
       - run: >-
           flutter test
