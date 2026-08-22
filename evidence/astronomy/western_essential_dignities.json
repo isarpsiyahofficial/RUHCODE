@@ -1,7 +1,7 @@
 {
   "contract": "western_essential_dignities",
   "version": 1,
-  "requirements": ["RC-0049", "RC-0050", "RC-0276"],
+  "requirements": ["RC-0049", "RC-0050"],
   "inputs": ["validated Tropical NatalPlacementSet"],
   "outputs": ["classical domicile", "classical exaltation", "derived detriment", "derived fall"],
   "hard_rules": [
