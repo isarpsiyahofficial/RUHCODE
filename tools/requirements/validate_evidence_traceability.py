@@ -23,8 +23,12 @@ def load_master():
 def load_requirements(path):
     payload = json.loads((ROOT / path).read_text(encoding="utf-8"))
     reqs = payload.get("requirements")
+    if reqs is None:
+        reqs = payload.get("requirement_ids")
     if not isinstance(reqs, list) or not reqs:
-        raise AssertionError(f"{path}: non-empty requirements[] is required")
+        raise AssertionError(
+            f"{path}: non-empty requirements[] or requirement_ids[] is required"
+        )
     parsed = []
     for rc in reqs:
         if not isinstance(rc, str) or not re.fullmatch(r"RC-\d{4}", rc):
@@ -64,6 +68,9 @@ EXPECTED = {
         862, 863, 865, 868, 870, 878, 881, 898, 903, 918, 919, 929, 931, 951, 956, 964,
     },
     "evidence/pdf/numerology_data_adapter.json": {875, 903, 925, 954},
+    "evidence/pdf/professional_application_service.json": {
+        918, 936, 939, 940, 950, 951, 952, 953, 964, 1085, 1086, 1088, 1089,
+    },
     "evidence/backup/csv_contract.json": {
         774, 777, 792, 793, 796, 797, 798, 799, 800, 801, 802, 803, 804,
         805, 806, 807, 809, 810, 811, 812, 814, 815,
@@ -113,8 +120,9 @@ KEYWORDS = {
     870: "vektörel", 875: "Numeroloji tabloları", 878: "A4/Letter", 881: "kenar boşlukları",
     898: "Kapak sayfası", 903: "Kombine danışmanlık raporu", 918: "bölümlerini açıp kapatabilecek",
     919: "bölüm sırası", 925: "Numeroloji sonuçları", 929: "önizleme", 931: "boş bölüm",
-    951: "PDF doğrulama testi", 954: "Gerekli metinlerin", 956: "görsel regresyon",
-    964: "Yanlış müşteri verisinin",
+    936: "paylaşım menüsünden PDF", 939: "dosyalar alanına kaydedilebilecek", 940: "sunucumuzdan geçmeyecek",
+    950: "yarım dosya", 951: "PDF doğrulama testi", 952: "gerçekten açılabildiği", 953: "Sayfa sayısının sıfır olmadığı",
+    954: "Gerekli metinlerin", 956: "görsel regresyon", 964: "Yanlış müşteri verisinin",
     1059: "terminology glossary", 1060: "Ascendant", 1061: "House", 1062: "Vedik terimlerin transliterasyonu",
     1063: "üç farklı Türkçe isim", 1064: "gereksiz şekilde Türkçeleştirilmeyecek", 1065: "teknik terim",
     1066: "Interpretation katalogları versiyonlanacak", 1067: "interpretationVersion",
