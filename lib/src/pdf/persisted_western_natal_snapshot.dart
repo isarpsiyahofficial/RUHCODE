@@ -246,10 +246,7 @@ final class PersistedWesternNatalSnapshot {
           throw ArgumentError.value(value, 'aspectValue', 'Expected finite non-negative value.');
         }
       }
-      final type = MajorAspect.values.where((value) => value.name == aspect.type).firstOrNull;
-      if (type == null) {
-        throw ArgumentError.value(aspect.type, 'aspect.type', 'Unsupported MajorAspect.');
-      }
+      final type = _majorAspectByName(aspect.type);
       if ((type.exactAngleDegrees - aspect.exactAngleDeg).abs() > 1e-12) {
         throw ArgumentError('Persisted aspect exact angle does not match its aspect type.');
       }
@@ -350,6 +347,13 @@ List<dynamic> _list(Map<String, dynamic> json, String key) {
 Map<String, dynamic> _map(Object? value, String key) {
   if (value is! Map) throw FormatException('Expected object: $key');
   return value.map((rawKey, rawValue) => MapEntry(rawKey.toString(), rawValue));
+}
+
+MajorAspect _majorAspectByName(String name) {
+  for (final value in MajorAspect.values) {
+    if (value.name == name) return value;
+  }
+  throw ArgumentError.value(name, 'aspect.type', 'Unsupported MajorAspect.');
 }
 
 int _houseForLongitude(List<double> cusps, double longitude) {
