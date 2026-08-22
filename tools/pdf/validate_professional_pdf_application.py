@@ -6,11 +6,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SERVICE = ROOT / 'lib/src/pdf/professional_pdf_application_service.dart'
+PERSISTED_SOURCE = ROOT / 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+DELIVERY = ROOT / 'lib/src/pdf/professional_pdf_delivery_service.dart'
+PLATFORM = ROOT / 'lib/src/pdf/pdf_platform_gateway.dart'
+RUNTIME = ROOT / 'lib/src/app/app_runtime.dart'
 GUARD = ROOT / 'lib/src/pdf/guarded_pdf_service.dart'
 UI_ACTIONS = ROOT / 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
 UI_PAGE = ROOT / 'lib/src/ui/pdf/pdf_reports_pages.dart'
 ACTION_IDS = ROOT / 'lib/src/ui/actions/ruh_action_ids.dart'
 TEST = ROOT / 'test/pdf/professional_pdf_application_service_test.dart'
+SOURCE_TEST = ROOT / 'test/pdf/persisted_calculation_pdf_source_test.dart'
+DELIVERY_TEST = ROOT / 'test/pdf/professional_pdf_delivery_service_test.dart'
 WIDGET_TEST = ROOT / 'test/ui/professional_pdf_builder_page_test.dart'
 EVIDENCE = ROOT / 'evidence/pdf/professional_application_service.json'
 MASTER = ROOT / 'RUH_CODE_MASTER_SARTNAME.md'
@@ -23,48 +29,74 @@ def require(condition: bool, message: str) -> None:
 
 def main() -> None:
     required_paths = (
-        SERVICE,
-        GUARD,
-        UI_ACTIONS,
-        UI_PAGE,
-        ACTION_IDS,
-        TEST,
-        WIDGET_TEST,
-        EVIDENCE,
-        MASTER,
+        SERVICE, PERSISTED_SOURCE, DELIVERY, PLATFORM, RUNTIME, GUARD,
+        UI_ACTIONS, UI_PAGE, ACTION_IDS, TEST, SOURCE_TEST, DELIVERY_TEST,
+        WIDGET_TEST, EVIDENCE, MASTER,
     )
     for path in required_paths:
         require(path.exists(), f'missing required file: {path.relative_to(ROOT)}')
 
     service = SERVICE.read_text(encoding='utf-8')
+    persisted = PERSISTED_SOURCE.read_text(encoding='utf-8')
+    delivery = DELIVERY.read_text(encoding='utf-8')
+    platform = PLATFORM.read_text(encoding='utf-8')
+    runtime = RUNTIME.read_text(encoding='utf-8')
     guard = GUARD.read_text(encoding='utf-8')
     ui_actions = UI_ACTIONS.read_text(encoding='utf-8')
     ui_page = UI_PAGE.read_text(encoding='utf-8')
     action_ids = ACTION_IDS.read_text(encoding='utf-8')
     test = TEST.read_text(encoding='utf-8')
+    source_test = SOURCE_TEST.read_text(encoding='utf-8')
+    delivery_test = DELIVERY_TEST.read_text(encoding='utf-8')
     widget_test = WIDGET_TEST.read_text(encoding='utf-8')
     evidence = json.loads(EVIDENCE.read_text(encoding='utf-8'))
     master = MASTER.read_text(encoding='utf-8')
 
     for marker in (
-        'ProfessionalPdfSnapshotSource',
-        'ProfessionalPdfApplicationService',
-        'GuardedProfessionalPdfService',
-        'outputInspector.requireUsable',
+        'ProfessionalPdfSnapshotSource', 'ProfessionalPdfApplicationService',
+        'GuardedProfessionalPdfService', 'outputInspector.requireUsable',
         "languageCode != 'tr' && languageCode != 'en'",
-        'Duplicate PDF section ID',
-        'Calculation record not found',
+        'Duplicate PDF section ID', 'Calculation record not found',
     ):
         require(marker in service, f'missing professional PDF service marker: {marker}')
+
+    for marker in (
+        'LocalDatabaseProfessionalPdfSnapshotSource',
+        "table: 'calculations'", "table: 'calculation_manifests'",
+        'CoreModelCodecs.calculationManifestFromMap',
+        'CalculationValidity.unavailable', 'CalculationValidity.error',
+        'ProfessionalPdfRecordCatalog', 'listAvailableRecords',
+    ):
+        require(marker in persisted, f'missing persisted PDF source marker: {marker}')
+
+    require(
+        'LocalDatabaseProfessionalPdfSnapshotSource(database: database)' in runtime,
+        'runtime must compose the production persisted PDF source',
+    )
+    require(
+        'professionalPdfSnapshotSource' in runtime,
+        'runtime must expose the persisted PDF source for application composition',
+    )
+
+    for marker in (
+        'ProfessionalPdfDeliveryService', 'platformGateway.savePdf',
+        'platformGateway.sharePdf', 'ProfessionalPdfDeliveryStatus.cancelled',
+        'ProfessionalPdfDeliveryStatus.unavailable',
+    ):
+        require(marker in delivery, f'missing professional PDF delivery marker: {marker}')
+
+    for marker in (
+        'NativePdfPlatformGateway', 'FilePicker.saveFile',
+        'SharePlus.instance.share', "kRuhCodePdfMimeType = 'application/pdf'",
+        "trimmed.contains('/')", "trimmed.contains('\\\\')",
+    ):
+        require(marker in platform, f'missing native PDF platform marker: {marker}')
+    require('http' not in platform.lower(), 'native PDF platform gateway must not contain HTTP/server delivery code')
 
     require('RuhFeatureIds.pdfProfessionalExport' in guard, 'professional PDF guard must use canonical feature ID')
     require('runService<List<int>>' in guard, 'professional PDF delegate must execute through service guard')
 
-    for marker in (
-        'ProfessionalPdfBuildActions',
-        'ProfessionalPdfApplicationActions',
-        'service.build(',
-    ):
+    for marker in ('ProfessionalPdfBuildActions', 'ProfessionalPdfApplicationActions', 'service.build('):
         require(marker in ui_actions, f'missing PDF UI action adapter marker: {marker}')
 
     require("static const pdfCreate = 'ACTION-PDF-PREVIEW-CREATE';" in action_ids, 'canonical PDF create action ID is missing')
@@ -75,21 +107,34 @@ def main() -> None:
     for marker in (
         'FREE user cannot execute professional PDF delegate',
         'PRO build loads exact record, preserves section order and inspects PDF',
-        'expect(delegate.calls, 0)',
-        'result.inspection.structurallyUsable',
+        'expect(delegate.calls, 0)', 'result.inspection.structurallyUsable',
     ):
         require(marker in test, f'missing professional PDF regression marker: {marker}')
 
     for marker in (
+        'loads calculation and manifest atomically', 'missing manifest fails closed',
+        'unavailable calculation cannot become professional PDF input',
+        'catalog is typed, deterministic and newest first',
+    ):
+        require(marker in source_test, f'missing persisted source regression marker: {marker}')
+
+    for marker in (
+        'PDF platform policy rejects path injection and non-PDF bytes',
+        'save cancellation remains a normal result after validated build',
+        'dismissed share is cancellation, unavailable is explicit',
+    ):
+        require(marker in delivery_test, f'missing PDF delivery regression marker: {marker}')
+
+    for marker in (
         'builder invokes application actions with exact record and section order',
         'builder never fakes output when production actions are absent',
-        'RuhActionIds.pdfCreate',
-        "expect(find.text('PDF doğrulandı'), findsNothing)",
+        'RuhActionIds.pdfCreate', "expect(find.text('PDF doğrulandı'), findsNothing)",
     ):
         require(marker in widget_test, f'missing professional PDF widget regression marker: {marker}')
 
     expected_rc = {
-        'RC-0918', 'RC-0950', 'RC-0951', 'RC-0952', 'RC-0953', 'RC-0964',
+        'RC-0918', 'RC-0936', 'RC-0939', 'RC-0940',
+        'RC-0950', 'RC-0951', 'RC-0952', 'RC-0953', 'RC-0964',
         'RC-1085', 'RC-1086', 'RC-1088', 'RC-1089',
     }
     actual_rc = set(evidence.get('requirement_ids', []))
@@ -98,6 +143,9 @@ def main() -> None:
 
     master_markers = {
         'RC-0918': '918. Profesyonel istediği rapor bölümlerini açıp kapatabilecek.',
+        'RC-0936': '936. Kullanıcı paylaşım menüsünden PDF gönderebilecek.',
+        'RC-0939': '939. PDF cihazın dosyalar alanına kaydedilebilecek.',
+        'RC-0940': '940. Bu paylaşım işlemleri bizim sunucumuzdan geçmeyecek.',
         'RC-0950': '950. PDF üretimi tamamlanmadıysa yarım dosya başarılı rapor olarak gösterilmeyecek.',
         'RC-0951': '951. PDF doğrulama testi oluşturulacak.',
         'RC-0952': '952. Oluşan PDF’nin gerçekten açılabildiği otomatik kontrol edilecek.',
