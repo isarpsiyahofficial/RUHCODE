@@ -1,7 +1,7 @@
 {
   "contract": "western_porphyry_houses",
   "version": 1,
-  "requirements": ["RC-0060", "RC-0061", "RC-0262", "RC-0268", "RC-1436"],
+  "requirements": ["RC-0019", "RC-0060", "RC-1436"],
   "definition": "Each ecliptic quadrant ASC→IC→DSC→MC→ASC is divided into three equal ecliptic arcs.",
   "inputs": {
     "ascendant_longitude": "degrees in [0,360)",
