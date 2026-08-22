@@ -1,0 +1,50 @@
+name: Persisted Western Natal PDF Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
+      - 'lib/src/pdf/persisted_western_natal_pdf.dart'
+      - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+      - 'lib/src/pdf/pdf_western_chart_geometry.dart'
+      - 'test/pdf/persisted_western_natal_snapshot_test.dart'
+      - 'test/pdf/persisted_western_natal_pdf_test.dart'
+      - 'evidence/pdf/persisted_western_natal_snapshot.json'
+      - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/persisted-western-natal-pdf-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
+      - 'lib/src/pdf/persisted_western_natal_pdf.dart'
+      - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+      - 'lib/src/pdf/pdf_western_chart_geometry.dart'
+      - 'test/pdf/persisted_western_natal_snapshot_test.dart'
+      - 'test/pdf/persisted_western_natal_pdf_test.dart'
+      - 'evidence/pdf/persisted_western_natal_snapshot.json'
+      - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/persisted-western-natal-pdf-contract.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate persisted Western snapshot contract
+        run: python tools/pdf/validate_persisted_western_natal_snapshot.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run persisted Western snapshot and PDF provenance tests
+        run: >-
+          flutter test
+          test/pdf/persisted_western_natal_snapshot_test.dart
+          test/pdf/persisted_western_natal_pdf_test.dart
