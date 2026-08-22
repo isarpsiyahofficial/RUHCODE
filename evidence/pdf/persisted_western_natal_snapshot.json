@@ -2,16 +2,20 @@
   "id": "PDF-PERSISTED-WESTERN-NATAL-V1",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
-  "requirement_ids": ["RC-0724", "RC-0725", "RC-0726", "RC-0727", "RC-0737", "RC-0738", "RC-0870"],
+  "requirement_ids": ["RC-0724", "RC-0725", "RC-0726", "RC-0727", "RC-0729", "RC-0730", "RC-0737", "RC-0738", "RC-0763", "RC-0765", "RC-0870", "RC-0875", "RC-0876", "RC-0920", "RC-0921", "RC-0922"],
   "source_files": [
     "lib/src/pdf/persisted_western_natal_snapshot.dart",
     "lib/src/pdf/persisted_western_natal_pdf.dart",
     "lib/src/pdf/persisted_calculation_pdf_source.dart",
+    "lib/src/pdf/western_natal_persistence_service.dart",
+    "lib/src/pdf/persisted_western_natal_sections.dart",
     "lib/src/pdf/pdf_western_chart_geometry.dart"
   ],
   "test_files": [
     "test/pdf/persisted_western_natal_snapshot_test.dart",
-    "test/pdf/persisted_western_natal_pdf_test.dart"
+    "test/pdf/persisted_western_natal_pdf_test.dart",
+    "test/pdf/western_natal_persistence_service_test.dart",
+    "test/pdf/persisted_western_natal_sections_test.dart"
   ],
   "contracts": {
     "calculation_type": "western.natal",
@@ -21,12 +25,18 @@
     "manifest_engine_version_must_match": true,
     "manifest_algorithm_version_must_match": true,
     "manifest_data_version_must_match": true,
+    "manifest_house_system_must_match_snapshot": true,
+    "manifest_and_calculation_written_in_one_transaction": true,
+    "second_write_failure_rolls_back_manifest": true,
+    "existing_calculation_or_manifest_id_fails_closed": true,
     "resolved_house_system_and_12_cusps_persisted": true,
     "house_cusps_must_form_closed_forward_cycle": true,
     "placement_house_number_must_match_persisted_cusps": true,
     "placements_and_major_aspects_persisted": true,
     "aspect_type_angle_and_placement_geometry_must_match": true,
     "pdf_geometry_reads_persisted_snapshot": true,
+    "pdf_placements_houses_aspects_sections_read_persisted_snapshot": true,
+    "localized_section_labels_required": true,
     "unknown_or_tampered_payload_fails_closed": true
   },
   "open_gates": [
@@ -34,6 +44,6 @@
     "Independent Western astronomical golden accuracy remains blocked on physical ephemeris/EOP evidence.",
     "Approved production vector glyph/assets and visual-regression evidence remain open.",
     "Production PDF renderer registration remains blocked on approved Unicode font artifact/license/SHA.",
-    "This evidence proves persistence/provenance/internal-geometry integrity, not astronomical accuracy or final PDF visual quality."
+    "This evidence proves persistence/provenance/atomicity/internal-geometry and persisted table projection integrity, not astronomical accuracy or final PDF visual quality."
   ]
 }
