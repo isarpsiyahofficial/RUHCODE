@@ -11,11 +11,13 @@ class PdfReportsHubPage extends StatelessWidget {
     required this.featureAccess,
     this.professionalActions,
     this.professionalRecords,
+    this.professionalDelivery,
   });
 
   final FeatureAccessGuard featureAccess;
   final ProfessionalPdfBuildActions? professionalActions;
   final ProfessionalPdfRecordActions? professionalRecords;
+  final ProfessionalPdfDeliveryActions? professionalDelivery;
 
   Future<void> _open(
     BuildContext context, {
@@ -75,6 +77,7 @@ class PdfReportsHubPage extends StatelessWidget {
                 page: ProfessionalPdfBuilderPage(
                   actions: professionalActions,
                   records: professionalRecords,
+                  deliveryActions: professionalDelivery,
                 ),
                 lockedMessage: 'Profesyonel PDF oluşturma PRO kullanıcılar içindir.',
               ),
@@ -136,10 +139,12 @@ class ProfessionalPdfBuilderPage extends StatefulWidget {
     super.key,
     this.actions,
     this.records,
+    this.deliveryActions,
   });
 
   final ProfessionalPdfBuildActions? actions;
   final ProfessionalPdfRecordActions? records;
+  final ProfessionalPdfDeliveryActions? deliveryActions;
 
   @override
   State<ProfessionalPdfBuilderPage> createState() => _ProfessionalPdfBuilderPageState();
@@ -149,10 +154,12 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
   final _selected = <String>{'chart', 'placements', 'interpretation', 'notes'};
   bool _busy = false;
   bool _loadingRecords = false;
+  bool _deliveryBusy = false;
   List<ProfessionalPdfUiRecord> _records = const <ProfessionalPdfUiRecord>[];
   String? _selectedRecordId;
   ProfessionalPdfUiBuildResult? _result;
   String? _error;
+  String? _deliveryNotice;
 
   static const _sections = <(String, String, String)>[
     ('chart', 'Harita', 'Hesaplama kaydına bağlı harita ve temel göstergeler'),
@@ -163,12 +170,21 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
 
   ProfessionalPdfRecordActions? get _recordActions =>
       widget.records ?? ProfessionalPdfUiRuntimeBindings.records;
+  ProfessionalPdfBuildActions? get _buildActions =>
+      widget.actions ?? ProfessionalPdfUiRuntimeBindings.build;
+  ProfessionalPdfDeliveryActions? get _deliveryActions =>
+      widget.deliveryActions ?? ProfessionalPdfUiRuntimeBindings.delivery;
 
   @override
   void initState() {
     super.initState();
     _loadRecords();
   }
+
+  List<String> _selectedSectionIds() => [
+        for (final section in _sections)
+          if (_selected.contains(section.$1)) section.$1,
+      ];
 
   Future<void> _loadRecords() async {
     final source = _recordActions;
@@ -200,7 +216,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
   }
 
   Future<void> _buildPdf() async {
-    final actions = widget.actions;
+    final actions = _buildActions;
     if (actions == null) {
       setState(() {
         _result = null;
@@ -228,12 +244,13 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
       _busy = true;
       _result = null;
       _error = null;
+      _deliveryNotice = null;
     });
     try {
       final result = await actions.build(
         recordId: recordId,
         localeTag: Localizations.localeOf(context).toLanguageTag(),
-        sectionIds: [for (final section in _sections) if (_selected.contains(section.$1)) section.$1],
+        sectionIds: _selectedSectionIds(),
       );
       if (!mounted) return;
       setState(() => _result = result);
@@ -242,6 +259,37 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
       setState(() => _error = 'PDF oluşturulamadı: $error');
     } finally {
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _sharePdf() async {
+    final delivery = _deliveryActions;
+    final recordId = _selectedRecordId;
+    if (delivery == null || recordId == null || _result == null) return;
+    setState(() {
+      _deliveryBusy = true;
+      _deliveryNotice = null;
+      _error = null;
+    });
+    try {
+      final result = await delivery.share(
+        recordId: recordId,
+        localeTag: Localizations.localeOf(context).toLanguageTag(),
+        sectionIds: _selectedSectionIds(),
+      );
+      if (!mounted) return;
+      setState(() {
+        _deliveryNotice = switch (result.outcome) {
+          ProfessionalPdfUiDeliveryOutcome.success => 'PDF paylaşım menüsüne aktarıldı.',
+          ProfessionalPdfUiDeliveryOutcome.cancelled => 'Paylaşım iptal edildi.',
+          ProfessionalPdfUiDeliveryOutcome.unavailable => 'Bu cihazda PDF paylaşımı kullanılamıyor.',
+        };
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = 'PDF paylaşılamadı: $error');
+    } finally {
+      if (mounted) setState(() => _deliveryBusy = false);
     }
   }
 
@@ -255,6 +303,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
   Widget build(BuildContext context) {
     final result = _result;
     final recordSourceAvailable = _recordActions != null;
+    final deliveryAvailable = _deliveryActions != null;
     return Scaffold(
       appBar: AppBar(title: const Text('Profesyonel PDF Oluştur')),
       body: ListView(
@@ -281,12 +330,13 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
                     child: Text(_recordLabel(record)),
                   ),
               ],
-              onChanged: _busy
+              onChanged: _busy || _deliveryBusy
                   ? null
                   : (value) => setState(() {
                         _selectedRecordId = value;
                         _result = null;
                         _error = null;
+                        _deliveryNotice = null;
                       }),
             ),
           const SizedBox(height: 20),
@@ -297,7 +347,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
               value: _selected.contains(section.$1),
               title: Text(section.$2),
               subtitle: Text(section.$3),
-              onChanged: _busy
+              onChanged: _busy || _deliveryBusy
                   ? null
                   : (value) => setState(() {
                         if (value == true) {
@@ -305,16 +355,25 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
                         } else {
                           _selected.remove(section.$1);
                         }
+                        _result = null;
+                        _deliveryNotice = null;
                       }),
             ),
           const SizedBox(height: 12),
-          FilledButton.icon(
-            key: const ValueKey(RuhActionIds.pdfCreate),
-            onPressed: _busy || _loadingRecords ? null : _buildPdf,
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            label: Text(_busy ? 'Oluşturuluyor…' : 'PDF Oluştur'),
+          Semantics(
+            label: 'PDF Oluştur',
+            button: true,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 48),
+              child: FilledButton.icon(
+                key: const ValueKey(RuhActionIds.pdfCreate),
+                onPressed: _busy || _loadingRecords || _deliveryBusy ? null : _buildPdf,
+                icon: const Icon(Icons.picture_as_pdf_outlined),
+                label: Text(_busy ? 'Oluşturuluyor…' : 'PDF Oluştur'),
+              ),
+            ),
           ),
-          if (_busy) ...[
+          if (_busy || _deliveryBusy) ...[
             const SizedBox(height: 12),
             const LinearProgressIndicator(),
           ],
@@ -331,6 +390,26 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
                 subtitle: Text('${result.pageCount} sayfa · ${result.byteLength} byte'),
               ),
             ),
+            if (deliveryAvailable) ...[
+              const SizedBox(height: 8),
+              Semantics(
+                label: 'PDF Paylaş',
+                button: true,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: OutlinedButton.icon(
+                    key: const ValueKey(RuhActionIds.pdfShare),
+                    onPressed: _deliveryBusy ? null : _sharePdf,
+                    icon: const Icon(Icons.share_outlined),
+                    label: const Text('Paylaş'),
+                  ),
+                ),
+              ),
+            ],
+          ],
+          if (_deliveryNotice != null) ...[
+            const SizedBox(height: 12),
+            Text(_deliveryNotice!),
           ],
           const SizedBox(height: 12),
           const Text('Profesyonel rapor, seçilen gerçek hesaplama kaydının aynı calculation snapshot kimliğini kullanır.'),
