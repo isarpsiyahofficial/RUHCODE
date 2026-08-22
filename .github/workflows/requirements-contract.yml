@@ -28,6 +28,10 @@ jobs:
         run: python tools/requirements/validate_persisted_western_traceability.py
       - name: Validate Western production write boundary
         run: python tools/astronomy/validate_western_natal_write_boundary.py
+      - name: Validate UI design tokens and measured contrast
+        run: python tools/ui/validate_design_tokens.py
+      - name: Validate UI accessibility and interaction contract
+        run: python tools/ui/validate_accessibility_interactions.py
       - name: Build traceability matrix
         run: python tools/requirements/build_requirement_matrix.py
       - name: Validate matrix contract
