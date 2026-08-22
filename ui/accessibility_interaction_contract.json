@@ -18,7 +18,11 @@
     "minimumLargeTextContrastRatio": 3.0,
     "maximumRequiredTextScaleForNoCriticalOverflow": 2.0,
     "screenReaderLabelsRequiredForInteractiveControls": true,
-    "informationMayNotDependOnColorAlone": true
+    "informationMayNotDependOnColorAlone": true,
+    "designTokenContrastContract": "ui/design_tokens.json",
+    "designTokenContrastValidator": "tools/ui/validate_design_tokens.py",
+    "normalTextContrastMeasuredFromSrgbTokens": true,
+    "lowContrastAccentTokensMustNotBeUsedAsNormalTextOnLightSurfaces": true
   },
   "interactionRegistry": {
     "source": "ui/action_registry.csv",
@@ -36,7 +40,9 @@
     "implemented action tiles use explicit Semantics button labels and a 48dp minimum height constraint",
     "widget contract exercises critical Tools -> Astrology navigation at 2.0x text scale on a 360x800 viewport",
     "widget contract checks a live action tile exposes a semantics label and at least 48dp height",
-    "runtime binding validator cross-checks ACTION ID constants against ACTIVE registry rows and canonical Feature Catalog Free/PRO policy"
+    "runtime binding validator cross-checks ACTION ID constants against ACTIVE registry rows and canonical Feature Catalog Free/PRO policy",
+    "design-token validator computes WCAG relative luminance and contrast ratios for required normal-text foreground/background pairs",
+    "gold and success remain explicitly non-text accent tokens on the three light surfaces because their measured contrast is below the normal-text threshold"
   ],
   "notProvenYet": [
     "real-device minimum touch-target measurement for every rendered control",
