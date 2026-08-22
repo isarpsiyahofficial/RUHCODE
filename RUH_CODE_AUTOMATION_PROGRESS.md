@@ -6,6 +6,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 
 - MASTER: `RC-0001 → RC-1442`.
 - Requirement traceability ve semantic evidence denetimi mevcut; kanıtsız DONE yasak.
+- **Yeni repository-wide evidence integrity gate** bütün `evidence/**/*.json` ağacını RC token/path/JSON bütünlüğü açısından tarıyor.
 - Ana bilgi mimarisi: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Araçlar: Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim; Astroloji altında Batı / Vedik / Çin / BaZi / Gezegen Saatleri ayrı.
 - Canonical SCREEN-ID / ACTION-ID / Feature-ID sözleşmeleri mevcut.
@@ -23,17 +24,29 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration.
 - Professional PDF: local A4 planning/renderer contracts, structural inspector, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection.
 
+## Evidence / requirement audit — güncel durum
+
+- [x] Seçilmiş evidence sözleşmeleri için exact MASTER-aware semantic RC ownership denetimi mevcut.
+- [x] Persisted Western snapshot / technical manifest / PDF service ayrı semantic audit altında.
+- [x] Western production calculation write-boundary structural audit mevcut.
+- [x] **Yeni genel integrity validator:** `tools/requirements/validate_evidence_integrity.py`.
+- [x] Bütün evidence JSON dosyalarında invalid RC formatı, out-of-range RC, duplicate RC ve çelişen `requirements` / `requirement_ids` setleri fail-closed.
+- [x] Evidence içindeki local `sources` / `tests` / `validators` yolları gerçek repository dosyasına çözülmek zorunda; absolute/traversal path reddediliyor.
+- [x] Invalid UTF-8/JSON ve `done=true` + açık release blocker kombinasyonu reddediliyor.
+- [x] Merkezi `Requirements Contract` genel integrity gate'ini semantic auditlerden önce çalıştıracak şekilde bağlı.
+- [ ] İlk görünür CI koşusunda yeni genel gate'in bütün mevcut evidence ağacını yeşil geçtiği exact commit kanıtı henüz yok.
+- [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak MASTER-aware exact ownership denetimine alınmaya devam edecek.
+
 ## Western persistence / PDF — güncel durum
 
 - [x] `WesternNatalPersistenceService` production SQLite runtime'a compose edilmiş durumda.
 - [x] Western snapshot + SHA + CalculationManifest tek transaction persistence boundary'sine sahip.
 - [x] Persisted Western PDF service historical astronomy'yi yeniden hesaplamıyor; sealed snapshot + linked CalculationManifest kullanıyor.
 - [x] Placements / houses / aspects + technical manifest PDF projection source-level mevcut.
-- [x] **Yeni production write-boundary structural audit:** `tools/astronomy/validate_western_natal_write_boundary.py`.
+- [x] Production write-boundary audit `tools/astronomy/validate_western_natal_write_boundary.py` ile korunuyor.
 - [x] `CoreRepositories` generic/public calculations repository expose edemez.
 - [x] Explicit calculations-table production write yolu allowlist dışında CI tarafından reddediliyor; doğrulanmış backup restore kontrollü istisna.
-- [x] Persisted Western snapshot + technical manifest + PDF service evidence artık ortak MASTER-aware semantic validator tarafından exact RC setleriyle doğrulanıyor.
-- [x] Hem `Persisted Western Natal PDF Contract` hem merkezi `Requirements Contract` bu semantic/write-boundary denetimlerini çalıştıracak şekilde bağlı.
+- [x] Persisted Western snapshot + technical manifest + PDF service evidence ortak MASTER-aware semantic validator tarafından exact RC setleriyle doğrulanıyor.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + APPROVED glyph assets.
 - [ ] 5/25/50+ gerçek rendered PDF, parser/crop/glyph/visual regression.
@@ -60,19 +73,19 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Play/rewarded-ad gerçek cihaz kanıtları.
 - Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-22 18:54
+## Son checkpoint — 2026-08-22 20:53
 
-Checkpoint: `automation_runs/2026-08-22_1854_western_write_boundary_semantic_audit.md`
+Checkpoint: `automation_runs/2026-08-22_2053_evidence_integrity_gate.md`
 
-Workflow-target commit: `4868358f8cac5ea45b6f8aedd42b86aa901f1ded`.
-GitHub combined status sorgusu individual status göstermedi (`statuses=[]`); bu yüzden ilgili RC'ler DONE yapılmadı.
+Workflow-target commit: `ab1956ac0836e042605438fae8cd909e58941001`.
+GitHub combined status sorgusu individual status göstermedi (`statuses=[]`); çalışma container'ı da `github.com` DNS çözümleyemedi. Bu yüzden ilgili RC'ler DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
-2. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağla.
-3. UI interaction/accessibility ve backup blocker-independent açıklarını ilerlet.
-4. Western write-path auditine yeni direct writer girmesini CI ile engellemeye devam et.
+1. Yeni evidence integrity gate'in ilk görünür CI sonucunda yakalanan gerçek path/schema drift'leri varsa düzelt.
+2. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
+3. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
+4. UI interaction/accessibility ve backup blocker-independent açıklarını ilerlet.
 5. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
 **FINAL: NO.**
