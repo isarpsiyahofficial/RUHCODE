@@ -7,7 +7,7 @@ import 'package:ruh_code/src/ui/backup/backup_settings_page.dart';
 import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
 
 void main() {
-  testWidgets('backup export and import controls expose semantics and 48dp targets', (tester) async {
+  testWidgets('backup export share and import controls expose semantics and 48dp targets', (tester) async {
     final semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
 
@@ -21,13 +21,17 @@ void main() {
     await tester.pumpAndSettle();
 
     final export = find.byKey(const ValueKey(RuhActionIds.backupExport));
+    final share = find.byKey(const ValueKey(RuhActionIds.backupShare));
     final import = find.byKey(const ValueKey(RuhActionIds.backupImport));
 
     expect(export, findsOneWidget);
+    expect(share, findsOneWidget);
     expect(import, findsOneWidget);
     expect(find.bySemanticsLabel('Tam Yedek Oluştur'), findsOneWidget);
+    expect(find.bySemanticsLabel('Yedeği Paylaş'), findsOneWidget);
     expect(find.bySemanticsLabel('Yedek Dosyası Seç'), findsOneWidget);
     expect(tester.getSize(export).height, greaterThanOrEqualTo(48));
+    expect(tester.getSize(share).height, greaterThanOrEqualTo(48));
     expect(tester.getSize(import).height, greaterThanOrEqualTo(48));
   });
 }
