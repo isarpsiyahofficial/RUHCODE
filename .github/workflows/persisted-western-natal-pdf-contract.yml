@@ -6,9 +6,13 @@ on:
       - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+      - 'lib/src/pdf/western_natal_persistence_service.dart'
+      - 'lib/src/pdf/persisted_western_natal_sections.dart'
       - 'lib/src/pdf/pdf_western_chart_geometry.dart'
       - 'test/pdf/persisted_western_natal_snapshot_test.dart'
       - 'test/pdf/persisted_western_natal_pdf_test.dart'
+      - 'test/pdf/western_natal_persistence_service_test.dart'
+      - 'test/pdf/persisted_western_natal_sections_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
       - 'pubspec.yaml'
@@ -19,9 +23,13 @@ on:
       - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+      - 'lib/src/pdf/western_natal_persistence_service.dart'
+      - 'lib/src/pdf/persisted_western_natal_sections.dart'
       - 'lib/src/pdf/pdf_western_chart_geometry.dart'
       - 'test/pdf/persisted_western_natal_snapshot_test.dart'
       - 'test/pdf/persisted_western_natal_pdf_test.dart'
+      - 'test/pdf/western_natal_persistence_service_test.dart'
+      - 'test/pdf/persisted_western_natal_sections_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
       - 'pubspec.yaml'
@@ -43,8 +51,10 @@ jobs:
           channel: stable
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run persisted Western snapshot and PDF provenance tests
+      - name: Run persisted Western snapshot, persistence, and PDF tests
         run: >-
           flutter test
           test/pdf/persisted_western_natal_snapshot_test.dart
           test/pdf/persisted_western_natal_pdf_test.dart
+          test/pdf/western_natal_persistence_service_test.dart
+          test/pdf/persisted_western_natal_sections_test.dart
