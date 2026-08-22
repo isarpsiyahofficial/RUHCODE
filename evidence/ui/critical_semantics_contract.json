@@ -1,0 +1,29 @@
+{
+  "contract": "ruh-code-critical-widget-semantics-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-1441"],
+  "sources": [
+    "lib/src/ui/numerology/numerology_screen.dart",
+    "lib/src/ui/pdf/pdf_reports_pages.dart",
+    "lib/src/ui/theme/ruh_design_tokens.dart"
+  ],
+  "tests": [
+    "test/ui/critical_semantics_contract_test.dart"
+  ],
+  "validators": [
+    "tools/ui/validate_accessibility_interactions.py",
+    "tools/ui/validate_runtime_theme_tokens.py"
+  ],
+  "requiredProperties": [
+    "numerology values expose localized metric/value semantics instead of raw technical IDs",
+    "professional PDF create action exposes an explicit semantics label and at least 48dp target",
+    "professional PDF share action exposes an explicit semantics label and at least 48dp target after a verified build",
+    "critical semantics regressions render with the canonical production theme"
+  ],
+  "remainingBeforeDone": [
+    "extend semantics and focus-order coverage to every required screen/action/state",
+    "run real-device screen-reader traversal",
+    "obtain exact visible Flutter Quality and UI contract CI success"
+  ]
+}
