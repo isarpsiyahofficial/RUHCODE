@@ -1,7 +1,7 @@
 {
   "contract": "western_aspect_grid",
   "version": 1,
-  "requirements": ["RC-0051", "RC-0277", "RC-0278"],
+  "requirements": ["RC-0051"],
   "inputs": ["validated NatalPlacementSet", "validated NatalAspectSet with exact shared provenance"],
   "outputs": ["deterministic symmetric square aspect grid", "empty diagonal", "pair-addressable major-aspect cells"],
   "hard_rules": [
