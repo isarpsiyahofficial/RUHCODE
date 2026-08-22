@@ -6,6 +6,7 @@ import 'package:ruh_code/src/pdf/persisted_manifest_section.dart';
 
 void main() {
   test('technical section projects persisted manifest without recomputation', () {
+    final digest = List<String>.filled(64, 'a').join();
     final manifest = CalculationManifest(
       id: EntityId.parse('123e4567-e89b-42d3-a456-426614174000'),
       engineId: 'western.natal',
@@ -29,7 +30,7 @@ void main() {
 
     final section = PersistedManifestSectionAdapter.build(
       manifest: manifest,
-      snapshotDigest: 'a' * 64,
+      snapshotDigest: digest,
       title: 'Teknik Bilgiler',
       fieldHeader: 'Alan',
       valueHeader: 'Değer',
@@ -37,7 +38,7 @@ void main() {
     );
 
     expect(section.sectionId, PdfSectionIds.technicalManifest);
-    expect(section.snapshotDigest, 'a' * 64);
+    expect(section.snapshotDigest, digest);
     final rows = {for (final row in section.rows.skip(1)) row[0]: row[1]};
     expect(rows['engineId'], 'western.natal');
     expect(rows['houseSystemId'], 'placidus');
@@ -70,7 +71,7 @@ void main() {
     expect(
       () => PersistedManifestSectionAdapter.build(
         manifest: manifest,
-        snapshotDigest: 'b' * 64,
+        snapshotDigest: List<String>.filled(64, 'b').join(),
         title: 'Technical',
         fieldHeader: 'Field',
         valueHeader: 'Value',
