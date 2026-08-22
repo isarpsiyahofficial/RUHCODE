@@ -84,9 +84,11 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] **Western calculation-save boundary source-level bağlandı:** snapshot + SHA ve CalculationManifest aynı transaction içinde yazılıyor; ikinci yazı hatasında rollback var.
 - [x] Save boundary manifest `engineId/engineVersion/algorithmVersion/dataVersion/houseSystemId/zodiacSystemId` parity'sini fail-closed doğruluyor.
 - [x] **Persisted Western PDF section projection source-level tamamlandı:** placements / houses / aspects yalnız persisted snapshot'tan üretiliyor.
-- [x] Persisted Western snapshot/PDF/persistence tests, evidence, structural validator ve CI contract genişletildi.
+- [x] **Persisted CalculationManifest teknik PDF section source-level eklendi:** coordinate/timezone/UTC-local time/engine/house/zodiac yalnız persisted manifestten projekte ediliyor.
+- [x] Persisted Western semantic RC ownership için ayrı MASTER keyword validator eklendi.
+- [x] Persisted Western snapshot/PDF/persistence/manifest tests, evidence, structural validators ve CI contract genişletildi.
 - [ ] Atomic persistence service gerçek Western natal application save akışındaki tek production write boundary olarak henüz compose edilmedi.
-- [ ] Persisted Western sections production calculation-type PDF handler'a bağlanmalı.
+- [ ] Persisted Western sections + technical manifest section production calculation-type PDF handler'a bağlanmalı.
 - [ ] Production build-side handler composition yalnız approved font provider ile runtime'a bağlanmalı.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + approved glyph assets.
@@ -103,7 +105,9 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] 48dp minimum touch target, Semantics labels, 2.0x critical navigation contract source-level.
 - [x] Professional PDF builder create/share artık builder ekranına ait canonical action ID'ler kullanıyor.
 - [x] Western persisted evidence'da bu tur yanlış eklenen Numeroloji/BaZi PDF RC'leri (`RC-0875/0876`) aynı turda kaldırıldı; doğru Western section RC'leri `RC-0920/0921/0922/0923` kullanıldı.
-- [ ] Persisted Western evidence exact RC setini merkezi `validate_evidence_traceability.py` denetimine ekle.
+- [x] Persisted Western exact RC sahipliği ayrı semantic MASTER validator ile korunuyor.
+- [x] Persisted technical manifest evidence konservatif `RC-0911/0912/0913/0914/0916` sahipliği taşıyor.
+- [ ] Persisted manifest evidence'ını merkezi `validate_evidence_traceability.py` audit tablosuna ekle.
 - [ ] Requirement-bearing diğer evidence dosyalarını semantic RC drift açısından taramaya devam et.
 - [ ] APPROVED UI reference/hash seti olmadan UI visual DONE verme.
 
@@ -128,16 +132,16 @@ Checkpoint: `automation_runs/2026-08-22_1453_western_atomic_persistence_sections
 - save-time engine/algorithm/data/house/zodiac parity
 - persisted calculation read-back + canonical SHA round-trip
 - persisted snapshot → PDF placements/houses/aspects table projection; historical recalculation yok
-- evidence semantic sahiplik düzeltmesi
-- expanded structural validator + Actions contract
+- persisted CalculationManifest → technical PDF section; coordinate/timezone/time/system yeniden hesaplanmıyor
+- exact Western semantic RC ownership validator
+- expanded structural validators + Actions contract
 
-Exact latest source commit `b67c706a811377bb24b85c0d49b757413ddb4821` için GitHub combined-status `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
+Workflow-target commit `e87f9a6dcde344a12ef96d3754c3778a8ac42952` için görünür individual GitHub status yok; source-level evidence `done=false`, ilgili RC'ler DONE değil.
 
 ## Sıradaki çalışma
 
-1. Persisted Western evidence exact RC setini merkezi semantic traceability validator'a bağla.
-2. `WesternNatalPersistenceService`i gerçek Western calculation-save application/runtime boundary'sine compose et; paralel doğrudan write yolunu engelle.
-3. `PersistedWesternNatalSectionAdapter`ı production `western.natal` PDF handler'a bağla.
-4. CalculationManifest teknik PDF section'ını persisted manifestten oluştur; tarih/konum/timezone/house/zodiac değerlerini yeniden hesaplama.
-5. Requirement-bearing kalan evidence semantic auditine ve blocker gerektirmeyen backup/PDF/UI işlerine devam et.
-6. Fiziksel ephemeris/EOP/Lahiri/GeoNames, 8.036 günlük mesaj, APPROVED UI refs, production PDF fonts ve clean-checkout lockfile blocker'larını açık tut.
+1. `WesternNatalPersistenceService`i gerçek Western calculation-save application/runtime boundary'sine compose et; paralel doğrudan write yolunu engelle.
+2. `PersistedWesternNatalSectionAdapter` + `PersistedManifestSectionAdapter`ı production `western.natal` PDF handler'a bağla.
+3. Persisted technical manifest evidence'ını merkezi semantic evidence audit kapsamına al.
+4. Requirement-bearing kalan evidence semantic auditine ve blocker gerektirmeyen backup/PDF/UI işlerine devam et.
+5. Fiziksel ephemeris/EOP/Lahiri/GeoNames, 8.036 günlük mesaj, APPROVED UI refs, production PDF fonts ve clean-checkout lockfile blocker'larını açık tut.
