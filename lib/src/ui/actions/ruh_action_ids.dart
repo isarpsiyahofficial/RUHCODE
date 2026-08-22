@@ -24,8 +24,11 @@ abstract final class RuhActionIds {
   static const recordsClients = 'ACTION-RECORDS-CLIENTS';
   static const profileSettings = 'ACTION-PROFILE-SETTINGS';
   static const settingsPdf = 'ACTION-SETTINGS-PDF';
+  static const settingsBackup = 'ACTION-SETTINGS-BACKUP';
   static const pdfPreview = 'ACTION-PDF-PREVIEW';
   static const pdfBuild = 'ACTION-PDF-BUILD';
+  static const backupExport = 'ACTION-BACKUP-EXPORT';
+  static const backupImport = 'ACTION-BACKUP-IMPORT';
 
   static const allRuntimeBindings = <String>{
     navigationToday,
@@ -45,7 +48,10 @@ abstract final class RuhActionIds {
     recordsClients,
     profileSettings,
     settingsPdf,
+    settingsBackup,
     pdfPreview,
     pdfBuild,
+    backupExport,
+    backupImport,
   };
 }
