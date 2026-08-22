@@ -17,11 +17,14 @@ Latest source-level checkpoint:
    - historical ephemeris/natal/house recalculation yok
    - section rows aynı snapshot digest'i taşıyor
    - lokalize label eksikse fail-closed
-3. **Evidence / CI contract**
-   - persistence ve section source/test dosyaları evidence'a eklendi
-   - Western PDF RC ownership yanlışlığı aynı turda düzeltildi
-   - structural validator yeni atomiklik/no-recalculation sözleşmesini doğruluyor
-   - dedicated Actions workflow yeni testleri kapsıyor
+3. **Persisted CalculationManifest technical section**
+   - engine/version/data, UTC/local time, coordinate, IANA timezone, house/zodiac gibi teknik alanlar persisted manifestten projekte ediliyor
+   - teknik bölüm calculation/timezone/geocode motoru çağırmıyor
+   - technical manifest section ayrı evidence + validator + test ile korunuyor
+4. **Evidence / CI contract**
+   - Western persistence evidence exact RC ownership için ayrı semantic MASTER validator'a bağlandı
+   - yanlış `RC-0875/0876` sahipliği aynı turda temizlenip doğru `RC-0920/0921/0922/0923` kullanıldı
+   - structural + semantic validators ve Actions workflow yeni testleri kapsıyor
 
 ## Validation limitation
 
@@ -31,10 +34,9 @@ Latest source-level checkpoint:
 
 ## Next safe work
 
-- persisted Western evidence'ı merkezi semantic traceability validator'a exact RC setiyle dahil et
 - atomic persistence service'i gerçek Western save application boundary'sine bağla
-- persisted Western sections'i production calculation-type PDF handler'a bağla
-- persisted CalculationManifest teknik PDF section'ı ekle; tekrar hesaplama yapma
+- persisted Western sections + technical manifest section'ı production `western.natal` PDF handler'a bağla
+- persisted manifest evidence'ını merkezi semantic evidence audit kapsamına ekle
 - blocker-independent PDF/UI/backup/evidence auditlerine devam et
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout lockfile remain open blockers
 
