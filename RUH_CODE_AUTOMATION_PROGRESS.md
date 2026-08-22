@@ -77,14 +77,16 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Demo preview açıkça `Örnek Kişi — Demo Profil`; gerçek kullanıcı/danışan/kayıt verisinden ayrılmış.
 - [x] `ProfessionalPdfApplicationService<TSnapshot>` exact selected record → guarded PRO service → PDF structural inspection zincirini kuruyor.
 - [x] FREE kullanıcıda PDF delegate'in hiç çalışmadığını ve PRO kullanıcının exact snapshot/section order kullandığını doğrulayan test sözleşmesi var.
-- [x] Builder UI `ProfessionalPdfBuildActions` üzerinden gerçek application action'a delege ediyor; canonical `ACTION-PDF-PREVIEW-CREATE` kullanıyor; production action yoksa sahte başarı göstermiyor.
 - [x] Production `LocalDatabaseProfessionalPdfSnapshotSource` calculation + CalculationManifest'i aynı transaction içinde okuyup fail-closed davranıyor.
 - [x] `RuhCodeRuntime` persisted calculation PDF source'u composition root içinde oluşturuyor/expose ediyor.
-- [x] Typed saved-calculation catalog boundary (`ProfessionalPdfRecordCatalog` / `ProfessionalPdfCatalogActions`) mevcut.
+- [x] Typed saved-calculation catalog (`ProfessionalPdfRecordCatalog` → `ProfessionalPdfCatalogActions`) production startup'ta UI boundary'ye tek kez bağlanıyor.
+- [x] Builder ham record ID alanını kaldırdı; typed `Kayıtlı Hesaplama` selector kullanıyor.
+- [x] `PersistedCalculationPdfRouter` exact calculation-type handler routing sağlıyor; unknown/duplicate/empty registry fail-closed.
 - [x] Native PDF Save As/share gateway ve delivery service source-level; cancellation/unavailable typed.
-- [x] Professional PDF application evidence + semantic MASTER RC ownership validator + ayrı CI contract yeni kaynak/testleri kapsıyor.
-- [ ] Builder final UX'te typed saved-calculation catalog gerçek selector olarak bağlanmalı; ham record ID kaldırılmalı.
-- [ ] Persisted calculation type → gerçek `PdfReportContentAdapter` routing tamamlanmalı; bilinmeyen type fail-closed olmalı.
+- [x] Professional PDF application evidence + semantic MASTER RC ownership validator + ayrı CI contract yeni source/testleri kapsıyor.
+- [x] Professional PDF application evidence merkezi semantic traceability audit'e dahil edildi.
+- [ ] Persisted calculation type'lar için gerçek production report handler composition tamamlanmalı.
+- [ ] Production build-side `ProfessionalPdfApplicationActions` yalnız gerçek local renderer + approved font provider ile runtime'a bağlanmalı; fake/demo build yasak.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + approved glyph assets.
 - [ ] Vedik vector chart embedding; BaZi/Numerology production table renderers.
@@ -95,6 +97,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 ## Semantic evidence / UI quality
 
 - [x] Merkezi semantic evidence validator Numeroloji, BaZi, PDF, Backup, Entitlement, terminology/interpretation ve Western astronomy ailelerini denetliyor.
+- [x] `requirements[]` ve `requirement_ids[]` evidence formatları merkezi semantic audit'te destekleniyor.
+- [x] Professional PDF application evidence exact RC seti global semantic audit'e eklendi.
 - [x] Yanlış TODO-index→RC eşlemeleri birden fazla evidence ailesinde temizlendi.
 - [x] Runtime action bindings registry + Feature Catalog Free/PRO parity ile çaprazlanıyor.
 - [x] 48dp minimum touch target, Semantics labels, 2.0x critical navigation contract source-level.
@@ -115,24 +119,25 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 
 ## Son tur — 2026-08-22 04:52
 
-Checkpoint: `automation_runs/2026-08-22_0452_persisted_pdf_source_native_delivery.md`
+Checkpoint: `automation_runs/2026-08-22_0452_pdf_selector_router_traceability.md`
 
 Öne çıkan işler:
-- Production persisted calculation + CalculationManifest atomic PDF snapshot source.
-- Typed newest-first saved-calculation catalog boundary.
-- Runtime composition root bağlantısı.
-- Native PDF Save As/share gateway ve typed delivery sonuçları.
-- Source/delivery regression tests.
-- Professional PDF evidence/validator/workflow RC-0936/0939/0940 dahil genişletildi.
+- persisted calculation + CalculationManifest atomic PDF source
+- typed newest-first saved-calculation selector; raw ID kaldırıldı
+- startup production catalog UI binding
+- exact calculation-type fail-closed PDF router
+- native PDF Save As/share delivery
+- application/source/router/delivery/widget regressions
+- professional PDF evidence global semantic traceability audit'e eklendi
 
-Workflow-target commit `72c2e6f7269a90200f6538d2932b828081b72b5d` için GitHub combined-status yine `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
+Professional PDF evidence commit `9df3d778fc5dcf09dc91f18d11f3c045b57bfb8f` ve central semantic traceability commit `2a0ea7bd0831da3f3f2b27f6b664b1160521a0fe` için GitHub combined-status `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
 
 ## Sıradaki çalışma
 
-1. Typed saved-calculation catalog'u `ProfessionalPdfBuilderPage` içinde gerçek selector'a bağla; ham record ID alanını kaldır.
-2. App/navigation composition'a catalog action'ını geçir.
-3. Persisted calculation type → `PdfReportContentAdapter` routing kur; bilinmeyen type fail-closed.
-4. Production font blocker gerektirmeyen PDF data/table/interaction testlerini genişlet.
+1. Canonical persisted Numerology snapshot → gerçek production PDF handler adapter/composition.
+2. Western persisted snapshot handler contract; exact payload schema yoksa uydurma yapma ve fail-closed bırak.
+3. Build-side runtime action'ı yalnız real local renderer + approved font provider olduğunda bağla.
+4. Native save/share UI delivery state'lerini ve blocker gerektirmeyen PDF table/parity testlerini genişlet.
 5. Requirement-bearing kalan evidence dosyalarını semantic RC ownership audit'e al.
 6. Requirement state'i yalnız görünür test/workflow/evidence kanıtıyla yükselt.
 
