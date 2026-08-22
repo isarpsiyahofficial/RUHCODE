@@ -31,6 +31,10 @@ def main() -> None:
     require(snapshot, "snapshotSha256", "persisted SHA-256 field")
     require(snapshot, "sha256.convert(utf8.encode(canonicalJson))", "canonical digest")
     require(snapshot, "houseCuspsDeg.length != 12", "twelve-cusp validation")
+    require(snapshot, "close one exact 360° cycle", "closed house cycle validation")
+    require(snapshot, "placement house mismatch", "placement/cusp integrity")
+    require(snapshot, "aspect exact angle does not match its aspect type", "aspect type/angle integrity")
+    require(snapshot, "aspect separation disagrees with placement geometry", "aspect geometry integrity")
     require(snapshot, "requestedHouseSystem", "requested house system")
     require(snapshot, "effectiveHouseSystem", "effective house system")
     require(snapshot, "Persisted aspect references a body absent from placements", "aspect/body integrity")
@@ -46,6 +50,8 @@ def main() -> None:
 
     require(test_snapshot, "tampered persisted Western snapshot is rejected before rendering", "tamper regression")
     require(test_snapshot, "persisted PDF geometry is produced without recalculating chart values", "no-recalculation regression")
+    require(test_snapshot, "stored house number must agree with persisted cusp geometry", "house consistency regression")
+    require(test_snapshot, "aspect type and geometry must agree with persisted placements", "aspect consistency regression")
     require(test_reader, "manifest engine version drift fails closed", "engine drift regression")
     require(test_reader, "manifest algorithm version drift fails closed", "algorithm drift regression")
     require(test_reader, "manifest data version drift fails closed", "data drift regression")
@@ -65,7 +71,10 @@ def main() -> None:
         "manifest_algorithm_version_must_match",
         "manifest_data_version_must_match",
         "resolved_house_system_and_12_cusps_persisted",
+        "house_cusps_must_form_closed_forward_cycle",
+        "placement_house_number_must_match_persisted_cusps",
         "placements_and_major_aspects_persisted",
+        "aspect_type_angle_and_placement_geometry_must_match",
         "pdf_geometry_reads_persisted_snapshot",
         "unknown_or_tampered_payload_fails_closed",
     ):
