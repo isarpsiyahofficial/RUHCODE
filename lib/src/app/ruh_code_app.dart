@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../backup/backup_application_service.dart';
 import '../entitlements/feature_access_guard.dart';
 import '../ui/navigation/main_navigation_shell.dart';
+import '../ui/theme/ruh_design_tokens.dart';
 
 class RuhCodeApp extends StatelessWidget {
   const RuhCodeApp({
@@ -19,16 +20,7 @@ class RuhCodeApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Ruh Code',
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFFBF8F3),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4C2A91),
-          primary: const Color(0xFF4C2A91),
-          secondary: const Color(0xFFC89338),
-          surface: Colors.white,
-        ),
-      ),
+      theme: RuhAppTheme.light(),
       home: MainNavigationShell(
         featureAccess: featureAccess,
         backupActions: backupActions,
