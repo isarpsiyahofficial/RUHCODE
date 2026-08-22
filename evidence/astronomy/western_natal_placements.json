@@ -1,7 +1,7 @@
 {
   "contract": "western_natal_placements",
   "version": 1,
-  "requirements": ["RC-0031", "RC-0032", "RC-0033", "RC-0034", "RC-0048", "RC-0269", "RC-0270"],
+  "requirements": ["RC-0031", "RC-0032", "RC-0033", "RC-0034", "RC-0048"],
   "inputs": ["versioned EclipticState list", "validated HouseCusps"],
   "outputs": ["body", "tropical sign", "degree in sign", "house number", "apparent motion"],
   "hard_rules": [
