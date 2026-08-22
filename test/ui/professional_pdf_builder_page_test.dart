@@ -33,6 +33,65 @@ void main() {
     expect(find.text('2 sayfa · 4096 byte'), findsOneWidget);
   });
 
+  testWidgets('verified PDF exposes canonical share action when delivery is bound', (tester) async {
+    final delivery = _RecordingDeliveryActions();
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('tr', 'TR'),
+        home: ProfessionalPdfBuilderPage(
+          actions: _RecordingActions(),
+          records: _RecordActions(),
+          deliveryActions: delivery,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('professional-pdf-record-selector')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('numerology.pythagorean').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey(RuhActionIds.pdfShare)), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfShare)));
+    await tester.pumpAndSettle();
+
+    expect(delivery.shareCalls, 1);
+    expect(delivery.recordId, 'calc-42');
+    expect(delivery.sectionIds, ['chart', 'placements', 'interpretation', 'notes']);
+    expect(find.text('PDF paylaşım menüsüne aktarıldı.'), findsOneWidget);
+  });
+
+  testWidgets('dismissed PDF share is a normal cancellation state', (tester) async {
+    final delivery = _RecordingDeliveryActions(
+      shareOutcome: ProfessionalPdfUiDeliveryOutcome.cancelled,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProfessionalPdfBuilderPage(
+          actions: _RecordingActions(),
+          records: _RecordActions(),
+          deliveryActions: delivery,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('professional-pdf-record-selector')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('numerology.pythagorean').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfShare)));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Paylaşım iptal edildi.'), findsOneWidget);
+    expect(find.textContaining('PDF paylaşılamadı'), findsNothing);
+  });
+
   testWidgets('builder never fakes output when production build actions are absent', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -86,6 +145,38 @@ final class _RecordingActions implements ProfessionalPdfBuildActions {
     this.localeTag = localeTag;
     this.sectionIds = List<String>.unmodifiable(sectionIds);
     return const ProfessionalPdfUiBuildResult(byteLength: 4096, pageCount: 2);
+  }
+}
+
+final class _RecordingDeliveryActions implements ProfessionalPdfDeliveryActions {
+  _RecordingDeliveryActions({
+    this.shareOutcome = ProfessionalPdfUiDeliveryOutcome.success,
+  });
+
+  final ProfessionalPdfUiDeliveryOutcome shareOutcome;
+  int shareCalls = 0;
+  String recordId = '';
+  List<String> sectionIds = const [];
+
+  @override
+  Future<ProfessionalPdfUiDeliveryResult> save({
+    required String recordId,
+    required String localeTag,
+    required List<String> sectionIds,
+  }) async => const ProfessionalPdfUiDeliveryResult(
+        outcome: ProfessionalPdfUiDeliveryOutcome.success,
+      );
+
+  @override
+  Future<ProfessionalPdfUiDeliveryResult> share({
+    required String recordId,
+    required String localeTag,
+    required List<String> sectionIds,
+  }) async {
+    shareCalls += 1;
+    this.recordId = recordId;
+    this.sectionIds = List<String>.unmodifiable(sectionIds);
+    return ProfessionalPdfUiDeliveryResult(outcome: shareOutcome);
   }
 }
 
