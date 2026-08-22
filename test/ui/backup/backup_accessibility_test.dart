@@ -10,12 +10,13 @@ void main() {
   testWidgets('backup export share and import controls expose semantics and 48dp targets', (tester) async {
     final semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
+    final actions = _RecordingBackupActions();
 
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('tr', 'TR'),
         theme: RuhAppTheme.light(),
-        home: const BackupSettingsPage(backupActions: _NoopBackupActions()),
+        home: BackupSettingsPage(backupActions: actions),
       ),
     );
     await tester.pumpAndSettle();
@@ -33,11 +34,18 @@ void main() {
     expect(tester.getSize(export).height, greaterThanOrEqualTo(48));
     expect(tester.getSize(share).height, greaterThanOrEqualTo(48));
     expect(tester.getSize(import).height, greaterThanOrEqualTo(48));
+
+    await tester.tap(share);
+    await tester.pumpAndSettle();
+    expect(actions.shareCalls, 1);
+    expect(actions.lastShareFileName, endsWith('.ruhcode.zip'));
+    expect(find.text('İşlem iptal edildi. Verilerinde değişiklik yapılmadı.'), findsOneWidget);
   });
 }
 
-final class _NoopBackupActions implements BackupApplicationActions {
-  const _NoopBackupActions();
+final class _RecordingBackupActions implements BackupApplicationActions {
+  int shareCalls = 0;
+  String lastShareFileName = '';
 
   @override
   Future<BackupSaveResult> exportAndSave({
@@ -57,7 +65,11 @@ final class _NoopBackupActions implements BackupApplicationActions {
     required DateTime exportedAtUtc,
     String? title,
     String? text,
-  }) async => const BackupShareResult(status: BackupUserOperationStatus.cancelled);
+  }) async {
+    shareCalls += 1;
+    lastShareFileName = fileName;
+    return const BackupShareResult(status: BackupUserOperationStatus.cancelled);
+  }
 
   @override
   Future<BackupPickResult> pickAndPreviewRestore() async =>
