@@ -5,12 +5,16 @@ on:
     paths:
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
+      - 'lib/src/app/app_runtime.dart'
+      - 'lib/src/data/local/core_repositories.dart'
+      - 'lib/src/backup/local_database_backup_import_store.dart'
       - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
       - 'lib/src/pdf/western_natal_persistence_service.dart'
       - 'lib/src/pdf/persisted_western_natal_sections.dart'
       - 'lib/src/pdf/persisted_manifest_section.dart'
+      - 'lib/src/pdf/persisted_western_natal_pdf_service.dart'
       - 'lib/src/pdf/pdf_western_chart_geometry.dart'
       - 'test/pdf/persisted_western_natal_snapshot_test.dart'
       - 'test/pdf/persisted_western_natal_pdf_test.dart'
@@ -19,9 +23,11 @@ on:
       - 'test/pdf/persisted_manifest_section_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
       - 'evidence/pdf/persisted_manifest_section.json'
+      - 'evidence/pdf/persisted_western_pdf_service.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
       - 'tools/pdf/validate_persisted_manifest_section.py'
       - 'tools/requirements/validate_persisted_western_traceability.py'
+      - 'tools/astronomy/validate_western_natal_write_boundary.py'
       - 'pubspec.yaml'
       - 'pubspec.lock'
       - '.github/workflows/persisted-western-natal-pdf-contract.yml'
@@ -29,12 +35,16 @@ on:
     paths:
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
+      - 'lib/src/app/app_runtime.dart'
+      - 'lib/src/data/local/core_repositories.dart'
+      - 'lib/src/backup/local_database_backup_import_store.dart'
       - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
       - 'lib/src/pdf/western_natal_persistence_service.dart'
       - 'lib/src/pdf/persisted_western_natal_sections.dart'
       - 'lib/src/pdf/persisted_manifest_section.dart'
+      - 'lib/src/pdf/persisted_western_natal_pdf_service.dart'
       - 'lib/src/pdf/pdf_western_chart_geometry.dart'
       - 'test/pdf/persisted_western_natal_snapshot_test.dart'
       - 'test/pdf/persisted_western_natal_pdf_test.dart'
@@ -43,9 +53,11 @@ on:
       - 'test/pdf/persisted_manifest_section_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
       - 'evidence/pdf/persisted_manifest_section.json'
+      - 'evidence/pdf/persisted_western_pdf_service.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
       - 'tools/pdf/validate_persisted_manifest_section.py'
       - 'tools/requirements/validate_persisted_western_traceability.py'
+      - 'tools/astronomy/validate_western_natal_write_boundary.py'
       - 'pubspec.yaml'
       - 'pubspec.lock'
       - '.github/workflows/persisted-western-natal-pdf-contract.yml'
@@ -62,6 +74,8 @@ jobs:
         run: python tools/pdf/validate_persisted_western_natal_snapshot.py
       - name: Validate persisted Western semantic RC ownership
         run: python tools/requirements/validate_persisted_western_traceability.py
+      - name: Validate Western production write boundary
+        run: python tools/astronomy/validate_western_natal_write_boundary.py
       - name: Validate persisted CalculationManifest PDF section
         run: python tools/pdf/validate_persisted_manifest_section.py
       - uses: subosito/flutter-action@v2
