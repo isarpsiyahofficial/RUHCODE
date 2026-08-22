@@ -29,10 +29,10 @@ abstract final class RuhActionIds {
   static const pdfPreview = 'ACTION-PDF-PREVIEW';
   static const pdfBuild = 'ACTION-PDF-BUILD';
 
-  /// Professional builder actions belong to SCR-PDF-BUILDER-001.
-  /// Do not reuse the historical preview-screen create/share action IDs here.
-  static const pdfBuilderCreate = 'ACTION-PDF-BUILDER-CREATE';
-  static const pdfBuilderShare = 'ACTION-PDF-BUILDER-SHARE';
+  /// These controls live on SCR-PDF-BUILDER-001. Historical PREVIEW action
+  /// IDs must never be used by the professional builder runtime.
+  static const pdfCreate = 'ACTION-PDF-BUILDER-CREATE';
+  static const pdfShare = 'ACTION-PDF-BUILDER-SHARE';
 
   static const backupExport = 'ACTION-BACKUP-EXPORT';
   static const backupImport = 'ACTION-BACKUP-IMPORT';
@@ -58,8 +58,8 @@ abstract final class RuhActionIds {
     settingsBackup,
     pdfPreview,
     pdfBuild,
-    pdfBuilderCreate,
-    pdfBuilderShare,
+    pdfCreate,
+    pdfShare,
     backupExport,
     backupImport,
   };
