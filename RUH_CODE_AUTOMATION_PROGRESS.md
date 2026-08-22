@@ -10,7 +10,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Ana bilgi mimarisi: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Araçlar: Astroloji / Numeroloji / Spiritüel / Kişisel Gelişim; Astroloji altında Batı / Vedik / Çin / BaZi / Gezegen Saatleri ayrı.
 - Canonical SCREEN-ID / ACTION-ID / Feature-ID sözleşmeleri mevcut.
-- UI design-token kontrastı artık gerçek sRGB relative-luminance hesabıyla ölçülüyor; RC-1441 semantic evidence altında.
+- UI design-token kontrastı gerçek sRGB relative-luminance hesabıyla ölçülüyor; runtime Flutter theme artık canonical token bridge kullanıyor.
 - APPROVED final UI PNG/reference/hash seti henüz tamamlanmadı; visual regression final kapısı açık.
 
 ## Source-level ilerlemiş ana bloklar
@@ -24,7 +24,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline snapshot/time anchor, Google Play lifetime restore composition, rewarded-ad cancel/failure safety.
 - Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration.
 - Professional PDF: local A4 planning/renderer contracts, structural inspector, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection.
-- Accessibility: 48dp touch target, 4.5:1 normal-text / 3.0:1 large-text contract, measured design-token contrast and low-contrast accent restrictions.
+- Accessibility: 48dp touch target, 4.5:1 normal-text / 3.0:1 large-text contract, measured design-token contrast, canonical runtime theme bridge ve 2.0x text-scale navigation regression.
 
 ## Evidence / requirement audit — güncel durum
 
@@ -36,8 +36,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Evidence içindeki local `sources` / `tests` / `validators` yolları gerçek repository dosyasına çözülmek zorunda; absolute/traversal path reddediliyor.
 - [x] Invalid UTF-8/JSON ve `done=true` + açık release blocker kombinasyonu reddediliyor.
 - [x] Merkezi `Requirements Contract` genel integrity gate'ini semantic auditlerden önce çalıştıracak şekilde bağlı.
-- [x] `evidence/ui/design_token_contrast_contract.json` exact `RC-1441` semantic ownership denetimine bağlı.
-- [ ] İlk görünür CI koşusunda yeni genel gate + UI contrast gate'in bütün mevcut evidence ağacını yeşil geçtiği exact commit kanıtı henüz yok.
+- [x] UI accessibility evidence ailesi için ayrı MASTER-aware exact `RC-1441` validator mevcut: design-token contrast + runtime theme + 2.0x text-scale.
+- [ ] İlk görünür CI koşusunda yeni genel gate + UI accessibility gate'lerinin bütün mevcut evidence ağacını yeşil geçtiği exact commit kanıtı henüz yok.
 - [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak MASTER-aware exact ownership denetimine alınmaya devam edecek.
 
 ## UI / Accessibility — güncel durum
@@ -48,10 +48,14 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] `tools/ui/validate_design_tokens.py` required token çiftlerini gerçek sRGB relative luminance ile ölçüyor.
 - [x] `textPrimary`, `textMuted`, `primary`, `primaryStrong`, `danger` için canonical light-surface text pair contract mevcut.
 - [x] `gold` ve `success` canonical light surfaces üzerinde normal-text tokenı olarak kullanılamaz; non-text accent olarak kilitli.
-- [x] Accessibility contract measured contrast gate'e bağlı ve Requirements Contract bu validatorları çalıştırıyor.
-- [ ] Rendered widget kaynaklarında ad-hoc low-contrast color kullanımının repository-wide taraması henüz yok.
+- [x] `lib/src/ui/theme/ruh_design_tokens.dart` canonical JSON design tokens için Flutter runtime bridge olarak eklendi.
+- [x] `RuhCodeApp` ad-hoc raw renklerden `RuhAppTheme.light()` kullanımına geçirildi.
+- [x] `tools/ui/validate_runtime_theme_tokens.py` JSON↔Dart token eşitliğini ve runtime/rendered UI'da ham `Color(0x...)`, `Color.fromARGB/fromRGBO`, `Colors.*` bypass yasağını denetliyor.
+- [x] Flutter regression testi ThemeData'nın canonical scaffold/card/divider/ColorScheme değerlerini doğruluyor.
+- [x] 360x800 + 2.0x text-scale testinde Araçlar, Kayıtlar ve Profil→Ayarlar→PDF yolları regression sözleşmesine alındı.
 - [ ] Real-device screen-reader traversal.
-- [ ] Tüm gerekli ekran state'lerinde 2.0x text-scale overflow/golden regression.
+- [ ] Tüm gerekli ekran/state'lerde 2.0x text-scale overflow/golden regression.
+- [ ] Render edilmiş her zorunlu ekran/state için gerçek contrast doğrulaması.
 - [ ] APPROVED UI visual regression.
 - [ ] Exact visible accessibility workflow SUCCESS.
 
@@ -91,19 +95,19 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Play/rewarded-ad gerçek cihaz kanıtları.
 - Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-22 22:53
+## Son checkpoint — 2026-08-23 00:52
 
-Checkpoint: `automation_runs/2026-08-22_2253_ui_contrast_semantic_gate.md`
+Checkpoint: `automation_runs/2026-08-23_0052_runtime_theme_text_scale_gate.md`
 
-Workflow-target source commit: `b4c7aad7d13ea3282589567e0da5b481889e7b5f`.
-Exact görünür GitHub Actions SUCCESS henüz kanıtlanmadı. Bu yüzden `RC-1441` DONE yapılmadı.
+Bu turda runtime theme/token bridge, raw-color bypass gate, ThemeData regression, genişletilmiş 2.0x text-scale regression ve exact RC-1441 semantic evidence validator eklendi.
+Exact görünür GitHub Actions SUCCESS henüz kanıtlanmadı; combined-status `statuses=[]`, Actions REST query connector politikası tarafından reddedildi. Bu yüzden `RC-1441` DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Rendered UI kaynaklarında ad-hoc low-contrast renk kullanımını yakalayan source-level validator ekle.
-2. 2.0x text-scale/widget semantics kapsamını genişlet.
-3. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
-4. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
+1. Backup, Numerology ve Professional PDF ekranlarında widget-level semantics/focus coverage'ı genişlet.
+2. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
+3. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
+4. `pubspec.lock` yalnız gerçek Flutter dependency resolution kanıtı elde edildiğinde ekle.
 5. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
 **FINAL: NO.**
