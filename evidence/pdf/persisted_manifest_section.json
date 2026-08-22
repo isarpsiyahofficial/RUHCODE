@@ -1,0 +1,27 @@
+{
+  "id": "PDF-PERSISTED-MANIFEST-SECTION-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirement_ids": ["RC-0911", "RC-0912", "RC-0913", "RC-0914", "RC-0916"],
+  "source_files": [
+    "lib/src/pdf/persisted_manifest_section.dart",
+    "lib/src/domain/models/core_models.dart"
+  ],
+  "test_files": [
+    "test/pdf/persisted_manifest_section_test.dart"
+  ],
+  "contracts": {
+    "reads_persisted_calculation_manifest_only": true,
+    "coordinates_are_not_recalculated": true,
+    "timezone_is_not_recomputed": true,
+    "house_and_zodiac_ids_are_not_recomputed": true,
+    "utc_and_local_timestamps_are_preserved": true,
+    "localized_field_labels_required": true,
+    "same_snapshot_digest_required": true
+  },
+  "open_gates": [
+    "Exact Flutter test SUCCESS is not yet visible.",
+    "Production PDF font artifact and final visual regression remain open.",
+    "This optional technical section must still be wired into the production Western PDF handler."
+  ]
+}
