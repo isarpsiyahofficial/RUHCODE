@@ -30,6 +30,8 @@ jobs:
         run: python tools/requirements/validate_ui_accessibility_traceability.py
       - name: Validate backup transport semantic ownership
         run: python tools/requirements/validate_backup_transport_traceability.py
+      - name: Validate backup restore preview semantic/action ownership
+        run: python tools/backup/validate_backup_restore_preview_accessibility.py
       - name: Validate Western production write boundary
         run: python tools/astronomy/validate_western_natal_write_boundary.py
       - name: Validate UI design tokens and measured contrast
