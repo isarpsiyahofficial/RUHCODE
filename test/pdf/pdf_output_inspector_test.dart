@@ -9,7 +9,7 @@ void main() {
 
   Uint8List bytes(String value) => Uint8List.fromList(latin1.encode(value));
 
-  Uint8List fakePdfWithPages(int pageCount) {
+  Uint8List fakePdfWithPages(int pageCount, {int? declaredPageCount}) {
     final pageObjects = List<String>.generate(
       pageCount,
       (index) => '${index + 3} 0 obj << /Type /Page /Parent 2 0 R >> endobj',
@@ -17,7 +17,7 @@ void main() {
     return bytes(
       '%PDF-1.7\n'
       '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
-      '2 0 obj << /Type /Pages /Count $pageCount >> endobj\n'
+      '2 0 obj << /Type /Pages /Count ${declaredPageCount ?? pageCount} >> endobj\n'
       '$pageObjects\n'
       'trailer << /Root 1 0 R >>\n'
       '%%EOF',
@@ -39,6 +39,8 @@ void main() {
     expect(inspection.hasCatalog, isTrue);
     expect(inspection.hasPagesTree, isTrue);
     expect(inspection.pageObjectCount, 1);
+    expect(inspection.declaredPageCount, 1);
+    expect(inspection.pageTreeCountConsistent, isTrue);
   });
 
   test('rejects truncated output without EOF', () {
@@ -62,7 +64,32 @@ void main() {
     ));
 
     expect(inspection.pageObjectCount, 0);
+    expect(inspection.declaredPageCount, 0);
+    expect(inspection.pageTreeCountConsistent, isTrue);
     expect(inspection.structurallyUsable, isFalse);
+  });
+
+  test('rejects pages tree count that disagrees with actual page objects', () {
+    final inspection = inspector.inspect(fakePdfWithPages(24, declaredPageCount: 25));
+    expect(inspection.pageObjectCount, 24);
+    expect(inspection.declaredPageCount, 25);
+    expect(inspection.pageTreeCountConsistent, isFalse);
+    expect(() => inspector.requireUsable(fakePdfWithPages(24, declaredPageCount: 25)), throwsStateError);
+  });
+
+  test('rejects a pages tree that omits mandatory Count', () {
+    final malformed = bytes(
+      '%PDF-1.7\n'
+      '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
+      '2 0 obj << /Type /Pages /Kids [3 0 R] >> endobj\n'
+      '3 0 obj << /Type /Page /Parent 2 0 R >> endobj\n'
+      'trailer << /Root 1 0 R >>\n'
+      '%%EOF',
+    );
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.declaredPageCount, isNull);
+    expect(inspection.pageTreeCountConsistent, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
   test('page-count gate verifies 5 page regression fixture', () {
