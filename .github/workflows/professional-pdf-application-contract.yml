@@ -6,7 +6,11 @@ on:
       - 'lib/src/pdf/professional_pdf_application_service.dart'
       - 'lib/src/pdf/guarded_pdf_service.dart'
       - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
+      - 'lib/src/ui/pdf/pdf_reports_pages.dart'
+      - 'lib/src/ui/actions/ruh_action_ids.dart'
       - 'test/pdf/professional_pdf_application_service_test.dart'
+      - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
       - 'tools/pdf/validate_professional_pdf_application.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
@@ -16,7 +20,11 @@ on:
       - 'lib/src/pdf/professional_pdf_application_service.dart'
       - 'lib/src/pdf/guarded_pdf_service.dart'
       - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
+      - 'lib/src/ui/pdf/pdf_reports_pages.dart'
+      - 'lib/src/ui/actions/ruh_action_ids.dart'
       - 'test/pdf/professional_pdf_application_service_test.dart'
+      - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
       - 'tools/pdf/validate_professional_pdf_application.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
@@ -33,4 +41,4 @@ jobs:
           cache: true
       - run: python tools/pdf/validate_professional_pdf_application.py
       - run: flutter pub get
-      - run: flutter test test/pdf/professional_pdf_application_service_test.dart
+      - run: flutter test test/pdf/professional_pdf_application_service_test.dart test/ui/professional_pdf_builder_page_test.dart
