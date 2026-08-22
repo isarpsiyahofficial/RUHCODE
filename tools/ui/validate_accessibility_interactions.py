@@ -8,11 +8,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / "ui/accessibility_interaction_contract.json"
 ACTIONS = ROOT / "ui/action_registry.csv"
+ACTION_EXTENSIONS = ROOT / "ui/action_registry_runtime_extensions.csv"
 
 
 def die(message):
     print(f"ERROR: {message}", file=sys.stderr)
     raise SystemExit(1)
+
+
+def read_action_rows():
+    rows = list(csv.DictReader(ACTIONS.open(encoding="utf-8", newline="")))
+    if ACTION_EXTENSIONS.is_file():
+        rows.extend(csv.DictReader(ACTION_EXTENSIONS.open(encoding="utf-8", newline="")))
+    return rows
 
 
 def main():
@@ -64,7 +72,7 @@ def main():
     active_statuses = set(reg["activeStatuses"])
     forbidden_labels = {x.casefold() for x in nav["forbiddenAmbiguousExactLabels"]}
 
-    rows = list(csv.DictReader(ACTIONS.open(encoding="utf-8", newline="")))
+    rows = read_action_rows()
     seen = set()
     active = 0
     for line, row in enumerate(rows, 2):
