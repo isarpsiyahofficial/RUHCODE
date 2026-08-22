@@ -1,7 +1,7 @@
 {
   "contract": "western_placidus_houses",
   "version": 2,
-  "requirements": ["RC-0054", "RC-0061", "RC-0262", "RC-0265", "RC-1436"],
+  "requirements": ["RC-0019", "RC-0054", "RC-1436"],
   "definition": {
     "basis": "semidiurnal and seminocturnal arc division",
     "cusps": {
