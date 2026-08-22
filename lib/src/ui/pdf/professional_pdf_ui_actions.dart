@@ -1,5 +1,6 @@
 import '../../pdf/persisted_calculation_pdf_source.dart';
 import '../../pdf/professional_pdf_application_service.dart';
+import '../../pdf/professional_pdf_delivery_service.dart';
 
 final class ProfessionalPdfUiBuildResult {
   const ProfessionalPdfUiBuildResult({
@@ -25,8 +26,38 @@ final class ProfessionalPdfUiRecord {
   final DateTime createdAtUtc;
 }
 
+enum ProfessionalPdfUiDeliveryStatus {
+  success,
+  cancelled,
+  unavailable,
+}
+
+final class ProfessionalPdfUiDeliveryResult {
+  const ProfessionalPdfUiDeliveryResult({
+    required this.status,
+    this.savedUri,
+  });
+
+  final ProfessionalPdfUiDeliveryStatus status;
+  final Uri? savedUri;
+}
+
 abstract interface class ProfessionalPdfBuildActions {
   Future<ProfessionalPdfUiBuildResult> build({
+    required String recordId,
+    required String localeTag,
+    required List<String> sectionIds,
+  });
+}
+
+abstract interface class ProfessionalPdfDeliveryActions {
+  Future<ProfessionalPdfUiDeliveryResult> save({
+    required String recordId,
+    required String localeTag,
+    required List<String> sectionIds,
+  });
+
+  Future<ProfessionalPdfUiDeliveryResult> share({
     required String recordId,
     required String localeTag,
     required List<String> sectionIds,
@@ -60,23 +91,41 @@ final class ProfessionalPdfCatalogActions implements ProfessionalPdfRecordAction
   }
 }
 
-/// Narrow one-time composition bridge for the persisted calculation catalog.
+/// Narrow one-time composition bridge for persisted professional PDF actions.
 ///
-/// Main binds the production catalog after RuhCodeRuntime is created. Widgets
-/// can still receive explicit actions in tests. A second bind is rejected so a
-/// later screen cannot silently replace the production record source.
+/// Production can bind only the pieces that are actually ready. Widgets still
+/// accept explicit actions in tests. Duplicate production binding is rejected
+/// so a later screen cannot silently replace the trusted source/service.
 final class ProfessionalPdfUiRuntimeBindings {
   ProfessionalPdfUiRuntimeBindings._();
 
   static ProfessionalPdfRecordActions? _records;
+  static ProfessionalPdfBuildActions? _build;
+  static ProfessionalPdfDeliveryActions? _delivery;
 
   static ProfessionalPdfRecordActions? get records => _records;
+  static ProfessionalPdfBuildActions? get build => _build;
+  static ProfessionalPdfDeliveryActions? get delivery => _delivery;
 
   static void bindRecords(ProfessionalPdfRecordActions records) {
     if (_records != null) {
       throw StateError('Professional PDF record actions are already bound.');
     }
     _records = records;
+  }
+
+  static void bindBuild(ProfessionalPdfBuildActions build) {
+    if (_build != null) {
+      throw StateError('Professional PDF build actions are already bound.');
+    }
+    _build = build;
+  }
+
+  static void bindDelivery(ProfessionalPdfDeliveryActions delivery) {
+    if (_delivery != null) {
+      throw StateError('Professional PDF delivery actions are already bound.');
+    }
+    _delivery = delivery;
   }
 }
 
@@ -105,5 +154,79 @@ final class ProfessionalPdfApplicationActions<TSnapshot>
       byteLength: result.bytes.length,
       pageCount: result.inspection.pageObjectCount,
     );
+  }
+}
+
+/// Bridges verified PDF generation + native OS delivery to UI-safe statuses.
+/// Cancellation is a normal outcome, not an exception. The adapter never
+/// bypasses the ProfessionalPdfApplicationService or its entitlement guard.
+final class ProfessionalPdfDeliveryUiActions<TSnapshot>
+    implements ProfessionalPdfDeliveryActions {
+  const ProfessionalPdfDeliveryUiActions({required this.service});
+
+  final ProfessionalPdfDeliveryService<TSnapshot> service;
+
+  @override
+  Future<ProfessionalPdfUiDeliveryResult> save({
+    required String recordId,
+    required String localeTag,
+    required List<String> sectionIds,
+  }) async {
+    final result = await service.save(
+      ProfessionalPdfBuildRequest(
+        recordId: recordId,
+        localeTag: localeTag,
+        sectionIds: sectionIds,
+      ),
+      fileName: _fileName(recordId),
+    );
+    return switch (result.status) {
+      ProfessionalPdfDeliveryStatus.saved => ProfessionalPdfUiDeliveryResult(
+          status: ProfessionalPdfUiDeliveryStatus.success,
+          savedUri: result.savedUri,
+        ),
+      ProfessionalPdfDeliveryStatus.cancelled => const ProfessionalPdfUiDeliveryResult(
+          status: ProfessionalPdfUiDeliveryStatus.cancelled,
+        ),
+      _ => const ProfessionalPdfUiDeliveryResult(
+          status: ProfessionalPdfUiDeliveryStatus.unavailable,
+        ),
+    };
+  }
+
+  @override
+  Future<ProfessionalPdfUiDeliveryResult> share({
+    required String recordId,
+    required String localeTag,
+    required List<String> sectionIds,
+  }) async {
+    final result = await service.share(
+      ProfessionalPdfBuildRequest(
+        recordId: recordId,
+        localeTag: localeTag,
+        sectionIds: sectionIds,
+      ),
+      fileName: _fileName(recordId),
+      title: 'Ruh Code PDF Raporu',
+    );
+    return switch (result.status) {
+      ProfessionalPdfDeliveryStatus.shared => const ProfessionalPdfUiDeliveryResult(
+          status: ProfessionalPdfUiDeliveryStatus.success,
+        ),
+      ProfessionalPdfDeliveryStatus.cancelled => const ProfessionalPdfUiDeliveryResult(
+          status: ProfessionalPdfUiDeliveryStatus.cancelled,
+        ),
+      _ => const ProfessionalPdfUiDeliveryResult(
+          status: ProfessionalPdfUiDeliveryStatus.unavailable,
+        ),
+    };
+  }
+
+  static String _fileName(String recordId) {
+    final safe = recordId.trim().replaceAll(RegExp(r'[^A-Za-z0-9._-]+'), '-');
+    if (safe.isEmpty) {
+      throw const FormatException('Professional PDF record ID cannot be empty.');
+    }
+    return 'ruh-code-$safe.pdf';
   }
 }
