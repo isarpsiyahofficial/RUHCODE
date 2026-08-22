@@ -2,9 +2,9 @@ name: UI Contracts
 on:
   push:
     branches: [main]
-    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/ui/actions/**','lib/src/ui/navigation/**','lib/src/ui/pdf/**','test/ui/main_navigation_entitlement_wiring_test.dart','.github/workflows/ui-contracts.yml']
+    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/app/ruh_code_app.dart','lib/src/ui/**','test/ui/**','.github/workflows/ui-contracts.yml']
   pull_request:
-    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/ui/actions/**','lib/src/ui/navigation/**','lib/src/ui/pdf/**','test/ui/main_navigation_entitlement_wiring_test.dart','.github/workflows/ui-contracts.yml']
+    paths: ['docs/UI_REFERENCE_CONTRACT.md','docs/DYNAMIC_GEOMETRY_CONTRACT.md','docs/STATIC_ASSET_CONTRACT.md','docs/DESIGN_SYSTEM_CONTRACT.md','ui/**','tools/ui/**','lib/src/app/ruh_code_app.dart','lib/src/ui/**','test/ui/**','.github/workflows/ui-contracts.yml']
   workflow_dispatch:
 jobs:
   validate-ui-contracts:
@@ -28,6 +28,8 @@ jobs:
         run: python tools/ui/validate_static_assets.py
       - name: Validate design tokens
         run: python tools/ui/validate_design_tokens.py
+      - name: Validate runtime theme token bridge
+        run: python tools/ui/validate_runtime_theme_tokens.py
       - name: Build action coverage report
         run: python tools/ui/report_action_coverage.py
       - name: Upload action coverage report
