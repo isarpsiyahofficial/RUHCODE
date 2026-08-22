@@ -10,10 +10,7 @@
     "RC-1062",
     "RC-1063",
     "RC-1064",
-    "RC-1065",
-    "RC-0539",
-    "RC-0540",
-    "RC-0541"
+    "RC-1065"
   ],
   "invariants": [
     "Every canonical TerminologyId has exactly one Turkish and one English label.",
