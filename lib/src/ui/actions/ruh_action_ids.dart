@@ -35,6 +35,7 @@ abstract final class RuhActionIds {
   static const pdfShare = 'ACTION-PDF-BUILDER-SHARE';
 
   static const backupExport = 'ACTION-BACKUP-EXPORT';
+  static const backupShare = 'ACTION-BACKUP-SHARE';
   static const backupImport = 'ACTION-BACKUP-IMPORT';
 
   static const allRuntimeBindings = <String>{
@@ -61,6 +62,7 @@ abstract final class RuhActionIds {
     pdfCreate,
     pdfShare,
     backupExport,
+    backupShare,
     backupImport,
   };
 }
