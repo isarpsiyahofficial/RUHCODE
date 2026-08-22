@@ -83,10 +83,14 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Builder ham record ID alanını kaldırdı; typed `Kayıtlı Hesaplama` selector kullanıyor.
 - [x] `PersistedCalculationPdfRouter` exact calculation-type handler routing sağlıyor; unknown/duplicate/empty registry fail-closed.
 - [x] Native PDF Save As/share gateway ve delivery service source-level; cancellation/unavailable typed.
+- [x] `ProfessionalPdfDeliveryActions` / `ProfessionalPdfDeliveryUiActions` verified delivery zincirini UI-safe sonuçlara taşıyor.
+- [x] Builder doğrulanmış PDF sonrası, delivery gerçekten bağlıysa canonical share kontrolü gösteriyor; exact record/section seçimi korunuyor.
+- [x] Share dismissal normal cancellation UI durumu; sahte hata/sahte başarı yok.
+- [x] Share control Semantics + 48dp minimum target taşıyor; create/share runtime action bindings structural CI'a bağlı.
 - [x] Professional PDF application evidence + semantic MASTER RC ownership validator + ayrı CI contract yeni source/testleri kapsıyor.
 - [x] Professional PDF application evidence merkezi semantic traceability audit'e dahil edildi.
 - [ ] Persisted calculation type'lar için gerçek production report handler composition tamamlanmalı.
-- [ ] Production build-side `ProfessionalPdfApplicationActions` yalnız gerçek local renderer + approved font provider ile runtime'a bağlanmalı; fake/demo build yasak.
+- [ ] Production build-side `ProfessionalPdfApplicationActions` ve delivery binding yalnız gerçek local renderer + approved font provider ile runtime'a bağlanmalı; fake/demo build yasak.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + approved glyph assets.
 - [ ] Vedik vector chart embedding; BaZi/Numerology production table renderers.
@@ -102,7 +106,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [x] Yanlış TODO-index→RC eşlemeleri birden fazla evidence ailesinde temizlendi.
 - [x] Runtime action bindings registry + Feature Catalog Free/PRO parity ile çaprazlanıyor.
 - [x] 48dp minimum touch target, Semantics labels, 2.0x critical navigation contract source-level.
-- [x] Professional PDF create action canonical runtime binding setine eklendi.
+- [x] Professional PDF create ve share action'ları canonical runtime binding setinde.
+- [ ] Historical `ACTION-PDF-PREVIEW-SHARE` source-screen terminolojisini builder/preview semantic ayrımıyla temizle; RC-1440 final audit öncesi ayrı canonical ID gerekebilir.
 - [ ] Requirement-bearing diğer evidence dosyalarını semantic RC drift açısından taramaya devam et.
 - [ ] APPROVED UI reference/hash seti olmadan UI visual DONE verme.
 
@@ -117,28 +122,29 @@ Bu dosya tekrar eden geliştirme çalışmalarında güncel checkpoint'i tutar. 
 - [ ] Production Unicode PDF font binary + lisans/hash.
 - [ ] Clean-checkout lockfile/release build kanıtı.
 
-## Son tur — 2026-08-22 04:52
+## Son tur — 2026-08-22 08:53
 
-Checkpoint: `automation_runs/2026-08-22_0452_pdf_selector_router_traceability.md`
+Checkpoint: `automation_runs/2026-08-22_0853_pdf_share_ui_contract.md`
 
 Öne çıkan işler:
-- persisted calculation + CalculationManifest atomic PDF source
-- typed newest-first saved-calculation selector; raw ID kaldırıldı
-- startup production catalog UI binding
-- exact calculation-type fail-closed PDF router
-- native PDF Save As/share delivery
-- application/source/router/delivery/widget regressions
-- professional PDF evidence global semantic traceability audit'e eklendi
+- professional PDF delivery UI abstraction
+- runtime build/delivery fallback sınırı
+- verified builder → native share action
+- share success/cancel widget regressions
+- UI delivery adapter safe-filename regression
+- create/share runtime action binding parity
+- professional PDF evidence/validator/CI hardening
+- ilk adapter implementasyonundaki named `request:` hatası aynı turda yakalanıp düzeltildi
 
-Professional PDF evidence commit `9df3d778fc5dcf09dc91f18d11f3c045b57bfb8f` ve central semantic traceability commit `2a0ea7bd0831da3f3f2b27f6b664b1160521a0fe` için GitHub combined-status `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
+Workflow/test-source commit `bc964feb18f2de998127e0ba292208027bb72d2d` için GitHub combined-status `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
 
 ## Sıradaki çalışma
 
-1. Canonical persisted Numerology snapshot → gerçek production PDF handler adapter/composition.
-2. Western persisted snapshot handler contract; exact payload schema yoksa uydurma yapma ve fail-closed bırak.
-3. Build-side runtime action'ı yalnız real local renderer + approved font provider olduğunda bağla.
-4. Native save/share UI delivery state'lerini ve blocker gerektirmeyen PDF table/parity testlerini genişlet.
-5. Requirement-bearing kalan evidence dosyalarını semantic RC ownership audit'e al.
+1. PDF action registry preview/builder semantic action ayrımını güvenli full-registry edit ortamında canonical ID ile çöz.
+2. Production font blocker'ından bağımsız PDF table/page/parity regressionlarını genişlet.
+3. Western persisted snapshot için açık versioned persistence schema tasarla; mevcut olmayan eski payload şeması varmış gibi davranma.
+4. Requirement-bearing kalan evidence dosyalarını semantic RC ownership audit'e al.
+5. Fiziksel ephemeris/EOP/Lahiri/GeoNames, 8.036 günlük mesaj, APPROVED UI refs, production PDF fonts ve clean-checkout lockfile blocker'larını açık tut.
 6. Requirement state'i yalnız görünür test/workflow/evidence kanıtıyla yükselt.
 
 ## Final durumu
