@@ -86,6 +86,9 @@ final class WesternNatalPersistenceService {
         'Persisted professional calculations must be valid or partial.',
       );
     }
+    if (manifest.engineId != persistedWesternNatalCalculationType) {
+      throw StateError('Western natal manifest engineId must be western.natal.');
+    }
     if (manifest.engineVersion != snapshot.engineVersion) {
       throw StateError('Manifest/snapshot engineVersion mismatch.');
     }
@@ -95,13 +98,14 @@ final class WesternNatalPersistenceService {
     if (manifest.dataVersion != snapshot.dataVersion) {
       throw StateError('Manifest/snapshot dataVersion mismatch.');
     }
-    if (manifest.zodiacSystemId != null && manifest.zodiacSystemId != 'tropical') {
+    if (manifest.zodiacSystemId != 'tropical') {
       throw StateError('Western natal persisted snapshot requires tropical zodiac.');
     }
     final manifestHouse = manifest.houseSystemId?.trim();
-    if (manifestHouse != null &&
-        manifestHouse.isNotEmpty &&
-        manifestHouse.toLowerCase() != snapshot.requestedHouseSystem.toLowerCase()) {
+    if (manifestHouse == null || manifestHouse.isEmpty) {
+      throw StateError('Western natal CalculationManifest must carry houseSystemId.');
+    }
+    if (manifestHouse.toLowerCase() != snapshot.requestedHouseSystem.toLowerCase()) {
       throw StateError('Manifest/snapshot requested house-system mismatch.');
     }
   }
