@@ -15,6 +15,9 @@ ACTION-ASTROLOGY-PLANETARY-HOURS,astrologyPlanetaryHours,lib/src/ui/navigation/m
 ACTION-RECORDS-PROFILES,recordsProfiles,lib/src/ui/navigation/main_navigation_shell.dart,ROUTE,records.profiles,IMPLEMENTED
 ACTION-RECORDS-CLIENTS,recordsClients,lib/src/ui/navigation/main_navigation_shell.dart,ROUTE,professional.clients,IMPLEMENTED
 ACTION-PROFILE-SETTINGS,profileSettings,lib/src/ui/navigation/main_navigation_shell.dart,NAVIGATION,,IMPLEMENTED
+ACTION-SETTINGS-BACKUP,settingsBackup,lib/src/ui/navigation/main_navigation_shell.dart,NAVIGATION,,IMPLEMENTED
+ACTION-BACKUP-EXPORT,backupExport,lib/src/ui/backup/backup_settings_page.dart,BACKUP,,IMPLEMENTED
+ACTION-BACKUP-IMPORT,backupImport,lib/src/ui/backup/backup_settings_page.dart,BACKUP,,IMPLEMENTED
 ACTION-SETTINGS-PDF,settingsPdf,lib/src/ui/navigation/main_navigation_shell.dart,NAVIGATION,,IMPLEMENTED
 ACTION-PDF-PREVIEW,pdfPreview,lib/src/ui/pdf/pdf_reports_pages.dart,ROUTE,pdf.sample_preview,IMPLEMENTED
 ACTION-PDF-BUILD,pdfBuild,lib/src/ui/pdf/pdf_reports_pages.dart,ROUTE,pdf.professional_export,IMPLEMENTED
