@@ -10,13 +10,17 @@ on:
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
       - 'lib/src/pdf/western_natal_persistence_service.dart'
       - 'lib/src/pdf/persisted_western_natal_sections.dart'
+      - 'lib/src/pdf/persisted_manifest_section.dart'
       - 'lib/src/pdf/pdf_western_chart_geometry.dart'
       - 'test/pdf/persisted_western_natal_snapshot_test.dart'
       - 'test/pdf/persisted_western_natal_pdf_test.dart'
       - 'test/pdf/western_natal_persistence_service_test.dart'
       - 'test/pdf/persisted_western_natal_sections_test.dart'
+      - 'test/pdf/persisted_manifest_section_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
+      - 'evidence/pdf/persisted_manifest_section.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
+      - 'tools/pdf/validate_persisted_manifest_section.py'
       - 'tools/requirements/validate_persisted_western_traceability.py'
       - 'pubspec.yaml'
       - 'pubspec.lock'
@@ -30,13 +34,17 @@ on:
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
       - 'lib/src/pdf/western_natal_persistence_service.dart'
       - 'lib/src/pdf/persisted_western_natal_sections.dart'
+      - 'lib/src/pdf/persisted_manifest_section.dart'
       - 'lib/src/pdf/pdf_western_chart_geometry.dart'
       - 'test/pdf/persisted_western_natal_snapshot_test.dart'
       - 'test/pdf/persisted_western_natal_pdf_test.dart'
       - 'test/pdf/western_natal_persistence_service_test.dart'
       - 'test/pdf/persisted_western_natal_sections_test.dart'
+      - 'test/pdf/persisted_manifest_section_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
+      - 'evidence/pdf/persisted_manifest_section.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
+      - 'tools/pdf/validate_persisted_manifest_section.py'
       - 'tools/requirements/validate_persisted_western_traceability.py'
       - 'pubspec.yaml'
       - 'pubspec.lock'
@@ -54,6 +62,8 @@ jobs:
         run: python tools/pdf/validate_persisted_western_natal_snapshot.py
       - name: Validate persisted Western semantic RC ownership
         run: python tools/requirements/validate_persisted_western_traceability.py
+      - name: Validate persisted CalculationManifest PDF section
+        run: python tools/pdf/validate_persisted_manifest_section.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -66,3 +76,4 @@ jobs:
           test/pdf/persisted_western_natal_pdf_test.dart
           test/pdf/western_natal_persistence_service_test.dart
           test/pdf/persisted_western_natal_sections_test.dart
+          test/pdf/persisted_manifest_section_test.dart
