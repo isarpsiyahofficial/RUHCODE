@@ -1,0 +1,36 @@
+{
+  "id": "PDF-PERSISTED-WESTERN-NATAL-V1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirement_ids": ["RC-0724", "RC-0725", "RC-0726", "RC-0727", "RC-0737", "RC-0738", "RC-0870"],
+  "source_files": [
+    "lib/src/pdf/persisted_western_natal_snapshot.dart",
+    "lib/src/pdf/persisted_western_natal_pdf.dart",
+    "lib/src/pdf/persisted_calculation_pdf_source.dart",
+    "lib/src/pdf/pdf_western_chart_geometry.dart"
+  ],
+  "test_files": [
+    "test/pdf/persisted_western_natal_snapshot_test.dart",
+    "test/pdf/persisted_western_natal_pdf_test.dart"
+  ],
+  "contracts": {
+    "calculation_type": "western.natal",
+    "snapshot_schema_version": 1,
+    "historical_recalculation_forbidden": true,
+    "canonical_snapshot_sha256_required": true,
+    "manifest_engine_version_must_match": true,
+    "manifest_algorithm_version_must_match": true,
+    "manifest_data_version_must_match": true,
+    "resolved_house_system_and_12_cusps_persisted": true,
+    "placements_and_major_aspects_persisted": true,
+    "pdf_geometry_reads_persisted_snapshot": true,
+    "unknown_or_tampered_payload_fails_closed": true
+  },
+  "open_gates": [
+    "Exact Flutter test SUCCESS is not yet visible.",
+    "Independent Western astronomical golden accuracy remains blocked on physical ephemeris/EOP evidence.",
+    "Approved production vector glyph/assets and visual-regression evidence remain open.",
+    "Production PDF renderer registration remains blocked on approved Unicode font artifact/license/SHA.",
+    "This evidence proves persistence/provenance integrity, not astronomical accuracy or final PDF visual quality."
+  ]
+}
