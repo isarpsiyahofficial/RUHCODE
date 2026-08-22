@@ -272,14 +272,34 @@ class _RestorePreviewCard extends StatelessWidget {
             ] else ...[
               Text(copy.status(BackupUiPhase.previewReady)),
               const SizedBox(height: 12),
-              FilledButton.tonal(
-                onPressed: busy ? null : onMerge,
-                child: Text(copy.mergeLabel),
-              ),
-              const SizedBox(height: 8),
-              FilledButton(
-                onPressed: busy ? null : onReplace,
-                child: Text(copy.replaceLabel),
+              FocusTraversalGroup(
+                policy: OrderedTraversalPolicy(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FocusTraversalOrder(
+                      order: const NumericFocusOrder(1),
+                      child: _RestoreActionButton(
+                        actionId: RuhActionIds.backupRestoreMerge,
+                        label: copy.mergeLabel,
+                        enabled: !busy,
+                        tonal: true,
+                        onPressed: onMerge,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    FocusTraversalOrder(
+                      order: const NumericFocusOrder(2),
+                      child: _RestoreActionButton(
+                        actionId: RuhActionIds.backupRestoreReplace,
+                        label: copy.replaceLabel,
+                        enabled: !busy,
+                        tonal: false,
+                        onPressed: onReplace,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -290,6 +310,47 @@ class _RestorePreviewCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _RestoreActionButton extends StatelessWidget {
+  const _RestoreActionButton({
+    required this.actionId,
+    required this.label,
+    required this.enabled,
+    required this.tonal,
+    required this.onPressed,
+  });
+
+  final String actionId;
+  final String label;
+  final bool enabled;
+  final bool tonal;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final button = tonal
+        ? FilledButton.tonal(
+            key: ValueKey(actionId),
+            onPressed: enabled ? onPressed : null,
+            child: Text(label),
+          )
+        : FilledButton(
+            key: ValueKey(actionId),
+            onPressed: enabled ? onPressed : null,
+            child: Text(label),
+          );
+    return Semantics(
+      label: label,
+      button: true,
+      enabled: enabled,
+      excludeSemantics: true,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48),
+        child: button,
       ),
     );
   }
