@@ -18,8 +18,10 @@
     "RC-1089"
   ],
   "source_files": [
+    "lib/main.dart",
     "lib/src/pdf/professional_pdf_application_service.dart",
     "lib/src/pdf/persisted_calculation_pdf_source.dart",
+    "lib/src/pdf/persisted_calculation_pdf_router.dart",
     "lib/src/pdf/professional_pdf_delivery_service.dart",
     "lib/src/pdf/pdf_platform_gateway.dart",
     "lib/src/pdf/guarded_pdf_service.dart",
@@ -32,6 +34,7 @@
   "test_files": [
     "test/pdf/professional_pdf_application_service_test.dart",
     "test/pdf/persisted_calculation_pdf_source_test.dart",
+    "test/pdf/persisted_calculation_pdf_router_test.dart",
     "test/pdf/professional_pdf_delivery_service_test.dart",
     "test/ui/professional_pdf_builder_page_test.dart"
   ],
@@ -39,7 +42,10 @@
     "professional build loads one explicitly selected persisted calculation record ID",
     "production LocalDatabase source reads calculation and CalculationManifest atomically and rejects missing, mismatched, unavailable or error provenance",
     "runtime composition exposes the production persisted-calculation PDF source instead of fabricating snapshots from UI input",
-    "typed persisted-calculation catalog is deterministic and sorted newest-first for future saved-record selection UI",
+    "typed persisted-calculation catalog is deterministic and sorted newest-first",
+    "main binds the production persisted-calculation catalog into the narrow professional PDF UI boundary once at startup",
+    "builder UI uses a typed saved-calculation selector and no longer exposes a raw record ID text field",
+    "calculation-type PDF routing is exact, rejects unknown calculation types and rejects duplicate handler registrations",
     "FREE access is rejected by the canonical service-level entitlement guard before the PDF delegate executes",
     "PRO access delegates the exact loaded snapshot and preserves requested section order",
     "TR/EN locale boundary, duplicate section IDs, empty sections and missing records fail closed",
@@ -52,8 +58,7 @@
   ],
   "not_yet_proven": [
     "production approved Unicode font artifact and font license/hash chain",
-    "typed saved-calculation picker wired into the builder page instead of interim raw record ID input",
-    "full production report adapter composition for every supported calculation type",
+    "production report handler composition for every supported persisted calculation type",
     "independent 5/25/50+ production PDF render evidence",
     "visual regression and chart/glyph crop evidence",
     "real Android/iOS Save As and share-sheet device execution evidence",
