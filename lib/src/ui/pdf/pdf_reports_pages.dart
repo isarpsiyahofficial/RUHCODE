@@ -81,6 +81,8 @@ class PdfReportsHubPage extends StatelessWidget {
 class PdfSamplePreviewPage extends StatelessWidget {
   const PdfSamplePreviewPage({super.key});
 
+  static const samplePersonLabel = 'Örnek Kişi — Demo Profil';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +103,13 @@ class PdfSamplePreviewPage extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text('Doğum Haritası Raporu', style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 8),
+                const Chip(
+                  avatar: Icon(Icons.science_outlined, size: 18),
+                  label: Text(samplePersonLabel),
+                ),
+                const SizedBox(height: 8),
                 const Text('Bu önizleme yalnız rapor düzenini gösterir; kişisel veri içermez.'),
+                const Text('Demo içerik gerçek bir kullanıcı, danışan veya kayıtla ilişkilendirilmez.'),
                 const Divider(height: 32),
                 const _PreviewSection(title: 'Özet Bakış', lines: ['Temel göstergeler', 'Kısa rapor özeti']),
                 const _PreviewSection(title: 'Harita', lines: ['Vektörel harita alanı', 'Yerleşim özeti']),
