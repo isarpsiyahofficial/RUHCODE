@@ -1,7 +1,7 @@
 {
   "contract": "western_asc_mc",
   "version": 1,
-  "requirements": ["RC-0018", "RC-0061", "RC-0262", "RC-1436"],
+  "requirements": ["RC-0018", "RC-1436"],
   "mode": "mean_tropical",
   "inputs": {
     "time_scales": ["UT1", "TT"],
