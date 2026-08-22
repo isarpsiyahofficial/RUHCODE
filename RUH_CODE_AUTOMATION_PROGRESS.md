@@ -36,8 +36,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Numeroloji localized metric/value semantics regression mevcut.
 - [x] Professional PDF create/share kontrolleri explicit Semantics + 48dp regression altında.
 - [x] Backup create/share/import kontrolleri explicit Semantics + 48dp regression altında.
-- [x] UI accessibility evidence ailesi exact `RC-1441` MASTER-aware semantic validator ile korunuyor.
-- [ ] Valid backup preview sonrası merge/replace action semantics + focus coverage.
+- [x] Valid backup preview sonrası `Birleştir` / `Değiştir` canonical ACTION-ID, explicit Semantics, 48dp ve deterministic merge→replace focus-order regression altında.
+- [x] UI accessibility evidence ailesi exact MASTER-aware semantic validatorlarla korunuyor.
 - [ ] Real-device screen-reader/focus-order traversal.
 - [ ] Tüm gerekli ekran/state'lerde 2.0x text-scale overflow/golden regression.
 - [ ] APPROVED UI visual regression.
@@ -47,12 +47,16 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 
 - [x] Gerçek `BackupSettingsPage` artık `Tam Yedek Oluştur`, `Yedeği Paylaş`, `Yedek Dosyası Seç` yüzeylerini gösteriyor.
 - [x] `ACTION-BACKUP-SHARE` canonical runtime extension ve runtime binding olarak kayıtlı.
-- [x] Share action FREE, offline-available ve a11y-label-required.
+- [x] `ACTION-BACKUP-RESTORE-MERGE` / `ACTION-BACKUP-RESTORE-REPLACE` valid preview state'inde canonical runtime action olarak kayıtlı.
+- [x] Share/merge/replace action'ları FREE, offline-available ve a11y-label-required.
 - [x] UI share action gerçek `BackupApplicationActions.exportAndShare()` sınırını çağırıyor ve `.ruhcode.zip` dosya adı kullanıyor.
 - [x] Kullanıcı native share sheet'i kapattığında normal cancellation state gösteriliyor.
-- [x] Backup action wording validator create/share/restore üçlüsünü base + runtime extension registries üzerinden doğruluyor.
+- [x] Valid preview merge/replace gerçek `BackupImportMode.merge/replace` çağrılarına bağlı.
+- [x] Backup action wording/restore-preview validatorları runtime registry + binding + widget sözleşmesini doğruluyor.
 - [x] `evidence/backup/native_share_transport_contract.json` exact `RC-1300 / RC-1301` sahipliğiyle MASTER-aware audit altında.
+- [x] `evidence/ui/backup_restore_preview_accessibility_contract.json` RC-0832→0839 + RC-1440/1441 sahipliğiyle MASTER-aware structural audit altında.
 - [ ] Android real-device share-sheet smoke proof.
+- [ ] Android real-device restore focus/screen-reader proof.
 - [ ] iOS dağıtım hedeflenirse iOS share-sheet smoke proof.
 - [ ] Exact visible Backup/UI/Flutter CI SUCCESS.
 
@@ -62,6 +66,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Seçilmiş evidence aileleri exact MASTER-aware semantic ownership altında.
 - [x] UI accessibility için ayrı RC-1441 semantic validator mevcut.
 - [x] Backup native transport için ayrı RC-1300/RC-1301 semantic validator mevcut.
+- [x] Backup restore preview için RC-0832→0839 + RC-1440/1441 semantic/action validator mevcut.
 - [x] Persisted Western snapshot / technical manifest / PDF service ayrı semantic audit altında.
 - [x] Western production calculation write-boundary structural audit mevcut.
 - [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak exact MASTER ownership denetimine alınmaya devam edecek.
@@ -97,20 +102,19 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Play/rewarded-ad gerçek cihaz kanıtları.
 - Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-23 00:52
+## Son checkpoint — 2026-08-23 02:52
 
-Checkpoint: `automation_runs/2026-08-23_0052_runtime_theme_text_scale_gate.md`
+Checkpoint: `automation_runs/2026-08-23_0252_backup_restore_preview_accessibility.md`
 
-Bu turda runtime theme/token drift kapısı, 2.0x text-scale ve kritik widget semantics regresyonları, gerçek Backup native-share UI/action wiring ve RC-1300/1301 semantic evidence zinciri eklendi.
+Bu turda valid backup preview sonrası merge/replace canonical action sözleşmesi, explicit Semantics, 48dp hedef, deterministic focus order, widget regression, MASTER-aware evidence ve CI trigger/gate kapsamı eklendi.
 
-Exact görünür GitHub Actions SUCCESS henüz kanıtlanmadı; latest combined-status `statuses=[]`. Bu yüzden `RC-1441`, `RC-1300`, `RC-1301` DONE yapılmadı.
+Workflow-target commit `330a9cc307afce51f2bf22a067975ea5c634237a` için GitHub combined-status yine `statuses=[]` döndürdü. Bu yüzden RC-0832→0839, RC-1440 ve RC-1441 DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Valid backup preview fixture üzerinden merge/replace action Semantics + 48dp/focus regression ekle.
-2. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
-3. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
-4. `pubspec.lock` yalnız gerçek Flutter dependency resolution kanıtı elde edildiğinde ekle.
-5. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
+1. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
+2. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
+3. `pubspec.lock` yalnız gerçek Flutter dependency resolution kanıtı elde edildiğinde ekle.
+4. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
 **FINAL: NO.**
