@@ -29,7 +29,8 @@
     "lib/src/app/app_runtime.dart",
     "lib/src/ui/pdf/professional_pdf_ui_actions.dart",
     "lib/src/ui/pdf/pdf_reports_pages.dart",
-    "lib/src/ui/actions/ruh_action_ids.dart"
+    "lib/src/ui/actions/ruh_action_ids.dart",
+    "ui/runtime_action_bindings.csv"
   ],
   "test_files": [
     "test/pdf/professional_pdf_application_service_test.dart",
@@ -54,6 +55,8 @@
     "native share uses the operating-system share sheet directly without a Ruh Code server hop",
     "save/share cancellation is a normal typed result and cannot be presented as a successful delivery",
     "builder UI uses canonical ACTION-PDF-PREVIEW-CREATE binding and delegates exact record/section selection through ProfessionalPdfBuildActions",
+    "verified builder output exposes canonical ACTION-PDF-PREVIEW-SHARE only when delivery actions are actually bound",
+    "builder share preserves the exact selected record and section order and maps dismissed sharing to a normal cancellation notice",
     "builder UI shows no fake success when production build actions are absent"
   ],
   "not_yet_proven": [
@@ -62,6 +65,7 @@
     "independent 5/25/50+ production PDF render evidence",
     "visual regression and chart/glyph crop evidence",
     "real Android/iOS Save As and share-sheet device execution evidence",
+    "production runtime binding of build/delivery actions remains intentionally blocked until approved fonts and handlers exist",
     "exact GitHub Actions SUCCESS for the current source commit"
   ]
 }
