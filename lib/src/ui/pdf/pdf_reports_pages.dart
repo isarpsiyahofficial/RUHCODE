@@ -161,6 +161,9 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
     ('notes', 'Notlar', 'Profesyonelin rapora eklediği notlar'),
   ];
 
+  ProfessionalPdfRecordActions? get _recordActions =>
+      widget.records ?? ProfessionalPdfUiRuntimeBindings.records;
+
   @override
   void initState() {
     super.initState();
@@ -168,7 +171,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
   }
 
   Future<void> _loadRecords() async {
-    final source = widget.records;
+    final source = _recordActions;
     if (source == null) return;
     setState(() {
       _loadingRecords = true;
@@ -251,7 +254,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
   @override
   Widget build(BuildContext context) {
     final result = _result;
-    final recordSourceAvailable = widget.records != null;
+    final recordSourceAvailable = _recordActions != null;
     return Scaffold(
       appBar: AppBar(title: const Text('Profesyonel PDF Oluştur')),
       body: ListView(
