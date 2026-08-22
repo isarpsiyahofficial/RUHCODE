@@ -142,11 +142,12 @@ final class _RecordingPdfService implements PdfService<String> {
     calls += 1;
     lastSnapshot = snapshot;
     lastOptions = options;
+    final padding = List<String>.filled(80, 'x').join();
     final text = '%PDF-1.7\n'
         '1 0 obj << /Type /Catalog >> endobj\n'
         '2 0 obj << /Type /Pages /Count 1 >> endobj\n'
         '3 0 obj << /Type /Page /Parent 2 0 R >> endobj\n'
-        '${'x' * 80}\n%%EOF\n';
+        '$padding\n%%EOF\n';
     return latin1.encode(text);
   }
 }
