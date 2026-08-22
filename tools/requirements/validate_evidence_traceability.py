@@ -36,6 +36,14 @@ def load_requirements(path):
 
 
 EXPECTED = {
+    "evidence/astronomy/western_asc_mc.json": {18, 1436},
+    "evidence/astronomy/western_aspect_grid.json": {51},
+    "evidence/astronomy/western_essential_dignities.json": {49, 50},
+    "evidence/astronomy/western_natal_aspects.json": {37, 38, 39, 40, 41, 43, 44, 51},
+    "evidence/astronomy/western_natal_distribution.json": {45, 46, 47},
+    "evidence/astronomy/western_natal_placements.json": {31, 32, 33, 34, 48},
+    "evidence/astronomy/western_placidus_contract.json": {19, 54, 1436},
+    "evidence/astronomy/western_porphyry_houses.json": {19, 60, 1436},
     "evidence/numerology/pythagorean_profile.json": {
         161, 162, 165, 166, 167, 168, 169, 170, 171, 174, 182, 183, 329,
     },
@@ -76,6 +84,12 @@ EXPECTED = {
 }
 
 KEYWORDS = {
+    18: "Yükselen ve MC", 19: "Ev başlangıç dereceleri", 31: "bütün gezegen yerleşimleri",
+    32: "hangi burçta", 33: "Gezegen dereceleri", 34: "hangi evlerde", 37: "Kavuşum",
+    38: "Karşıt", 39: "Kare", 40: "Üçgen", 41: "Sekstil", 43: "Aspect orb",
+    44: "orb ayarlarını", 45: "Element dağılımı", 46: "Ateş, Toprak, Hava ve Su",
+    47: "Öncü, Sabit ve Değişken", 48: "Retrograde gezegenler", 49: "Gezegen yöneticilikleri",
+    50: "Exaltation", 51: "Aspect grid", 54: "Placidus", 60: "Porphyry",
     147: "Heavenly Stems", 148: "Earthly Branches", 149: "Hidden Stems",
     150: "Five Elements", 151: "Yin/Yang", 152: "Day Master", 153: "Ten Gods",
     161: "Numeroloji", 162: "Pythagorean", 166: "Life Path", 167: "Expression",
