@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:crypto/crypto.dart';
+
+import '../calculation_core/ephemeris/ephemeris.dart';
+import '../calculation_core/western/natal_aspects.dart';
 
 const int persistedWesternNatalSnapshotSchemaVersion = 1;
 const String persistedWesternNatalCalculationType = 'western.natal';
@@ -178,22 +182,45 @@ final class PersistedWesternNatalSnapshot {
     if (houseCuspsDeg.length != 12) {
       throw ArgumentError.value(houseCuspsDeg.length, 'houseCuspsDeg.length', 'Expected exactly 12 cusps.');
     }
-    for (final cusp in houseCuspsDeg) {
+    var totalHouseArc = 0.0;
+    for (var index = 0; index < houseCuspsDeg.length; index++) {
+      final cusp = houseCuspsDeg[index];
       _requireLongitude(cusp, 'houseCuspDeg');
+      final span = _forwardArc(cusp, houseCuspsDeg[(index + 1) % 12]);
+      if (!span.isFinite || span <= 0 || span >= 180) {
+        throw ArgumentError('Persisted Western house cusps must form twelve non-degenerate forward arcs.');
+      }
+      totalHouseArc += span;
+    }
+    if ((totalHouseArc - 360.0).abs() > 1e-7) {
+      throw ArgumentError('Persisted Western house cusps must close one exact 360° cycle.');
     }
 
     final bodies = <String>{};
+    final placementLongitudeByBody = <String, double>{};
+    final supportedBodies = AstroBody.values.map((value) => value.name).toSet();
     for (final placement in placements) {
-      if (placement.body.trim().isEmpty || !bodies.add(placement.body)) {
-        throw ArgumentError('Western persisted placements must have unique non-empty bodies.');
+      if (!supportedBodies.contains(placement.body)) {
+        throw ArgumentError.value(placement.body, 'placement.body', 'Unsupported AstroBody.');
+      }
+      if (!bodies.add(placement.body)) {
+        throw ArgumentError('Western persisted placements must have unique bodies.');
       }
       _requireLongitude(placement.longitudeDeg, 'placement.longitudeDeg');
       if (placement.houseNumber < 1 || placement.houseNumber > 12) {
         throw ArgumentError.value(placement.houseNumber, 'placement.houseNumber');
       }
+      final expectedHouse = _houseForLongitude(houseCuspsDeg, placement.longitudeDeg);
+      if (expectedHouse != placement.houseNumber) {
+        throw ArgumentError(
+          'Persisted Western placement house mismatch for ${placement.body}: '
+          'stored=${placement.houseNumber}, geometry=$expectedHouse.',
+        );
+      }
       if (!const {'direct', 'stationary', 'retrograde'}.contains(placement.motion)) {
         throw ArgumentError.value(placement.motion, 'placement.motion');
       }
+      placementLongitudeByBody[placement.body] = placement.longitudeDeg;
     }
 
     final aspectPairs = <String>{};
@@ -219,8 +246,26 @@ final class PersistedWesternNatalSnapshot {
           throw ArgumentError.value(value, 'aspectValue', 'Expected finite non-negative value.');
         }
       }
+      final type = MajorAspect.values.where((value) => value.name == aspect.type).firstOrNull;
+      if (type == null) {
+        throw ArgumentError.value(aspect.type, 'aspect.type', 'Unsupported MajorAspect.');
+      }
+      if ((type.exactAngleDegrees - aspect.exactAngleDeg).abs() > 1e-12) {
+        throw ArgumentError('Persisted aspect exact angle does not match its aspect type.');
+      }
       if (aspect.exactAngleDeg > 180 || aspect.separationDeg > 180) {
         throw ArgumentError('Persisted aspect angles must be within 0..180 degrees.');
+      }
+      final geometricSeparation = _shortestArc(
+        placementLongitudeByBody[aspect.bodyA]!,
+        placementLongitudeByBody[aspect.bodyB]!,
+      );
+      if ((geometricSeparation - aspect.separationDeg).abs() > 1e-9) {
+        throw ArgumentError('Persisted aspect separation disagrees with placement geometry.');
+      }
+      final geometricDelta = (aspect.separationDeg - aspect.exactAngleDeg).abs();
+      if ((geometricDelta - aspect.deltaFromExactDeg).abs() > 1e-9) {
+        throw ArgumentError('Persisted aspect delta disagrees with separation/exact angle.');
       }
       if (aspect.deltaFromExactDeg > aspect.allowedOrbDeg + 1e-12) {
         throw ArgumentError('Persisted aspect delta exceeds its allowed orb.');
@@ -263,9 +308,12 @@ final class PersistedWesternNatalEnvelope {
 
 Object? _canonicalize(Object? value) {
   if (value is Map) {
-    final keys = value.keys.map((key) => key.toString()).toList()..sort();
+    final entries = value.entries
+        .map((entry) => MapEntry(entry.key.toString(), entry.value))
+        .toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
     return <String, Object?>{
-      for (final key in keys) key: _canonicalize(value[key]),
+      for (final entry in entries) entry.key: _canonicalize(entry.value),
     };
   }
   if (value is List) return value.map(_canonicalize).toList(growable: false);
@@ -302,6 +350,24 @@ List<dynamic> _list(Map<String, dynamic> json, String key) {
 Map<String, dynamic> _map(Object? value, String key) {
   if (value is! Map) throw FormatException('Expected object: $key');
   return value.map((rawKey, rawValue) => MapEntry(rawKey.toString(), rawValue));
+}
+
+int _houseForLongitude(List<double> cusps, double longitude) {
+  for (var index = 0; index < 12; index++) {
+    final span = _forwardArc(cusps[index], cusps[(index + 1) % 12]);
+    if (_forwardArc(cusps[index], longitude) < span) return index + 1;
+  }
+  throw StateError('Persisted longitude could not be assigned to a house.');
+}
+
+double _forwardArc(double start, double end) {
+  final value = (end - start) % 360.0;
+  return value < 0 ? value + 360.0 : value;
+}
+
+double _shortestArc(double a, double b) {
+  final delta = _forwardArc(a, b);
+  return math.min(delta, 360.0 - delta);
 }
 
 void _requireLongitude(double value, String name) {
