@@ -1,7 +1,7 @@
 {
   "contract": "western_natal_distribution",
   "version": 1,
-  "requirements": ["RC-0045", "RC-0046", "RC-0047", "RC-0274", "RC-0275"],
+  "requirements": ["RC-0045", "RC-0046", "RC-0047"],
   "inputs": ["validated NatalPlacementSet", "explicit PlacementWeightPolicy"],
   "outputs": ["fire earth air water weights and percentages", "cardinal fixed mutable weights and percentages"],
   "hard_rules": [
