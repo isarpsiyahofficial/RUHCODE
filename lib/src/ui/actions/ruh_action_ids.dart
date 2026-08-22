@@ -28,8 +28,7 @@ abstract final class RuhActionIds {
   static const pdfPreview = 'ACTION-PDF-PREVIEW';
   static const pdfBuild = 'ACTION-PDF-BUILD';
   static const pdfCreate = 'ACTION-PDF-PREVIEW-CREATE';
-  static const pdfSave = 'ACTION-PDF-BUILDER-SAVE';
-  static const pdfShare = 'ACTION-PDF-BUILDER-SHARE';
+  static const pdfShare = 'ACTION-PDF-PREVIEW-SHARE';
   static const backupExport = 'ACTION-BACKUP-EXPORT';
   static const backupImport = 'ACTION-BACKUP-IMPORT';
 
@@ -55,7 +54,6 @@ abstract final class RuhActionIds {
     pdfPreview,
     pdfBuild,
     pdfCreate,
-    pdfSave,
     pdfShare,
     backupExport,
     backupImport,
