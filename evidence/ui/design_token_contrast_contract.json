@@ -1,0 +1,28 @@
+{
+  "contract": "ruh-code-ui-design-token-contrast-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-1441"],
+  "sources": [
+    "ui/design_tokens.json",
+    "ui/accessibility_interaction_contract.json"
+  ],
+  "validators": [
+    "tools/ui/validate_design_tokens.py",
+    "tools/ui/validate_accessibility_interactions.py"
+  ],
+  "requiredProperties": [
+    "normal body text requires at least 4.5:1 contrast",
+    "large text requires at least 3.0:1 contrast",
+    "required foreground/background token pairs are evaluated from sRGB relative luminance rather than assumed by color name",
+    "textPrimary, textMuted, primary, primaryStrong and danger meet the normal-text threshold on the three canonical light surfaces where explicitly listed",
+    "gold and success are explicitly restricted to non-text accent use on canonical light surfaces because they do not meet the normal-text threshold",
+    "minimum interactive touch target remains at least 48dp"
+  ],
+  "remainingBeforeDone": [
+    "verify rendered widgets do not bypass the semantic token usage rules with ad-hoc low-contrast colors",
+    "run real-device screen-reader traversal",
+    "run 2.0x text-scale visual overflow regression on every required screen state",
+    "obtain exact visible CI success for this contract"
+  ]
+}
