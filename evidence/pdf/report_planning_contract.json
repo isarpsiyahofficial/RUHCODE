@@ -23,18 +23,21 @@
   "sources": [
     "lib/src/pdf/pdf_report_contract.dart",
     "lib/src/pdf/pdf_data_contract.dart",
-    "lib/src/pdf/local_pdf_renderer.dart",
+    "lib/src/pdf/pdf_local_renderer.dart",
     "lib/src/pdf/pdf_output_inspector.dart",
-    "lib/src/pdf/pdf_font_provider.dart",
-    "lib/src/pdf/western_chart_geometry.dart",
+    "lib/src/pdf/pdf_table_layout.dart",
+    "lib/src/pdf/pdf_asset_font_provider.dart",
+    "lib/src/pdf/pdf_western_chart_geometry.dart",
     "lib/src/pdf/pdf_numerology_data.dart"
   ],
   "tests": [
     "test/pdf/pdf_report_contract_test.dart",
     "test/pdf/pdf_data_contract_test.dart",
-    "test/pdf/local_pdf_renderer_test.dart",
+    "test/pdf/pdf_local_renderer_contract_test.dart",
     "test/pdf/pdf_output_inspector_test.dart",
-    "test/pdf/western_chart_geometry_test.dart",
+    "test/pdf/pdf_table_layout_test.dart",
+    "test/pdf/pdf_asset_font_provider_test.dart",
+    "test/pdf/pdf_western_chart_geometry_test.dart",
     "test/pdf/pdf_numerology_data_test.dart"
   ],
   "page": {
@@ -60,6 +63,8 @@
     "UI and PDF snapshot parity can be required explicitly",
     "local PDF bytes are structurally inspected before return",
     "5/25/50-plus page-count gates exist at source level",
+    "long table chunking repeats headers without losing duplicating or reordering body rows",
+    "table chunks copy source rows so later input mutation cannot alter the render plan",
     "Western chart geometry is derived from the same calculation object rather than a screenshot",
     "numerology PDF data is projected from the canonical numerology snapshot rather than recalculated"
   ],
