@@ -10,6 +10,7 @@ EVIDENCE = (
     ROOT / 'evidence/ui/design_token_contrast_contract.json',
     ROOT / 'evidence/ui/runtime_theme_token_contract.json',
     ROOT / 'evidence/ui/accessibility_text_scale_contract.json',
+    ROOT / 'evidence/ui/critical_semantics_contract.json',
 )
 
 
@@ -45,4 +46,4 @@ for path in EVIDENCE:
             f'{path.relative_to(ROOT)} must own exact RC-1441 only; got {sorted(actual)}'
         )
 
-print('OK: 3 UI accessibility evidence contracts retain exact MASTER RC-1441 ownership')
+print(f'OK: {len(EVIDENCE)} UI accessibility evidence contracts retain exact MASTER RC-1441 ownership')
