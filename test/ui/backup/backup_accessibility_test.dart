@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:ruh_code/src/backup/backup_application_service.dart';
+import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
+import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
+import 'package:ruh_code/src/ui/backup/backup_settings_page.dart';
+import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
+
+void main() {
+  testWidgets('backup export and import controls expose semantics and 48dp targets', (tester) async {
+    final semantics = tester.ensureSemantics();
+    addTearDown(semantics.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('tr', 'TR'),
+        theme: RuhAppTheme.light(),
+        home: const BackupSettingsPage(backupActions: _NoopBackupActions()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final export = find.byKey(const ValueKey(RuhActionIds.backupExport));
+    final import = find.byKey(const ValueKey(RuhActionIds.backupImport));
+
+    expect(export, findsOneWidget);
+    expect(import, findsOneWidget);
+    expect(find.bySemanticsLabel('Tam Yedek Oluştur'), findsOneWidget);
+    expect(find.bySemanticsLabel('Yedek Dosyası Seç'), findsOneWidget);
+    expect(tester.getSize(export).height, greaterThanOrEqualTo(48));
+    expect(tester.getSize(import).height, greaterThanOrEqualTo(48));
+  });
+}
+
+final class _NoopBackupActions implements BackupApplicationActions {
+  const _NoopBackupActions();
+
+  @override
+  Future<BackupSaveResult> exportAndSave({
+    required String suggestedFileName,
+    required String appVersion,
+    required String engineVersion,
+    required String localeTag,
+    required DateTime exportedAtUtc,
+  }) async => const BackupSaveResult(status: BackupUserOperationStatus.cancelled);
+
+  @override
+  Future<BackupShareResult> exportAndShare({
+    required String fileName,
+    required String appVersion,
+    required String engineVersion,
+    required String localeTag,
+    required DateTime exportedAtUtc,
+    String? title,
+    String? text,
+  }) async => const BackupShareResult(status: BackupUserOperationStatus.cancelled);
+
+  @override
+  Future<BackupPickResult> pickAndPreviewRestore() async =>
+      const BackupPickResult(status: BackupUserOperationStatus.cancelled);
+
+  @override
+  Future<BackupImportResult> applyRestore({
+    required BackupRestoreSelection selection,
+    required BackupImportMode mode,
+  }) => throw UnimplementedError('not used by accessibility surface test');
+}
