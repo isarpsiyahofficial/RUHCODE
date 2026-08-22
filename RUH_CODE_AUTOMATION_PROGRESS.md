@@ -76,19 +76,21 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Exact calculation-type router; unknown/duplicate handler fail-closed.
 - [x] Native PDF Save As/share source-level; cancellation/unavailable typed.
 - [x] Persisted Pythagorean snapshot PDF handler source-level; canonical SHA ve manifest version parity.
-- [x] **Professional builder action semantic drift düzeltildi:** runtime artık `ACTION-PDF-BUILDER-CREATE` / `ACTION-PDF-BUILDER-SHARE` kullanıyor; tarihsel preview create/share ID'leri builder runtime'da yasak.
-- [x] Runtime action registry extension, runtime binding, PDF entitlement validator ve accessibility validator canonical builder actionlarını birlikte doğruluyor.
-- [x] **Persisted Western natal snapshot v1 eklendi:** requested/effective house system, exact 12 cusp, placements, major aspects, TT/source/engine/algorithm/data provenance.
+- [x] Professional builder canonical `ACTION-PDF-BUILDER-CREATE` / `ACTION-PDF-BUILDER-SHARE` kullanıyor.
+- [x] Persisted Western natal snapshot v1: requested/effective house system, exact 12 cusp, placements, major aspects, TT/source/engine/algorithm/data provenance.
 - [x] Persisted Western snapshot canonical JSON + SHA-256 ile mühürleniyor; tamper fail-closed.
 - [x] Persisted Western PDF reader CalculationManifest engine/algorithm/data version parity'sini doğruluyor.
 - [x] Western PDF geometry persisted snapshot'tan üretiliyor; tarihi natal harita PDF açılışında yeniden hesaplanmıyor.
-- [x] Persisted Western snapshot/PDF test, evidence, structural validator ve ayrı CI contract oluşturuldu.
-- [ ] Persisted Western snapshot calculation-save boundary'ye bağlanmalı; yeni `western.natal` kaydı snapshot+SHA'yı atomik yazmalı.
-- [ ] Persisted Western snapshot'tan production PDF section/table projection tamamlanmalı.
+- [x] **Western calculation-save boundary source-level bağlandı:** snapshot + SHA ve CalculationManifest aynı transaction içinde yazılıyor; ikinci yazı hatasında rollback var.
+- [x] Save boundary manifest `engineId/engineVersion/algorithmVersion/dataVersion/houseSystemId/zodiacSystemId` parity'sini fail-closed doğruluyor.
+- [x] **Persisted Western PDF section projection source-level tamamlandı:** placements / houses / aspects yalnız persisted snapshot'tan üretiliyor.
+- [x] Persisted Western snapshot/PDF/persistence tests, evidence, structural validator ve CI contract genişletildi.
+- [ ] Atomic persistence service gerçek Western natal application save akışındaki tek production write boundary olarak henüz compose edilmedi.
+- [ ] Persisted Western sections production calculation-type PDF handler'a bağlanmalı.
 - [ ] Production build-side handler composition yalnız approved font provider ile runtime'a bağlanmalı.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + approved glyph assets.
-- [ ] Vedik vector chart embedding; BaZi/Numerology production table renderers.
+- [ ] Vedik vector chart embedding; BaZi production tables.
 - [ ] 5/25/50+ real rendered page tests, parser/crop/glyph/visual regression.
 - [ ] Android/iOS real-device PDF Save As/share smoke evidence.
 - [ ] Exact PDF workflows görünür SUCCESS.
@@ -100,7 +102,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Runtime action bindings registry + Feature Catalog Free/PRO parity ile çaprazlanıyor.
 - [x] 48dp minimum touch target, Semantics labels, 2.0x critical navigation contract source-level.
 - [x] Professional PDF builder create/share artık builder ekranına ait canonical action ID'ler kullanıyor.
-- [x] Legacy `ACTION-PDF-PREVIEW-CREATE/SHARE` kimliklerinin builder runtime'a dönmesi structural validator ile engelleniyor.
+- [x] Western persisted evidence'da bu tur yanlış eklenen Numeroloji/BaZi PDF RC'leri (`RC-0875/0876`) aynı turda kaldırıldı; doğru Western section RC'leri `RC-0920/0921/0922/0923` kullanıldı.
+- [ ] Persisted Western evidence exact RC setini merkezi `validate_evidence_traceability.py` denetimine ekle.
 - [ ] Requirement-bearing diğer evidence dosyalarını semantic RC drift açısından taramaya devam et.
 - [ ] APPROVED UI reference/hash seti olmadan UI visual DONE verme.
 
@@ -115,31 +118,26 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [ ] Production Unicode PDF font binary + lisans/hash.
 - [ ] Clean-checkout lockfile/release build kanıtı.
 
-## Son checkpoint — 2026-08-22 12:53
+## Son checkpoint — 2026-08-22 14:53
 
-Checkpoint: `automation_runs/2026-08-22_1253_pdf_builder_actions_western_snapshot.md`
+Checkpoint: `automation_runs/2026-08-22_1453_western_atomic_persistence_sections.md`
 
 Öne çıkan işler:
-- professional PDF builder action ID semantiği düzeltildi
-- runtime registry extension + validator/CI parity
-- versioned persisted Western natal snapshot v1
-- canonical SHA-256 tamper kontrolü
-- Placidus/Porphyry/Whole Sign/Equal için ortak resolved 12-cusp persistence projection
-- manifest engine/algorithm/data parity
-- persisted snapshot → PDF vector geometry; historical recalculation yok
-- dedicated tests/evidence/validator/workflow
+- Western snapshot + SHA + CalculationManifest tek transaction persistence
+- collision fail-closed ve second-write rollback regression
+- save-time engine/algorithm/data/house/zodiac parity
+- persisted calculation read-back + canonical SHA round-trip
+- persisted snapshot → PDF placements/houses/aspects table projection; historical recalculation yok
+- evidence semantic sahiplik düzeltmesi
+- expanded structural validator + Actions contract
 
-Workflow-target commit `30b8e9137251efd87678d5600b91893da61f44bf` için GitHub combined-status `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
+Exact latest source commit `b67c706a811377bb24b85c0d49b757413ddb4821` için GitHub combined-status `statuses=[]`; source-level evidence `done=false`, ilgili RC'ler DONE değil.
 
 ## Sıradaki çalışma
 
-1. Western calculation-save boundary'yi snapshot+SHA + CalculationManifest atomik persistence ile bağla.
-2. Persisted Western PDF section/table projection oluştur; renderer içinde yeniden hesaplama yapma.
-3. Yeni Western persistence evidence'ını semantic MASTER RC audit'e konservatif sahiplikle dahil et.
-4. Requirement-bearing kalan evidence dosyalarını semantic RC ownership audit'e al.
-5. Fiziksel ephemeris/EOP/Lahiri/GeoNames, 8.036 günlük mesaj, APPROVED UI refs, production PDF fonts ve clean-checkout lockfile blocker'larını açık tut.
-6. Requirement state'i yalnız görünür test/workflow/evidence kanıtıyla yükselt.
-
-## Final durumu
-
-**FINAL DEĞİL.** RC-0001→RC-1442 tamamı ve zorunlu release kapıları gerçek kanıtla yeşil olmadan FINAL denmeyecek.
+1. Persisted Western evidence exact RC setini merkezi semantic traceability validator'a bağla.
+2. `WesternNatalPersistenceService`i gerçek Western calculation-save application/runtime boundary'sine compose et; paralel doğrudan write yolunu engelle.
+3. `PersistedWesternNatalSectionAdapter`ı production `western.natal` PDF handler'a bağla.
+4. CalculationManifest teknik PDF section'ını persisted manifestten oluştur; tarih/konum/timezone/house/zodiac değerlerini yeniden hesaplama.
+5. Requirement-bearing kalan evidence semantic auditine ve blocker gerektirmeyen backup/PDF/UI işlerine devam et.
+6. Fiziksel ephemeris/EOP/Lahiri/GeoNames, 8.036 günlük mesaj, APPROVED UI refs, production PDF fonts ve clean-checkout lockfile blocker'larını açık tut.
