@@ -95,6 +95,8 @@ contracts = (
     ]),
     (TABLE_TEST, [
         'splits long tables and repeats the header deterministically',
+        'large table chunks preserve every body row exactly once and in order',
+        'chunk snapshots do not alias later input row mutations',
         'rejects inconsistent column widths before rendering',
         'single row remains a single chunk',
     ]),
@@ -126,8 +128,25 @@ else:
     if page.get('format') != 'A4' or page.get('widthMm') != 210 or page.get('heightMm') != 297: errors.append('PDF planning evidence must pin A4 210x297mm')
     if page.get('localOnly') is not True: errors.append('PDF planning evidence must require local-only generation')
     features = set(evidence.get('contractFeatures', []))
-    for feature in {'every section bound to one SHA-256 calculation snapshot identity','cross-snapshot section mixing rejected before rendering','UI and PDF snapshot parity can be required explicitly'}:
+    for feature in {
+        'every section bound to one SHA-256 calculation snapshot identity',
+        'cross-snapshot section mixing rejected before rendering',
+        'UI and PDF snapshot parity can be required explicitly',
+        'long table chunking repeats headers without losing duplicating or reordering body rows',
+        'table chunks copy source rows so later input mutation cannot alter the render plan',
+    }:
         if feature not in features: errors.append(f'PDF evidence missing feature: {feature}')
+    for key in ('sources', 'tests'):
+        values = evidence.get(key)
+        if not isinstance(values, list) or not values:
+            errors.append(f'PDF planning evidence must contain non-empty {key}[]')
+            continue
+        if len(values) != len(set(values)):
+            errors.append(f'PDF planning evidence contains duplicate {key} entries')
+        for relative in values:
+            path = ROOT / relative
+            if not path.is_file():
+                errors.append(f'PDF planning evidence {key} path does not exist: {relative}')
 
 if not RENDER_EVIDENCE.exists():
     errors.append(f'missing {RENDER_EVIDENCE.relative_to(ROOT)}')
