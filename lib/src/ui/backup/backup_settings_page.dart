@@ -5,6 +5,7 @@ import '../../backup/backup_application_service.dart';
 import '../../backup/backup_import_coordinator.dart';
 import '../../backup/backup_service.dart';
 import '../actions/ruh_action_ids.dart';
+import 'backup_ui_contract.dart';
 
 class BackupSettingsPage extends StatefulWidget {
   const BackupSettingsPage({
@@ -22,6 +23,11 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
   BackupRestoreSelection? _selection;
   bool _busy = false;
 
+  RuhLocale get _ruhLocale =>
+      Localizations.localeOf(context).languageCode.toLowerCase() == 'en'
+          ? RuhLocale.en
+          : RuhLocale.tr;
+  BackupUiCopy get _copy => backupUiCopy[_ruhLocale]!;
   String get _localeTag => Localizations.localeOf(context).toLanguageTag();
 
   String _fileName(DateTime nowUtc) {
@@ -39,8 +45,10 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
     }
   }
 
-  void _message(String text) {
+  void _messagePhase(BackupUiPhase phase) {
     if (!mounted) return;
+    final text = _copy.status(phase);
+    if (text.isEmpty) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
@@ -57,13 +65,9 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
         ),
       );
       if (result == null) return;
-      if (result.status == BackupUserOperationStatus.cancelled) {
-        _message('Yedekleme iptal edildi.');
-      } else {
-        _message('Tam yedek başarıyla kaydedildi.');
-      }
+      _messagePhase(phaseForSaveResult(result));
     } catch (_) {
-      _message('Tam yedek oluşturulamadı. Mevcut veriler değiştirilmedi.');
+      _messagePhase(BackupUiPhase.failed);
     }
   }
 
@@ -71,21 +75,11 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
     try {
       final result = await _run(widget.backupActions.pickAndPreviewRestore);
       if (result == null) return;
-      if (result.status == BackupUserOperationStatus.cancelled) {
-        _message('Yedek seçimi iptal edildi.');
-        return;
-      }
-      final selection = result.selection;
-      if (selection == null) {
-        _message('Yedek dosyası okunamadı.');
-        return;
-      }
-      setState(() => _selection = selection);
-      if (!selection.preview.valid) {
-        _message('Bu yedek doğrulanamadı. Mevcut veriler değiştirilmedi.');
-      }
+      final state = stateForPickResult(result);
+      setState(() => _selection = state.selection);
+      _messagePhase(state.phase);
     } catch (_) {
-      _message('Yedek dosyası doğrulanamadı. Mevcut veriler değiştirilmedi.');
+      _messagePhase(BackupUiPhase.invalidBackup);
     }
   }
 
@@ -97,47 +91,40 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
         () => widget.backupActions.applyRestore(selection: selection, mode: mode),
       );
       if (result == null) return;
-      _message(
-        mode == BackupImportMode.merge
-            ? '${result.importedRecordCount} kayıt yedekten birleştirildi.'
-            : '${result.importedRecordCount} kayıt yedekten geri yüklendi.',
-      );
+      _messagePhase(phaseForImportResult(result));
       if (mounted) setState(() => _selection = null);
-    } on BackupRestoreException catch (error) {
-      if (error.rollbackRestored) {
-        _message('Geri yükleme başarısız oldu; önceki veriler güvenlik kopyasından geri getirildi.');
-      } else {
-        _message('Geri yükleme ve güvenlik kopyasını geri alma başarısız oldu. Veri bütünlüğü kontrol edilmeli.');
-      }
-    } catch (_) {
-      _message('Yedekten geri yükleme başarısız oldu.');
+    } catch (error) {
+      _messagePhase(phaseForRestoreError(error));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final selection = _selection;
+    final copy = _copy;
     return Scaffold(
-      appBar: AppBar(title: const Text('Yedekleme ve Aktarma')),
+      appBar: AppBar(title: Text(copy.title)),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const Text(
-            'Tam yedek, Ruh Code verilerini taşınabilir .ruhcode.zip paketi olarak cihazında tutar. Sunucu hesabı gerekmez.',
-          ),
+          Text(copy.description),
           const SizedBox(height: 16),
           _BackupActionTile(
             actionId: RuhActionIds.backupExport,
-            title: 'Tam Yedek Oluştur',
-            subtitle: 'Tüm desteklenen kayıtları tek taşınabilir yedek paketine aktar',
+            title: copy.saveLabel,
+            subtitle: _ruhLocale == RuhLocale.tr
+                ? 'Tüm desteklenen kayıtları tek taşınabilir yedek paketine aktar'
+                : 'Export all supported records into one portable backup package',
             icon: Icons.save_alt_outlined,
             enabled: !_busy,
             onTap: _export,
           ),
           _BackupActionTile(
             actionId: RuhActionIds.backupImport,
-            title: 'Yedekten Geri Yükle',
-            subtitle: 'Dosyayı önce doğrula ve içeriği görmeden verileri değiştirme',
+            title: copy.chooseLabel,
+            subtitle: _ruhLocale == RuhLocale.tr
+                ? 'Dosyayı önce doğrula; onay vermeden mevcut verileri değiştirme'
+                : 'Verify the file first; do not change existing data before confirmation',
             icon: Icons.settings_backup_restore_outlined,
             enabled: !_busy,
             onTap: _pickRestore,
@@ -151,6 +138,8 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
             _RestorePreviewCard(
               selection: selection,
               busy: _busy,
+              copy: copy,
+              locale: _ruhLocale,
               onMerge: () => _apply(BackupImportMode.merge),
               onReplace: () => _apply(BackupImportMode.replace),
             ),
@@ -206,48 +195,60 @@ class _RestorePreviewCard extends StatelessWidget {
   const _RestorePreviewCard({
     required this.selection,
     required this.busy,
+    required this.copy,
+    required this.locale,
     required this.onMerge,
     required this.onReplace,
   });
 
   final BackupRestoreSelection selection;
   final bool busy;
+  final BackupUiCopy copy;
+  final RuhLocale locale;
   final VoidCallback onMerge;
   final VoidCallback onReplace;
 
   @override
   Widget build(BuildContext context) {
     final preview = selection.preview;
+    final tr = locale == RuhLocale.tr;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Yedek Önizleme', style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              tr ? 'Yedek Önizleme' : 'Backup Preview',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
             const SizedBox(height: 8),
             Text(selection.fileName),
-            Text('Toplam kayıt: ${preview.totalRecords}'),
-            Text('Tablo sayısı: ${preview.recordCounts.length}'),
+            Text(tr ? 'Toplam kayıt: ${preview.totalRecords}' : 'Total records: ${preview.totalRecords}'),
+            Text(tr ? 'Tablo sayısı: ${preview.recordCounts.length}' : 'Table count: ${preview.recordCounts.length}'),
             const SizedBox(height: 12),
             if (!preview.valid) ...[
-              const Text('Yedek doğrulanamadı. Hiçbir veri değiştirilmedi.'),
+              Text(copy.status(BackupUiPhase.invalidBackup)),
               const SizedBox(height: 8),
               for (final issue in preview.issues.take(5)) Text('• ${issue.message}'),
             ] else ...[
-              const Text('Yedek doğrulandı. Nasıl geri yükleneceğini seç:'),
+              Text(copy.status(BackupUiPhase.previewReady)),
               const SizedBox(height: 12),
               FilledButton.tonal(
                 onPressed: busy ? null : onMerge,
-                child: const Text('Birleştir'),
+                child: Text(copy.mergeLabel),
               ),
               const SizedBox(height: 8),
               FilledButton(
                 onPressed: busy ? null : onReplace,
-                child: const Text('Mevcut Veriyi Değiştir'),
+                child: Text(copy.replaceLabel),
               ),
               const SizedBox(height: 8),
-              const Text('Değiştir seçeneğinde işlemden önce otomatik güvenlik kopyası oluşturulur.'),
+              Text(
+                tr
+                    ? 'Değiştir seçeneğinde işlemden önce otomatik güvenlik kopyası oluşturulur.'
+                    : 'Replace creates an automatic safety snapshot before changing existing data.',
+              ),
             ],
           ],
         ),
