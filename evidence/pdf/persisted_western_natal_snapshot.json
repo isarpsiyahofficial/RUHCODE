@@ -2,7 +2,7 @@
   "id": "PDF-PERSISTED-WESTERN-NATAL-V1",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
-  "requirement_ids": ["RC-0724", "RC-0725", "RC-0726", "RC-0727", "RC-0729", "RC-0730", "RC-0737", "RC-0738", "RC-0763", "RC-0765", "RC-0870", "RC-0875", "RC-0876", "RC-0920", "RC-0921", "RC-0922"],
+  "requirement_ids": ["RC-0724", "RC-0725", "RC-0726", "RC-0727", "RC-0729", "RC-0730", "RC-0737", "RC-0738", "RC-0763", "RC-0765", "RC-0870", "RC-0920", "RC-0921", "RC-0922", "RC-0923"],
   "source_files": [
     "lib/src/pdf/persisted_western_natal_snapshot.dart",
     "lib/src/pdf/persisted_western_natal_pdf.dart",
