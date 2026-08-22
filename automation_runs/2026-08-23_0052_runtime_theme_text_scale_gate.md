@@ -21,11 +21,19 @@
   - Örnek PDF Önizle / Profesyonel PDF Oluştur action görünürlüğü
 - Test production ile aynı `RuhAppTheme.light()` temasını kullanıyor.
 
-### 3. RC-1441 semantic evidence sahipliği sertleştirildi
+### 3. Kritik widget semantics kapsamı genişletildi
+
+- `test/ui/critical_semantics_contract_test.dart` eklendi.
+- Numeroloji sonuçlarında localized metric/value semantics (`Yaşam Yolu: 7`) regression sözleşmesine bağlandı.
+- Professional PDF `PDF Oluştur` ve build sonrası `PDF Paylaş` kontrollerinde explicit Semantics label + minimum 48dp target test edildi.
+- `evidence/ui/critical_semantics_contract.json` eklendi.
+
+### 4. RC-1441 semantic evidence sahipliği sertleştirildi
 
 - `evidence/ui/runtime_theme_token_contract.json` eklendi.
 - `evidence/ui/accessibility_text_scale_contract.json` eklendi.
-- `tools/requirements/validate_ui_accessibility_traceability.py` üç UI accessibility evidence dosyasının exact `RC-1441` sahipliğini MASTER metnine karşı doğruluyor.
+- `evidence/ui/critical_semantics_contract.json` eklendi.
+- `tools/requirements/validate_ui_accessibility_traceability.py` dört UI accessibility evidence dosyasının exact `RC-1441` sahipliğini MASTER metnine karşı doğruluyor.
 - Requirements CI bu validator'ı ve runtime theme token validator'ını çalıştıracak şekilde güncellendi.
 - UI Contracts workflow artık `lib/src/ui/**`, `lib/src/app/ruh_code_app.dart` ve `test/ui/**` değişikliklerini kapsıyor.
 
@@ -40,12 +48,13 @@
 - APPROVED UI reference ekran/state seti ve visual regression.
 - Her zorunlu ekranda rendered contrast kontrolü.
 - Her zorunlu ekran/state için 2.0x overflow coverage.
+- Backup dahil kalan kritik action'ların semantics/focus regression kapsamı.
 - Gerçek cihaz screen-reader/focus-order traversal.
 - Exact görünür CI SUCCESS.
 
 ## Sonraki güvenli çalışma
 
-1. Widget-level semantics coverage'ı Backup, Numerology ve Professional PDF ekranlarına genişlet.
+1. Backup ekranındaki export/import/merge/replace action'larını widget-level Semantics + 48dp + focus regression'a bağla.
 2. Semantic evidence audit kapsamını kalan requirement-bearing evidence ailelerine genişlet.
 3. Approved font gerektirmeyen PDF structural/page/parity regressions ilerlet.
 4. Clean-checkout için `pubspec.lock` blocker'ını dependency resolution yapılabilir olduğunda kapat.
