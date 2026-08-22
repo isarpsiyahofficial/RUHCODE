@@ -58,6 +58,14 @@ def main():
         die("screen-reader labels must be mandatory")
     if not a11y["informationMayNotDependOnColorAlone"]:
         die("information may not depend on color alone")
+    if a11y.get("designTokenContrastContract") != "ui/design_tokens.json":
+        die("design-token contrast contract path must remain explicit")
+    if a11y.get("designTokenContrastValidator") != "tools/ui/validate_design_tokens.py":
+        die("design-token contrast validator path must remain explicit")
+    if not a11y.get("normalTextContrastMeasuredFromSrgbTokens"):
+        die("normal-text contrast must be measured from sRGB design tokens")
+    if not a11y.get("lowContrastAccentTokensMustNotBeUsedAsNormalTextOnLightSurfaces"):
+        die("low-contrast accent tokens must remain forbidden for normal text on light surfaces")
     if reg.get("runtimeBindings") != "ui/runtime_action_bindings.csv":
         die("runtime action binding manifest must remain explicit")
     if reg.get("runtimeActionConstants") != "lib/src/ui/actions/ruh_action_ids.dart":
@@ -109,7 +117,8 @@ def main():
     print(
         f"OK: accessibility/interaction contract validated; active_actions={active}, "
         f"minimum_touch_target={a11y['minimumTouchTargetDp']}dp, "
-        f"text_scale={a11y['maximumRequiredTextScaleForNoCriticalOverflow']}x"
+        f"text_scale={a11y['maximumRequiredTextScaleForNoCriticalOverflow']}x, "
+        "design_token_contrast=measured"
     )
 
 
