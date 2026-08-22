@@ -8,5 +8,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TimeZoneRuntime.initialize();
   final runtime = await RuhCodeRuntime.create();
-  runApp(RuhCodeApp(featureAccess: runtime.featureAccess));
+  runApp(
+    RuhCodeApp(
+      featureAccess: runtime.featureAccess,
+      backupActions: runtime.backupActions,
+    ),
+  );
 }
