@@ -1,0 +1,40 @@
+{
+  "contract": "ruh-code-backup-restore-preview-accessibility-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0832",
+    "RC-0833",
+    "RC-0834",
+    "RC-0835",
+    "RC-0836",
+    "RC-0837",
+    "RC-0838",
+    "RC-0839",
+    "RC-1440",
+    "RC-1441"
+  ],
+  "sources": [
+    "lib/src/ui/backup/backup_settings_page.dart",
+    "lib/src/ui/actions/ruh_action_ids.dart",
+    "ui/action_registry_runtime_extensions.csv",
+    "ui/runtime_action_bindings.csv"
+  ],
+  "tests": [
+    "test/ui/backup/backup_accessibility_test.dart"
+  ],
+  "requiredProperties": [
+    "a validated backup preview is shown before merge or replace mutation controls become available",
+    "preview visibly reports profile, client, consultation, journal-entry and calculation counts",
+    "merge and replace are distinct canonical ACTION-ID controls",
+    "merge and replace expose explicit screen-reader button semantics",
+    "merge and replace retain at least 48dp interactive height",
+    "keyboard/focus traversal order is deterministic: merge before replace",
+    "busy state disables both mutation controls"
+  ],
+  "remainingBeforeDone": [
+    "obtain exact visible Flutter widget-test and CI success",
+    "run real-device screen-reader and hardware-keyboard/focus traversal",
+    "complete final approved UI visual regression for the restore preview state"
+  ]
+}
