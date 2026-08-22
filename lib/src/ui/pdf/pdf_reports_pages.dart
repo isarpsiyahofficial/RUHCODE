@@ -10,10 +10,12 @@ class PdfReportsHubPage extends StatelessWidget {
     super.key,
     required this.featureAccess,
     this.professionalActions,
+    this.professionalRecords,
   });
 
   final FeatureAccessGuard featureAccess;
   final ProfessionalPdfBuildActions? professionalActions;
+  final ProfessionalPdfRecordActions? professionalRecords;
 
   Future<void> _open(
     BuildContext context, {
@@ -70,7 +72,10 @@ class PdfReportsHubPage extends StatelessWidget {
               onTap: () => _open(
                 context,
                 featureId: RuhFeatureIds.pdfProfessionalExport,
-                page: ProfessionalPdfBuilderPage(actions: professionalActions),
+                page: ProfessionalPdfBuilderPage(
+                  actions: professionalActions,
+                  records: professionalRecords,
+                ),
                 lockedMessage: 'Profesyonel PDF oluşturma PRO kullanıcılar içindir.',
               ),
             ),
@@ -127,18 +132,25 @@ class PdfSamplePreviewPage extends StatelessWidget {
 }
 
 class ProfessionalPdfBuilderPage extends StatefulWidget {
-  const ProfessionalPdfBuilderPage({super.key, this.actions});
+  const ProfessionalPdfBuilderPage({
+    super.key,
+    this.actions,
+    this.records,
+  });
 
   final ProfessionalPdfBuildActions? actions;
+  final ProfessionalPdfRecordActions? records;
 
   @override
   State<ProfessionalPdfBuilderPage> createState() => _ProfessionalPdfBuilderPageState();
 }
 
 class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage> {
-  final _recordController = TextEditingController();
   final _selected = <String>{'chart', 'placements', 'interpretation', 'notes'};
   bool _busy = false;
+  bool _loadingRecords = false;
+  List<ProfessionalPdfUiRecord> _records = const <ProfessionalPdfUiRecord>[];
+  String? _selectedRecordId;
   ProfessionalPdfUiBuildResult? _result;
   String? _error;
 
@@ -150,9 +162,38 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
   ];
 
   @override
-  void dispose() {
-    _recordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadRecords();
+  }
+
+  Future<void> _loadRecords() async {
+    final source = widget.records;
+    if (source == null) return;
+    setState(() {
+      _loadingRecords = true;
+      _error = null;
+    });
+    try {
+      final records = await source.listRecords();
+      if (!mounted) return;
+      setState(() {
+        _records = records;
+        if (_selectedRecordId != null &&
+            !records.any((record) => record.recordId == _selectedRecordId)) {
+          _selectedRecordId = null;
+        }
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _records = const <ProfessionalPdfUiRecord>[];
+        _selectedRecordId = null;
+        _error = 'Kayıtlı hesaplamalar yüklenemedi: $error';
+      });
+    } finally {
+      if (mounted) setState(() => _loadingRecords = false);
+    }
   }
 
   Future<void> _buildPdf() async {
@@ -164,10 +205,11 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
       });
       return;
     }
-    if (_recordController.text.trim().isEmpty) {
+    final recordId = _selectedRecordId;
+    if (recordId == null) {
       setState(() {
         _result = null;
-        _error = 'Önce rapor oluşturulacak kayıt kimliğini seç.';
+        _error = 'Önce kayıtlı bir hesaplama seç.';
       });
       return;
     }
@@ -186,7 +228,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
     });
     try {
       final result = await actions.build(
-        recordId: _recordController.text.trim(),
+        recordId: recordId,
         localeTag: Localizations.localeOf(context).toLanguageTag(),
         sectionIds: [for (final section in _sections) if (_selected.contains(section.$1)) section.$1],
       );
@@ -200,23 +242,50 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
     }
   }
 
+  String _recordLabel(ProfessionalPdfUiRecord record) {
+    final local = record.createdAtUtc.toLocal();
+    final date = '${local.day.toString().padLeft(2, '0')}.${local.month.toString().padLeft(2, '0')}.${local.year}';
+    return '${record.calculationType} · $date';
+  }
+
   @override
   Widget build(BuildContext context) {
     final result = _result;
+    final recordSourceAvailable = widget.records != null;
     return Scaffold(
       appBar: AppBar(title: const Text('Profesyonel PDF Oluştur')),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          TextField(
-            controller: _recordController,
-            enabled: !_busy,
-            decoration: const InputDecoration(
-              labelText: 'Hesaplama Kaydı',
-              hintText: 'Kayıt kimliği',
-              helperText: 'PDF yalnız seçtiğin kayıt snapshot’ından oluşturulur.',
+          if (_loadingRecords)
+            const LinearProgressIndicator()
+          else if (!recordSourceAvailable)
+            const Text('Kayıtlı hesaplama seçicisi henüz production runtime’a bağlanmadı.')
+          else if (_records.isEmpty)
+            const Text('PDF oluşturmak için önce bir hesaplama kaydetmelisin.')
+          else
+            DropdownButtonFormField<String>(
+              key: const ValueKey('professional-pdf-record-selector'),
+              value: _selectedRecordId,
+              decoration: const InputDecoration(
+                labelText: 'Kayıtlı Hesaplama',
+                helperText: 'PDF yalnız seçtiğin kayıt snapshot’ından oluşturulur.',
+              ),
+              items: [
+                for (final record in _records)
+                  DropdownMenuItem<String>(
+                    value: record.recordId,
+                    child: Text(_recordLabel(record)),
+                  ),
+              ],
+              onChanged: _busy
+                  ? null
+                  : (value) => setState(() {
+                        _selectedRecordId = value;
+                        _result = null;
+                        _error = null;
+                      }),
             ),
-          ),
           const SizedBox(height: 20),
           Text('Rapor Bölümleri', style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 12),
@@ -238,7 +307,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
           const SizedBox(height: 12),
           FilledButton.icon(
             key: const ValueKey(RuhActionIds.pdfCreate),
-            onPressed: _busy ? null : _buildPdf,
+            onPressed: _busy || _loadingRecords ? null : _buildPdf,
             icon: const Icon(Icons.picture_as_pdf_outlined),
             label: Text(_busy ? 'Oluşturuluyor…' : 'PDF Oluştur'),
           ),
