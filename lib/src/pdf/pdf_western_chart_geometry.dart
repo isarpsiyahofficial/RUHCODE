@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import '../calculation_core/ephemeris/ephemeris.dart';
 import '../calculation_core/western/natal_chart.dart';
 import '../calculation_core/western/natal_aspects.dart';
+import 'persisted_western_natal_snapshot.dart';
 
 final class PdfVectorPoint {
   const PdfVectorPoint(this.x, this.y);
@@ -163,6 +164,79 @@ abstract final class PdfWesternChartGeometryAdapter {
     );
   }
 
+  /// Builds the exact same vector projection directly from a persisted,
+  /// fingerprint-verified natal snapshot. No historical calculation is rerun.
+  static PdfWesternChartGeometry fromPersistedSnapshot(PersistedWesternNatalSnapshot snapshot) {
+    final ascendant = snapshot.houseCuspsDeg.first;
+    final houseRays = List<PdfHouseRay>.generate(12, (index) {
+      final longitude = snapshot.houseCuspsDeg[index];
+      return PdfHouseRay(
+        houseNumber: index + 1,
+        longitudeDegrees: longitude,
+        outer: _pointForLongitude(
+          longitudeDegrees: longitude,
+          ascendantLongitude: ascendant,
+          radius: houseRadius,
+        ),
+      );
+    }, growable: false);
+
+    final planetMarkers = snapshot.placements.map((placement) {
+      final body = _astroBodyByName(placement.body);
+      return PdfPlanetMarker(
+        body: body,
+        longitudeDegrees: placement.longitudeDeg,
+        position: _pointForLongitude(
+          longitudeDegrees: placement.longitudeDeg,
+          ascendantLongitude: ascendant,
+          radius: planetRadius,
+        ),
+      );
+    }).toList(growable: false);
+
+    final markersByBody = <AstroBody, PdfPlanetMarker>{
+      for (final marker in planetMarkers) marker.body: marker,
+    };
+    if (markersByBody.length != planetMarkers.length) {
+      throw const FormatException('Persisted Western PDF planet marker body set contains duplicates.');
+    }
+
+    final aspectChords = snapshot.aspects.map((hit) {
+      final bodyA = _astroBodyByName(hit.bodyA);
+      final bodyB = _astroBodyByName(hit.bodyB);
+      final a = markersByBody[bodyA];
+      final b = markersByBody[bodyB];
+      if (a == null || b == null) {
+        throw const FormatException('Persisted Western PDF aspect refers to an absent body.');
+      }
+      return PdfAspectChord(
+        bodyA: bodyA,
+        bodyB: bodyB,
+        aspect: _majorAspectByName(hit.type),
+        start: _pointForLongitude(
+          longitudeDegrees: a.longitudeDegrees,
+          ascendantLongitude: ascendant,
+          radius: aspectRadius,
+        ),
+        end: _pointForLongitude(
+          longitudeDegrees: b.longitudeDegrees,
+          ascendantLongitude: ascendant,
+          radius: aspectRadius,
+        ),
+      );
+    }).toList(growable: false);
+
+    return PdfWesternChartGeometry(
+      jdTt: snapshot.ttJulianDay,
+      sourceId: snapshot.sourceId,
+      dataVersion: snapshot.dataVersion,
+      ascendantLongitude: ascendant,
+      houseRays: houseRays,
+      planetMarkers: planetMarkers,
+      aspectChords: aspectChords,
+    );
+  }
+
   static PdfVectorPoint _pointForLongitude({
     required double longitudeDegrees,
     required double ascendantLongitude,
@@ -183,6 +257,20 @@ abstract final class PdfWesternChartGeometryAdapter {
     // longitude moves counter-clockwise in Cartesian chart coordinates.
     final angle = math.pi - (relative * math.pi / 180.0);
     return PdfVectorPoint(math.cos(angle) * radius, math.sin(angle) * radius);
+  }
+
+  static AstroBody _astroBodyByName(String name) {
+    for (final value in AstroBody.values) {
+      if (value.name == name) return value;
+    }
+    throw FormatException('Unsupported persisted AstroBody: $name');
+  }
+
+  static MajorAspect _majorAspectByName(String name) {
+    for (final value in MajorAspect.values) {
+      if (value.name == name) return value;
+    }
+    throw FormatException('Unsupported persisted MajorAspect: $name');
   }
 
   static double _normalize(double degrees) {
