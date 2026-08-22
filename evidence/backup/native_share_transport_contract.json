@@ -1,0 +1,35 @@
+{
+  "contract": "ruh-code-native-backup-transport-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-1300", "RC-1301"],
+  "sources": [
+    "lib/src/backup/backup_application_service.dart",
+    "lib/src/backup/backup_platform_gateway.dart",
+    "lib/src/ui/backup/backup_settings_page.dart",
+    "lib/src/ui/actions/ruh_action_ids.dart",
+    "ui/action_registry_runtime_extensions.csv",
+    "ui/runtime_action_bindings.csv"
+  ],
+  "tests": [
+    "test/backup/backup_application_service_test.dart",
+    "test/backup/backup_platform_gateway_test.dart",
+    "test/ui/backup/backup_accessibility_test.dart"
+  ],
+  "validators": [
+    "tools/ui/validate_backup_action_labels.py",
+    "tools/ui/validate_runtime_action_bindings.py"
+  ],
+  "requiredProperties": [
+    "the user can invoke native sharing for a complete .ruhcode.zip backup from the real Backup settings surface",
+    "the application hands the portable backup to the operating-system share sheet rather than managing Google Drive, iCloud, email or another external storage provider itself",
+    "native share is registered as an offline-available FREE canonical action with an accessibility label",
+    "dismissed native sharing is a normal cancellation result and never mutates existing application data",
+    "the UI uses the same BackupApplicationActions boundary as save and restore operations"
+  ],
+  "remainingBeforeDone": [
+    "run Android real-device share-sheet smoke test with at least one external destination",
+    "run iOS real-device share-sheet smoke test if iOS distribution is included in the release target",
+    "obtain exact visible Flutter Quality, Backup Contract and UI Contract CI success"
+  ]
+}
