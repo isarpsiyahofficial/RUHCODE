@@ -208,6 +208,8 @@ class _RestorePreviewCard extends StatelessWidget {
   final VoidCallback onMerge;
   final VoidCallback onReplace;
 
+  int _count(String fileName) => selection.preview.recordCounts[fileName] ?? 0;
+
   @override
   Widget build(BuildContext context) {
     final preview = selection.preview;
@@ -226,6 +228,12 @@ class _RestorePreviewCard extends StatelessWidget {
             Text(selection.fileName),
             Text(tr ? 'Toplam kayıt: ${preview.totalRecords}' : 'Total records: ${preview.totalRecords}'),
             Text(tr ? 'Tablo sayısı: ${preview.recordCounts.length}' : 'Table count: ${preview.recordCounts.length}'),
+            const SizedBox(height: 12),
+            _PreviewCount(label: tr ? 'Profiller' : 'Profiles', count: _count('profiles.csv')),
+            _PreviewCount(label: tr ? 'Danışanlar' : 'Clients', count: _count('clients.csv')),
+            _PreviewCount(label: tr ? 'Danışmanlıklar' : 'Consultations', count: _count('consultations.csv')),
+            _PreviewCount(label: tr ? 'Günlük Kayıtları' : 'Journal Entries', count: _count('journal_entries.csv')),
+            _PreviewCount(label: tr ? 'Hesaplamalar' : 'Calculations', count: _count('calculations.csv')),
             const SizedBox(height: 12),
             if (!preview.valid) ...[
               Text(copy.status(BackupUiPhase.invalidBackup)),
@@ -252,6 +260,27 @@ class _RestorePreviewCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PreviewCount extends StatelessWidget {
+  const _PreviewCount({required this.label, required this.count});
+
+  final String label;
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label),
+          Text('$count'),
+        ],
       ),
     );
   }
