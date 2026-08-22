@@ -1,4 +1,4 @@
-# Ruh Code Automation Checkpoint — Runtime Theme + 2.0x Accessibility
+# Ruh Code Automation Checkpoint — Runtime Theme + Accessibility + Backup Share
 
 ## Bu turda gerçek ilerleme
 
@@ -26,7 +26,8 @@
 - `test/ui/critical_semantics_contract_test.dart` eklendi.
 - Numeroloji sonuçlarında localized metric/value semantics (`Yaşam Yolu: 7`) regression sözleşmesine bağlandı.
 - Professional PDF `PDF Oluştur` ve build sonrası `PDF Paylaş` kontrollerinde explicit Semantics label + minimum 48dp target test edildi.
-- `evidence/ui/critical_semantics_contract.json` eklendi.
+- Backup `Tam Yedek Oluştur`, `Yedeği Paylaş`, `Yedek Dosyası Seç` kontrolleri explicit Semantics + minimum 48dp regression'a bağlandı.
+- `evidence/ui/critical_semantics_contract.json` bu kapsamla güncellendi.
 
 ### 4. RC-1441 semantic evidence sahipliği sertleştirildi
 
@@ -37,24 +38,36 @@
 - Requirements CI bu validator'ı ve runtime theme token validator'ını çalıştıracak şekilde güncellendi.
 - UI Contracts workflow artık `lib/src/ui/**`, `lib/src/app/ruh_code_app.dart` ve `test/ui/**` değişikliklerini kapsıyor.
 
+### 5. Tam yedeğin native paylaşım yolu gerçek UI'a bağlandı
+
+- Backup application service ve platform gateway'de zaten mevcut olan `exportAndShare()` akışı artık gerçek `BackupSettingsPage` üzerinde kullanıcıya sunuluyor.
+- Canonical `ACTION-BACKUP-SHARE` action ID eklendi; runtime extension registry ve runtime binding registry ile eşleştirildi.
+- `Yedeği Paylaş` FREE + offline-available + accessibility-label-required action olarak kilitlendi.
+- Widget regression, share action'ın gerçek `BackupApplicationActions.exportAndShare()` sınırını çağırdığını ve `.ruhcode.zip` dosya adı kullandığını doğruluyor.
+- Kullanıcının share sheet'i kapatması normal cancellation state olarak gösteriliyor; sahte hata/success üretilmiyor.
+- `tools/ui/validate_backup_action_labels.py` artık create/share/restore üçlüsünü base + runtime extension registry birlikte okuyarak doğruluyor.
+- `evidence/backup/native_share_transport_contract.json` exact `RC-1300 / RC-1301` sahipliğiyle eklendi.
+- `tools/requirements/validate_backup_transport_traceability.py` bu sahipliği MASTER metnine karşı kilitliyor; Requirements CI'a bağlandı.
+
 ## Validation limitation
 
 - Exact workflow-target commit için GitHub combined-status yine `statuses=[]` döndürdü.
 - Actions REST query connector fetch politikası tarafından reddedildi; görünür SUCCESS elde edilmedi.
-- Bu nedenle `RC-1441` **DONE yapılmadı**; evidence `done=false` kalıyor.
+- Bu nedenle `RC-1441`, `RC-1300` ve `RC-1301` **DONE yapılmadı**; evidence `done=false` kalıyor.
 
-## RC-1441 için açık kalan gerçek kapılar
+## Açık gerçek kapılar
 
 - APPROVED UI reference ekran/state seti ve visual regression.
 - Her zorunlu ekranda rendered contrast kontrolü.
 - Her zorunlu ekran/state için 2.0x overflow coverage.
-- Backup dahil kalan kritik action'ların semantics/focus regression kapsamı.
+- Backup valid-preview sonrası merge/replace Semantics + focus regression.
 - Gerçek cihaz screen-reader/focus-order traversal.
+- Android native backup share-sheet smoke test; iOS hedeflenirse iOS smoke test.
 - Exact görünür CI SUCCESS.
 
 ## Sonraki güvenli çalışma
 
-1. Backup ekranındaki export/import/merge/replace action'larını widget-level Semantics + 48dp + focus regression'a bağla.
+1. Valid backup preview fixture üzerinden merge/replace action semantics + transaction başlamadan preview doğrulama sözleşmesini widget seviyesinde genişlet.
 2. Semantic evidence audit kapsamını kalan requirement-bearing evidence ailelerine genişlet.
 3. Approved font gerektirmeyen PDF structural/page/parity regressions ilerlet.
 4. Clean-checkout için `pubspec.lock` blocker'ını dependency resolution yapılabilir olduğunda kapat.
