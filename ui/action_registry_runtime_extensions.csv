@@ -1,0 +1,3 @@
+action_id,source_screen_id,action_type,label_or_purpose,target_screen_id_or_effect,entitlement,offline_behavior,a11y_label_required,status
+ACTION-PDF-BUILDER-CREATE,SCR-PDF-BUILDER-001,PDF,PDF Oluştur,EFFECT:GENERATE_PDF,PRO,AVAILABLE,true,ACTIVE
+ACTION-PDF-BUILDER-SHARE,SCR-PDF-BUILDER-001,SHARE,Paylaş,EFFECT:SHARE_PDF,PRO,AVAILABLE,true,ACTIVE
