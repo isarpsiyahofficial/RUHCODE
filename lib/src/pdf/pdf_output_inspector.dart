@@ -13,6 +13,7 @@ final class PdfOutputInspection {
     required this.hasCatalog,
     required this.hasPagesTree,
     required this.pageObjectCount,
+    required this.declaredPageCount,
   });
 
   final int byteLength;
@@ -21,6 +22,10 @@ final class PdfOutputInspection {
   final bool hasCatalog;
   final bool hasPagesTree;
   final int pageObjectCount;
+  final int? declaredPageCount;
+
+  bool get pageTreeCountConsistent =>
+      declaredPageCount != null && declaredPageCount == pageObjectCount;
 
   bool get structurallyUsable =>
       byteLength >= 64 &&
@@ -28,7 +33,8 @@ final class PdfOutputInspection {
       hasEofMarker &&
       hasCatalog &&
       hasPagesTree &&
-      pageObjectCount > 0;
+      pageObjectCount > 0 &&
+      pageTreeCountConsistent;
 }
 
 final class PdfOutputInspector {
@@ -44,6 +50,13 @@ final class PdfOutputInspector {
 
     final text = latin1.decode(bytes, allowInvalid: true);
     final pageObjectCount = RegExp(r'/Type\s*/Page(?!s)\b').allMatches(text).length;
+    final pagesTreeMatch = RegExp(
+      r'/Type\s*/Pages\b(?:(?!endobj).)*?/Count\s+(\d+)',
+      dotAll: true,
+    ).firstMatch(text);
+    final declaredPageCount = pagesTreeMatch == null
+        ? null
+        : int.tryParse(pagesTreeMatch.group(1)!);
 
     return PdfOutputInspection(
       byteLength: bytes.length,
@@ -52,6 +65,7 @@ final class PdfOutputInspector {
       hasCatalog: RegExp(r'/Type\s*/Catalog\b').hasMatch(text),
       hasPagesTree: RegExp(r'/Type\s*/Pages\b').hasMatch(text),
       pageObjectCount: pageObjectCount,
+      declaredPageCount: declaredPageCount,
     );
   }
 
@@ -62,7 +76,9 @@ final class PdfOutputInspector {
         'Generated PDF failed structural inspection: '
         'bytes=${inspection.byteLength}, header=${inspection.hasHeader}, '
         'eof=${inspection.hasEofMarker}, catalog=${inspection.hasCatalog}, '
-        'pagesTree=${inspection.hasPagesTree}, pages=${inspection.pageObjectCount}.',
+        'pagesTree=${inspection.hasPagesTree}, pages=${inspection.pageObjectCount}, '
+        'declaredPages=${inspection.declaredPageCount}, '
+        'pageCountConsistent=${inspection.pageTreeCountConsistent}.',
       );
     }
     return inspection;
