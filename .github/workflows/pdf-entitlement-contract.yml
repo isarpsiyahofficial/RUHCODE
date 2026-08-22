@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'ui/action_registry.csv'
+      - 'ui/action_registry_runtime_extensions.csv'
       - 'ui/runtime_action_bindings.csv'
       - 'lib/src/entitlements/feature_catalog.dart'
       - 'lib/src/entitlements/feature_access_guard.dart'
@@ -19,6 +20,7 @@ on:
   pull_request:
     paths:
       - 'ui/action_registry.csv'
+      - 'ui/action_registry_runtime_extensions.csv'
       - 'ui/runtime_action_bindings.csv'
       - 'lib/src/entitlements/feature_catalog.dart'
       - 'lib/src/entitlements/feature_access_guard.dart'
