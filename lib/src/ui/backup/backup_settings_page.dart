@@ -71,6 +71,26 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
     }
   }
 
+  Future<void> _share() async {
+    final now = DateTime.now().toUtc();
+    try {
+      final result = await _run(
+        () => widget.backupActions.exportAndShare(
+          fileName: _fileName(now),
+          appVersion: RuhCodeBuildMetadata.appVersion,
+          engineVersion: RuhCodeBuildMetadata.engineVersion,
+          localeTag: _localeTag,
+          exportedAtUtc: now,
+          title: _copy.shareLabel,
+        ),
+      );
+      if (result == null) return;
+      _messagePhase(phaseForShareResult(result));
+    } catch (_) {
+      _messagePhase(BackupUiPhase.failed);
+    }
+  }
+
   Future<void> _pickRestore() async {
     try {
       final result = await _run(widget.backupActions.pickAndPreviewRestore);
@@ -118,6 +138,16 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
             icon: Icons.save_alt_outlined,
             enabled: !_busy,
             onTap: _export,
+          ),
+          _BackupActionTile(
+            actionId: RuhActionIds.backupShare,
+            title: copy.shareLabel,
+            subtitle: _ruhLocale == RuhLocale.tr
+                ? 'Tam yedek paketini cihazın yerel paylaşım menüsüyle gönder'
+                : 'Send the full backup package with the device share sheet',
+            icon: Icons.share_outlined,
+            enabled: !_busy,
+            onTap: _share,
           ),
           _BackupActionTile(
             actionId: RuhActionIds.backupImport,
