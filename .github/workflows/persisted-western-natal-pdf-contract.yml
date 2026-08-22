@@ -3,6 +3,8 @@ name: Persisted Western Natal PDF Contract
 on:
   push:
     paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
       - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
@@ -15,11 +17,14 @@ on:
       - 'test/pdf/persisted_western_natal_sections_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
+      - 'tools/requirements/validate_persisted_western_traceability.py'
       - 'pubspec.yaml'
       - 'pubspec.lock'
       - '.github/workflows/persisted-western-natal-pdf-contract.yml'
   pull_request:
     paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
       - 'lib/src/pdf/persisted_western_natal_snapshot.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
@@ -32,6 +37,7 @@ on:
       - 'test/pdf/persisted_western_natal_sections_test.dart'
       - 'evidence/pdf/persisted_western_natal_snapshot.json'
       - 'tools/pdf/validate_persisted_western_natal_snapshot.py'
+      - 'tools/requirements/validate_persisted_western_traceability.py'
       - 'pubspec.yaml'
       - 'pubspec.lock'
       - '.github/workflows/persisted-western-natal-pdf-contract.yml'
@@ -46,6 +52,8 @@ jobs:
           python-version: '3.12'
       - name: Validate persisted Western snapshot contract
         run: python tools/pdf/validate_persisted_western_natal_snapshot.py
+      - name: Validate persisted Western semantic RC ownership
+        run: python tools/requirements/validate_persisted_western_traceability.py
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
