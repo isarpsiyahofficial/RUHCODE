@@ -1,0 +1,26 @@
+{
+  "contract_id": "PDF-PERSISTED-WESTERN-SERVICE-001",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": ["RC-0916", "RC-0920", "RC-0921", "RC-0922", "RC-0923", "RC-0964"],
+  "source_files": [
+    "lib/src/pdf/persisted_western_natal_pdf_service.dart",
+    "lib/src/pdf/persisted_western_natal_pdf.dart",
+    "lib/src/pdf/persisted_western_natal_sections.dart",
+    "lib/src/pdf/persisted_manifest_section.dart"
+  ],
+  "invariants": [
+    "western.natal professional PDF consumes the sealed persisted snapshot instead of recalculating astronomy",
+    "persisted snapshot digest is revalidated before section projection",
+    "placements, houses and aspects are projected from the same persisted snapshot digest",
+    "technical calculation details are projected from the linked CalculationManifest",
+    "TR and EN labels are explicit and unsupported locales fail closed",
+    "record identity drift between the loaded persisted snapshot and PDF adapter is rejected"
+  ],
+  "open_blockers": [
+    "approved production Unicode font artifacts and their license/hash manifest are not yet available",
+    "Western chart vector painter is not yet connected to the local renderer",
+    "5/25/50+ production PDF render and visual-regression evidence is not yet complete",
+    "exact GitHub Actions success for the current source commit is not yet visible"
+  ]
+}
