@@ -1,0 +1,36 @@
+name: Professional PDF Application Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/pdf/professional_pdf_application_service.dart'
+      - 'lib/src/pdf/guarded_pdf_service.dart'
+      - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'test/pdf/professional_pdf_application_service_test.dart'
+      - 'evidence/pdf/professional_application_service.json'
+      - 'tools/pdf/validate_professional_pdf_application.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/professional-pdf-application-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/pdf/professional_pdf_application_service.dart'
+      - 'lib/src/pdf/guarded_pdf_service.dart'
+      - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'test/pdf/professional_pdf_application_service_test.dart'
+      - 'evidence/pdf/professional_application_service.json'
+      - 'tools/pdf/validate_professional_pdf_application.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/professional-pdf-application-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python tools/pdf/validate_professional_pdf_application.py
+      - run: flutter pub get
+      - run: flutter test test/pdf/professional_pdf_application_service_test.dart
