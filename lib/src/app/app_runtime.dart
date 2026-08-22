@@ -15,6 +15,7 @@ import '../entitlements/google_play_lifetime_ownership.dart';
 import '../entitlements/local_entitlement_snapshot_store.dart';
 import '../entitlements/local_entitlement_time_anchor.dart';
 import '../entitlements/professional_repository_bundle.dart';
+import '../pdf/persisted_calculation_pdf_source.dart';
 
 final class RuhCodeRuntime {
   RuhCodeRuntime._({
@@ -24,6 +25,7 @@ final class RuhCodeRuntime {
     required this.entitlements,
     required this.featureAccess,
     required this.backupActions,
+    required this.professionalPdfSnapshotSource,
     required this.startupOwnershipSync,
   });
 
@@ -33,6 +35,11 @@ final class RuhCodeRuntime {
   final EntitlementService entitlements;
   final FeatureAccessGuard featureAccess;
   final BackupApplicationActions backupActions;
+
+  /// Production persisted-calculation source shared by professional PDF
+  /// selection and build composition. It reads calculation + manifest in one
+  /// LocalDatabase transaction and never fabricates a snapshot from UI input.
+  final LocalDatabaseProfessionalPdfSnapshotSource professionalPdfSnapshotSource;
 
   /// Best-effort Google Play ownership refresh performed during startup.
   ///
@@ -82,6 +89,9 @@ final class RuhCodeRuntime {
       importCoordinator: BackupImportCoordinator(store: backupImportStore),
     );
 
+    final professionalPdfSnapshotSource =
+        LocalDatabaseProfessionalPdfSnapshotSource(database: database);
+
     final ownershipSynchronizer = GooglePlayLifetimeOwnershipSynchronizer(
       query: lifetimeOwnershipQuery ?? const GooglePlayLifetimeOwnershipQuery(),
       cache: ownershipCache,
@@ -104,6 +114,7 @@ final class RuhCodeRuntime {
       entitlements: entitlementService,
       featureAccess: featureAccess,
       backupActions: backupActions,
+      professionalPdfSnapshotSource: professionalPdfSnapshotSource,
       startupOwnershipSync: startupOwnershipSync,
     );
   }
