@@ -60,6 +60,26 @@ final class ProfessionalPdfCatalogActions implements ProfessionalPdfRecordAction
   }
 }
 
+/// Narrow one-time composition bridge for the persisted calculation catalog.
+///
+/// Main binds the production catalog after RuhCodeRuntime is created. Widgets
+/// can still receive explicit actions in tests. A second bind is rejected so a
+/// later screen cannot silently replace the production record source.
+final class ProfessionalPdfUiRuntimeBindings {
+  ProfessionalPdfUiRuntimeBindings._();
+
+  static ProfessionalPdfRecordActions? _records;
+
+  static ProfessionalPdfRecordActions? get records => _records;
+
+  static void bindRecords(ProfessionalPdfRecordActions records) {
+    if (_records != null) {
+      throw StateError('Professional PDF record actions are already bound.');
+    }
+    _records = records;
+  }
+}
+
 /// Bridges the generic professional PDF application service to Flutter UI
 /// without exposing calculation snapshot types to widgets.
 final class ProfessionalPdfApplicationActions<TSnapshot>
