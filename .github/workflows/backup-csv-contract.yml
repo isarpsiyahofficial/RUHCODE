@@ -16,8 +16,10 @@ on:
       - 'test/data/**'
       - 'test/ui/backup/**'
       - 'evidence/backup/**'
+      - 'evidence/ui/backup_restore_preview_accessibility_contract.json'
       - 'tools/backup/**'
       - 'ui/action_registry.csv'
+      - 'ui/action_registry_runtime_extensions.csv'
       - 'ui/runtime_action_bindings.csv'
       - '.github/workflows/backup-csv-contract.yml'
   pull_request:
@@ -35,8 +37,10 @@ on:
       - 'test/data/**'
       - 'test/ui/backup/**'
       - 'evidence/backup/**'
+      - 'evidence/ui/backup_restore_preview_accessibility_contract.json'
       - 'tools/backup/**'
       - 'ui/action_registry.csv'
+      - 'ui/action_registry_runtime_extensions.csv'
       - 'ui/runtime_action_bindings.csv'
       - '.github/workflows/backup-csv-contract.yml'
 
@@ -64,6 +68,8 @@ jobs:
         run: python tools/backup/validate_backup_application_service_contract.py
       - name: Validate backup UI action/state contract
         run: python tools/backup/validate_backup_ui_contract.py
+      - name: Validate backup restore preview accessibility/action contract
+        run: python tools/backup/validate_backup_restore_preview_accessibility.py
       - name: Validate production runtime backup wiring
         run: python tools/backup/validate_runtime_backup_wiring.py
       - name: Validate LocalDatabase export contract
