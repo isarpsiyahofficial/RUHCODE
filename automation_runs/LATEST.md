@@ -2,33 +2,30 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-22_1854_western_write_boundary_semantic_audit.md`
+`automation_runs/2026-08-22_2053_evidence_integrity_gate.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Western production write-boundary audit**
-   - `RuhCodeRuntime` gerçek `WesternNatalPersistenceService` composition'ı structural olarak zorunlu
-   - `CoreRepositories` generic/public calculation write repository expose edemez
-   - calculations tablosuna açık production write yolu allowlist dışında CI tarafından reddedilir
-   - doğrulanmış backup restore kontrollü istisna
-2. **Persisted-Western semantic evidence audit**
-   - snapshot evidence
-   - technical CalculationManifest section evidence
-   - persisted Western PDF service evidence
-   exact RC ownership + MASTER semantic keywords ile birlikte doğrulanıyor
-3. **Merkezi CI wiring**
-   - Persisted Western workflow write-boundary denetimini çalıştırıyor
-   - Requirements Contract hem persisted-Western semantic audit'i hem write-boundary denetimini çalıştırıyor
+1. **Repository-wide evidence integrity audit**
+   - bütün `evidence/**/*.json` dosyaları merkezi olarak taranıyor
+   - RC token formatı/aralığı ve duplicate RC kontrolü
+   - `requirements` / `requirement_ids` aynı dosyada ise exact-set parity
+   - source/test/validator path existence + path-traversal koruması
+   - invalid UTF-8 / invalid JSON fail-closed
+   - `done=true` evidence üzerinde açık release blocker yasağı
+2. **Merkezi CI wiring**
+   - Requirements Contract, semantic ownership auditinden önce yeni genel integrity validator'ı çalıştırıyor
+   - mevcut exact semantic RC ownership denetimleri korunuyor
 
 ## Validation limitation
 
-Workflow-target commit `4868358f8cac5ea45b6f8aedd42b86aa901f1ded` için GitHub combined status individual sonuç göstermedi (`statuses=[]`). Source-level evidence nedeniyle RC DONE yükseltmesi yapılmadı.
+Workflow-target commit `ab1956ac0836e042605438fae8cd909e58941001` için GitHub combined status individual sonuç göstermedi (`statuses=[]`). Çalışma container'ında `github.com` DNS çözümlenemediği için clean clone doğrulaması yapılamadı. Source-level evidence nedeniyle RC DONE yükseltmesi yapılmadı.
 
 ## Next safe work
 
-- approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet
-- requirement-bearing kalan evidence dosyalarında semantic RC drift auditine devam et
-- UI interaction/accessibility ve backup blocker-independent açıklarını ilerlet
+- evidence integrity CI ilk görünür çalışmasında yakalanan gerçek drift'leri düzelt
+- semantic allowlist dışında kalan requirement-bearing evidence ailelerini MASTER-aware audit'e eklemeye devam et
+- approved font gerektirmeyen PDF structural/page/parity regresyonlarını ve UI interaction/accessibility açıklarını ilerlet
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout release proof remain open blockers
 
 **FINAL: NO.**
