@@ -1,8 +1,9 @@
 /// Canonical action IDs used by the currently implemented runtime UI.
 ///
-/// These values must exist as ACTIVE rows in `ui/action_registry.csv`.
-/// Keeping runtime widgets tied to these IDs lets structural and widget tests
-/// detect dead controls and information-architecture drift.
+/// These values must exist as ACTIVE rows in the base action registry or its
+/// explicit runtime extension registry. Keeping runtime widgets tied to these
+/// IDs lets structural and widget tests detect dead controls and information-
+/// architecture drift.
 abstract final class RuhActionIds {
   static const navigationToday = 'ACTION-NAV-TODAY';
   static const navigationTools = 'ACTION-NAV-TOOLS';
@@ -27,8 +28,12 @@ abstract final class RuhActionIds {
   static const settingsBackup = 'ACTION-SETTINGS-BACKUP';
   static const pdfPreview = 'ACTION-PDF-PREVIEW';
   static const pdfBuild = 'ACTION-PDF-BUILD';
-  static const pdfCreate = 'ACTION-PDF-PREVIEW-CREATE';
-  static const pdfShare = 'ACTION-PDF-PREVIEW-SHARE';
+
+  /// Professional builder actions belong to SCR-PDF-BUILDER-001.
+  /// Do not reuse the historical preview-screen create/share action IDs here.
+  static const pdfBuilderCreate = 'ACTION-PDF-BUILDER-CREATE';
+  static const pdfBuilderShare = 'ACTION-PDF-BUILDER-SHARE';
+
   static const backupExport = 'ACTION-BACKUP-EXPORT';
   static const backupImport = 'ACTION-BACKUP-IMPORT';
 
@@ -53,8 +58,8 @@ abstract final class RuhActionIds {
     settingsBackup,
     pdfPreview,
     pdfBuild,
-    pdfCreate,
-    pdfShare,
+    pdfBuilderCreate,
+    pdfBuilderShare,
     backupExport,
     backupImport,
   };
