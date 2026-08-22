@@ -1,0 +1,34 @@
+name: Persisted Western PDF Service Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/pdf/persisted_western_natal_pdf_service.dart'
+      - 'lib/src/pdf/persisted_western_natal_pdf.dart'
+      - 'lib/src/pdf/persisted_western_natal_sections.dart'
+      - 'lib/src/pdf/persisted_manifest_section.dart'
+      - 'lib/src/app/app_runtime.dart'
+      - 'evidence/pdf/persisted_western_pdf_service.json'
+      - 'tools/pdf/validate_persisted_western_pdf_service.py'
+      - '.github/workflows/persisted-western-pdf-service-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/pdf/persisted_western_natal_pdf_service.dart'
+      - 'lib/src/pdf/persisted_western_natal_pdf.dart'
+      - 'lib/src/pdf/persisted_western_natal_sections.dart'
+      - 'lib/src/pdf/persisted_manifest_section.dart'
+      - 'lib/src/app/app_runtime.dart'
+      - 'evidence/pdf/persisted_western_pdf_service.json'
+      - 'tools/pdf/validate_persisted_western_pdf_service.py'
+      - '.github/workflows/persisted-western-pdf-service-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate persisted Western PDF service contract
+        run: python tools/pdf/validate_persisted_western_pdf_service.py
