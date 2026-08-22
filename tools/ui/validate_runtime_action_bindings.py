@@ -6,14 +6,39 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / 'ui/action_registry.csv'
+REGISTRY_EXTENSIONS = ROOT / 'ui/action_registry_runtime_extensions.csv'
 BINDINGS = ROOT / 'ui/runtime_action_bindings.csv'
 ACTION_IDS = ROOT / 'lib/src/ui/actions/ruh_action_ids.dart'
 FEATURE_CATALOG = ROOT / 'lib/src/entitlements/feature_catalog.dart'
+
+LEGACY_PDF_BUILDER_IDS = {
+    'ACTION-PDF-PREVIEW-CREATE',
+    'ACTION-PDF-PREVIEW-SHARE',
+}
+CANONICAL_PDF_BUILDER_IDS = {
+    'ACTION-PDF-BUILDER-CREATE',
+    'ACTION-PDF-BUILDER-SHARE',
+}
 
 
 def die(message: str) -> None:
     print(f'ERROR: {message}', file=sys.stderr)
     raise SystemExit(1)
+
+
+def read_registry() -> tuple[list[dict[str, str]], dict[str, dict[str, str]]]:
+    base_rows = list(csv.DictReader(REGISTRY.open(encoding='utf-8', newline='')))
+    extension_rows = list(
+        csv.DictReader(REGISTRY_EXTENSIONS.open(encoding='utf-8', newline=''))
+    ) if REGISTRY_EXTENSIONS.is_file() else []
+    rows = [*base_rows, *extension_rows]
+    registry: dict[str, dict[str, str]] = {}
+    for row in rows:
+        action_id = row['action_id'].strip()
+        if action_id in registry:
+            die(f'action registry contains duplicate action ID across base/extensions: {action_id}')
+        registry[action_id] = row
+    return rows, registry
 
 
 def parse_feature_policies() -> dict[str, str]:
@@ -40,10 +65,7 @@ def parse_feature_policies() -> dict[str, str]:
 
 
 def main() -> None:
-    registry_rows = list(csv.DictReader(REGISTRY.open(encoding='utf-8', newline='')))
-    registry = {row['action_id'].strip(): row for row in registry_rows}
-    if len(registry) != len(registry_rows):
-        die('action registry contains duplicate action IDs')
+    registry_rows, registry = read_registry()
 
     action_source = ACTION_IDS.read_text(encoding='utf-8')
     constant_pairs = dict(
@@ -72,6 +94,8 @@ def main() -> None:
             die(f'duplicate runtime action binding: {action_id}')
         if constant_name in seen_constants:
             die(f'duplicate runtime constant binding: {constant_name}')
+        if action_id in LEGACY_PDF_BUILDER_IDS:
+            die(f'historical preview action must not be a runtime builder binding: {action_id}')
         seen_actions.add(action_id)
         seen_constants.add(constant_name)
 
@@ -110,6 +134,14 @@ def main() -> None:
                     f'entitlement drift for {action_id}: registry={registry_access}, '
                     f'feature_catalog={runtime_access}, feature_id={feature_id}'
                 )
+
+    if not CANONICAL_PDF_BUILDER_IDS.issubset(seen_actions):
+        die('professional PDF builder must bind canonical create/share action IDs')
+
+    pdf_source = (ROOT / 'lib/src/ui/pdf/pdf_reports_pages.dart').read_text(encoding='utf-8')
+    for legacy_id in LEGACY_PDF_BUILDER_IDS:
+        if legacy_id in pdf_source:
+            die(f'professional PDF runtime source still contains legacy action ID: {legacy_id}')
 
     scalar_constants = set(constant_pairs)
     missing = scalar_constants - seen_constants
