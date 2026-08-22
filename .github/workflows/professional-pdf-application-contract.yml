@@ -3,8 +3,10 @@ name: Professional PDF Application Contract
 on:
   push:
     paths:
+      - 'lib/main.dart'
       - 'lib/src/pdf/professional_pdf_application_service.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+      - 'lib/src/pdf/persisted_calculation_pdf_router.dart'
       - 'lib/src/pdf/professional_pdf_delivery_service.dart'
       - 'lib/src/pdf/pdf_platform_gateway.dart'
       - 'lib/src/pdf/guarded_pdf_service.dart'
@@ -15,6 +17,7 @@ on:
       - 'lib/src/ui/actions/ruh_action_ids.dart'
       - 'test/pdf/professional_pdf_application_service_test.dart'
       - 'test/pdf/persisted_calculation_pdf_source_test.dart'
+      - 'test/pdf/persisted_calculation_pdf_router_test.dart'
       - 'test/pdf/professional_pdf_delivery_service_test.dart'
       - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
@@ -23,8 +26,10 @@ on:
       - '.github/workflows/professional-pdf-application-contract.yml'
   pull_request:
     paths:
+      - 'lib/main.dart'
       - 'lib/src/pdf/professional_pdf_application_service.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
+      - 'lib/src/pdf/persisted_calculation_pdf_router.dart'
       - 'lib/src/pdf/professional_pdf_delivery_service.dart'
       - 'lib/src/pdf/pdf_platform_gateway.dart'
       - 'lib/src/pdf/guarded_pdf_service.dart'
@@ -35,6 +40,7 @@ on:
       - 'lib/src/ui/actions/ruh_action_ids.dart'
       - 'test/pdf/professional_pdf_application_service_test.dart'
       - 'test/pdf/persisted_calculation_pdf_source_test.dart'
+      - 'test/pdf/persisted_calculation_pdf_router_test.dart'
       - 'test/pdf/professional_pdf_delivery_service_test.dart'
       - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
@@ -57,5 +63,6 @@ jobs:
           flutter test
           test/pdf/professional_pdf_application_service_test.dart
           test/pdf/persisted_calculation_pdf_source_test.dart
+          test/pdf/persisted_calculation_pdf_router_test.dart
           test/pdf/professional_pdf_delivery_service_test.dart
           test/ui/professional_pdf_builder_page_test.dart
