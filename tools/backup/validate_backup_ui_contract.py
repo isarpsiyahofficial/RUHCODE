@@ -20,9 +20,12 @@ required_source_tokens = [
     'BackupUiPhase.cancelled',
     'BackupUiPhase.invalidBackup',
     'BackupUiPhase.rollbackRestored',
+    'BackupUiPhase.rollbackFailed',
     'BackupUiPhase.shareUnavailable',
     'selection.preview.valid',
     'BackupShareStatus.unavailable',
+    'Data integrity must be checked',
+    'veri bütünlüğü kontrol edilmeli',
 ]
 
 required_test_tokens = [
@@ -31,6 +34,8 @@ required_test_tokens = [
     'dismissed share remains cancellation rather than failure',
     'unavailable share has a dedicated recoverable UI state',
     'cancelled picker cannot enable restore actions',
+    'failed rollback never claims that existing data is preserved',
+    'UI distinguishes restored rollback from failed rollback',
 ]
 
 errors = []
