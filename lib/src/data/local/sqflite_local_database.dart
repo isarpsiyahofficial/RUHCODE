@@ -17,6 +17,7 @@ final class SqfliteLocalDatabase implements LocalDatabase {
   final String? _databasePath;
   final int targetSchemaVersion;
   Database? _database;
+  String? _openedDatabasePath;
 
   Database get _db {
     final db = _database;
@@ -24,6 +25,18 @@ final class SqfliteLocalDatabase implements LocalDatabase {
       throw StateError('Database is not open.');
     }
     return db;
+  }
+
+  /// Resolved path of the currently opened database.
+  ///
+  /// Backup safety snapshots use the same durable application data directory
+  /// rather than a process-temporary folder. Access before [open] is an error.
+  String get openedDatabasePath {
+    final value = _openedDatabasePath;
+    if (value == null) {
+      throw StateError('Database path is unavailable before open().');
+    }
+    return value;
   }
 
   @override
@@ -49,12 +62,14 @@ final class SqfliteLocalDatabase implements LocalDatabase {
         },
       ),
     );
+    _openedDatabasePath = resolvedPath;
   }
 
   @override
   Future<void> close() async {
     final db = _database;
     _database = null;
+    _openedDatabasePath = null;
     await db?.close();
   }
 
