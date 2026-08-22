@@ -173,7 +173,7 @@ final class ProfessionalPdfDeliveryUiActions<TSnapshot>
     required List<String> sectionIds,
   }) async {
     final result = await service.save(
-      ProfessionalPdfBuildRequest(
+      request: ProfessionalPdfBuildRequest(
         recordId: recordId,
         localeTag: localeTag,
         sectionIds: sectionIds,
@@ -201,7 +201,7 @@ final class ProfessionalPdfDeliveryUiActions<TSnapshot>
     required List<String> sectionIds,
   }) async {
     final result = await service.share(
-      ProfessionalPdfBuildRequest(
+      request: ProfessionalPdfBuildRequest(
         recordId: recordId,
         localeTag: localeTag,
         sectionIds: sectionIds,
