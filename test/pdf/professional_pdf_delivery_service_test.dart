@@ -8,6 +8,7 @@ import 'package:ruh_code/src/pdf/pdf_platform_gateway.dart';
 import 'package:ruh_code/src/pdf/pdf_service.dart';
 import 'package:ruh_code/src/pdf/professional_pdf_application_service.dart';
 import 'package:ruh_code/src/pdf/professional_pdf_delivery_service.dart';
+import 'package:ruh_code/src/ui/pdf/professional_pdf_ui_actions.dart';
 
 void main() {
   test('PDF platform policy rejects path injection and non-PDF bytes', () {
@@ -69,6 +70,34 @@ void main() {
       ProfessionalPdfDeliveryStatus.unavailable,
     );
   });
+
+  test('UI delivery adapter keeps verified record identity and safe file name', () async {
+    final gateway = _FakePdfGateway(
+      saveUri: Uri.parse('file:///reports/ruh-code-calc-1.pdf'),
+    );
+    final actions = ProfessionalPdfDeliveryUiActions<String>(
+      service: ProfessionalPdfDeliveryService<String>(
+        applicationService: _applicationService(),
+        platformGateway: gateway,
+      ),
+    );
+
+    final saved = await actions.save(
+      recordId: 'calc-1',
+      localeTag: 'tr-TR',
+      sectionIds: const <String>['chart', 'notes'],
+    );
+    expect(saved.outcome, ProfessionalPdfUiDeliveryOutcome.success);
+    expect(gateway.savedFileName, 'ruh-code-calc-1.pdf');
+
+    final shared = await actions.share(
+      recordId: 'calc-1',
+      localeTag: 'en-US',
+      sectionIds: const <String>['chart'],
+    );
+    expect(shared.outcome, ProfessionalPdfUiDeliveryOutcome.success);
+    expect(gateway.sharedFileName, 'ruh-code-calc-1.pdf');
+  });
 }
 
 ProfessionalPdfApplicationService<String> _applicationService() {
@@ -119,6 +148,8 @@ final class _FakePdfGateway implements PdfPlatformGateway {
   final Uri? saveUri;
   final PdfShareStatus shareStatus;
   List<int> savedBytes = const <int>[];
+  String? savedFileName;
+  String? sharedFileName;
 
   @override
   Future<Uri?> savePdf({
@@ -126,6 +157,7 @@ final class _FakePdfGateway implements PdfPlatformGateway {
     required List<int> bytes,
   }) async {
     savedBytes = List<int>.from(bytes);
+    savedFileName = suggestedFileName;
     return saveUri;
   }
 
@@ -135,7 +167,10 @@ final class _FakePdfGateway implements PdfPlatformGateway {
     required List<int> bytes,
     String? title,
     String? text,
-  }) async => shareStatus;
+  }) async {
+    sharedFileName = fileName;
+    return shareStatus;
+  }
 }
 
 final class _ProSnapshotProvider implements EntitlementSnapshotProvider {
