@@ -16,6 +16,7 @@ import '../entitlements/local_entitlement_snapshot_store.dart';
 import '../entitlements/local_entitlement_time_anchor.dart';
 import '../entitlements/professional_repository_bundle.dart';
 import '../pdf/persisted_calculation_pdf_source.dart';
+import '../pdf/western_natal_persistence_service.dart';
 
 final class RuhCodeRuntime {
   RuhCodeRuntime._({
@@ -26,6 +27,7 @@ final class RuhCodeRuntime {
     required this.featureAccess,
     required this.backupActions,
     required this.professionalPdfSnapshotSource,
+    required this.westernNatalPersistence,
     required this.startupOwnershipSync,
   });
 
@@ -40,6 +42,11 @@ final class RuhCodeRuntime {
   /// selection and build composition. It reads calculation + manifest in one
   /// LocalDatabase transaction and never fabricates a snapshot from UI input.
   final LocalDatabaseProfessionalPdfSnapshotSource professionalPdfSnapshotSource;
+
+  /// The single production persistence boundary for verified Western natal
+  /// snapshots. CalculationManifest + sealed snapshot are committed atomically
+  /// to the same LocalDatabase instance used by the PDF snapshot source.
+  final WesternNatalPersistenceService westernNatalPersistence;
 
   /// Best-effort Google Play ownership refresh performed during startup.
   ///
@@ -91,6 +98,9 @@ final class RuhCodeRuntime {
 
     final professionalPdfSnapshotSource =
         LocalDatabaseProfessionalPdfSnapshotSource(database: database);
+    final westernNatalPersistence = WesternNatalPersistenceService(
+      database: database,
+    );
 
     final ownershipSynchronizer = GooglePlayLifetimeOwnershipSynchronizer(
       query: lifetimeOwnershipQuery ?? const GooglePlayLifetimeOwnershipQuery(),
@@ -115,6 +125,7 @@ final class RuhCodeRuntime {
       featureAccess: featureAccess,
       backupActions: backupActions,
       professionalPdfSnapshotSource: professionalPdfSnapshotSource,
+      westernNatalPersistence: westernNatalPersistence,
       startupOwnershipSync: startupOwnershipSync,
     );
   }
