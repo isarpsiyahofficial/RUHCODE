@@ -202,6 +202,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
 
   @override
   Widget build(BuildContext context) {
+    final result = _result;
     return Scaffold(
       appBar: AppBar(title: const Text('Profesyonel PDF Oluştur')),
       body: ListView(
@@ -236,7 +237,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
             ),
           const SizedBox(height: 12),
           FilledButton.icon(
-            key: const ValueKey('ACTION-PDF-PREVIEW-CREATE'),
+            key: const ValueKey(RuhActionIds.pdfCreate),
             onPressed: _busy ? null : _buildPdf,
             icon: const Icon(Icons.picture_as_pdf_outlined),
             label: Text(_busy ? 'Oluşturuluyor…' : 'PDF Oluştur'),
@@ -249,7 +250,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
             const SizedBox(height: 12),
             Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ],
-          if (_result case final result?) ...[
+          if (result != null) ...[
             const SizedBox(height: 16),
             Card(
               child: ListTile(
