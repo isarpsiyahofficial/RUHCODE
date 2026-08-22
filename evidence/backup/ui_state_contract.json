@@ -8,18 +8,20 @@
     "RC-0795",
     "RC-0823",
     "RC-0832",
+    "RC-0833",
+    "RC-0834",
+    "RC-0835",
+    "RC-0836",
+    "RC-0837",
     "RC-0838",
     "RC-0839",
     "RC-0840",
     "RC-0841",
     "RC-0842",
-    "RC-0847",
-    "RC-0848",
     "RC-1296",
     "RC-1297",
     "RC-1298",
     "RC-1299",
-    "RC-1431",
     "RC-1440",
     "RC-1441"
   ],
@@ -34,6 +36,13 @@
     "test/ui/backup/backup_ui_contract_test.dart",
     "test/ui/backup/backup_runtime_wiring_test.dart",
     "test/backup/backup_import_coordinator_test.dart"
+  ],
+  "requiredPreviewCounts": [
+    "profiles.csv",
+    "clients.csv",
+    "consultations.csv",
+    "journal_entries.csv",
+    "calculations.csv"
   ],
   "requiredActions": [
     "saveFullBackup",
@@ -83,6 +92,7 @@
     "Exact Flutter workflow success is not yet recorded in this evidence file.",
     "Approved UI reference image/hash for backup screens is not yet available.",
     "Android real-device save/open/share smoke proof is not yet attached.",
-    "Share action exists in the application-service/UI contract but is not yet exposed as a dedicated runtime button in the current backup page."
+    "Share action exists in the application-service/UI contract but is not yet exposed as a dedicated runtime button in the current backup page.",
+    "Clean-install export/erase/restore release proof remains a separate lifecycle gate."
   ]
 }
