@@ -2,36 +2,37 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-22_0322_professional_pdf_application_builder.md`
+`automation_runs/2026-08-22_0452_persisted_pdf_source_native_delivery.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Professional PDF application service**
-   - exact persisted calculation `recordId` yükleme sınırı
-   - canonical service-level PRO guard
-   - TR/EN locale + section validation
-   - structural PDF inspection before success
-2. **Professional PDF builder UI**
-   - real `ProfessionalPdfBuildActions` abstraction
-   - record ID + ordered section selection
-   - canonical `ACTION-PDF-PREVIEW-CREATE`
-   - fake success forbidden when production actions are absent
+1. **Production persisted calculation → PDF snapshot source**
+   - calculation + CalculationManifest aynı LocalDatabase transaction içinde okunuyor
+   - missing/mismatched/unavailable/error provenance fail-closed
+   - typed newest-first saved-calculation catalog
+   - `RuhCodeRuntime` composition root bağlantısı
+2. **Native PDF delivery**
+   - `.pdf` file-name/path policy
+   - validated PDF bytes → OS Save As
+   - native share sheet; Ruh Code server hop yok
+   - cancellation/unavailable typed sonuçlar
 3. **Tests / evidence / CI contract**
-   - FREE delegate-not-called regression
-   - PRO exact snapshot/section order regression
-   - builder widget action delegation + unavailable state regression
-   - semantic evidence ownership tied to actual PDF/entitlement MASTER clauses
+   - persisted source atomicity/fail-closed regressions
+   - native save/share policy regressions
+   - semantic evidence RC-0936/0939/0940 dahil genişletildi
+   - Professional PDF Application workflow yeni kaynak/testleri kapsıyor
 
 ## Validation limitation
 
-- Exact push workflow result is not considered proven until GitHub exposes a visible check result for the exact commit.
-- Source-level evidence remains `done=false`.
+- Workflow-target commit `72c2e6f7269a90200f6538d2932b828081b72b5d` için GitHub combined-status yine `statuses=[]` döndürdü.
+- Exact SUCCESS görünmeden source-level evidence `done=false` ve ilgili RC'ler DONE değil.
 
 ## Next safe work
 
-- production `ProfessionalPdfSnapshotSource` adapter + RuhCodeRuntime composition
-- typed saved-calculation selection for builder; raw ID field is only an interim source-level UI
-- native PDF save/share gateway
+- typed saved-calculation catalog'u ProfessionalPdfBuilderPage içinde gerçek selector'a bağla; ham record ID alanını kaldır
+- app/navigation composition'a record catalog actions geçir
+- supported persisted calculation type → PdfReportContentAdapter routing; unknown type fail-closed
+- production font blocker gerektirmeyen PDF data/table/interaction testlerini genişlet
 - remaining semantic evidence RC ownership audit
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout lockfile remain open blockers
 
