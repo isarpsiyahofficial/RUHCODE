@@ -2,31 +2,29 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-22_2253_ui_contrast_semantic_gate.md`
+`automation_runs/2026-08-23_0052_runtime_theme_text_scale_gate.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Measured UI contrast / RC-1441**
-   - design tokens 1.1.0 kontratına yükseltildi
-   - normal metin minimumu 4.5:1, büyük metin minimumu 3.0:1
-   - sRGB relative-luminance tabanlı gerçek contrast-ratio validator eklendi
-   - `gold` ve `success`, canonical light surfaces üzerinde normal metin değil non-text accent olarak kilitlendi
-2. **Accessibility contract + evidence**
-   - accessibility/interaction contract design-token kontrast ölçümüne bağlandı
-   - `evidence/ui/design_token_contrast_contract.json` exact `RC-1441` sahipliğiyle eklendi
-   - merkezi semantic evidence audit artık bu UI evidence ailesini de kontrol ediyor
-3. **Merkezi CI wiring**
-   - Requirements Contract artık design-token contrast ve accessibility/interaction validator’larını çalıştırıyor
+1. **Runtime theme / RC-1441**
+   - canonical JSON design tokens Flutter runtime bridge'e taşındı
+   - `RuhCodeApp` ad-hoc raw renklerden `RuhAppTheme.light()` temasına geçirildi
+   - rendered/runtime UI'da token bridge dışı `Color(0x...)`, `Color.fromARGB/fromRGBO` ve `Colors.*` kullanımı fail-closed CI kapısına bağlandı
+   - ThemeData canonical palette regression testi eklendi
+2. **2.0x accessibility coverage / RC-1441**
+   - 360x800 + 2.0x text-scale regression; Araçlar, Kayıtlar, Profil→Ayarlar→PDF yollarını kapsıyor
+3. **MASTER-aware accessibility evidence audit**
+   - design-token contrast, runtime-theme ve text-scale evidence dosyaları exact `RC-1441` sahipliğinde kilitlendi
+   - Requirements CI ve UI Contracts workflow wiring genişletildi
 
 ## Validation limitation
 
-Workflow-target source commit `b4c7aad7d13ea3282589567e0da5b481889e7b5f` için exact görünür Actions SUCCESS henüz kanıtlanmadı. Bu nedenle `RC-1441` DONE yapılmadı.
+Exact workflow-target commitler için GitHub combined-status yine `statuses=[]` döndürdü. Actions REST run query connector politikası tarafından reddedildi. Bu nedenle `RC-1441` DONE yapılmadı.
 
 ## Next safe work
 
-- rendered UI kaynaklarında ad-hoc low-contrast renk kullanımını tarayan source-level gate ekle
-- 2.0x text-scale/widget semantics kapsamını genişlet
-- remaining requirement-bearing evidence ailelerini MASTER-aware semantic audit’e al
+- Backup, Numerology ve Professional PDF ekranlarında widget-level semantics/focus coverage'ı genişlet
+- remaining requirement-bearing evidence ailelerini MASTER-aware semantic audit'e al
 - approved font gerektirmeyen PDF structural/page/parity regresyonlarını genişlet
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout release proof remain open blockers
 
