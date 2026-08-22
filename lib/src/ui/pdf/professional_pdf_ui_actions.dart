@@ -26,7 +26,7 @@ final class ProfessionalPdfUiRecord {
   final DateTime createdAtUtc;
 }
 
-enum ProfessionalPdfUiDeliveryStatus {
+enum ProfessionalPdfUiDeliveryOutcome {
   success,
   cancelled,
   unavailable,
@@ -34,11 +34,11 @@ enum ProfessionalPdfUiDeliveryStatus {
 
 final class ProfessionalPdfUiDeliveryResult {
   const ProfessionalPdfUiDeliveryResult({
-    required this.status,
+    required this.outcome,
     this.savedUri,
   });
 
-  final ProfessionalPdfUiDeliveryStatus status;
+  final ProfessionalPdfUiDeliveryOutcome outcome;
   final Uri? savedUri;
 }
 
@@ -157,7 +157,7 @@ final class ProfessionalPdfApplicationActions<TSnapshot>
   }
 }
 
-/// Bridges verified PDF generation + native OS delivery to UI-safe statuses.
+/// Bridges verified PDF generation + native OS delivery to UI-safe outcomes.
 /// Cancellation is a normal outcome, not an exception. The adapter never
 /// bypasses the ProfessionalPdfApplicationService or its entitlement guard.
 final class ProfessionalPdfDeliveryUiActions<TSnapshot>
@@ -182,14 +182,14 @@ final class ProfessionalPdfDeliveryUiActions<TSnapshot>
     );
     return switch (result.status) {
       ProfessionalPdfDeliveryStatus.saved => ProfessionalPdfUiDeliveryResult(
-          status: ProfessionalPdfUiDeliveryStatus.success,
+          outcome: ProfessionalPdfUiDeliveryOutcome.success,
           savedUri: result.savedUri,
         ),
       ProfessionalPdfDeliveryStatus.cancelled => const ProfessionalPdfUiDeliveryResult(
-          status: ProfessionalPdfUiDeliveryStatus.cancelled,
+          outcome: ProfessionalPdfUiDeliveryOutcome.cancelled,
         ),
       _ => const ProfessionalPdfUiDeliveryResult(
-          status: ProfessionalPdfUiDeliveryStatus.unavailable,
+          outcome: ProfessionalPdfUiDeliveryOutcome.unavailable,
         ),
     };
   }
@@ -211,13 +211,13 @@ final class ProfessionalPdfDeliveryUiActions<TSnapshot>
     );
     return switch (result.status) {
       ProfessionalPdfDeliveryStatus.shared => const ProfessionalPdfUiDeliveryResult(
-          status: ProfessionalPdfUiDeliveryStatus.success,
+          outcome: ProfessionalPdfUiDeliveryOutcome.success,
         ),
       ProfessionalPdfDeliveryStatus.cancelled => const ProfessionalPdfUiDeliveryResult(
-          status: ProfessionalPdfUiDeliveryStatus.cancelled,
+          outcome: ProfessionalPdfUiDeliveryOutcome.cancelled,
         ),
       _ => const ProfessionalPdfUiDeliveryResult(
-          status: ProfessionalPdfUiDeliveryStatus.unavailable,
+          outcome: ProfessionalPdfUiDeliveryOutcome.unavailable,
         ),
     };
   }
