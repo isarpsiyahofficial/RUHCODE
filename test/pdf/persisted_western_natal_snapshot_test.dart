@@ -134,30 +134,86 @@ void main() {
     );
   });
 
-  test('unknown persisted body/aspect names fail closed at PDF geometry boundary', () {
-    final snapshot = PersistedWesternNatalSnapshot(
-      engineVersion: 'western-engine-1',
-      algorithmVersion: 'western-natal-1',
-      dataVersion: 'ephemeris-test-1',
-      ttJulianDay: 2461041.5,
-      sourceId: 'fixture-ephemeris',
-      requestedHouseSystem: 'EQUAL',
-      effectiveHouseSystem: 'EQUAL',
-      houseCuspsDeg: List<double>.generate(12, (index) => index * 30.0),
-      placements: const <PersistedWesternNatalPlacement>[
-        PersistedWesternNatalPlacement(
-          body: 'futureBody',
-          longitudeDeg: 45,
-          houseNumber: 2,
-          motion: 'direct',
-        ),
-      ],
-      aspects: const <PersistedWesternNatalAspect>[],
-    );
-
+  test('unknown persisted body fails closed at snapshot boundary', () {
     expect(
-      () => PdfWesternChartGeometryAdapter.fromPersistedSnapshot(snapshot),
-      throwsA(isA<FormatException>()),
+      () => PersistedWesternNatalSnapshot(
+        engineVersion: 'western-engine-1',
+        algorithmVersion: 'western-natal-1',
+        dataVersion: 'ephemeris-test-1',
+        ttJulianDay: 2461041.5,
+        sourceId: 'fixture-ephemeris',
+        requestedHouseSystem: 'EQUAL',
+        effectiveHouseSystem: 'EQUAL',
+        houseCuspsDeg: List<double>.generate(12, (index) => index * 30.0),
+        placements: const <PersistedWesternNatalPlacement>[
+          PersistedWesternNatalPlacement(
+            body: 'futureBody',
+            longitudeDeg: 45,
+            houseNumber: 2,
+            motion: 'direct',
+          ),
+        ],
+        aspects: const <PersistedWesternNatalAspect>[],
+      ),
+      throwsA(isA<ArgumentError>()),
+    );
+  });
+
+  test('stored house number must agree with persisted cusp geometry', () {
+    expect(
+      () => PersistedWesternNatalSnapshot(
+        engineVersion: 'western-engine-1',
+        algorithmVersion: 'western-natal-1',
+        dataVersion: 'ephemeris-test-1',
+        ttJulianDay: 2461041.5,
+        sourceId: 'fixture-ephemeris',
+        requestedHouseSystem: 'EQUAL',
+        effectiveHouseSystem: 'EQUAL',
+        houseCuspsDeg: List<double>.generate(12, (index) => index * 30.0),
+        placements: const <PersistedWesternNatalPlacement>[
+          PersistedWesternNatalPlacement(
+            body: 'sun',
+            longitudeDeg: 45,
+            houseNumber: 3,
+            motion: 'direct',
+          ),
+        ],
+        aspects: const <PersistedWesternNatalAspect>[],
+      ),
+      throwsA(isA<ArgumentError>()),
+    );
+  });
+
+  test('aspect type and geometry must agree with persisted placements', () {
+    expect(
+      () => PersistedWesternNatalSnapshot(
+        engineVersion: 'western-engine-1',
+        algorithmVersion: 'western-natal-1',
+        dataVersion: 'ephemeris-test-1',
+        ttJulianDay: 2461041.5,
+        sourceId: 'fixture-ephemeris',
+        requestedHouseSystem: 'EQUAL',
+        effectiveHouseSystem: 'EQUAL',
+        houseCuspsDeg: List<double>.generate(12, (index) => index * 30.0),
+        placements: const <PersistedWesternNatalPlacement>[
+          PersistedWesternNatalPlacement(
+            body: 'sun', longitudeDeg: 45, houseNumber: 2, motion: 'direct'),
+          PersistedWesternNatalPlacement(
+            body: 'moon', longitudeDeg: 165, houseNumber: 6, motion: 'direct'),
+        ],
+        aspects: const <PersistedWesternNatalAspect>[
+          PersistedWesternNatalAspect(
+            bodyA: 'sun',
+            bodyB: 'moon',
+            type: 'square',
+            exactAngleDeg: 90,
+            separationDeg: 120,
+            deltaFromExactDeg: 30,
+            allowedOrbDeg: 30,
+          ),
+        ],
+      ),
+      throwsA(isA<ArgumentError>()),
     );
   });
 }
