@@ -6,10 +6,12 @@
   "sources": [
     "lib/src/ui/numerology/numerology_screen.dart",
     "lib/src/ui/pdf/pdf_reports_pages.dart",
+    "lib/src/ui/backup/backup_settings_page.dart",
     "lib/src/ui/theme/ruh_design_tokens.dart"
   ],
   "tests": [
-    "test/ui/critical_semantics_contract_test.dart"
+    "test/ui/critical_semantics_contract_test.dart",
+    "test/ui/backup/backup_accessibility_test.dart"
   ],
   "validators": [
     "tools/ui/validate_accessibility_interactions.py",
@@ -19,9 +21,12 @@
     "numerology values expose localized metric/value semantics instead of raw technical IDs",
     "professional PDF create action exposes an explicit semantics label and at least 48dp target",
     "professional PDF share action exposes an explicit semantics label and at least 48dp target after a verified build",
+    "backup full-export action exposes localized semantics and at least 48dp target",
+    "backup file-selection action exposes localized semantics and at least 48dp target",
     "critical semantics regressions render with the canonical production theme"
   ],
   "remainingBeforeDone": [
+    "cover merge/replace semantics after a valid-preview fixture without bypassing backup validation",
     "extend semantics and focus-order coverage to every required screen/action/state",
     "run real-device screen-reader traversal",
     "obtain exact visible Flutter Quality and UI contract CI success"
