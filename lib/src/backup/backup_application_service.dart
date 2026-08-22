@@ -65,11 +65,43 @@ final class BackupPickResult {
   final BackupRestoreSelection? selection;
 }
 
+/// Narrow UI/application boundary for user-directed backup operations.
+///
+/// Runtime UI depends on this interface instead of the concrete platform/
+/// SQLite implementation so cancellation, invalid preview and rollback states
+/// remain widget-testable without invoking native pickers.
+abstract interface class BackupApplicationActions {
+  Future<BackupSaveResult> exportAndSave({
+    required String suggestedFileName,
+    required String appVersion,
+    required String engineVersion,
+    required String localeTag,
+    required DateTime exportedAtUtc,
+  });
+
+  Future<BackupShareResult> exportAndShare({
+    required String fileName,
+    required String appVersion,
+    required String engineVersion,
+    required String localeTag,
+    required DateTime exportedAtUtc,
+    String? title,
+    String? text,
+  });
+
+  Future<BackupPickResult> pickAndPreviewRestore();
+
+  Future<BackupImportResult> applyRestore({
+    required BackupRestoreSelection selection,
+    required BackupImportMode mode,
+  });
+}
+
 /// Application-level orchestration for user-directed backup actions.
 ///
 /// Serialization, ZIP validation, platform I/O and database mutation remain
 /// separate dependencies. User cancellation is a normal result, not an error.
-final class BackupApplicationService {
+final class BackupApplicationService implements BackupApplicationActions {
   const BackupApplicationService({
     required this.packageSource,
     required this.platformGateway,
@@ -84,6 +116,7 @@ final class BackupApplicationService {
   final PortableZipBackupCodec zipCodec;
   final BackupPackageReader packageReader;
 
+  @override
   Future<BackupSaveResult> exportAndSave({
     required String suggestedFileName,
     required String appVersion,
@@ -107,6 +140,7 @@ final class BackupApplicationService {
     );
   }
 
+  @override
   Future<BackupShareResult> exportAndShare({
     required String fileName,
     required String appVersion,
@@ -136,6 +170,7 @@ final class BackupApplicationService {
     );
   }
 
+  @override
   Future<BackupPickResult> pickAndPreviewRestore() async {
     final picked = await platformGateway.pickBackup();
     if (picked == null) {
@@ -149,6 +184,7 @@ final class BackupApplicationService {
     );
   }
 
+  @override
   Future<BackupImportResult> applyRestore({
     required BackupRestoreSelection selection,
     required BackupImportMode mode,
