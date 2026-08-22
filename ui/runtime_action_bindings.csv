@@ -21,5 +21,5 @@ ACTION-BACKUP-IMPORT,backupImport,lib/src/ui/backup/backup_settings_page.dart,BA
 ACTION-SETTINGS-PDF,settingsPdf,lib/src/ui/navigation/main_navigation_shell.dart,NAVIGATION,,IMPLEMENTED
 ACTION-PDF-PREVIEW,pdfPreview,lib/src/ui/pdf/pdf_reports_pages.dart,ROUTE,pdf.sample_preview,IMPLEMENTED
 ACTION-PDF-BUILD,pdfBuild,lib/src/ui/pdf/pdf_reports_pages.dart,ROUTE,pdf.professional_export,IMPLEMENTED
-ACTION-PDF-BUILDER-CREATE,pdfBuilderCreate,lib/src/ui/pdf/pdf_reports_pages.dart,PDF,pdf.professional_export,IMPLEMENTED
-ACTION-PDF-BUILDER-SHARE,pdfBuilderShare,lib/src/ui/pdf/pdf_reports_pages.dart,SHARE,pdf.professional_export,IMPLEMENTED
+ACTION-PDF-BUILDER-CREATE,pdfCreate,lib/src/ui/pdf/pdf_reports_pages.dart,PDF,pdf.professional_export,IMPLEMENTED
+ACTION-PDF-BUILDER-SHARE,pdfShare,lib/src/ui/pdf/pdf_reports_pages.dart,SHARE,pdf.professional_export,IMPLEMENTED
