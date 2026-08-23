@@ -1,0 +1,29 @@
+{
+  "contract": "professional-pdf-combined-report-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0903"
+  ],
+  "source_files": [
+    "lib/src/pdf/pdf_combined_report.dart"
+  ],
+  "test_files": [
+    "test/pdf/pdf_combined_report_test.dart"
+  ],
+  "requiredProperties": [
+    "a combined report requires at least two distinct calculation systems",
+    "all child calculation identities must belong to the same stable subject kind and subject ID",
+    "each child section must retain a valid relationship to its original child snapshot before composition",
+    "the combined report derives one deterministic SHA-256 identity from the exact ordered child identities without recalculating them",
+    "child systems may not collide on one PDF section ID",
+    "cover and technical provenance are owned once by the combined report rather than duplicated by child systems",
+    "combined PDF rendering uses PdfReportKind.combined and the existing local A4 renderer boundary"
+  ],
+  "remainingBeforeDone": [
+    "connect persisted Western and persisted Pythagorean projections to this compositor through a production multi-record snapshot source",
+    "add explicit localized system-heading separation before claiming RC-0904 or RC-0905",
+    "obtain exact visible Flutter/GitHub Actions success for the combined contract",
+    "complete approved-font generated-PDF regression and final device-open/visual proof"
+  ]
+}
