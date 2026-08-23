@@ -12,10 +12,12 @@
   ],
   "sources": [
     "lib/src/calculation_core/chinese/chinese_year.dart",
+    "lib/src/calculation_core/chinese/chinese_new_year_dataset.dart",
     "lib/src/calculation_core/time/civil_calendar.dart"
   ],
   "tests": [
-    "test/calculation_core/chinese/chinese_year_test.dart"
+    "test/calculation_core/chinese/chinese_year_test.dart",
+    "test/calculation_core/chinese/chinese_new_year_dataset_test.dart"
   ],
   "referenceFixtures": [
     {
@@ -42,10 +44,15 @@
     "the five-element quality is derived from the sexagenary year stem sequence",
     "Yin/Yang polarity is derived from the same year-stem sequence",
     "missing Chinese New Year boundary coverage fails closed and never guesses, uses nearest-year data, or silently falls back to January 1",
-    "basic Chinese zodiac calculation is implemented in a separate chinese calculation-core module and does not import or invoke the BaZi Four Pillars engine"
+    "basic Chinese zodiac calculation is implemented in a separate chinese calculation-core module and does not import or invoke the BaZi Four Pillars engine",
+    "bundled boundary artifacts are UTF-8 JSON protected by an immutable external SHA-256 manifest",
+    "dataset schema version, source ID, data version and exact minimum/maximum Gregorian coverage are explicit",
+    "duplicate, missing, out-of-range or wrong-year boundary records are rejected",
+    "dataset coverage must be contiguous for every year declared by the manifest"
   ],
   "remainingBeforeDone": [
-    "bundle and checksum a complete verified offline Chinese New Year boundary dataset for the supported date range",
+    "bundle and checksum a complete verified offline Chinese New Year boundary dataset for 1890 through 2110",
+    "independently review the complete 1890-2110 boundary dataset provenance and licensing",
     "add independent multi-century boundary and animal/element/polarity golden vectors",
     "prove TR/EN presentation without changing calculation identities",
     "obtain exact visible CI SUCCESS on the tested commit"
