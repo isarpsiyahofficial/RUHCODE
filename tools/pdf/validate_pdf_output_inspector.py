@@ -25,6 +25,11 @@ def main() -> None:
         "xrefHasRootReference",
         "rootReferenceResolvesToCatalog",
         "catalogPagesReferenceResolves",
+        "pageParentsPresent",
+        "pageParentsResolveToPages",
+        "pageParentLinksValid",
+        "_pageObjects",
+        "_pageParentStatus",
         "_rootReference",
         "_catalogPagesReference",
         "_objectHasType",
@@ -42,6 +47,8 @@ def main() -> None:
         "rejects xref trailer that does not declare a Root reference",
         "rejects Root reference that does not resolve to Catalog object",
         "rejects Catalog Pages reference that does not resolve to Pages tree",
+        "rejects a Page object that omits mandatory Parent reference",
+        "rejects a Page Parent reference that resolves to non-Pages object",
         "rejects junk after final EOF marker",
         "page-count gate verifies 50+ page regression fixture",
     ):
@@ -56,6 +63,8 @@ def main() -> None:
         "xref table or xref stream",
         "junk appended after the final eof",
         "pages-tree declared count",
+        "every page object must declare an indirect parent reference",
+        "every parent reference must resolve to an actual pages-tree object",
         "root reference must resolve to the referenced catalog object",
         "catalog pages reference must resolve to the referenced pages-tree object",
     ):
@@ -67,7 +76,7 @@ def main() -> None:
 
     print(
         "OK: PDF structural inspector requires final EOF, startxref, valid xref target, "
-        "Root->Catalog->Pages resolution, and page-tree count consistency"
+        "Root->Catalog->Pages resolution, Page->Parent->Pages linkage, and page-tree count consistency"
     )
 
 
