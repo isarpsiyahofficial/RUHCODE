@@ -28,6 +28,8 @@
     "the final trailer must contain startxref immediately before the final EOF marker",
     "startxref must be an in-range byte offset that points to an xref table or XRef stream object",
     "the recognized xref table trailer or XRef stream dictionary must declare an indirect Root reference",
+    "the Root reference must resolve to the referenced Catalog object and generation",
+    "the Catalog Pages reference must resolve to the referenced Pages-tree object and generation",
     "junk appended after the final EOF marker is rejected",
     "page-count verification can enforce exact or bounded page counts after structural validation",
     "5-page 25-page and 50-plus regression fixtures are covered at the structural page-count gate",
