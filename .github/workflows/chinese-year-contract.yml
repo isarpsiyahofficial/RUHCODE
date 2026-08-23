@@ -1,0 +1,44 @@
+name: Chinese Zodiac Year Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/chinese/**'
+      - 'test/calculation_core/chinese/**'
+      - 'evidence/chinese/chinese_year_contract.json'
+      - 'tools/chinese/validate_chinese_year_contract.py'
+      - '.github/workflows/chinese-year-contract.yml'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'pubspec.yaml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/chinese/**'
+      - 'test/calculation_core/chinese/**'
+      - 'evidence/chinese/chinese_year_contract.json'
+      - 'tools/chinese/validate_chinese_year_contract.py'
+      - '.github/workflows/chinese-year-contract.yml'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'pubspec.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  chinese-year-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Chinese zodiac semantic contract
+        run: python tools/chinese/validate_chinese_year_contract.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run Chinese zodiac year regression tests
+        run: flutter test test/calculation_core/chinese/chinese_year_test.dart
