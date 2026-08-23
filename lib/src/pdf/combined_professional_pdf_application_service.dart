@@ -2,6 +2,7 @@ import '../entitlements/feature_access_guard.dart';
 import '../entitlements/feature_catalog.dart';
 import 'pdf_combined_report.dart';
 import 'pdf_data_contract.dart';
+import 'pdf_report_contract.dart';
 import 'pdf_service.dart';
 import 'persisted_calculation_pdf_source.dart';
 import 'persisted_combined_pdf_projection.dart';
@@ -251,8 +252,6 @@ final class CombinedProfessionalPdfApplicationService {
     if (requested.isEmpty) {
       throw const FormatException('Combined PDF preview requires content sections.');
     }
-    // Cover is a structural part of every professional combined report. The
-    // normalized preview token includes it explicitly so build parity is exact.
     requested.add(PdfSectionIds.cover);
     final ordered = <String>[
       for (final section in projection.sections)
