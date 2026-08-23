@@ -10,12 +10,42 @@ RC_RE = re.compile(r"^(\d+)\.\s+(.+)$", re.MULTILINE)
 
 EXPECTED = {
     "evidence/pdf/local_renderer_contract.json": {950, 951, 953},
+    "evidence/pdf/report_planning_contract.json": {
+        862, 863, 868, 878, 881, 898, 903, 918, 919, 929, 931, 951, 964
+    },
+    "evidence/pdf/professional_application_service.json": {
+        918, 936, 939, 940, 950, 951, 953, 964, 1085, 1086, 1088, 1089
+    },
 }
 
 KEYWORDS = {
+    862: "tamamen cihaz üzerinde",
+    863: "sunucumuza veri gönderilmeyecek",
+    868: "ekran görüntülerini PDF’e yapıştırmaktan",
+    878: "A4/Letter",
+    881: "güvenli kenar boşlukları",
+    898: "Kapak sayfası",
+    903: "Kombine danışmanlık raporu",
+    918: "rapor bölümlerini açıp kapatabilecek",
+    919: "bölüm sırası değiştirilebilecek",
+    929: "PDF oluşturulmadan önce önizleme",
+    931: "içerik yoksa boş bölüm",
+    936: "paylaşım menüsünden PDF",
+    939: "cihazın dosyalar alanına",
+    940: "paylaşım işlemleri bizim sunucumuzdan geçmeyecek",
     950: "yarım dosya başarılı rapor",
     951: "PDF doğrulama testi",
     953: "Sayfa sayısının sıfır olmadığı",
+    964: "Yanlış müşteri verisinin başka raporda",
+    1085: "merkezi bir entitlement sistemi",
+    1086: "tek bir Feature ID",
+    1088: "UI kilidi Feature ID’ye",
+    1089: "Hesaplama servisi Feature ID’ye",
+}
+
+FORBIDDEN_OWNERSHIP = {
+    "evidence/pdf/report_planning_contract.json": {865, 956},
+    "evidence/pdf/professional_application_service.json": {952},
 }
 
 
@@ -29,9 +59,13 @@ def load_master() -> dict[int, str]:
 
 def load_requirements(relative_path: str) -> set[int]:
     payload = json.loads((ROOT / relative_path).read_text(encoding="utf-8"))
-    raw = payload.get("requirements")
+    raw_a = payload.get("requirements")
+    raw_b = payload.get("requirement_ids")
+    if raw_a is not None and raw_b is not None and raw_a != raw_b:
+        raise AssertionError(f"{relative_path}: requirements and requirement_ids disagree")
+    raw = raw_a if raw_a is not None else raw_b
     if not isinstance(raw, list) or not raw:
-        raise AssertionError(f"{relative_path}: requirements[] is required")
+        raise AssertionError(f"{relative_path}: requirements[] or requirement_ids[] is required")
     values: list[int] = []
     for token in raw:
         if not isinstance(token, str) or re.fullmatch(r"RC-\d{4}", token) is None:
@@ -44,7 +78,11 @@ def load_requirements(relative_path: str) -> set[int]:
 
 def main() -> None:
     master = load_master()
-    for rc, keyword in KEYWORDS.items():
+    needed_rcs = set().union(*EXPECTED.values())
+    for rc in sorted(needed_rcs):
+        keyword = KEYWORDS.get(rc)
+        if keyword is None:
+            continue
         if keyword.casefold() not in master[rc].casefold():
             raise AssertionError(
                 f"MASTER PDF ownership drift: RC-{rc:04d} no longer contains {keyword!r}: {master[rc]}"
@@ -57,8 +95,15 @@ def main() -> None:
                 f"{path}: semantic RC ownership mismatch; "
                 f"missing={sorted(expected - actual)} extra={sorted(actual - expected)}"
             )
+        forbidden = FORBIDDEN_OWNERSHIP.get(path, set())
+        leaked = actual & forbidden
+        if leaked:
+            raise AssertionError(f"{path}: unresolved PDF requirements must remain open: {sorted(leaked)}")
 
-    print("OK: local PDF renderer evidence is bound exactly to RC-0950/0951/0953")
+    print(
+        "OK: local renderer, report planning, and professional PDF application evidence "
+        "are bound to exact MASTER ownership; RC-0865/0952/0956 remain open where proof is missing"
+    )
 
 
 if __name__ == "__main__":
