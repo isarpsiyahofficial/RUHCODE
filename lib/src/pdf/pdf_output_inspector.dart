@@ -15,6 +15,8 @@ final class PdfOutputInspection {
     required this.hasPagesTree,
     required this.pageObjectCount,
     required this.declaredPageCount,
+    required this.pageParentsPresent,
+    required this.pageParentsResolveToPages,
     required this.hasStartXref,
     required this.startXrefOffset,
     required this.startXrefTargetRecognized,
@@ -30,6 +32,8 @@ final class PdfOutputInspection {
   final bool hasPagesTree;
   final int pageObjectCount;
   final int? declaredPageCount;
+  final bool pageParentsPresent;
+  final bool pageParentsResolveToPages;
   final bool hasStartXref;
   final int? startXrefOffset;
   final bool startXrefTargetRecognized;
@@ -40,6 +44,9 @@ final class PdfOutputInspection {
   bool get pageTreeCountConsistent =>
       declaredPageCount != null && declaredPageCount == pageObjectCount;
 
+  bool get pageParentLinksValid =>
+      pageObjectCount > 0 && pageParentsPresent && pageParentsResolveToPages;
+
   bool get structurallyUsable =>
       byteLength >= 64 &&
       hasHeader &&
@@ -48,6 +55,7 @@ final class PdfOutputInspection {
       hasPagesTree &&
       pageObjectCount > 0 &&
       pageTreeCountConsistent &&
+      pageParentLinksValid &&
       hasStartXref &&
       startXrefOffset != null &&
       startXrefTargetRecognized &&
@@ -70,7 +78,9 @@ final class PdfOutputInspector {
     // latin1 preserves a one-code-unit-per-byte mapping, so startxref's byte
     // offset can be validated directly against String indices here.
     final text = latin1.decode(bytes, allowInvalid: true);
-    final pageObjectCount = RegExp(r'/Type\s*/Page(?!s)\b').allMatches(text).length;
+    final pageObjects = _pageObjects(text);
+    final pageObjectCount = pageObjects.length;
+    final pageParentStatus = _pageParentStatus(text, pageObjects);
     final pagesTreeMatch = RegExp(
       r'/Type\s*/Pages\b(?:(?!endobj).)*?/Count\s+(\d+)',
       dotAll: true,
@@ -113,6 +123,8 @@ final class PdfOutputInspector {
       hasPagesTree: RegExp(r'/Type\s*/Pages\b').hasMatch(text),
       pageObjectCount: pageObjectCount,
       declaredPageCount: declaredPageCount,
+      pageParentsPresent: pageParentStatus.$1,
+      pageParentsResolveToPages: pageParentStatus.$2,
       hasStartXref: startXrefMatch != null,
       startXrefOffset: startXrefOffset,
       startXrefTargetRecognized: startXrefTargetRecognized,
@@ -120,6 +132,60 @@ final class PdfOutputInspector {
       rootReferenceResolvesToCatalog: rootReferenceResolvesToCatalog,
       catalogPagesReferenceResolves: catalogPagesReferenceResolves,
     );
+  }
+
+  List<(int, int, String)> _pageObjects(String text) {
+    final objects = <(int, int, String)>[];
+    final objectPattern = RegExp(
+      r'^(\d+)\s+(\d+)\s+obj\b((?:(?!endobj).)*)endobj',
+      dotAll: true,
+      multiLine: true,
+    );
+    final pageType = RegExp(r'/Type\s*/Page(?!s)\b');
+    for (final match in objectPattern.allMatches(text)) {
+      final body = match.group(3)!;
+      if (!pageType.hasMatch(body)) {
+        continue;
+      }
+      final objectNumber = int.tryParse(match.group(1)!);
+      final generation = int.tryParse(match.group(2)!);
+      if (objectNumber == null || generation == null) {
+        continue;
+      }
+      objects.add((objectNumber, generation, body));
+    }
+    return objects;
+  }
+
+  (bool, bool) _pageParentStatus(
+    String text,
+    List<(int, int, String)> pageObjects,
+  ) {
+    if (pageObjects.isEmpty) {
+      return (false, false);
+    }
+    var allPresent = true;
+    var allResolveToPages = true;
+    final parentPattern = RegExp(r'/Parent\s+(\d+)\s+(\d+)\s+R\b');
+    for (final page in pageObjects) {
+      final parentMatch = parentPattern.firstMatch(page.$3);
+      if (parentMatch == null) {
+        allPresent = false;
+        allResolveToPages = false;
+        continue;
+      }
+      final parentObject = int.tryParse(parentMatch.group(1)!);
+      final parentGeneration = int.tryParse(parentMatch.group(2)!);
+      if (parentObject == null || parentGeneration == null) {
+        allPresent = false;
+        allResolveToPages = false;
+        continue;
+      }
+      if (!_objectHasType(text, parentObject, parentGeneration, 'Pages')) {
+        allResolveToPages = false;
+      }
+    }
+    return (allPresent, allResolveToPages);
   }
 
   bool _pointsToRecognizedXref(String text, int offset) {
@@ -208,6 +274,8 @@ final class PdfOutputInspector {
         'pagesTree=${inspection.hasPagesTree}, pages=${inspection.pageObjectCount}, '
         'declaredPages=${inspection.declaredPageCount}, '
         'pageCountConsistent=${inspection.pageTreeCountConsistent}, '
+        'pageParentsPresent=${inspection.pageParentsPresent}, '
+        'pageParentsResolveToPages=${inspection.pageParentsResolveToPages}, '
         'startXref=${inspection.hasStartXref}, '
         'startXrefOffset=${inspection.startXrefOffset}, '
         'xrefTarget=${inspection.startXrefTargetRecognized}, '
