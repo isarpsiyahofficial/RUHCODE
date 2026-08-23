@@ -60,8 +60,10 @@
     "non-sample report cannot consume demo origin",
     "every section bound to one SHA-256 calculation snapshot identity",
     "cross-snapshot section mixing rejected before rendering",
-    "UI and PDF snapshot parity can be required explicitly",
+    "UI and PDF snapshot digest parity can be required explicitly",
+    "UI and PDF subject kind plus stable subject ID plus snapshot digest parity can be required together so another client/profile identity cannot reuse the report surface",
     "local PDF bytes are structurally inspected before return",
+    "final EOF plus startxref must resolve to a valid xref table or XRef stream target before return",
     "5/25/50-plus page-count gates exist at source level",
     "long table chunking repeats headers without losing duplicating or reordering body rows",
     "table chunks copy source rows so later input mutation cannot alter the render plan",
@@ -73,7 +75,7 @@
     "Actual 5/25/50+ production byte-render runs with approved fonts are not yet proven.",
     "Western geometry still needs the production vector painter and approved glyph assets; Vedic vector chart rendering is not yet implemented.",
     "BaZi production table rendering is not yet implemented.",
-    "Low-memory Android PDF generation and full parser/glyph/crop/visual-regression proof are not yet attached.",
+    "Low-memory Android PDF generation and independent full parser/glyph/crop/visual-regression proof are not yet attached.",
     "Approved PDF reference pages are not yet available.",
     "Exact Flutter workflow success is not yet recorded in this evidence file."
   ]
