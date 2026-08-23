@@ -104,6 +104,60 @@ void main() {
     );
   });
 
+  test('strong UI PDF parity requires subject kind id and snapshot digest', () {
+    expect(
+      () => validator.requireUiPdfSubjectAndSnapshotParity(
+        uiSubjectKind: PdfSubjectKind.client,
+        uiSubjectId: 'client-1',
+        uiSnapshotDigest: digestA,
+        pdfIdentity: identity(),
+      ),
+      returnsNormally,
+    );
+
+    expect(
+      () => validator.requireUiPdfSubjectAndSnapshotParity(
+        uiSubjectKind: PdfSubjectKind.client,
+        uiSubjectId: 'client-2',
+        uiSnapshotDigest: digestA,
+        pdfIdentity: identity(),
+      ),
+      throwsFormatException,
+    );
+
+    expect(
+      () => validator.requireUiPdfSubjectAndSnapshotParity(
+        uiSubjectKind: PdfSubjectKind.profile,
+        uiSubjectId: 'client-1',
+        uiSnapshotDigest: digestA,
+        pdfIdentity: identity(),
+      ),
+      throwsFormatException,
+    );
+
+    expect(
+      () => validator.requireUiPdfSubjectAndSnapshotParity(
+        uiSubjectKind: PdfSubjectKind.client,
+        uiSubjectId: 'client-1',
+        uiSnapshotDigest: digestB,
+        pdfIdentity: identity(),
+      ),
+      throwsFormatException,
+    );
+  });
+
+  test('strong UI PDF parity rejects blank UI subject id', () {
+    expect(
+      () => validator.requireUiPdfSubjectAndSnapshotParity(
+        uiSubjectKind: PdfSubjectKind.client,
+        uiSubjectId: '   ',
+        uiSnapshotDigest: digestA,
+        pdfIdentity: identity(),
+      ),
+      throwsFormatException,
+    );
+  });
+
   test('snapshot digest must be a real lowercase SHA-256-shaped value', () {
     expect(
       () => identity(digest: 'not-a-sha').validate(),
