@@ -83,6 +83,8 @@ jobs:
                   assert 'SOURCE_LEVEL_IMPLEMENTED evidence' not in row['notes'], row['rc_id']
           assert observed_tags == allowed_tags, (observed_tags, allowed_tags - observed_tags)
           print('OK: 1,442-row classified traceability contract validated with evidence-backed non-default states')
+      - name: Validate matrix evidence provenance
+        run: python tools/requirements/validate_matrix_provenance.py
       - name: Upload generated requirement matrix
         uses: actions/upload-artifact@v4
         with:
