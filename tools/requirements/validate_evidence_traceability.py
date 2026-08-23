@@ -64,12 +64,13 @@ EXPECTED = {
     "evidence/interpretation/quality_guard.json": {
         1066, 1067, 1068, 1069, 1072, 1073, 1074, 1075, 1076,
     },
+    "evidence/pdf/local_renderer_contract.json": {950, 951, 953},
     "evidence/pdf/report_planning_contract.json": {
-        862, 863, 865, 868, 870, 878, 881, 898, 903, 918, 919, 929, 931, 951, 956, 964,
+        862, 863, 868, 878, 881, 898, 903, 918, 919, 931, 951, 964,
     },
-    "evidence/pdf/numerology_data_adapter.json": {875, 903, 925, 954},
+    "evidence/pdf/numerology_data_adapter.json": {925},
     "evidence/pdf/professional_application_service.json": {
-        918, 936, 939, 940, 950, 951, 952, 953, 964, 1085, 1086, 1088, 1089,
+        918, 936, 939, 940, 950, 951, 953, 964, 1085, 1086, 1088, 1089,
     },
     "evidence/backup/csv_contract.json": {
         774, 777, 792, 793, 796, 797, 798, 799, 800, 801, 802, 803, 804,
