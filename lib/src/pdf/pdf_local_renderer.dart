@@ -81,6 +81,66 @@ final class PdfRenderPayload {
   final PdfFontBundle fonts;
 }
 
+/// Pure section-contract validation shared by the byte renderer and unit tests.
+///
+/// An adapter may expose every verified section it knows how to render while a
+/// user selects only a subset for this report. Extra verified payloads are
+/// therefore allowed but never rendered. Selected sections remain strict: each
+/// one must exist, be non-empty, belong to the same snapshot and have a render
+/// payload.
+final class PdfRenderContractValidator {
+  const PdfRenderContractValidator({
+    this.dataValidator = const PdfReportDataValidator(),
+    this.tableLayout = const PdfTableLayout(),
+  });
+
+  final PdfReportDataValidator dataValidator;
+  final PdfTableLayout tableLayout;
+
+  void validate(PdfRenderPayload payload) {
+    payload.fonts.validate();
+    if (payload.documentTitle.trim().isEmpty) {
+      throw const FormatException('PDF document title cannot be blank.');
+    }
+    final projected = dataValidator.validateAndProject(payload.dataset);
+    if (payload.dataset.origin != payload.plan.dataOrigin) {
+      throw const FormatException('PDF plan and dataset data origins do not match.');
+    }
+
+    final available = {for (final section in projected) section.id: section.hasContent};
+    final renderIds = <String>{};
+    for (final section in payload.sections) {
+      if (!PdfSectionIds.all.contains(section.sectionId)) {
+        throw FormatException('Unknown render section id: ${section.sectionId}.');
+      }
+      if (!renderIds.add(section.sectionId)) {
+        throw FormatException('Duplicate render section id: ${section.sectionId}.');
+      }
+      if (section.snapshotDigest != payload.dataset.identity.snapshotDigest) {
+        throw FormatException('Render section ${section.sectionId} belongs to another snapshot.');
+      }
+      if (!available.containsKey(section.sectionId)) {
+        throw FormatException(
+          'Render section ${section.sectionId} is not declared by the verified dataset.',
+        );
+      }
+      if (available[section.sectionId] != true || !section.hasContent) {
+        throw FormatException('Render section ${section.sectionId} is empty or unavailable.');
+      }
+      tableLayout.chunk(section.rows);
+    }
+
+    for (final id in payload.plan.sectionIds) {
+      if (available[id] != true) {
+        throw FormatException('Selected PDF section $id is unavailable in the verified dataset.');
+      }
+      if (!renderIds.contains(id)) {
+        throw FormatException('Selected PDF section $id has no render payload.');
+      }
+    }
+  }
+}
+
 final class PdfLocalRenderer {
   const PdfLocalRenderer({
     this.dataValidator = const PdfReportDataValidator(),
@@ -96,7 +156,10 @@ final class PdfLocalRenderer {
   final PdfTableLayout tableLayout;
 
   Future<Uint8List> render(PdfRenderPayload payload) async {
-    _validate(payload);
+    PdfRenderContractValidator(
+      dataValidator: dataValidator,
+      tableLayout: tableLayout,
+    ).validate(payload);
 
     final regular = pw.Font.ttf(ByteData.sublistView(payload.fonts.regularBytes));
     final bold = pw.Font.ttf(ByteData.sublistView(payload.fonts.boldBytes));
@@ -234,43 +297,4 @@ final class PdfLocalRenderer {
           style: pw.TextStyle(fontSize: tokens.bodyPt, lineSpacing: tokens.lineHeight),
         ),
       );
-
-  void _validate(PdfRenderPayload payload) {
-    payload.fonts.validate();
-    if (payload.documentTitle.trim().isEmpty) {
-      throw const FormatException('PDF document title cannot be blank.');
-    }
-    final projected = dataValidator.validateAndProject(payload.dataset);
-    if (payload.dataset.origin != payload.plan.dataOrigin) {
-      throw const FormatException('PDF plan and dataset data origins do not match.');
-    }
-
-    final available = {for (final section in projected) section.id: section.hasContent};
-    final planIds = payload.plan.sectionIds.toSet();
-    final renderIds = <String>{};
-    for (final section in payload.sections) {
-      if (!PdfSectionIds.all.contains(section.sectionId)) {
-        throw FormatException('Unknown render section id: ${section.sectionId}.');
-      }
-      if (!renderIds.add(section.sectionId)) {
-        throw FormatException('Duplicate render section id: ${section.sectionId}.');
-      }
-      if (section.snapshotDigest != payload.dataset.identity.snapshotDigest) {
-        throw FormatException('Render section ${section.sectionId} belongs to another snapshot.');
-      }
-      if (!planIds.contains(section.sectionId)) {
-        throw FormatException('Render section ${section.sectionId} is not selected by the report plan.');
-      }
-      if (available[section.sectionId] != true || !section.hasContent) {
-        throw FormatException('Render section ${section.sectionId} is empty or unavailable.');
-      }
-      tableLayout.chunk(section.rows);
-    }
-
-    for (final id in payload.plan.sectionIds) {
-      if (!renderIds.contains(id)) {
-        throw FormatException('Selected PDF section $id has no render payload.');
-      }
-    }
-  }
 }
