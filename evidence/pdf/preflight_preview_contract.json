@@ -1,0 +1,25 @@
+{
+  "evidence_id": "PDF-PREFLIGHT-PREVIEW-CONTRACT",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirement_ids": ["RC-0929"],
+  "sources": [
+    "lib/src/pdf/pdf_preflight_preview.dart",
+    "lib/src/pdf/pdf_report_contract.dart"
+  ],
+  "tests": [
+    "test/pdf/pdf_preflight_preview_test.dart"
+  ],
+  "validators": [
+    "tools/pdf/validate_pdf_preflight_preview.py"
+  ],
+  "proves": [
+    "Professional PDF preview data is derived from the exact PdfReportPlan before PDF byte generation.",
+    "Preview preserves section order, locale, cover style, page specification and branding presence.",
+    "Empty, duplicate or unknown section plans fail closed instead of producing a fake preview."
+  ],
+  "release_blockers": [
+    "The preflight preview model still must be wired into SCR-PDF-BUILDER-001 before RC-0929 can be DONE.",
+    "Exact Flutter/CI success evidence is still required."
+  ]
+}
