@@ -2,37 +2,41 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-23_0252_backup_restore_preview_accessibility.md`
+`automation_runs/2026-08-23_0455_pdf_xref_subject_parity_semantic_audit.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Backup restore preview / RC-0832→RC-0839**
-   - valid preview üzerinden profil, danışan, danışmanlık, günlük ve hesaplama sayımları korunuyor
-   - `Birleştir` ve `Değiştir` gerçek canonical runtime action olarak ayrıldı
-   - merge/replace gerçek `BackupImportMode` çağrılarına bağlı
-2. **Interaction + accessibility / RC-1440 + RC-1441**
-   - merge/replace explicit Semantics button label taşıyor
-   - minimum 48dp touch target var
-   - deterministic focus order merge → replace olarak kilitli
-   - valid-preview widget regression bu sözleşmeyi test ediyor
-3. **Backup CI/evidence gate**
-   - MASTER-aware restore-preview evidence + structural validator eklendi
-   - Backup workflow runtime action extension registry değişikliklerinde de tetikleniyor
-   - Requirements Contract restore-preview semantic/action validator’ını çalıştırıyor
-4. **PDF structural integrity / RC-0951→RC-0953**
-   - `/Pages /Count` artık gerçek `/Page` object sayısıyla birebir eşleşmek zorunda
-   - missing veya mismatched declared page count fail-closed reddediliyor
-   - 5/25/50+ page-count fixture’ları consistency gate üzerinden korunuyor
-   - local renderer evidence + PDF structural validator yeni sözleşmeye bağlandı
+1. **PDF structural parser boundary**
+   - final `%%EOF` zorunlu ve dosyanın sonunda
+   - `startxref` zorunlu
+   - xref offset in-range ve gerçek `xref` tablosu veya `/Type /XRef` stream hedefi olmak zorunda
+   - trailing junk reddediliyor
+   - `/Pages /Count` ↔ gerçek `/Page` object count eşitliği korunuyor
+2. **UI ↔ PDF identity parity**
+   - yalnız SHA digest değil subject kind + stable subject ID + snapshot digest birlikte eşleşmek zorunda
+   - yanlış danışan/profil kimliği fail-closed
+3. **Exact PDF evidence ownership**
+   - local renderer evidence yalnız RC-0950 / RC-0951 / RC-0953 sahipleniyor
+   - RC-0952 independent full-parser/open kanıtı gelmeden açık tutuluyor
+4. **Exact UI accessibility evidence ownership**
+   - RC-1441 evidence aileleri ve restore preview RC-0832→0839 + RC-1440/1441 exact MASTER-aware gate altında
+   - stale merge/replace semantics blocker temizlendi
+5. **Backup application evidence drift düzeltmesi**
+   - RC-0794 tek-tabla CSV ve RC-0936/0937/0938 PDF paylaşım maddeleri yanlış backup sahipliğinden çıkarıldı
+   - yeni validator bu yanlış RC’lerin geri sızmasını engelliyor
+6. **CI contract genişletmesi**
+   - PDF xref structural validator Professional PDF Contract’a bağlandı
+   - exact UI/PDF/backup semantic ownership validatorları Requirements Contract’a bağlandı
 
 ## Validation limitation
 
-Son workflow/contract hedef commit `c6e167453f2d65d28c348ce477d9e49aaba5a846` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için ilgili RC’ler DONE yapılmadı.
+Son contract hedef commit `a9560973c2d466dcd10412c92e09b9e5766bd4b8` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için ilgili RC’ler DONE yapılmadı.
 
 ## Next safe work
 
-- remaining requirement-bearing evidence ailelerini MASTER-aware semantic audit'e al
-- approved font gerektirmeyen PDF snapshot/data parity ve parser-boundary regresyonlarını genişlet
+- remaining backup/PDF requirement-bearing evidence ailelerini semantic RC drift açısından audit et
+- approved font gerektirmeyen PDF snapshot/data parity ve malformed-parser sınırlarını genişlet
+- UI/accessibility action coverage’da dead-action / missing semantics kalan yüzeyleri tara
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts and clean-checkout release proof remain open blockers
 
 **FINAL: NO.**
