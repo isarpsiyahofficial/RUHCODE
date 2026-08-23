@@ -11,8 +11,9 @@ RC_RE = re.compile(r"^(\d+)\.\s+(.+)$", re.MULTILINE)
 EXPECTED = {
     "evidence/pdf/local_renderer_contract.json": {950, 951, 953},
     "evidence/pdf/report_planning_contract.json": {
-        862, 863, 868, 878, 881, 898, 903, 918, 919, 929, 931, 951, 964
+        862, 863, 868, 878, 881, 898, 903, 918, 919, 931, 951, 964
     },
+    "evidence/pdf/preflight_preview_contract.json": {929, 1440, 1441},
     "evidence/pdf/professional_application_service.json": {
         918, 936, 939, 940, 950, 951, 953, 964, 1085, 1086, 1088, 1089
     },
@@ -44,10 +45,12 @@ KEYWORDS = {
     1086: "tek bir Feature ID",
     1088: "UI kilidi Feature ID’ye",
     1089: "Hesaplama servisi Feature ID’ye",
+    1440: "dokunulabilir öğenin",
+    1441: "Accessibility zorunlu",
 }
 
 FORBIDDEN_OWNERSHIP = {
-    "evidence/pdf/report_planning_contract.json": {865, 956},
+    "evidence/pdf/report_planning_contract.json": {865, 929, 956},
     "evidence/pdf/professional_application_service.json": {952},
     "evidence/pdf/numerology_data_adapter.json": {875, 903, 954},
     "evidence/pdf/persisted_pythagorean_pdf.json": {875},
@@ -106,7 +109,7 @@ def main() -> None:
             raise AssertionError(f"{path}: unresolved PDF requirements must remain open: {sorted(leaked)}")
 
     print(
-        "OK: PDF renderer/planning/application/numerology evidence is bound to exact MASTER ownership; "
+        "OK: PDF renderer/planning/preflight/application/numerology evidence is bound to exact MASTER ownership; "
         "unproven Unicode/open/visual/table requirements remain explicitly open"
     )
 
