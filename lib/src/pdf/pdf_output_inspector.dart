@@ -4,7 +4,8 @@ import 'dart:typed_data';
 /// Lightweight structural inspection for locally generated PDF bytes.
 ///
 /// This is intentionally not a replacement for a full PDF parser. It catches
-/// truncated/non-PDF output before the application presents or shares a file.
+/// truncated/non-PDF output and broken cross-reference trailers before the
+/// application presents or shares a file.
 final class PdfOutputInspection {
   const PdfOutputInspection({
     required this.byteLength,
@@ -14,6 +15,9 @@ final class PdfOutputInspection {
     required this.hasPagesTree,
     required this.pageObjectCount,
     required this.declaredPageCount,
+    required this.hasStartXref,
+    required this.startXrefOffset,
+    required this.startXrefTargetRecognized,
   });
 
   final int byteLength;
@@ -23,6 +27,9 @@ final class PdfOutputInspection {
   final bool hasPagesTree;
   final int pageObjectCount;
   final int? declaredPageCount;
+  final bool hasStartXref;
+  final int? startXrefOffset;
+  final bool startXrefTargetRecognized;
 
   bool get pageTreeCountConsistent =>
       declaredPageCount != null && declaredPageCount == pageObjectCount;
@@ -34,7 +41,10 @@ final class PdfOutputInspection {
       hasCatalog &&
       hasPagesTree &&
       pageObjectCount > 0 &&
-      pageTreeCountConsistent;
+      pageTreeCountConsistent &&
+      hasStartXref &&
+      startXrefOffset != null &&
+      startXrefTargetRecognized;
 }
 
 final class PdfOutputInspector {
@@ -58,15 +68,42 @@ final class PdfOutputInspector {
         ? null
         : int.tryParse(pagesTreeMatch.group(1)!);
 
+    final eofMatch = RegExp(r'%%EOF\s*$').firstMatch(text);
+    final startXrefMatch = RegExp(
+      r'startxref\s+(\d+)\s+%%EOF\s*$',
+    ).firstMatch(text);
+    final startXrefOffset = startXrefMatch == null
+        ? null
+        : int.tryParse(startXrefMatch.group(1)!);
+    final startXrefTargetRecognized = startXrefOffset != null &&
+        _pointsToRecognizedXref(text, startXrefOffset);
+
     return PdfOutputInspection(
       byteLength: bytes.length,
       hasHeader: hasHeader,
-      hasEofMarker: text.contains('%%EOF'),
+      hasEofMarker: eofMatch != null,
       hasCatalog: RegExp(r'/Type\s*/Catalog\b').hasMatch(text),
       hasPagesTree: RegExp(r'/Type\s*/Pages\b').hasMatch(text),
       pageObjectCount: pageObjectCount,
       declaredPageCount: declaredPageCount,
+      hasStartXref: startXrefMatch != null,
+      startXrefOffset: startXrefOffset,
+      startXrefTargetRecognized: startXrefTargetRecognized,
     );
+  }
+
+  bool _pointsToRecognizedXref(String text, int offset) {
+    if (offset < 0 || offset >= text.length) {
+      return false;
+    }
+    final tail = text.substring(offset);
+    if (RegExp(r'^xref\b').hasMatch(tail)) {
+      return true;
+    }
+    return RegExp(
+      r'^\d+\s+\d+\s+obj\b(?:(?!endobj).)*?/Type\s*/XRef\b',
+      dotAll: true,
+    ).hasMatch(tail);
   }
 
   PdfOutputInspection requireUsable(Uint8List bytes) {
@@ -78,7 +115,10 @@ final class PdfOutputInspector {
         'eof=${inspection.hasEofMarker}, catalog=${inspection.hasCatalog}, '
         'pagesTree=${inspection.hasPagesTree}, pages=${inspection.pageObjectCount}, '
         'declaredPages=${inspection.declaredPageCount}, '
-        'pageCountConsistent=${inspection.pageTreeCountConsistent}.',
+        'pageCountConsistent=${inspection.pageTreeCountConsistent}, '
+        'startXref=${inspection.hasStartXref}, '
+        'startXrefOffset=${inspection.startXrefOffset}, '
+        'xrefTarget=${inspection.startXrefTargetRecognized}.',
       );
     }
     return inspection;
