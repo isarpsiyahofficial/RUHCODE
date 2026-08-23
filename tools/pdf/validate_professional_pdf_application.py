@@ -126,8 +126,10 @@ def main() -> None:
         'main must bind the production persisted PDF catalog to the UI boundary',
     )
 
-    require("static const pdfCreate = 'ACTION-PDF-PREVIEW-CREATE';" in action_ids, 'canonical PDF create action ID is missing')
-    require("static const pdfShare = 'ACTION-PDF-PREVIEW-SHARE';" in action_ids, 'canonical PDF share action ID is missing')
+    require("static const pdfPreflight = 'ACTION-PDF-BUILDER-PREVIEW';" in action_ids, 'canonical PDF preflight action ID is missing')
+    require("static const pdfCreate = 'ACTION-PDF-BUILDER-CREATE';" in action_ids, 'canonical PDF builder create action ID is missing')
+    require("static const pdfShare = 'ACTION-PDF-BUILDER-SHARE';" in action_ids, 'canonical PDF builder share action ID is missing')
+    require('ValueKey(RuhActionIds.pdfPreflight)' in ui_page, 'professional builder preflight control must use canonical action ID')
     require('ValueKey(RuhActionIds.pdfCreate)' in ui_page, 'professional builder create control must use canonical action ID')
     require('ValueKey(RuhActionIds.pdfShare)' in ui_page, 'professional builder share control must use canonical action ID')
     require('ProfessionalPdfBuilderPage(' in ui_page and 'records: professionalRecords' in ui_page, 'PDF hub must pass explicit record actions when supplied')
@@ -140,8 +142,9 @@ def main() -> None:
     require("ProfessionalPdfUiDeliveryOutcome.cancelled => 'Paylaşım iptal edildi.'" in ui_page, 'share dismissal must remain a normal UI cancellation state')
 
     for marker in (
-        'ACTION-PDF-PREVIEW-CREATE,pdfCreate',
-        'ACTION-PDF-PREVIEW-SHARE,pdfShare',
+        'ACTION-PDF-BUILDER-PREVIEW,pdfPreflight',
+        'ACTION-PDF-BUILDER-CREATE,pdfCreate',
+        'ACTION-PDF-BUILDER-SHARE,pdfShare',
     ):
         require(marker in runtime_bindings, f'missing canonical runtime PDF binding: {marker}')
 
@@ -180,19 +183,23 @@ def main() -> None:
         'dismissed PDF share is a normal cancellation state',
         'builder never fakes output when production build actions are absent',
         'builder does not expose raw record ID field',
-        'professional-pdf-record-selector', 'RuhActionIds.pdfCreate', 'RuhActionIds.pdfShare',
+        'professional-pdf-record-selector', 'RuhActionIds.pdfPreflight',
+        'RuhActionIds.pdfCreate', 'RuhActionIds.pdfShare',
         "expect(find.text('PDF doğrulandı'), findsNothing)",
     ):
         require(marker in widget_test, f'missing professional PDF widget regression marker: {marker}')
 
     expected_rc = {
         'RC-0918', 'RC-0936', 'RC-0939', 'RC-0940',
-        'RC-0950', 'RC-0951', 'RC-0952', 'RC-0953', 'RC-0964',
+        'RC-0950', 'RC-0951', 'RC-0953', 'RC-0964',
         'RC-1085', 'RC-1086', 'RC-1088', 'RC-1089',
     }
     actual_rc = set(evidence.get('requirement_ids', []))
     require(actual_rc == expected_rc, f'evidence RC ownership mismatch: {sorted(actual_rc)}')
     require(evidence.get('done') is False, 'source-level evidence must remain done=false until production/CI proof exists')
+
+    not_yet = '\n'.join(evidence.get('not_yet_proven', []))
+    require('RC-0952' in not_yet, 'RC-0952 full-parser/open proof must remain explicitly open')
 
     master_markers = {
         'RC-0918': '918. Profesyonel istediği rapor bölümlerini açıp kapatabilecek.',
@@ -201,7 +208,6 @@ def main() -> None:
         'RC-0940': '940. Bu paylaşım işlemleri bizim sunucumuzdan geçmeyecek.',
         'RC-0950': '950. PDF üretimi tamamlanmadıysa yarım dosya başarılı rapor olarak gösterilmeyecek.',
         'RC-0951': '951. PDF doğrulama testi oluşturulacak.',
-        'RC-0952': '952. Oluşan PDF’nin gerçekten açılabildiği otomatik kontrol edilecek.',
         'RC-0953': '953. Sayfa sayısının sıfır olmadığı kontrol edilecek.',
         'RC-0964': '964. Yanlış müşteri verisinin başka raporda çıkması kritik güvenlik hatası kabul edilecek.',
         'RC-1085': '1085. Ücretsiz ve PRO erişim matrisi merkezi bir entitlement sistemiyle yönetilecek.',
