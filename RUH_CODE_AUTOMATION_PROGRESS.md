@@ -20,7 +20,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - BaZi primitives: stems/branches, sexagenary cycle, Hidden Stems, Five Elements, Yin/Yang, Day Master, Ten Gods.
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline snapshot/time anchor, Google Play lifetime restore composition, rewarded-ad cancel/failure safety.
 - Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration, canonical tek-tabla CSV exporter.
-- Professional PDF: local A4 planning/renderer contracts, structural inspector, `/Pages /Count` consistency, final EOF + `startxref` + xref-target validation, Root→Catalog→Pages object-graph resolution, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection, strong UI↔PDF subject/snapshot parity.
+- Professional PDF: local A4 planning/renderer contracts, structural inspector, `/Pages /Count` consistency, Page→Parent→Pages linkage, final EOF + `startxref` + xref-target validation, Root→Catalog→Pages object-graph resolution, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection, strong UI↔PDF subject/snapshot parity.
 - Professional PDF preflight preview gerçek builder'a bağlı: canonical Preview action, calculation-type aware section catalog, preview→build exact-plan parity ve stale-preview invalidation source-level mevcut.
 
 ## UI / Accessibility — güncel durum
@@ -59,6 +59,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Runtime dead-action validator canonical action sabiti/binding/source kullanımını çaprazlıyor.
 - [x] Local PDF renderer evidence RC-0950/0951/0953 ile sınırlı; RC-0952 independent full-parser/open proof olmadan sahiplenilmiyor.
 - [x] PDF preflight evidence RC-0929/1440/1441 source-level zincirine bağlı ve `done=false`.
+- [x] Merkezi semantic validator'daki stale PDF ownership düzeltildi: report planning, numerology adapter, professional application ve local renderer gerçek mevcut evidence RC kümeleriyle eşitlendi.
 - [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak exact MASTER ownership denetimine alınmaya devam edecek.
 - [ ] Exact görünür CI başarı kanıtı hâlâ yok; combined-status son commitlerde `statuses=[]` dönüyor.
 
@@ -68,7 +69,8 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Persisted Western PDF historical astronomy'yi yeniden hesaplamıyor.
 - [x] Placements / houses / aspects + technical manifest PDF projection source-level mevcut.
 - [x] Structural inspector `/Pages /Count`, final `%%EOF`, `startxref`, xref/XRef target ve `/Root` sınırlarını fail-closed doğruluyor.
-- [x] `/Root` artık gerçek Catalog'a, Catalog `/Pages` referansı gerçek Pages tree'ye çözülmek zorunda.
+- [x] `/Root` gerçek Catalog'a, Catalog `/Pages` referansı gerçek Pages tree'ye çözülmek zorunda.
+- [x] Her `/Type /Page` nesnesi indirect `/Parent` taşımak ve Parent gerçek `/Type /Pages` nesnesine çözülmek zorunda.
 - [x] UI↔PDF parity subject kind + stable subject ID + digest üçlüsüyle korunuyor.
 - [x] RC-0929 preflight preview gerçek `SCR-PDF-BUILDER-001` Preview action/state'ine bağlı.
 - [x] Calculation-type aware section catalog yalnız gerçek handler'ın desteklediği bölümleri kullanıcıya gösteriyor.
@@ -101,19 +103,21 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Play/rewarded-ad gerçek cihaz kanıtları.
 - Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-23 14:54
+## Son checkpoint — 2026-08-23 16:53
 
-Checkpoint: `automation_runs/2026-08-23_1454_pdf_object_graph_hardening.md`
+Checkpoint: `automation_runs/2026-08-23_1653_pdf_page_parent_semantic_gate.md`
 
-Bu turda PDF structural inspector xref/trailer `/Root` referansını gerçek Catalog nesnesine ve Catalog `/Pages` referansını gerçek Pages tree nesnesine çözmek zorunda olacak şekilde sertleştirildi. Yanlış Root ve yanlış Pages hedefleri için fail-closed regression testleri eklendi. Önceki 10:14 commit zincirindeki calculation-aware PDF preflight/section-parity değişikliklerinin main üzerinde olduğu doğrulandı ve bu ilerleme dosyasındaki stale durum düzeltildi.
+Bu turda PDF structural inspector her Page nesnesinin indirect Parent referansını zorunlu kılacak ve Parent'ın gerçek Pages-tree nesnesine çözülmesini fail-closed doğrulayacak şekilde sertleştirildi. Missing Parent ve non-Pages Parent regression testleri eklendi; evidence ve structural validator güncellendi.
 
-Latest tested source commit `344734faae6e2df5a05845d1fedfcf27926964d1` için GitHub combined-status yine `statuses=[]` döndürdü. Bu nedenle ilgili PDF requirement'ları DONE değildir; RC-0952 independent full-parser/open proof gelmeden açık kalır.
+Ayrıca merkezi `validate_evidence_traceability.py` içinde güncel evidence dosyalarıyla çelişen stale PDF RC ownership listeleri bulundu ve düzeltildi. Local renderer `RC-0950/0951/0953` exact ownership audit'e eklendi; report planning, numerology adapter ve professional application evidence güncel gerçek RC kümeleriyle eşitlendi. `RC-0952` independent full-parser/open proof olmadan açık tutuluyor.
+
+Latest source contract commit `d15c51c9a90bf9d96498db609de8fefb937cfbb4` için GitHub combined-status yine `statuses=[]` döndürdü. Bu nedenle ilgili requirement'lar DONE değildir.
 
 ## Sıradaki çalışma
 
-1. PDF structural evidence/validator'ı Root→Catalog→Pages resolution kontrolünü zorunlu kılacak şekilde genişlet.
-2. Font gerektirmeyen PDF data/snapshot parity testlerini genişlet.
-3. Remaining requirement-bearing evidence ailelerini semantic RC drift açısından audit et.
+1. Remaining requirement-bearing evidence ailelerini semantic RC drift açısından audit et.
+2. Font gerektirmeyen persisted snapshot/data parity testlerini genişlet.
+3. UI/action/accessibility blocker-dışı requirement'ları ilerlet.
 4. Fiziksel artifact/font/UI blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
 **FINAL: NO.**
