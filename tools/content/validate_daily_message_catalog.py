@@ -142,7 +142,12 @@ def _unsafe_certainty_findings(rows: list[dict[str, str]]) -> list[dict[str, obj
     return findings
 
 
-def audit(path: Path, manifest_path: Path) -> dict[str, object]:
+def audit(
+    path: Path,
+    manifest_path: Path,
+    *,
+    allow_incomplete: bool = False,
+) -> dict[str, object]:
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     start = date.fromisoformat(manifest['initial_coverage_start'])
     end = date.fromisoformat(manifest['initial_coverage_end'])
@@ -205,7 +210,7 @@ def audit(path: Path, manifest_path: Path) -> dict[str, object]:
     actual_keys = set(keys)
     missing = sorted(expected_keys - actual_keys)
     extra = sorted(actual_keys - expected_keys)
-    if missing:
+    if missing and not allow_incomplete:
         errors.append(f'missing exact date/locale keys: {missing[:10]} (total={len(missing)})')
     if extra:
         errors.append(f'extra date/locale keys: {extra[:10]} (total={len(extra)})')
@@ -241,22 +246,26 @@ def audit(path: Path, manifest_path: Path) -> dict[str, object]:
             f'unsafe certainty review failed: {len(unsafe_certainty)} message rows require review'
         )
 
-    required_leap_dates = set(manifest['required_leap_dates'])
-    for leap_date in required_leap_dates:
-        for locale in locales:
-            if f'{leap_date}|{locale}' not in actual_keys:
-                errors.append(f'missing required leap date {leap_date}|{locale}')
+    if not allow_incomplete:
+        required_leap_dates = set(manifest['required_leap_dates'])
+        for leap_date in required_leap_dates:
+            for locale in locales:
+                if f'{leap_date}|{locale}' not in actual_keys:
+                    errors.append(f'missing required leap date {leap_date}|{locale}')
 
-    if len(expected_dates) != manifest['initial_days']:
-        errors.append('manifest initial_days does not match Gregorian range')
-    if len(expected_keys) != manifest['initial_total_records']:
-        errors.append('manifest initial_total_records does not match date × locale range')
+        if len(expected_dates) != manifest['initial_days']:
+            errors.append('manifest initial_days does not match Gregorian range')
+        if len(expected_keys) != manifest['initial_total_records']:
+            errors.append('manifest initial_total_records does not match date × locale range')
 
     return {
         'ok': not errors,
+        'complete': not missing and not extra and len(actual_keys) == len(expected_keys),
+        'allow_incomplete': allow_incomplete,
         'errors': errors,
         'record_count': len(rows),
         'expected_record_count': len(expected_keys),
+        'missing_record_count': len(missing),
         'catalog_sha256': sha256(path),
         'coverage_start': start.isoformat(),
         'coverage_end': end.isoformat(),
@@ -286,12 +295,17 @@ def parser() -> argparse.ArgumentParser:
         default=Path('requirements/content_manifests/daily_messages.json'),
     )
     result.add_argument('--report', type=Path)
+    result.add_argument(
+        '--allow-incomplete',
+        action='store_true',
+        help='Allow missing date/locale keys while still enforcing schema, uniqueness and editorial quality gates.',
+    )
     return result
 
 
 if __name__ == '__main__':
     args = parser().parse_args()
-    result = audit(args.catalog, args.manifest)
+    result = audit(args.catalog, args.manifest, allow_incomplete=args.allow_incomplete)
     serialized = json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True)
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
