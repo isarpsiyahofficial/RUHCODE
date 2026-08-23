@@ -17,6 +17,38 @@ EVIDENCE_ROOT = ROOT / "evidence"
 RC_TOKEN = re.compile(r"RC-(\d{4})$")
 MAX_RC = 1442
 
+STRICT_PATH_FIELDS = {
+    "sources",
+    "tests",
+    "validators",
+    "source_files",
+    "sourceFiles",
+    "test_files",
+    "testFiles",
+    "validator_files",
+    "validatorFiles",
+}
+SINGLE_PATH_FIELDS = {
+    "source_file",
+    "sourceFile",
+    "test_file",
+    "testFile",
+    "validator_file",
+    "validatorFile",
+}
+REPO_PATH_PREFIXES = (
+    "lib/",
+    "test/",
+    "tools/",
+    "evidence/",
+    "ui/",
+    ".github/",
+    "requirements/",
+    "assets/",
+    "android/",
+    "ios/",
+)
+
 
 def _fail(path: Path, message: str) -> None:
     rel = path.relative_to(ROOT)
@@ -41,6 +73,13 @@ def _require_safe_repo_path(evidence_path: Path, raw: object, field: str) -> Non
         _fail(evidence_path, f"missing {field} repository path: {value}")
     if not target.is_file():
         _fail(evidence_path, f"{field} path must resolve to a file: {value}")
+
+
+def _looks_like_repo_path(raw: object) -> bool:
+    if not isinstance(raw, str):
+        return False
+    value = raw.strip().replace("\\", "/")
+    return value.startswith(REPO_PATH_PREFIXES)
 
 
 def _parse_requirement_list(evidence_path: Path, payload: dict) -> set[int]:
@@ -99,6 +138,51 @@ def _validate_path_list(evidence_path: Path, payload: dict, field: str) -> int:
     return len(value)
 
 
+def _validate_single_path(evidence_path: Path, payload: dict, field: str) -> int:
+    value = payload.get(field)
+    if value is None:
+        return 0
+    _require_safe_repo_path(evidence_path, value, field)
+    return 1
+
+
+def _validate_path_conventions(evidence_path: Path, payload: dict) -> tuple[int, int, int]:
+    source_links = 0
+    test_links = 0
+    validator_links = 0
+
+    for field in STRICT_PATH_FIELDS:
+        count = _validate_path_list(evidence_path, payload, field)
+        lowered = field.casefold()
+        if "source" in lowered:
+            source_links += count
+        elif "test" in lowered:
+            test_links += count
+        elif "validator" in lowered:
+            validator_links += count
+
+    for field in SINGLE_PATH_FIELDS:
+        count = _validate_single_path(evidence_path, payload, field)
+        lowered = field.casefold()
+        if "source" in lowered:
+            source_links += count
+        elif "test" in lowered:
+            test_links += count
+        elif "validator" in lowered:
+            validator_links += count
+
+    # Several older evidence contracts use a singular `source` key for either
+    # a repository file or a human-readable provenance name. Validate it when
+    # it clearly points into this repository; leave names such as "USNO" to
+    # their domain-specific provenance validator.
+    singular_source = payload.get("source")
+    if _looks_like_repo_path(singular_source):
+        _require_safe_repo_path(evidence_path, singular_source, "source")
+        source_links += 1
+
+    return source_links, test_links, validator_links
+
+
 def main() -> None:
     if not EVIDENCE_ROOT.is_dir():
         raise AssertionError("evidence/ directory is missing")
@@ -128,9 +212,10 @@ def main() -> None:
             contracts += 1
 
         requirement_links += len(_parse_requirement_list(path, payload))
-        source_links += _validate_path_list(path, payload, "sources")
-        test_links += _validate_path_list(path, payload, "tests")
-        validator_links += _validate_path_list(path, payload, "validators")
+        source_count, test_count, validator_count = _validate_path_conventions(path, payload)
+        source_links += source_count
+        test_links += test_count
+        validator_links += validator_count
 
         done = payload.get("done")
         if done is not None and not isinstance(done, bool):
