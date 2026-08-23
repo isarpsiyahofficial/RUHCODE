@@ -46,6 +46,8 @@ jobs:
         run: python tools/ui/validate_runtime_theme_tokens.py
       - name: Validate UI accessibility and interaction contract
         run: python tools/ui/validate_accessibility_interactions.py
+      - name: Validate live runtime action coverage
+        run: python tools/ui/validate_runtime_action_coverage.py
       - name: Build traceability matrix
         run: python tools/requirements/build_requirement_matrix.py
       - name: Validate matrix contract
