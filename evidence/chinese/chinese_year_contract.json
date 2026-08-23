@@ -1,0 +1,53 @@
+{
+  "contract": "ruh-code-chinese-zodiac-year-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0137",
+    "RC-0138",
+    "RC-0139",
+    "RC-0140",
+    "RC-0141",
+    "RC-0142"
+  ],
+  "sources": [
+    "lib/src/calculation_core/chinese/chinese_year.dart",
+    "lib/src/calculation_core/time/civil_calendar.dart"
+  ],
+  "tests": [
+    "test/calculation_core/chinese/chinese_year_test.dart"
+  ],
+  "referenceFixtures": [
+    {
+      "year": 2024,
+      "chineseNewYear": "2024-02-10",
+      "reference": "https://www.timeanddate.com/holidays/china/2024"
+    },
+    {
+      "year": 2025,
+      "chineseNewYear": "2025-01-29",
+      "reference": "https://www.timeanddate.com/holidays/china/2025"
+    },
+    {
+      "year": 2026,
+      "chineseNewYear": "2026-02-17",
+      "reference": "https://www.timeanddate.com/holidays/china/2026"
+    }
+  ],
+  "requiredProperties": [
+    "the basic Chinese zodiac has exactly twelve ordered animals",
+    "the effective Chinese year is resolved against an exact Chinese New Year civil-date boundary rather than the Gregorian year number alone",
+    "before the Chinese New Year boundary the previous Chinese year remains active",
+    "the boundary date itself starts the new Chinese zodiac year",
+    "the five-element quality is derived from the sexagenary year stem sequence",
+    "Yin/Yang polarity is derived from the same year-stem sequence",
+    "missing Chinese New Year boundary coverage fails closed and never guesses, uses nearest-year data, or silently falls back to January 1",
+    "basic Chinese zodiac calculation is implemented in a separate chinese calculation-core module and does not import or invoke the BaZi Four Pillars engine"
+  ],
+  "remainingBeforeDone": [
+    "bundle and checksum a complete verified offline Chinese New Year boundary dataset for the supported date range",
+    "add independent multi-century boundary and animal/element/polarity golden vectors",
+    "prove TR/EN presentation without changing calculation identities",
+    "obtain exact visible CI SUCCESS on the tested commit"
+  ]
+}
