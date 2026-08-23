@@ -1,0 +1,29 @@
+{
+  "id": "EVID-BACKUP-SINGLE-TABLE-CSV",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirement_ids": ["RC-0794"],
+  "sources": [
+    "lib/src/backup/single_table_csv_exporter.dart",
+    "lib/src/backup/local_database_backup_exporter.dart",
+    "lib/src/backup/csv_codec.dart",
+    "lib/src/backup/backup_schema.dart"
+  ],
+  "tests": [
+    "test/backup/single_table_csv_exporter_test.dart"
+  ],
+  "validators": [
+    "tools/backup/validate_single_table_csv_export.py"
+  ],
+  "contract": {
+    "one_requested_table_only": true,
+    "canonical_schema_header": true,
+    "utf8": true,
+    "null_empty_zero_semantics_reused": true,
+    "full_backup_not_claimed": true,
+    "unknown_table_fail_closed": true
+  },
+  "blockers": [
+    "Exact Flutter/GitHub Actions success evidence is still required before RC-0794 can be marked DONE."
+  ]
+}
