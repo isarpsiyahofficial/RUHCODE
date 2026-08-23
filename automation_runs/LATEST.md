@@ -2,35 +2,38 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-23_2054_pdf_validator_semantic_cleanup.md`
+`automation_runs/2026-08-23_2253_combined_pdf_composition.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Professional PDF validator drift temizliği**
-   - validator artık eski `ACTION-PDF-PREVIEW-*` kimliklerini değil canonical builder action'larını doğruluyor
-   - `ACTION-PDF-BUILDER-PREVIEW`, `ACTION-PDF-BUILDER-CREATE`, `ACTION-PDF-BUILDER-SHARE` runtime bindingleriyle eşleşmek zorunda
-   - `RC-0952` bağımsız full-parser/open kanıtı gelmeden professional application evidence tarafından sahiplenilemez
+1. **RC-0903 gerçek multi-system combined PDF composition çekirdeği**
+   - combined rapor artık yalnız enum değil
+   - en az iki ayrı calculation system zorunlu
+   - child snapshot'lar aynı stable subject'e ait olmak zorunda
+   - child digest drift, duplicate system, section collision ve child cover/technical ownership fail-closed
+   - exact child identity setinden deterministic composite SHA-256 üretiliyor
+   - projection `PdfReportKind.combined` ile mevcut local A4 PDF service sınırına bağlanabiliyor
 
-2. **Combined report overclaim temizliği — RC-0903**
-   - yalnız `PdfReportKind.combined` enum değeri gerçek multi-system combined report kanıtı sayılmıyor
-   - `RC-0903` report-planning evidence ownership'ından çıkarıldı
-   - gerçek persisted multi-system composition + production render gelene kadar blocker olarak açık
-   - semantic validator bu ownership'in yanlışlıkla geri eklenmesini engelliyor
+2. **Combined PDF regression/evidence contract**
+   - deterministic Western + Numerology composition testleri eklendi
+   - different-subject, one-system, section-collision ve digest-drift negatif testleri eklendi
+   - evidence yalnız `RC-0903` sahipleniyor
+   - `RC-0904/0905` explicit localized system-heading production bağlantısı olmadan özellikle açık bırakıldı
 
-3. **Professional PDF merkezi Requirements Contract gate**
-   - `tools/pdf/validate_professional_pdf_application.py` artık ana 1.442 requirement workflow'unda da çalışıyor
-   - action-ID drift, RC ownership drift ve professional PDF runtime/source sözleşmesi ana şartname CI kapısında fail-closed
+3. **Combined PDF CI + central Requirements gate**
+   - dedicated `PDF Combined Report Contract` workflow eklendi
+   - MASTER-aware combined validator merkezi 1.442 requirement workflow'una bağlandı
 
 ## Validation limitation
 
-Source-level contract/evidence drift düzeltildi; exact görünür GitHub Actions SUCCESS ve full Flutter/device proof görülmeden requirement durumları DONE yapılmadı.
+Exact workflow-target commit `d840f9105fac59cd020f6ee132bec040903d0014` için GitHub combined status `statuses=[]` döndürdü. Bu nedenle CI SUCCESS varsayılmadı ve RC-0903 DONE yapılmadı.
 
 ## Next safe work
 
-- kalan PDF evidence overclaim/drift taramasını sürdür
-- font gerektirmeyen persisted PDF snapshot/data parity testlerini genişlet
-- UI/action/accessibility blocker-dışı işleri ilerlet
-- RC-0903 gerçek multi-system combined report composition gelmeden kapatılmasın
+- production multi-record persisted snapshot source kur
+- persisted Western + Pythagorean projection bridge'i combined compositor'a bağla
+- TR/EN explicit system-heading separation ekle; sonra RC-0904/0905'i değerlendir
+- approved-font blocker'ından bağımsız combined subject/data parity testlerini genişlet
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts, Play/rewarded device proof ve clean-checkout release proof blocker olarak kalır
 
 **FINAL: NO.**
