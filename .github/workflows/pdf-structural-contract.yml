@@ -1,0 +1,42 @@
+name: PDF Structural Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'test/pdf/pdf_output_inspector_test.dart'
+      - 'evidence/pdf/local_renderer_contract.json'
+      - 'tools/pdf/validate_pdf_output_inspector.py'
+      - '.github/workflows/pdf-structural-contract.yml'
+      - 'pubspec.yaml'
+  pull_request:
+    paths:
+      - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'test/pdf/pdf_output_inspector_test.dart'
+      - 'evidence/pdf/local_renderer_contract.json'
+      - 'tools/pdf/validate_pdf_output_inspector.py'
+      - '.github/workflows/pdf-structural-contract.yml'
+      - 'pubspec.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  pdf-structural-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate PDF structural evidence contract
+        run: python tools/pdf/validate_pdf_output_inspector.py
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+      - name: Run PDF structural regression tests
+        run: flutter test test/pdf/pdf_output_inspector_test.dart
