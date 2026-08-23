@@ -77,7 +77,16 @@ jobs:
               assert tags <= allowed_tags, (row['rc_id'], tags - allowed_tags)
               observed_tags |= tags
               assert row['evidence_required'].strip() not in {'', 'TBD'}, row['rc_id']
-              if row['status'] == 'DONE':
+              if row['status'] in {'IMPLEMENTED','TESTED','VERIFIED','DONE'}:
                   assert row['evidence_links'].strip(), row['rc_id']
+              if row['status'] == 'DONE':
+                  assert 'SOURCE_LEVEL_IMPLEMENTED evidence' not in row['notes'], row['rc_id']
           assert observed_tags == allowed_tags, (observed_tags, allowed_tags - observed_tags)
-          print('OK: 1,442-row classified traceability contract validated')
+          print('OK: 1,442-row classified traceability contract validated with evidence-backed non-default states')
+      - name: Upload generated requirement matrix
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruh-code-requirement-matrix
+          path: requirements/requirement_matrix.csv
+          if-no-files-found: error
+          retention-days: 30
