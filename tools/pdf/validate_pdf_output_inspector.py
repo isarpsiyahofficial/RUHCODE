@@ -21,9 +21,9 @@ def main() -> None:
     require(source, "hasStartXref", "source")
     require(source, "startXrefOffset", "source")
     require(source, "startXrefTargetRecognized", "source")
-    require(source, r"startxref\\s+(\\d+)\\s+%%EOF\\s*$", "source")
-    require(source, r"^xref\\b", "source")
-    require(source, "/Type\\s*/XRef", "source")
+    require(source, r"startxref\s+(\d+)\s+%%EOF\s*$", "source")
+    require(source, r"^xref\b", "source")
+    require(source, r"/Type\s*/XRef", "source")
     require(source, "pageTreeCountConsistent", "source")
 
     require(test, "rejects EOF-only trailer without mandatory startxref", "test")
