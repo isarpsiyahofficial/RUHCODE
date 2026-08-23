@@ -1,0 +1,27 @@
+{
+  "contract": "professional-pdf-page-geometry-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-0878",
+    "RC-0879"
+  ],
+  "source_files": [
+    "lib/src/pdf/pdf_page_geometry_inspector.dart",
+    "lib/src/pdf/pdf_local_service.dart"
+  ],
+  "test_files": [
+    "test/pdf/pdf_page_geometry_inspector_test.dart"
+  ],
+  "requiredProperties": [
+    "serialized PDF output must contain at least one MediaBox",
+    "all serialized MediaBox rectangles must have finite positive dimensions",
+    "serialized MediaBox width and height must match the PdfReportPlan page specification within a bounded point tolerance",
+    "page-format drift such as Letter bytes from an A4 plan is rejected before the PDF service returns success"
+  ],
+  "remainingBeforeDone": [
+    "obtain exact visible Flutter/GitHub Actions success for the contract",
+    "run approved-font production PDF fixtures through the same geometry gate",
+    "complete final rendered visual regression and device PDF-open proof"
+  ]
+}
