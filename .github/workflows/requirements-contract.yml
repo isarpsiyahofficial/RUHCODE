@@ -26,6 +26,8 @@ jobs:
         run: python tools/requirements/validate_evidence_traceability.py
       - name: Validate exact UI evidence semantic ownership
         run: python tools/requirements/validate_ui_evidence_traceability.py
+      - name: Validate exact local PDF evidence semantic ownership
+        run: python tools/requirements/validate_pdf_evidence_traceability.py
       - name: Validate persisted Western semantic ownership
         run: python tools/requirements/validate_persisted_western_traceability.py
       - name: Validate UI accessibility semantic ownership
