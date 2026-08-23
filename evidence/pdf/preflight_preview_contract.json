@@ -2,24 +2,34 @@
   "evidence_id": "PDF-PREFLIGHT-PREVIEW-CONTRACT",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
-  "requirement_ids": ["RC-0929"],
+  "requirement_ids": ["RC-0929", "RC-1440", "RC-1441"],
   "sources": [
     "lib/src/pdf/pdf_preflight_preview.dart",
-    "lib/src/pdf/pdf_report_contract.dart"
+    "lib/src/pdf/pdf_report_contract.dart",
+    "lib/src/ui/pdf/pdf_reports_pages.dart",
+    "lib/src/ui/actions/ruh_action_ids.dart",
+    "ui/action_registry_runtime_extensions.csv",
+    "ui/runtime_action_bindings.csv"
   ],
   "tests": [
-    "test/pdf/pdf_preflight_preview_test.dart"
+    "test/pdf/pdf_preflight_preview_test.dart",
+    "test/ui/professional_pdf_builder_page_test.dart"
   ],
   "validators": [
-    "tools/pdf/validate_pdf_preflight_preview.py"
+    "tools/pdf/validate_pdf_preflight_preview.py",
+    "tools/ui/validate_runtime_action_bindings.py"
   ],
   "proves": [
-    "Professional PDF preview data is derived from the exact PdfReportPlan before PDF byte generation.",
-    "Preview preserves section order, locale, cover style, page specification and branding presence.",
-    "Empty, duplicate or unknown section plans fail closed instead of producing a fake preview."
+    "Professional PDF preview data is derived from a canonical PdfReportPlan before PDF byte generation.",
+    "SCR-PDF-BUILDER-001 exposes canonical ACTION-PDF-BUILDER-PREVIEW with semantics and a 48dp minimum interaction target.",
+    "The create action is disabled until a current preflight preview exists.",
+    "Changing the selected record or any report section invalidates the preview and blocks stale-plan generation.",
+    "Preview and build share the same canonical record ID, tr/en locale and ordered canonical PDF section IDs.",
+    "The UI now uses PdfSectionIds.customNotes instead of the non-canonical notes identifier.",
+    "Preview preserves section order, locale, cover style, A4 page specification and branding presence."
   ],
   "release_blockers": [
-    "The preflight preview model still must be wired into SCR-PDF-BUILDER-001 before RC-0929 can be DONE.",
-    "Exact Flutter/CI success evidence is still required."
+    "Exact Flutter/CI success evidence is still required before these requirements can be marked DONE.",
+    "Full final UI visual-regression approval remains a separate release gate."
   ]
 }
