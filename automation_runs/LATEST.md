@@ -2,35 +2,29 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-23_0652_pdf_evidence_runtime_action_hardening.md`
+`automation_runs/2026-08-23_0853_single_table_csv_export.md`
 
-## Bu turda ilerleyen ana bloklar
+## Bu turda ilerleyen ana blok
 
-1. **PDF evidence semantic ownership temizliği**
-   - professional application evidence artık RC-0952 full-parser/open kanıtını sahiplenmiyor
-   - report-planning evidence production font olmadan RC-0865 ve gerçek visual regression olmadan RC-0956 sahiplenmiyor
-   - numerology data adapter yalnız RC-0925 ownership’ine indirildi; RC-0875/0903/0954 açık bırakıldı
-   - persisted Pythagorean evidence RC-0875’i artık sahiplenmiyor
-   - exact PDF semantic validator bu açık requirement’ların yeniden sızmasını fail-closed engelliyor
-2. **RC-1440 runtime action dead-binding gate**
-   - canonical RuhActionIds constant ↔ manifest ACTION-ID birebir kontrol
-   - her binding_file gerçekten var olmak ve canlı `RuhActionIds.<constant>` referansı taşımak zorunda
-   - duplicate/missing/stale runtime bindings reddediliyor
-   - exact RC-1440 evidence ve Requirements Contract wiring eklendi
-3. **PDF structural parser boundary**
-   - xref/XRef target tanınmasının yanında xref trailer/stream içinde indirect `/Root n n R` referansı zorunlu
-   - Root’suz xref yapısı fail-closed
-   - malformed regression testi ve local-renderer evidence güncellendi
+1. **RC-0794 tek-tabla CSV dışa aktarma**
+   - full `.ruhcode.zip` backup'tan ayrı `SingleTableCsvExporter` eklendi
+   - yalnız canonical `BackupSchemaRegistry` tabloları kabul ediliyor
+   - canonical header + mevcut LocalDatabase export mapping + strict UTF-8 CSV codec yeniden kullanılıyor
+   - Türkçe/Unicode, comma/quote/newline ve null round-trip regresyonu eklendi
+   - unknown table fail-closed
+   - tek tablo export full restorable backup gibi gösterilmiyor
+   - exact RC-0794 evidence + MASTER-aware structural validator + Backup CSV CI wiring eklendi
+   - async failure matcher yanlış pozitif riski `await expectLater` ile düzeltildi
 
 ## Validation limitation
 
-Requirements Contract workflow-target commit `b5ddf628c6250a8c8baa44972682dee78f148b2d` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için ilgili RC’ler DONE yapılmadı.
+Latest source commit `0d8d6849c8192f5e2e9fe0446e05e79a0189261a` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için RC-0794 DONE yapılmadı.
 
 ## Next safe work
 
-- kalan PDF evidence ailelerini exact MASTER ownership açısından audit et
-- RC-0954 required-text generated-PDF proof için güvenilir parser/content boundary kur; ham-string sahte kanıt üretme
-- runtime action coverage drift’lerini düzelt ve kalan UI semantics/text-scale kapsamını genişlet
+- remaining backup/PDF requirement-bearing evidence ailelerini exact MASTER ownership açısından audit et
+- approved font gerektirmeyen PDF parser/data parity sınırlarını genişlet
+- UI action/semantics coverage'daki kalan gerçek dead-action veya missing-semantics yüzeylerini tara
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts, Play/rewarded device proof ve clean-checkout release proof açık blocker olarak kalır
 
 **FINAL: NO.**
