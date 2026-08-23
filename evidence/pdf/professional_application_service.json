@@ -9,7 +9,6 @@
     "RC-0940",
     "RC-0950",
     "RC-0951",
-    "RC-0952",
     "RC-0953",
     "RC-0964",
     "RC-1085",
@@ -54,12 +53,13 @@
     "native PDF Save As validates PDF bytes and a path-free .pdf file name before handing bytes to the operating system",
     "native share uses the operating-system share sheet directly without a Ruh Code server hop",
     "save/share cancellation is a normal typed result and cannot be presented as a successful delivery",
-    "builder UI uses canonical ACTION-PDF-PREVIEW-CREATE binding and delegates exact record/section selection through ProfessionalPdfBuildActions",
-    "verified builder output exposes canonical ACTION-PDF-PREVIEW-SHARE only when delivery actions are actually bound",
+    "builder UI uses canonical ACTION-PDF-BUILDER-CREATE binding and delegates exact record/section selection through ProfessionalPdfBuildActions",
+    "verified builder output exposes canonical ACTION-PDF-BUILDER-SHARE only when delivery actions are actually bound",
     "builder share preserves the exact selected record and section order and maps dismissed sharing to a normal cancellation notice",
     "builder UI shows no fake success when production build actions are absent"
   ],
   "not_yet_proven": [
+    "RC-0952 remains open: independent full-parser/open proof for generated PDFs is not yet attached",
     "production approved Unicode font artifact and font license/hash chain",
     "production report handler composition for every supported persisted calculation type",
     "independent 5/25/50+ production PDF render evidence",
