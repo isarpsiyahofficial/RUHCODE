@@ -9,30 +9,33 @@ void main() {
 
   Uint8List bytes(String value) => Uint8List.fromList(latin1.encode(value));
 
-  Uint8List fakePdfWithPages(int pageCount, {int? declaredPageCount}) {
+  Uint8List fakePdfWithPages(
+    int pageCount, {
+    int? declaredPageCount,
+    bool includeStartXref = true,
+    int? startXrefOffsetOverride,
+    String xrefTarget = 'xref\n0 1\n0000000000 65535 f \n',
+  }) {
     final pageObjects = List<String>.generate(
       pageCount,
       (index) => '${index + 3} 0 obj << /Type /Page /Parent 2 0 R >> endobj',
     ).join('\n');
-    return bytes(
-      '%PDF-1.7\n'
-      '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
-      '2 0 obj << /Type /Pages /Count ${declaredPageCount ?? pageCount} >> endobj\n'
-      '$pageObjects\n'
-      'trailer << /Root 1 0 R >>\n'
-      '%%EOF',
-    );
+    final body =
+        '%PDF-1.7\n'
+        '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
+        '2 0 obj << /Type /Pages /Count ${declaredPageCount ?? pageCount} >> endobj\n'
+        '$pageObjects\n';
+    final xrefOffset = latin1.encode(body).length;
+    final trailer =
+        '$xrefTarget'
+        'trailer << /Root 1 0 R >>\n'
+        '${includeStartXref ? 'startxref\n${startXrefOffsetOverride ?? xrefOffset}\n' : ''}'
+        '%%EOF';
+    return bytes('$body$trailer');
   }
 
   test('accepts a minimal structurally usable PDF shape', () {
-    final inspection = inspector.requireUsable(bytes(
-      '%PDF-1.7\n'
-      '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
-      '2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n'
-      '3 0 obj << /Type /Page /Parent 2 0 R >> endobj\n'
-      'trailer << /Root 1 0 R >>\n'
-      '%%EOF',
-    ));
+    final inspection = inspector.requireUsable(fakePdfWithPages(1));
 
     expect(inspection.hasHeader, isTrue);
     expect(inspection.hasEofMarker, isTrue);
@@ -41,6 +44,9 @@ void main() {
     expect(inspection.pageObjectCount, 1);
     expect(inspection.declaredPageCount, 1);
     expect(inspection.pageTreeCountConsistent, isTrue);
+    expect(inspection.hasStartXref, isTrue);
+    expect(inspection.startXrefOffset, isNotNull);
+    expect(inspection.startXrefTargetRecognized, isTrue);
   });
 
   test('rejects truncated output without EOF', () {
@@ -56,12 +62,7 @@ void main() {
   });
 
   test('does not count /Pages tree as a page object', () {
-    final inspection = inspector.inspect(bytes(
-      '%PDF-1.7\n'
-      '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
-      '2 0 obj << /Type /Pages /Kids [] /Count 0 >> endobj\n'
-      '%%EOF.................................................................',
-    ));
+    final inspection = inspector.inspect(fakePdfWithPages(0));
 
     expect(inspection.pageObjectCount, 0);
     expect(inspection.declaredPageCount, 0);
@@ -78,17 +79,60 @@ void main() {
   });
 
   test('rejects a pages tree that omits mandatory Count', () {
+    final body =
+        '%PDF-1.7\n'
+        '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
+        '2 0 obj << /Type /Pages /Kids [3 0 R] >> endobj\n'
+        '3 0 obj << /Type /Page /Parent 2 0 R >> endobj\n';
+    final xrefOffset = latin1.encode(body).length;
     final malformed = bytes(
-      '%PDF-1.7\n'
-      '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
-      '2 0 obj << /Type /Pages /Kids [3 0 R] >> endobj\n'
-      '3 0 obj << /Type /Page /Parent 2 0 R >> endobj\n'
+      '$body'
+      'xref\n0 1\n0000000000 65535 f \n'
       'trailer << /Root 1 0 R >>\n'
+      'startxref\n$xrefOffset\n'
       '%%EOF',
     );
     final inspection = inspector.inspect(malformed);
     expect(inspection.declaredPageCount, isNull);
     expect(inspection.pageTreeCountConsistent, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects EOF-only trailer without mandatory startxref', () {
+    final malformed = fakePdfWithPages(1, includeStartXref: false);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.hasEofMarker, isTrue);
+    expect(inspection.hasStartXref, isFalse);
+    expect(inspection.startXrefTargetRecognized, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects startxref offset outside the PDF byte range', () {
+    final malformed = fakePdfWithPages(1, startXrefOffsetOverride: 999999);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.hasStartXref, isTrue);
+    expect(inspection.startXrefOffset, 999999);
+    expect(inspection.startXrefTargetRecognized, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects startxref offset that points to non-xref content', () {
+    final malformed = fakePdfWithPages(1, startXrefOffsetOverride: 0);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.startXrefOffset, 0);
+    expect(inspection.startXrefTargetRecognized, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects junk after final EOF marker', () {
+    final valid = fakePdfWithPages(1);
+    final malformed = Uint8List.fromList([
+      ...valid,
+      ...latin1.encode('\nnot-allowed-after-eof'),
+    ]);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.hasEofMarker, isFalse);
+    expect(inspection.hasStartXref, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
