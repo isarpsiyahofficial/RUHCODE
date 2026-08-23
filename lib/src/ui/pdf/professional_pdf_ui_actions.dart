@@ -1,3 +1,4 @@
+import '../../pdf/pdf_report_contract.dart';
 import '../../pdf/persisted_calculation_pdf_source.dart';
 import '../../pdf/professional_pdf_application_service.dart';
 import '../../pdf/professional_pdf_delivery_service.dart';
@@ -24,6 +25,78 @@ final class ProfessionalPdfUiRecord {
   final String ownerEntityId;
   final String calculationType;
   final DateTime createdAtUtc;
+}
+
+final class ProfessionalPdfUiSectionOption {
+  const ProfessionalPdfUiSectionOption({
+    required this.id,
+    required this.labelTr,
+    required this.descriptionTr,
+  });
+
+  final String id;
+  final String labelTr;
+  final String descriptionTr;
+}
+
+/// UI-side mirror of the section IDs that currently implemented persisted PDF
+/// handlers can actually render. It is intentionally fail-closed: the builder
+/// must not advertise a section merely because PdfReportPlanner knows its ID.
+abstract final class ProfessionalPdfSectionCatalog {
+  static const String pythagorean = 'numerology.pythagorean';
+  static const String westernNatal = 'western.natal';
+
+  static const List<ProfessionalPdfUiSectionOption> _pythagorean = <ProfessionalPdfUiSectionOption>[
+    ProfessionalPdfUiSectionOption(
+      id: PdfSectionIds.numerology,
+      labelTr: 'Numeroloji',
+      descriptionTr: 'Kayıtlı canonical numeroloji sonuçları',
+    ),
+    ProfessionalPdfUiSectionOption(
+      id: PdfSectionIds.technicalManifest,
+      labelTr: 'Hesaplama Bilgileri',
+      descriptionTr: 'Motor ve calculation manifest teknik bilgileri',
+    ),
+  ];
+
+  static const List<ProfessionalPdfUiSectionOption> _westernNatal = <ProfessionalPdfUiSectionOption>[
+    ProfessionalPdfUiSectionOption(
+      id: PdfSectionIds.placements,
+      labelTr: 'Yerleşimler',
+      descriptionTr: 'Saklanmış gezegen, burç, derece, ev ve hareket verileri',
+    ),
+    ProfessionalPdfUiSectionOption(
+      id: PdfSectionIds.houses,
+      labelTr: 'Evler',
+      descriptionTr: 'Saklanmış 12 ev başlangıç derecesi',
+    ),
+    ProfessionalPdfUiSectionOption(
+      id: PdfSectionIds.aspects,
+      labelTr: 'Açılar',
+      descriptionTr: 'Saklanmış major açı ve orb verileri',
+    ),
+    ProfessionalPdfUiSectionOption(
+      id: PdfSectionIds.technicalManifest,
+      labelTr: 'Hesaplama Bilgileri',
+      descriptionTr: 'Motor, veri, konum, zaman ve ev sistemi bilgileri',
+    ),
+  ];
+
+  static List<ProfessionalPdfUiSectionOption> optionsFor(String calculationType) {
+    final options = switch (calculationType.trim()) {
+      pythagorean => _pythagorean,
+      westernNatal => _westernNatal,
+      _ => throw UnsupportedError(
+          'Bu hesaplama türü için production PDF bölüm sözleşmesi yok: $calculationType',
+        ),
+    };
+    return List<ProfessionalPdfUiSectionOption>.unmodifiable(options);
+  }
+
+  static bool supports(String calculationType) {
+    final type = calculationType.trim();
+    return type == pythagorean || type == westernNatal;
+  }
 }
 
 enum ProfessionalPdfUiDeliveryOutcome {
