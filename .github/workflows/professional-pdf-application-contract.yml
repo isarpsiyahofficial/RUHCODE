@@ -11,21 +11,28 @@ on:
       - 'lib/src/pdf/pdf_platform_gateway.dart'
       - 'lib/src/pdf/guarded_pdf_service.dart'
       - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'lib/src/pdf/pdf_preflight_preview.dart'
+      - 'lib/src/pdf/pdf_report_contract.dart'
       - 'lib/src/app/app_runtime.dart'
       - 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
       - 'lib/src/ui/pdf/pdf_reports_pages.dart'
       - 'lib/src/ui/actions/ruh_action_ids.dart'
       - 'ui/action_registry.csv'
+      - 'ui/action_registry_runtime_extensions.csv'
       - 'ui/runtime_action_bindings.csv'
       - 'test/pdf/professional_pdf_application_service_test.dart'
       - 'test/pdf/persisted_calculation_pdf_source_test.dart'
       - 'test/pdf/persisted_calculation_pdf_router_test.dart'
       - 'test/pdf/professional_pdf_delivery_service_test.dart'
+      - 'test/pdf/pdf_preflight_preview_test.dart'
       - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
+      - 'evidence/pdf/preflight_preview_contract.json'
       - 'tools/pdf/validate_professional_pdf_application.py'
+      - 'tools/pdf/validate_pdf_preflight_preview.py'
       - 'tools/ui/validate_runtime_action_bindings.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
       - '.github/workflows/professional-pdf-application-contract.yml'
   pull_request:
     paths:
@@ -37,21 +44,28 @@ on:
       - 'lib/src/pdf/pdf_platform_gateway.dart'
       - 'lib/src/pdf/guarded_pdf_service.dart'
       - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'lib/src/pdf/pdf_preflight_preview.dart'
+      - 'lib/src/pdf/pdf_report_contract.dart'
       - 'lib/src/app/app_runtime.dart'
       - 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
       - 'lib/src/ui/pdf/pdf_reports_pages.dart'
       - 'lib/src/ui/actions/ruh_action_ids.dart'
       - 'ui/action_registry.csv'
+      - 'ui/action_registry_runtime_extensions.csv'
       - 'ui/runtime_action_bindings.csv'
       - 'test/pdf/professional_pdf_application_service_test.dart'
       - 'test/pdf/persisted_calculation_pdf_source_test.dart'
       - 'test/pdf/persisted_calculation_pdf_router_test.dart'
       - 'test/pdf/professional_pdf_delivery_service_test.dart'
+      - 'test/pdf/pdf_preflight_preview_test.dart'
       - 'test/ui/professional_pdf_builder_page_test.dart'
       - 'evidence/pdf/professional_application_service.json'
+      - 'evidence/pdf/preflight_preview_contract.json'
       - 'tools/pdf/validate_professional_pdf_application.py'
+      - 'tools/pdf/validate_pdf_preflight_preview.py'
       - 'tools/ui/validate_runtime_action_bindings.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
       - '.github/workflows/professional-pdf-application-contract.yml'
 
 jobs:
@@ -64,6 +78,7 @@ jobs:
           channel: stable
           cache: true
       - run: python tools/pdf/validate_professional_pdf_application.py
+      - run: python tools/pdf/validate_pdf_preflight_preview.py
       - run: python tools/ui/validate_runtime_action_bindings.py
       - run: flutter pub get
       - run: >-
@@ -72,4 +87,5 @@ jobs:
           test/pdf/persisted_calculation_pdf_source_test.dart
           test/pdf/persisted_calculation_pdf_router_test.dart
           test/pdf/professional_pdf_delivery_service_test.dart
+          test/pdf/pdf_preflight_preview_test.dart
           test/ui/professional_pdf_builder_page_test.dart
