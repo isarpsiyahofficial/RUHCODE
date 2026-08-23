@@ -32,6 +32,8 @@ jobs:
         run: python tools/requirements/validate_pdf_evidence_traceability.py
       - name: Validate PDF report-planning semantic ownership
         run: python tools/pdf/validate_pdf_report_planning_semantics.py
+      - name: Validate PDF page-geometry semantic ownership
+        run: python tools/requirements/validate_pdf_page_geometry_traceability.py
       - name: Validate persisted Western semantic ownership
         run: python tools/requirements/validate_persisted_western_traceability.py
       - name: Validate UI accessibility semantic ownership
