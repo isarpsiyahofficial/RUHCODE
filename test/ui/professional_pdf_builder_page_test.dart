@@ -16,7 +16,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await _selectRecord(tester);
+    await _selectRecord(tester, 'numerology.pythagorean');
 
     final create = tester.widget<FilledButton>(
       find.byKey(const ValueKey(RuhActionIds.pdfCreate)),
@@ -26,20 +26,25 @@ void main() {
     expect(actions.calls, 0);
   });
 
-  testWidgets('preflight preview and build use the exact same canonical plan input', (tester) async {
+  testWidgets('numerology preview and build use handler-supported canonical sections only', (tester) async {
     final actions = _RecordingActions();
-    final records = _RecordActions();
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('tr', 'TR'),
-        home: ProfessionalPdfBuilderPage(actions: actions, records: records),
+        home: ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions()),
       ),
     );
     await tester.pumpAndSettle();
 
     expect(find.byType(TextField), findsNothing);
     expect(find.byKey(const ValueKey('professional-pdf-record-selector')), findsOneWidget);
-    await _selectRecord(tester);
+    await _selectRecord(tester, 'numerology.pythagorean');
+
+    expect(find.text('Numeroloji'), findsOneWidget);
+    expect(find.text('Hesaplama Bilgileri'), findsOneWidget);
+    expect(find.text('Harita'), findsNothing);
+    expect(find.text('Yorum'), findsNothing);
+    expect(find.text('Notlar'), findsNothing);
 
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
@@ -49,10 +54,8 @@ void main() {
     expect(find.text('Numeroloji · TR'), findsOneWidget);
     expect(find.text('A4 · 210 × 297 mm'), findsOneWidget);
     expect(find.text('• Kapak'), findsOneWidget);
-    expect(find.text('• Harita'), findsOneWidget);
-    expect(find.text('• Yerleşimler'), findsOneWidget);
-    expect(find.text('• Yorum'), findsOneWidget);
-    expect(find.text('• Notlar'), findsOneWidget);
+    expect(find.text('• Numeroloji'), findsOneWidget);
+    expect(find.text('• Hesaplama Bilgileri'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
     await tester.pumpAndSettle();
@@ -61,13 +64,34 @@ void main() {
     expect(actions.recordId, 'calc-42');
     expect(actions.localeTag, 'tr');
     expect(actions.sectionIds, [
-      PdfSectionIds.chart,
-      PdfSectionIds.placements,
-      PdfSectionIds.interpretation,
-      PdfSectionIds.customNotes,
+      PdfSectionIds.numerology,
+      PdfSectionIds.technicalManifest,
     ]);
     expect(find.text('PDF doğrulandı'), findsOneWidget);
     expect(find.text('2 sayfa · 4096 byte'), findsOneWidget);
+  });
+
+  testWidgets('western record exposes only persisted western handler sections', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProfessionalPdfBuilderPage(
+          actions: _RecordingActions(),
+          records: _RecordActions(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await _selectRecord(tester, 'western.natal');
+
+    expect(find.text('Yerleşimler'), findsOneWidget);
+    expect(find.text('Evler'), findsOneWidget);
+    expect(find.text('Açılar'), findsOneWidget);
+    expect(find.text('Hesaplama Bilgileri'), findsOneWidget);
+    expect(find.text('Numeroloji'), findsNothing);
+    expect(find.text('Harita'), findsNothing);
+    expect(find.text('Yorum'), findsNothing);
+    expect(find.text('Notlar'), findsNothing);
   });
 
   testWidgets('changing a section invalidates preview and blocks stale-plan build', (tester) async {
@@ -79,12 +103,12 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await _selectRecord(tester);
+    await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('professional-pdf-preflight-preview')), findsOneWidget);
 
-    await tester.tap(find.widgetWithText(CheckboxListTile, 'Notlar'));
+    await tester.tap(find.widgetWithText(CheckboxListTile, 'Hesaplama Bilgileri'));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('professional-pdf-preflight-preview')), findsNothing);
@@ -109,7 +133,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await _selectRecord(tester);
+    await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
@@ -123,10 +147,8 @@ void main() {
     expect(delivery.recordId, 'calc-42');
     expect(delivery.localeTag, 'tr');
     expect(delivery.sectionIds, [
-      PdfSectionIds.chart,
-      PdfSectionIds.placements,
-      PdfSectionIds.interpretation,
-      PdfSectionIds.customNotes,
+      PdfSectionIds.numerology,
+      PdfSectionIds.technicalManifest,
     ]);
     expect(find.text('PDF paylaşım menüsüne aktarıldı.'), findsOneWidget);
   });
@@ -146,7 +168,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await _selectRecord(tester);
+    await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
@@ -166,7 +188,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await _selectRecord(tester);
+    await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
@@ -174,6 +196,18 @@ void main() {
 
     expect(find.textContaining('production runtime'), findsOneWidget);
     expect(find.text('PDF doğrulandı'), findsNothing);
+  });
+
+  testWidgets('unsupported calculation records are not advertised as buildable', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: ProfessionalPdfBuilderPage(records: _UnsupportedRecordActions()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('PDF için desteklenen kayıtlı hesaplama bulunamadı.'), findsOneWidget);
+    expect(find.byKey(const ValueKey('professional-pdf-record-selector')), findsNothing);
   });
 
   testWidgets('builder does not expose raw record ID field', (tester) async {
@@ -193,10 +227,10 @@ void main() {
   });
 }
 
-Future<void> _selectRecord(WidgetTester tester) async {
+Future<void> _selectRecord(WidgetTester tester, String calculationType) async {
   await tester.tap(find.byKey(const ValueKey('professional-pdf-record-selector')));
   await tester.pumpAndSettle();
-  await tester.tap(find.textContaining('numerology.pythagorean').last);
+  await tester.tap(find.textContaining(calculationType).last);
   await tester.pumpAndSettle();
 }
 
@@ -262,6 +296,24 @@ final class _RecordActions implements ProfessionalPdfRecordActions {
           ownerEntityId: 'owner-1',
           calculationType: 'numerology.pythagorean',
           createdAtUtc: DateTime.utc(2026, 8, 22, 1, 0),
+        ),
+        ProfessionalPdfUiRecord(
+          recordId: 'western-7',
+          ownerEntityId: 'owner-1',
+          calculationType: 'western.natal',
+          createdAtUtc: DateTime.utc(2026, 8, 22, 2, 0),
+        ),
+      ];
+}
+
+final class _UnsupportedRecordActions implements ProfessionalPdfRecordActions {
+  @override
+  Future<List<ProfessionalPdfUiRecord>> listRecords() async => <ProfessionalPdfUiRecord>[
+        ProfessionalPdfUiRecord(
+          recordId: 'vedic-1',
+          ownerEntityId: 'owner-1',
+          calculationType: 'vedic.natal',
+          createdAtUtc: DateTime.utc(2026, 8, 22, 3, 0),
         ),
       ];
 }
