@@ -2,7 +2,7 @@
   "id": "PDF-PERSISTED-PYTHAGOREAN-V1",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
-  "requirement_ids": ["RC-0875", "RC-0925", "RC-0964"],
+  "requirement_ids": ["RC-0925", "RC-0964"],
   "source_files": [
     "lib/src/pdf/persisted_pythagorean_numerology_pdf.dart",
     "lib/src/pdf/persisted_calculation_pdf_router.dart",
@@ -24,6 +24,7 @@
     "local_renderer_only": true
   },
   "open_gates": [
+    "RC-0875 remains open until a real production PDF table is rendered and validated with approved font artifacts.",
     "Exact Flutter test SUCCESS is not yet visible.",
     "Approved production Unicode font artifact/license/SHA is still required before real PDF bytes are accepted as production-ready.",
     "5/25/50+ real rendered-page and visual-regression evidence remains open.",
