@@ -2,6 +2,11 @@
   "contract": "professional-pdf-local-renderer-v1",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
+  "requirements": [
+    "RC-0950",
+    "RC-0951",
+    "RC-0953"
+  ],
   "localOnly": true,
   "dependency": {
     "package": "pdf",
