@@ -2,29 +2,31 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-23_0853_single_table_csv_export.md`
+`automation_runs/2026-08-23_0853_single_table_csv_pdf_planning_audit.md`
 
-## Bu turda ilerleyen ana blok
+## Bu turda ilerleyen ana bloklar
 
 1. **RC-0794 tek-tabla CSV dışa aktarma**
-   - full `.ruhcode.zip` backup'tan ayrı `SingleTableCsvExporter` eklendi
-   - yalnız canonical `BackupSchemaRegistry` tabloları kabul ediliyor
-   - canonical header + mevcut LocalDatabase export mapping + strict UTF-8 CSV codec yeniden kullanılıyor
-   - Türkçe/Unicode, comma/quote/newline ve null round-trip regresyonu eklendi
+   - full `.ruhcode.zip` backup'tan ayrı canonical UTF-8 CSV exporter eklendi
+   - canonical schema header + mevcut LocalDatabase export mapping + strict CSV codec yeniden kullanılıyor
+   - Unicode/comma/quote/newline/null regression testi mevcut
    - unknown table fail-closed
-   - tek tablo export full restorable backup gibi gösterilmiyor
-   - exact RC-0794 evidence + MASTER-aware structural validator + Backup CSV CI wiring eklendi
-   - async failure matcher yanlış pozitif riski `await expectLater` ile düzeltildi
+   - exact RC-0794 evidence + MASTER-aware validator + Backup/Requirements CI wiring eklendi
+2. **PDF planning evidence semantic audit**
+   - report-planning evidence artık RC-0929 preview requirement'ını sahiplenmiyor
+   - RC-0929 açık release blocker olarak kaydedildi
+   - exact ownership seti için yeni MASTER-aware PDF planning semantic validator eklendi
+   - merkezi Requirements Contract bu gate'i doğrudan çalıştırıyor
 
 ## Validation limitation
 
-Latest source commit `0d8d6849c8192f5e2e9fe0446e05e79a0189261a` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için RC-0794 DONE yapılmadı.
+Latest workflow-target source commit `eb32a0315cc49f69b430da5d6c30f1de632b578f` için GitHub combined-status yine `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için ilgili RC'ler DONE yapılmadı.
 
 ## Next safe work
 
-- remaining backup/PDF requirement-bearing evidence ailelerini exact MASTER ownership açısından audit et
-- approved font gerektirmeyen PDF parser/data parity sınırlarını genişlet
-- UI action/semantics coverage'daki kalan gerçek dead-action veya missing-semantics yüzeylerini tara
+- remaining PDF/backup requirement-bearing evidence ailelerini exact MASTER ownership açısından audit et
+- RC-0954 required-text proof için güvenilir parser/content boundary kur; ham string sahte kanıt üretme
+- UI action/semantics coverage'da kalan gerçek dead-action/missing-semantics yüzeylerini tara
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts, Play/rewarded device proof ve clean-checkout release proof açık blocker olarak kalır
 
 **FINAL: NO.**
