@@ -9,7 +9,6 @@
     "RC-0878",
     "RC-0881",
     "RC-0898",
-    "RC-0903",
     "RC-0918",
     "RC-0919",
     "RC-0931",
@@ -68,6 +67,7 @@
   ],
   "releaseBlockers": [
     "RC-0865 remains open: approved Unicode TR/EN font binaries, immutable SHA-256 values and license manifest are not yet attached.",
+    "RC-0903 remains open here: a combined enum/plan kind is not proof that multiple calculation systems are actually composed into one production consultation report.",
     "RC-0929 remains open here: report planning is not proof that the user-facing PDF preview screen exists and matches the real output.",
     "Actual 5/25/50+ production byte-render runs with approved fonts are not yet proven.",
     "Western geometry still needs the production vector painter and approved glyph assets; Vedic vector chart rendering is not yet implemented.",
