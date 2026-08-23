@@ -15,7 +15,8 @@
   ],
   "validators": [
     "tools/ui/validate_accessibility_interactions.py",
-    "tools/ui/validate_runtime_theme_tokens.py"
+    "tools/ui/validate_runtime_theme_tokens.py",
+    "tools/backup/validate_backup_restore_preview_accessibility.py"
   ],
   "requiredProperties": [
     "numerology values expose localized metric/value semantics instead of raw technical IDs",
@@ -24,10 +25,11 @@
     "backup full-export action exposes localized semantics and at least 48dp target",
     "backup native-share action exposes localized semantics and at least 48dp target",
     "backup file-selection action exposes localized semantics and at least 48dp target",
+    "validated backup preview exposes distinct merge and replace button semantics with at least 48dp targets",
+    "validated backup preview preserves deterministic keyboard focus order from merge to replace",
     "critical semantics regressions render with the canonical production theme"
   ],
   "remainingBeforeDone": [
-    "cover merge/replace semantics after a valid-preview fixture without bypassing backup validation",
     "extend semantics and focus-order coverage to every required screen/action/state",
     "run real-device screen-reader traversal",
     "obtain exact visible Flutter Quality and UI contract CI success"
