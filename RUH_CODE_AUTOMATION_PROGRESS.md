@@ -12,9 +12,8 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Auto-evidence hiçbir zaman `TESTED`, `VERIFIED` veya `DONE` üretmez.
 - `validate_matrix_provenance.py`, auto-IMPLEMENTED satırın gerçekten aynı RC'yi sahiplenen evidence JSON'una bağlı olduğunu doğrular.
 - Requirements Contract 1.442 satırlık generated matrix'i Actions artifact'i olarak saklayacak.
-- Evidence integrity validator `sources/tests/validators` yanında `source_files/sourceFiles/test_files/testFiles` ve tekil repo-path biçimlerini de doğrular.
-- PDF semantic gate'teki stale RC ownership listeleri güncel evidence dosyalarıyla eşitlendi.
-- `page_geometry_contract.json` artık ayrı MASTER-aware semantic gate ile exact `RC-0878/0879` sahipliğine kilitli.
+- Repository-wide evidence integrity ve semantic ownership kapıları source/test/path/RC drift'lerini fail-closed denetler.
+- PDF semantic gate'leri stale RC ownership ve action-ID drift'lerini engeller.
 
 ## Source-level ilerlemiş ana bloklar
 
@@ -30,6 +29,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline entitlement snapshot/time anchor, Play lifetime restore composition, rewarded cancel/failure safety.
 - Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
 - Professional PDF: local report planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural PDF inspection, native delivery, strong subject/snapshot parity, serialized page geometry validation.
+- Combined PDF: RC-0903 için gerçek multi-system composition çekirdeği; minimum iki sistem, same-subject zorunluluğu, child digest/collision kontrolleri ve deterministic composite SHA-256 identity.
 
 ## PDF structural — güncel
 
@@ -42,24 +42,22 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - missing Parent veya Catalog/non-Pages Parent fail-closed.
 - serialized `/MediaBox` gerçek planlanan sayfa geometrisiyle eşleşmek zorunda; A4 planından Letter çıktısı gibi format drift fail-closed.
 - `RC-0878/0879` page-geometry evidence exact semantic ownership ile merkezi Requirements Contract'a bağlı.
-- dedicated `PDF Structural Contract` workflow source validator + Flutter inspector regressionlarını çalıştıracak.
 - `RC-0952` bağımsız full-parser/open kanıtı olmadan açık.
 
-## Çin Astrolojisi — güncel
+## Combined PDF — güncel
 
-`RC-0137 → RC-0142` source-level evidence altında:
+`RC-0903` source-level evidence altında:
 
-- 12 hayvan döngüsü.
-- Çin burcu, element ve Yin/Yang year-stem mantığı.
-- 1984 Jia-Zi anchor ile sexagenary year index.
-- civil date, exact Chinese New Year boundary'den önceyse önceki Chinese year kullanılır.
-- boundary gününde yeni Chinese year başlar.
-- boundary yoksa January 1 / Gregorian year / nearest-year fallback yasak.
-- basic Chinese zodiac modülü BaZi Four Pillars runtime'ından ayrı.
-- reviewed fixture boundaries: `2024-02-10`, `2025-01-29`, `2026-02-17`.
-- bundled dataset loader SHA-256, schemaVersion, source/data version, min/max coverage, duplicate/missing/wrong-year kontrolü yapıyor.
+- en az iki distinct calculation system zorunlu,
+- tüm member snapshot'lar aynı stable `subjectKind + subjectId` değerine ait olmalı,
+- child render section kendi child snapshot digest'iyle eşleşmeli,
+- duplicate system ve cross-system section collision reddediliyor,
+- child `cover` / `technical_manifest` sahipliği reddediliyor,
+- exact child identity setinden deterministic combined SHA-256 türetiliyor,
+- combined projection mevcut local A4 renderer sınırına bağlanabiliyor,
+- dedicated workflow ve merkezi Requirements Contract validator mevcut.
 
-**Açık:** 1890–2110 tam fiziksel Chinese New Year boundary artifact'i ve bağımsız multi-century golden doğrulama yok; bu nedenle DONE değildir.
+**Açık:** persisted Western + Pythagorean multi-record production source bridge, explicit TR/EN system-heading separation, approved-font real render, full parser/device-open ve visible exact CI success. Bu yüzden `RC-0903` DONE değildir; `RC-0904/0905` henüz sahiplenilmemiştir.
 
 ## UI / Accessibility — açık kalanlar
 
@@ -83,6 +81,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Vedic vector chart / BaZi production tables gereken kapsamda tamamlanmalı.
 - 5/25/50+ gerçek rendered PDF, low-memory, glyph/crop/visual regression.
 - gerçek cihaz Save As/share smoke evidence.
+- combined report production persisted multi-record bridge ve system-heading separation.
 
 ## Fiziksel veri / içerik blocker'ları
 
@@ -106,17 +105,18 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 ## Son checkpoint
 
-`automation_runs/2026-08-23_1853_pdf_page_geometry_traceability.md`
+`automation_runs/2026-08-23_2253_combined_pdf_composition.md`
 
-Bu turda PDF page geometry evidence exact `RC-0878/0879` semantic ownership'a kilitlendi ve merkezi Requirements Contract'a bağlandı. Evidence approved-font rendered fixture, visual regression, device-open ve exact CI kanıtı olmadan DONE olamaz.
+Bu turda RC-0903 için gerçek multi-system composition çekirdeği, regression testleri, exact evidence ownership, MASTER-aware validator, dedicated workflow ve merkezi Requirements Contract bağlantısı eklendi.
 
-Workflow-target commit `6baed733344eb932f34c59cd709b79b975ec1439` için GitHub combined-status yine `statuses=[]` döndürdüğü için hiçbir ilgili requirement DONE yapılmadı.
+Workflow-target commit `d840f9105fac59cd020f6ee132bec040903d0014` için GitHub combined-status `statuses=[]` döndürdüğü için hiçbir ilgili requirement DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Font gerektirmeyen persisted PDF snapshot/data parity regressionlarını genişlet.
-2. Kalan evidence semantic ownership drift auditini sürdür.
-3. UI/action/accessibility blocker-dışı requirement'ları ilerlet.
-4. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
+1. Production multi-record persisted snapshot source kur.
+2. Persisted Western + Pythagorean projection bridge'i combined compositor'a bağla.
+3. TR/EN explicit system-heading separation ekle ve bundan sonra RC-0904/0905'i değerlendir.
+4. Font gerektirmeyen combined subject/data parity regressionlarını genişlet.
+5. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
 
 **FINAL: NO.**
