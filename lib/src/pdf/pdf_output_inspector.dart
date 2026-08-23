@@ -4,8 +4,8 @@ import 'dart:typed_data';
 /// Lightweight structural inspection for locally generated PDF bytes.
 ///
 /// This is intentionally not a replacement for a full PDF parser. It catches
-/// truncated/non-PDF output and broken cross-reference trailers before the
-/// application presents or shares a file.
+/// truncated/non-PDF output and broken cross-reference/catalog/page-tree links
+/// before the application presents or shares a file.
 final class PdfOutputInspection {
   const PdfOutputInspection({
     required this.byteLength,
@@ -19,6 +19,8 @@ final class PdfOutputInspection {
     required this.startXrefOffset,
     required this.startXrefTargetRecognized,
     required this.xrefHasRootReference,
+    required this.rootReferenceResolvesToCatalog,
+    required this.catalogPagesReferenceResolves,
   });
 
   final int byteLength;
@@ -32,6 +34,8 @@ final class PdfOutputInspection {
   final int? startXrefOffset;
   final bool startXrefTargetRecognized;
   final bool xrefHasRootReference;
+  final bool rootReferenceResolvesToCatalog;
+  final bool catalogPagesReferenceResolves;
 
   bool get pageTreeCountConsistent =>
       declaredPageCount != null && declaredPageCount == pageObjectCount;
@@ -47,7 +51,9 @@ final class PdfOutputInspection {
       hasStartXref &&
       startXrefOffset != null &&
       startXrefTargetRecognized &&
-      xrefHasRootReference;
+      xrefHasRootReference &&
+      rootReferenceResolvesToCatalog &&
+      catalogPagesReferenceResolves;
 }
 
 final class PdfOutputInspector {
@@ -82,9 +88,22 @@ final class PdfOutputInspector {
         : int.tryParse(startXrefMatch.group(1)!);
     final startXrefTargetRecognized = startXrefOffset != null &&
         _pointsToRecognizedXref(text, startXrefOffset);
-    final xrefHasRootReference = startXrefOffset != null &&
-        startXrefTargetRecognized &&
-        _xrefDeclaresRoot(text, startXrefOffset);
+    final rootReference = startXrefOffset != null && startXrefTargetRecognized
+        ? _rootReference(text, startXrefOffset)
+        : null;
+    final xrefHasRootReference = rootReference != null;
+    final rootReferenceResolvesToCatalog = rootReference != null &&
+        _objectHasType(text, rootReference.$1, rootReference.$2, 'Catalog');
+    final catalogPagesReference = rootReferenceResolvesToCatalog
+        ? _catalogPagesReference(text, rootReference!.$1, rootReference.$2)
+        : null;
+    final catalogPagesReferenceResolves = catalogPagesReference != null &&
+        _objectHasType(
+          text,
+          catalogPagesReference.$1,
+          catalogPagesReference.$2,
+          'Pages',
+        );
 
     return PdfOutputInspection(
       byteLength: bytes.length,
@@ -98,6 +117,8 @@ final class PdfOutputInspector {
       startXrefOffset: startXrefOffset,
       startXrefTargetRecognized: startXrefTargetRecognized,
       xrefHasRootReference: xrefHasRootReference,
+      rootReferenceResolvesToCatalog: rootReferenceResolvesToCatalog,
+      catalogPagesReferenceResolves: catalogPagesReferenceResolves,
     );
   }
 
@@ -115,21 +136,66 @@ final class PdfOutputInspector {
     ).hasMatch(tail);
   }
 
-  bool _xrefDeclaresRoot(String text, int offset) {
+  (int, int)? _rootReference(String text, int offset) {
     if (offset < 0 || offset >= text.length) {
-      return false;
+      return null;
     }
     final tail = text.substring(offset);
+    final Match? match;
     if (RegExp(r'^xref\b').hasMatch(tail)) {
-      return RegExp(
-        r'^xref\b(?:(?!startxref).)*?trailer\s*<<(?:(?!>>).)*?/Root\s+\d+\s+\d+\s+R\b',
+      match = RegExp(
+        r'^xref\b(?:(?!startxref).)*?trailer\s*<<(?:(?!>>).)*?/Root\s+(\d+)\s+(\d+)\s+R\b',
         dotAll: true,
-      ).hasMatch(tail);
+      ).firstMatch(tail);
+    } else {
+      match = RegExp(
+        r'^\d+\s+\d+\s+obj\b(?:(?!endobj).)*?/Type\s*/XRef\b(?:(?!endobj).)*?/Root\s+(\d+)\s+(\d+)\s+R\b',
+        dotAll: true,
+      ).firstMatch(tail);
     }
+    if (match == null) {
+      return null;
+    }
+    final objectNumber = int.tryParse(match.group(1)!);
+    final generation = int.tryParse(match.group(2)!);
+    if (objectNumber == null || generation == null) {
+      return null;
+    }
+    return (objectNumber, generation);
+  }
+
+  bool _objectHasType(
+    String text,
+    int objectNumber,
+    int generation,
+    String type,
+  ) {
     return RegExp(
-      r'^\d+\s+\d+\s+obj\b(?:(?!endobj).)*?/Type\s*/XRef\b(?:(?!endobj).)*?/Root\s+\d+\s+\d+\s+R\b',
+      '^$objectNumber\\s+$generation\\s+obj\\b(?:(?!endobj).)*?/Type\\s*/$type\\b',
       dotAll: true,
-    ).hasMatch(tail);
+      multiLine: true,
+    ).hasMatch(text);
+  }
+
+  (int, int)? _catalogPagesReference(
+    String text,
+    int objectNumber,
+    int generation,
+  ) {
+    final match = RegExp(
+      '^$objectNumber\\s+$generation\\s+obj\\b(?:(?!endobj).)*?/Type\\s*/Catalog\\b(?:(?!endobj).)*?/Pages\\s+(\\d+)\\s+(\\d+)\\s+R\\b',
+      dotAll: true,
+      multiLine: true,
+    ).firstMatch(text);
+    if (match == null) {
+      return null;
+    }
+    final pagesObject = int.tryParse(match.group(1)!);
+    final pagesGeneration = int.tryParse(match.group(2)!);
+    if (pagesObject == null || pagesGeneration == null) {
+      return null;
+    }
+    return (pagesObject, pagesGeneration);
   }
 
   PdfOutputInspection requireUsable(Uint8List bytes) {
@@ -145,7 +211,9 @@ final class PdfOutputInspector {
         'startXref=${inspection.hasStartXref}, '
         'startXrefOffset=${inspection.startXrefOffset}, '
         'xrefTarget=${inspection.startXrefTargetRecognized}, '
-        'xrefRoot=${inspection.xrefHasRootReference}.',
+        'xrefRoot=${inspection.xrefHasRootReference}, '
+        'rootCatalog=${inspection.rootReferenceResolvesToCatalog}, '
+        'catalogPages=${inspection.catalogPagesReferenceResolves}.',
       );
     }
     return inspection;
