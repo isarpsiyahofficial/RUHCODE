@@ -14,6 +14,8 @@ void main() {
     int? declaredPageCount,
     bool includeStartXref = true,
     bool includeRoot = true,
+    int rootObjectNumber = 1,
+    int catalogPagesObjectNumber = 2,
     int? startXrefOffsetOverride,
     String xrefTarget = 'xref\n0 1\n0000000000 65535 f \n',
   }) {
@@ -23,13 +25,13 @@ void main() {
     ).join('\n');
     final body =
         '%PDF-1.7\n'
-        '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n'
+        '1 0 obj << /Type /Catalog /Pages $catalogPagesObjectNumber 0 R >> endobj\n'
         '2 0 obj << /Type /Pages /Count ${declaredPageCount ?? pageCount} >> endobj\n'
         '$pageObjects\n';
     final xrefOffset = latin1.encode(body).length;
     final trailer =
         '$xrefTarget'
-        'trailer << ${includeRoot ? '/Root 1 0 R ' : ''}>>\n'
+        'trailer << ${includeRoot ? '/Root $rootObjectNumber 0 R ' : ''}>>\n'
         '${includeStartXref ? 'startxref\n${startXrefOffsetOverride ?? xrefOffset}\n' : ''}'
         '%%EOF';
     return bytes('$body$trailer');
@@ -49,6 +51,8 @@ void main() {
     expect(inspection.startXrefOffset, isNotNull);
     expect(inspection.startXrefTargetRecognized, isTrue);
     expect(inspection.xrefHasRootReference, isTrue);
+    expect(inspection.rootReferenceResolvesToCatalog, isTrue);
+    expect(inspection.catalogPagesReferenceResolves, isTrue);
   });
 
   test('rejects truncated output without EOF', () {
@@ -107,6 +111,8 @@ void main() {
     expect(inspection.hasStartXref, isFalse);
     expect(inspection.startXrefTargetRecognized, isFalse);
     expect(inspection.xrefHasRootReference, isFalse);
+    expect(inspection.rootReferenceResolvesToCatalog, isFalse);
+    expect(inspection.catalogPagesReferenceResolves, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
@@ -134,6 +140,24 @@ void main() {
     final inspection = inspector.inspect(malformed);
     expect(inspection.startXrefTargetRecognized, isTrue);
     expect(inspection.xrefHasRootReference, isFalse);
+    expect(inspection.rootReferenceResolvesToCatalog, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects Root reference that does not resolve to Catalog object', () {
+    final malformed = fakePdfWithPages(1, rootObjectNumber: 2);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.xrefHasRootReference, isTrue);
+    expect(inspection.rootReferenceResolvesToCatalog, isFalse);
+    expect(inspection.catalogPagesReferenceResolves, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects Catalog Pages reference that does not resolve to Pages tree', () {
+    final malformed = fakePdfWithPages(1, catalogPagesObjectNumber: 3);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.rootReferenceResolvesToCatalog, isTrue);
+    expect(inspection.catalogPagesReferenceResolves, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
