@@ -190,7 +190,7 @@ final class PersistedWesternCombinedMemberProjector
     return PdfCombinedMember(
       systemId: systemId,
       identity: PdfSnapshotIdentity(
-        subjectKind: PdfSubjectKind.profile,
+        subjectKind: parsed.subjectKind,
         subjectId: snapshot.ownerEntityId,
         snapshotDigest: parsed.snapshotSha256,
         engineVersion: snapshot.manifest.engineVersion,
