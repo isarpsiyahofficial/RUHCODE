@@ -20,9 +20,11 @@ final class WesternNatalPersistenceService {
     required CalculationManifest manifest,
     required PersistedWesternNatalSnapshot snapshot,
     required DateTime createdAtUtc,
+    String subjectKind = 'profile',
   }) async {
     final normalizedCalculationId = _requiredId(calculationId, 'calculationId');
     final normalizedOwnerId = _requiredId(ownerEntityId, 'ownerEntityId');
+    final normalizedSubjectKind = _subjectKind(subjectKind);
     if (!createdAtUtc.isUtc) {
       throw ArgumentError.value(createdAtUtc, 'createdAtUtc', 'Must be UTC.');
     }
@@ -34,7 +36,14 @@ final class WesternNatalPersistenceService {
       'ownerEntityId': normalizedOwnerId,
       'manifestId': manifest.id.value,
       'calculationType': persistedWesternNatalCalculationType,
-      'payloadJson': envelope.toCalculationResult(),
+      'payloadJson': <String, Object?>{
+        ...envelope.toCalculationResult(),
+        // Subject ownership is intentionally outside the sealed astronomical
+        // snapshot: it does not alter chart math, but it is required so a
+        // professional/combined PDF can distinguish profile vs client without
+        // guessing from an ID string.
+        'subjectKind': normalizedSubjectKind,
+      },
       'createdAtUtc': createdAtUtc.toIso8601String(),
     };
     final manifestRow = CoreModelCodecs.calculationManifestToMap(manifest);
@@ -114,6 +123,18 @@ final class WesternNatalPersistenceService {
     final normalized = value.trim();
     if (normalized.isEmpty) {
       throw ArgumentError.value(value, name, 'Must not be blank.');
+    }
+    return normalized;
+  }
+
+  static String _subjectKind(String value) {
+    final normalized = value.trim().toLowerCase();
+    if (normalized != 'profile' && normalized != 'client') {
+      throw ArgumentError.value(
+        value,
+        'subjectKind',
+        'Expected profile or client.',
+      );
     }
     return normalized;
   }
