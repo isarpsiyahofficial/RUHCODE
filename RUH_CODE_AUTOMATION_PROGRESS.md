@@ -1,123 +1,120 @@
 # RUH CODE — OTOMATİK GELİŞTİRME İLERLEMESİ
 
-Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tutar. Ayrıntılı tarihçe `automation_runs/` altındadır. Bağlayıcı kaynaklar `RUH_CODE_MASTER_INDEX.md`, şartname dosyaları ve `RUH_CODE_MASTER_TODO.md` dosyasıdır. `SOURCE_LEVEL_IMPLEMENTED` veya `[x]` yalnız kaynak/test sözleşmesinin mevcut olduğunu anlatır; requirement state ancak gerçek workflow/test/evidence kanıtıyla DONE olabilir.
+Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma geçmişi `automation_runs/` altındadır. Bağlayıcı kaynaklar `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md`, `RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md` ve `RUH_CODE_MASTER_TODO.md` dosyalarıdır.
 
-## Ana kapsam
+**Kural:** `SOURCE_LEVEL_IMPLEMENTED` veya matrix'teki `IMPLEMENTED`, requirement'ın DONE olduğu anlamına gelmez. `DONE` yalnız explicit state + gerekli test/golden/device/release kanıtı ile verilebilir.
 
-- MASTER: `RC-0001 → RC-1442`.
-- Requirement traceability + repository-wide evidence integrity mevcut; kanıtsız DONE yasak.
-- Ana bilgi mimarisi: `Bugün · Araçlar · Kayıtlar · Profil`.
-- Canonical SCREEN-ID / ACTION-ID / Feature-ID sözleşmeleri mevcut.
-- APPROVED final UI PNG/reference/hash seti henüz tamamlanmadı; visual regression final kapısı açık.
+## Requirement traceability — güncel
+
+- Kapsam exact `RC-0001 → RC-1442`.
+- `requirement_state.csv` bilinçli olarak sparse explicit override ledger'ıdır.
+- `build_requirement_matrix.py` bütün evidence JSON'larını tarayıp source-level kanıtı olan RC'leri en fazla `IMPLEMENTED` olarak türetir.
+- Auto-evidence hiçbir zaman `TESTED`, `VERIFIED` veya `DONE` üretmez.
+- `validate_matrix_provenance.py`, auto-IMPLEMENTED satırın gerçekten aynı RC'yi sahiplenen evidence JSON'una bağlı olduğunu doğrular.
+- Requirements Contract 1.442 satırlık generated matrix'i Actions artifact'i olarak saklayacak.
+- Evidence integrity validator `sources/tests/validators` yanında `source_files/sourceFiles/test_files/testFiles` ve tekil repo-path biçimlerini de doğrular.
+- PDF semantic gate'teki stale RC ownership listeleri güncel evidence dosyalarıyla eşitlendi.
 
 ## Source-level ilerlemiş ana bloklar
 
-- Gregorian calendar/leap-year/date identity, Julian/time-scale/sidereal-time provider sınırları.
-- Strict EphemerisProvider / EarthOrientationProvider sözleşmeleri, solar events ve Gezegen Saatleri.
-- DailySnapshot: Planetary Hour, Moon Phase, Tropical Moon Sign, Personal Day, transit factor, Vedik daily primitives.
-- Western: ASC/MC, Whole Sign/Equal/Porphyry/strict Placidus, placements, aspects/orbs, element/modality, aspect grid, dignity/rulership, sealed persisted snapshot + atomic manifest persistence.
+- Gregorian calendar / leap-year / exact-date identity.
+- UTC/TT/UT1/sidereal-time provider sınırları.
+- Ephemeris/EOP strict provider sözleşmeleri.
+- Solar events ve Gezegen Saatleri.
+- DailySnapshot: planetary hour, Moon phase/sign, Personal Day, transit ve Vedik daily primitives.
+- Western: ASC/MC, Whole Sign/Equal/Porphyry/strict Placidus, placements, aspects/orbs, distribution, aspect grid, dignity/rulership, sealed persisted natal snapshot ve atomic manifest persistence.
 - Numeroloji: Pythagorean, Chaldean, Lo Shu, cycles, Pinnacles/Challenges, name metrics, Karmic Debt, compatibility, canonical snapshot/fingerprint, UI/PDF parity.
 - BaZi primitives: stems/branches, sexagenary cycle, Hidden Stems, Five Elements, Yin/Yang, Day Master, Ten Gods.
-- Entitlement: canonical Feature IDs, UI/route/service guards, offline snapshot/time anchor, Google Play lifetime restore composition, rewarded-ad cancel/failure safety.
-- Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration, canonical tek-tabla CSV exporter.
-- Professional PDF: local A4 planning/renderer contracts, structural inspector, `/Pages /Count` consistency, Page→Parent→Pages linkage, final EOF + `startxref` + xref-target validation, Root→Catalog→Pages object-graph resolution, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection, strong UI↔PDF subject/snapshot parity.
-- Professional PDF preflight preview gerçek builder'a bağlı: canonical Preview action, calculation-type aware section catalog, preview→build exact-plan parity ve stale-preview invalidation source-level mevcut.
+- Çin Astrolojisi basic year core: 12 hayvan, element, Yin/Yang, exact Chinese New Year boundary, checksum/coverage-validated boundary dataset loader.
+- Entitlement: canonical Feature IDs, UI/route/service guards, offline entitlement snapshot/time anchor, Play lifetime restore composition, rewarded cancel/failure safety.
+- Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
+- Professional PDF: local report planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural PDF inspection, native delivery, strong subject/snapshot parity.
 
-## UI / Accessibility — güncel durum
+## PDF structural — güncel
 
-- [x] Minimum touch target 48dp.
-- [x] Normal metin minimum kontrast 4.5:1; büyük metin 3.0:1.
-- [x] Canonical design tokens gerçek sRGB relative-luminance hesabıyla denetleniyor.
-- [x] `gold` ve `success` canonical light surfaces üzerinde normal metin değil non-text accent olarak kilitli.
-- [x] `lib/src/ui/theme/ruh_design_tokens.dart` canonical JSON → Flutter runtime bridge olarak eklendi.
-- [x] `RuhCodeApp`, ham Flutter renk tekrarından `RuhAppTheme.light()` kullanımına geçirildi.
-- [x] Runtime token validator ve ThemeData regression testi mevcut.
-- [x] 360x800 + 2.0x text-scale: Araçlar, Kayıtlar, Profil→Ayarlar→PDF yolları regression kapsamına alındı.
-- [x] Numeroloji localized metric/value semantics regression mevcut.
-- [x] Professional PDF create/preview/share kontrolleri canonical ACTION-ID + Semantics + 48dp regression altında.
-- [x] Backup create/share/import ve restore merge/replace Semantics + 48dp + deterministic focus-order regression altında.
-- [ ] Real-device screen-reader/focus-order traversal.
-- [ ] Tüm gerekli ekran/state'lerde 2.0x text-scale overflow/golden regression.
-- [ ] APPROVED UI visual regression.
-- [ ] Exact visible accessibility workflow SUCCESS.
+- `/Pages /Count` actual Page sayısıyla eşleşmek zorunda.
+- final `%%EOF`, `startxref`, xref/XRef target zorunlu.
+- xref `/Root` exact Catalog object/generation'a çözülmek zorunda.
+- Catalog `/Pages` exact Pages-tree object/generation'a çözülmek zorunda.
+- her gerçek `/Type /Page`, indirect `/Parent` taşımak zorunda.
+- her Page Parent exact `/Type /Pages` object/generation'a çözülmek zorunda.
+- missing Parent veya Catalog/non-Pages Parent fail-closed.
+- dedicated `PDF Structural Contract` workflow source validator + Flutter inspector regressionlarını çalıştıracak.
+- `RC-0952` bağımsız full-parser/open kanıtı olmadan açık.
 
-## Backup native transport — güncel durum
+## Çin Astrolojisi — güncel
 
-- [x] `BackupSettingsPage`: `Tam Yedek Oluştur`, `Yedeği Paylaş`, `Yedek Dosyası Seç`.
-- [x] Share/merge/replace canonical runtime action olarak kayıtlı ve FREE/offline-available.
-- [x] UI share action gerçek `.ruhcode.zip` native paylaşım sınırını çağırıyor.
-- [x] Valid preview merge/replace gerçek import mode'larına bağlı.
-- [x] RC-0794 için full backup'tan ayrı canonical UTF-8 tek-tabla CSV exporter source-level mevcut.
-- [ ] Android real-device share-sheet smoke proof.
-- [ ] Android real-device restore focus/screen-reader proof.
-- [ ] Exact visible Backup/UI/Flutter CI SUCCESS.
+`RC-0137 → RC-0142` source-level evidence altında:
 
-## Evidence / requirement audit — güncel durum
+- 12 hayvan döngüsü.
+- Çin burcu, element ve Yin/Yang year-stem mantığı.
+- 1984 Jia-Zi anchor ile sexagenary year index.
+- civil date, exact Chinese New Year boundary'den önceyse önceki Chinese year kullanılır.
+- boundary gününde yeni Chinese year başlar.
+- boundary yoksa January 1 / Gregorian year / nearest-year fallback yasak.
+- basic Chinese zodiac modülü BaZi Four Pillars runtime'ından ayrı.
+- reviewed fixture boundaries: `2024-02-10`, `2025-01-29`, `2026-02-17`.
+- bundled dataset loader SHA-256, schemaVersion, source/data version, min/max coverage, duplicate/missing/wrong-year kontrolü yapıyor.
 
-- [x] Genel integrity validator bütün `evidence/**/*.json` dosyalarında RC/path/UTF-8/JSON bütünlüğünü fail-closed doğruluyor.
-- [x] Numeroloji, BaZi, PDF, Backup, Entitlement, UI accessibility ve persisted Western evidence ailelerinin önemli kısmı exact MASTER-aware semantic ownership altında.
-- [x] Runtime dead-action validator canonical action sabiti/binding/source kullanımını çaprazlıyor.
-- [x] Local PDF renderer evidence RC-0950/0951/0953 ile sınırlı; RC-0952 independent full-parser/open proof olmadan sahiplenilmiyor.
-- [x] PDF preflight evidence RC-0929/1440/1441 source-level zincirine bağlı ve `done=false`.
-- [x] Merkezi semantic validator'daki stale PDF ownership düzeltildi: report planning, numerology adapter, professional application ve local renderer gerçek mevcut evidence RC kümeleriyle eşitlendi.
-- [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak exact MASTER ownership denetimine alınmaya devam edecek.
-- [ ] Exact görünür CI başarı kanıtı hâlâ yok; combined-status son commitlerde `statuses=[]` dönüyor.
+**Açık:** 1890–2110 tam fiziksel Chinese New Year boundary artifact'i ve bağımsız multi-century golden doğrulama yok; bu nedenle DONE değildir.
 
-## Western persistence / PDF — güncel durum
+## UI / Accessibility — açık kalanlar
 
-- [x] Western snapshot + SHA + CalculationManifest tek transaction persistence boundary'sine sahip.
-- [x] Persisted Western PDF historical astronomy'yi yeniden hesaplamıyor.
-- [x] Placements / houses / aspects + technical manifest PDF projection source-level mevcut.
-- [x] Structural inspector `/Pages /Count`, final `%%EOF`, `startxref`, xref/XRef target ve `/Root` sınırlarını fail-closed doğruluyor.
-- [x] `/Root` gerçek Catalog'a, Catalog `/Pages` referansı gerçek Pages tree'ye çözülmek zorunda.
-- [x] Her `/Type /Page` nesnesi indirect `/Parent` taşımak ve Parent gerçek `/Type /Pages` nesnesine çözülmek zorunda.
-- [x] UI↔PDF parity subject kind + stable subject ID + digest üçlüsüyle korunuyor.
-- [x] RC-0929 preflight preview gerçek `SCR-PDF-BUILDER-001` Preview action/state'ine bağlı.
-- [x] Calculation-type aware section catalog yalnız gerçek handler'ın desteklediği bölümleri kullanıcıya gösteriyor.
-- [x] Preview→create aynı exact canonical report-plan input parity testine bağlı.
-- [x] Verified-but-unselected PDF payloadları section toggle'larını bozmuyor; selected section strict kalıyor.
-- [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
-- [ ] Independent full-parser/open proof.
-- [ ] Western production vector painter + APPROVED glyph assets.
-- [ ] 5/25/50+ gerçek rendered PDF, parser/crop/glyph/visual regression.
-- [ ] Android/iOS gerçek cihaz PDF Save As/share smoke evidence.
+- Canonical ana navigasyon: `Bugün · Araçlar · Kayıtlar · Profil`.
+- Design token contrast ve 48dp/semantics kaynak sözleşmeleri mevcut.
+- 2.0x text-scale kritik yüzeylerin bir kısmında regression mevcut.
+- APPROVED final UI PNG/reference/hash seti tamamlanmadı.
+- Real-device screen-reader/focus traversal ve tam visual regression açık.
 
-## Daily Message / fiziksel artifact blocker'ları
+## Backup — açık kalanlar
 
-- [x] Exact-date/locale/rolling-horizon/duplicate/near-duplicate günlük mesaj kalite sözleşmesi.
-- [ ] 4.018 TR + bağımsız 4.018 EN gerçek editoryal Günün Mesajı içeriği.
-- [ ] Fiziksel/versioned IERS EOP/UT1−UTC artifact + checksum/provenance.
-- [ ] Ticari yeniden dağıtıma uygun offline ephemeris artifact.
-- [ ] Production Lahiri/Chitrapaksha artifact.
-- [ ] GeoNames source/output SHA + bulk IANA integrity.
-- [ ] Independent golden astronomical accuracy suite.
+- Android gerçek cihaz save/pick/share smoke proof.
+- Release-candidate clean-install export→erase→restore proof.
+- Exact visible Backup/UI/Flutter CI success.
 
-## Final blocker'ları
+## PDF — açık kalanlar
+
+- Production Unicode TR/EN font binary + license + immutable SHA.
+- Independent full PDF parser/open proof.
+- Western production vector painter + approved glyph assets.
+- Vedic vector chart / BaZi production tables gereken kapsamda tamamlanmalı.
+- 5/25/50+ gerçek rendered PDF, low-memory, glyph/crop/visual regression.
+- gerçek cihaz Save As/share smoke evidence.
+
+## Fiziksel veri / içerik blocker'ları
+
+- versioned IERS EOP/UT1−UTC artifact + checksum/provenance.
+- ticari yeniden dağıtıma uygun offline ephemeris artifact.
+- production Lahiri/Chitrapaksha artifact.
+- GeoNames source/output SHA + bulk IANA integrity.
+- independent astronomical golden accuracy suite.
+- 4.018 TR + bağımsız 4.018 EN gerçek editoryal Günün Mesajı.
+- 1890–2110 verified Chinese New Year boundary artifact.
+
+## Release blocker'ları
 
 - APPROVED UI reference/hash seti.
-- Production Unicode PDF font artifact + lisans/hash.
-- Independent full PDF parser/glyph/crop/visual proof.
-- Exact GitHub Actions SUCCESS kanıtları.
+- Production PDF font artifact.
+- Exact görünür GitHub Actions SUCCESS kanıtları.
 - `pubspec.lock` yalnız gerçek dependency resolution sonrası.
-- Clean-checkout/reproducible release APK.
-- Play/rewarded-ad gerçek cihaz kanıtları.
-- Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
+- Play/rewarded real-device proof.
+- clean-checkout/reproducible release APK.
+- airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-23 16:53
+## Son checkpoint
 
-Checkpoint: `automation_runs/2026-08-23_1653_pdf_page_parent_semantic_gate.md`
+`automation_runs/2026-08-23_1653_traceability_chinese_year.md`
 
-Bu turda PDF structural inspector her Page nesnesinin indirect Parent referansını zorunlu kılacak ve Parent'ın gerçek Pages-tree nesnesine çözülmesini fail-closed doğrulayacak şekilde sertleştirildi. Missing Parent ve non-Pages Parent regression testleri eklendi; evidence ve structural validator güncellendi.
+Bu turda requirement matrix provenance, evidence path integrity, PDF Page→Parent→Pages structural gate ve Çin Astrolojisi basic year + boundary dataset sözleşmesi ilerletildi.
 
-Ayrıca merkezi `validate_evidence_traceability.py` içinde güncel evidence dosyalarıyla çelişen stale PDF RC ownership listeleri bulundu ve düzeltildi. Local renderer `RC-0950/0951/0953` exact ownership audit'e eklendi; report planning, numerology adapter ve professional application evidence güncel gerçek RC kümeleriyle eşitlendi. `RC-0952` independent full-parser/open proof olmadan açık tutuluyor.
-
-Latest source contract commit `d15c51c9a90bf9d96498db609de8fefb937cfbb4` için GitHub combined-status yine `statuses=[]` döndürdü. Bu nedenle ilgili requirement'lar DONE değildir.
+GitHub combined-status yeni commitlerde yine `statuses=[]` döndürdüğü için hiçbir ilgili requirement DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Remaining requirement-bearing evidence ailelerini semantic RC drift açısından audit et.
-2. Font gerektirmeyen persisted snapshot/data parity testlerini genişlet.
-3. UI/action/accessibility blocker-dışı requirement'ları ilerlet.
-4. Fiziksel artifact/font/UI blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
+1. 1890–2110 Chinese New Year boundary artifact provenance/licensing stratejisini çöz; sahte dataset ekleme.
+2. Kalan evidence semantic ownership drift auditini sürdür.
+3. Font gerektirmeyen PDF persisted snapshot/data parity regressionlarını genişlet.
+4. UI/action/accessibility blocker-dışı requirement'ları ilerlet.
+5. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
 
 **FINAL: NO.**
