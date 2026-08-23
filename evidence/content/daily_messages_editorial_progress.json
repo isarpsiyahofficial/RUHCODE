@@ -1,0 +1,60 @@
+{
+  "contract": "ruh-code-daily-message-editorial-progress-v1",
+  "status": "EDITORIAL_IN_PROGRESS",
+  "done": false,
+  "requirements": [
+    "RC-1424",
+    "RC-1425",
+    "RC-1426",
+    "RC-1427",
+    "RC-1433",
+    "RC-1434"
+  ],
+  "sources": [
+    "requirements/content_manifests/daily_messages.json",
+    "assets/content/daily_messages/tr/2026.csv",
+    "assets/content/daily_messages/en/2026.csv",
+    "tools/content/build_daily_message_catalog.py",
+    "tools/content/validate_daily_message_catalog.py"
+  ],
+  "tests": [
+    "tools/content/test_validate_daily_message_catalog.py",
+    "tools/content/test_daily_message_shards.py"
+  ],
+  "currentReviewedCoverage": {
+    "tr": {
+      "start": "2026-01-01",
+      "end": "2026-01-14",
+      "records": 14
+    },
+    "en": {
+      "start": "2026-01-01",
+      "end": "2026-01-14",
+      "records": 14
+    },
+    "totalRecords": 28
+  },
+  "requiredFinalCoverage": {
+    "start": "2026-01-01",
+    "end": "2036-12-31",
+    "recordsPerLocale": 4018,
+    "totalRecords": 8036,
+    "rollingReleaseHorizonYears": 10
+  },
+  "guardrails": [
+    "runtime AI generation remains forbidden",
+    "random fallback remains forbidden",
+    "TR and EN are separate editorial tracks and machine translation is forbidden",
+    "year/locale shards are compiled deterministically before audit",
+    "partial editorial audit may ignore missing dates but may not ignore malformed rows, duplicate exact keys, exact/near duplicate text, repetitive opening patterns, or unsafe certainty",
+    "release audit must run without allow-incomplete and therefore requires all 8,036 initial records including leap dates"
+  ],
+  "remainingBeforeDone": [
+    "write and editorially review the remaining Turkish daily messages through 2036-12-31",
+    "write and editorially review the remaining independent English daily messages through 2036-12-31",
+    "pass strict exact-date completeness for all 8,036 records",
+    "pass leap-date, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates",
+    "prove the rolling ten-year horizon at the release date",
+    "obtain exact visible CI SUCCESS on the complete catalog"
+  ]
+}
