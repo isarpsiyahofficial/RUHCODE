@@ -24,6 +24,8 @@ jobs:
         run: python tools/requirements/validate_evidence_integrity.py
       - name: Validate evidence semantic ownership
         run: python tools/requirements/validate_evidence_traceability.py
+      - name: Validate Chinese zodiac semantic ownership
+        run: python tools/chinese/validate_chinese_year_contract.py
       - name: Validate exact UI evidence semantic ownership
         run: python tools/requirements/validate_ui_evidence_traceability.py
       - name: Validate exact local PDF evidence semantic ownership
