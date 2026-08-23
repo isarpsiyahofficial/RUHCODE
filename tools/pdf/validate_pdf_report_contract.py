@@ -50,7 +50,7 @@ contracts = (
         "r'/Type\\s*/Pages\\b(?:(?!endobj).)*?/Count\\s+(\\d+)'",
         'pageTreeCountConsistent &&', 'declaredPages=${inspection.declaredPageCount}',
         'hasStartXref', 'startXrefOffset', 'startXrefTargetRecognized', '_pointsToRecognizedXref',
-        "r'startxref\\s+(\\d+)\\s+%%EOF\\s*$'", "r'^xref\\b'", "r'/Type\\s*/XRef\\b'",
+        "r'startxref\\s+(\\d+)\\s+%%EOF\\s*$'", "r'^xref\\b'", "/Type\\s*/XRef\\b",
         'PdfOutputInspection requirePageCount(', 'exact page count cannot be combined with min/max.',
         'Generated PDF page count mismatch:', 'Generated PDF has too few pages:',
         'Generated PDF has too many pages:',
