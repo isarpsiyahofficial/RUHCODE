@@ -5,9 +5,7 @@
   "requirements": [
     "RC-0862",
     "RC-0863",
-    "RC-0865",
     "RC-0868",
-    "RC-0870",
     "RC-0878",
     "RC-0881",
     "RC-0898",
@@ -17,7 +15,6 @@
     "RC-0929",
     "RC-0931",
     "RC-0951",
-    "RC-0956",
     "RC-0964"
   ],
   "sources": [
@@ -54,7 +51,7 @@
     "empty-section suppression",
     "professional and client-friendly cover styles",
     "optional professional branding metadata",
-    "TR/EN locale restriction",
+    "TR/EN locale restriction at the report-contract boundary",
     "strict demo-versus-user data-origin separation",
     "sample report cannot consume real user origin",
     "non-sample report cannot consume demo origin",
@@ -71,11 +68,12 @@
     "numerology PDF data is projected from the canonical numerology snapshot rather than recalculated"
   ],
   "releaseBlockers": [
-    "Approved Unicode TR/EN font binaries, immutable SHA-256 values and license manifest are not yet attached.",
+    "RC-0865 remains open: approved Unicode TR/EN font binaries, immutable SHA-256 values and license manifest are not yet attached.",
     "Actual 5/25/50+ production byte-render runs with approved fonts are not yet proven.",
     "Western geometry still needs the production vector painter and approved glyph assets; Vedic vector chart rendering is not yet implemented.",
     "BaZi production table rendering is not yet implemented.",
     "Low-memory Android PDF generation and independent full parser/glyph/crop/visual-regression proof are not yet attached.",
+    "RC-0956 remains open until an actual rendered visual-regression pipeline and approved references exist.",
     "Approved PDF reference pages are not yet available.",
     "Exact Flutter workflow success is not yet recorded in this evidence file."
   ]
