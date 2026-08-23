@@ -13,6 +13,7 @@ void main() {
     int pageCount, {
     int? declaredPageCount,
     bool includeStartXref = true,
+    bool includeRoot = true,
     int? startXrefOffsetOverride,
     String xrefTarget = 'xref\n0 1\n0000000000 65535 f \n',
   }) {
@@ -28,7 +29,7 @@ void main() {
     final xrefOffset = latin1.encode(body).length;
     final trailer =
         '$xrefTarget'
-        'trailer << /Root 1 0 R >>\n'
+        'trailer << ${includeRoot ? '/Root 1 0 R ' : ''}>>\n'
         '${includeStartXref ? 'startxref\n${startXrefOffsetOverride ?? xrefOffset}\n' : ''}'
         '%%EOF';
     return bytes('$body$trailer');
@@ -47,6 +48,7 @@ void main() {
     expect(inspection.hasStartXref, isTrue);
     expect(inspection.startXrefOffset, isNotNull);
     expect(inspection.startXrefTargetRecognized, isTrue);
+    expect(inspection.xrefHasRootReference, isTrue);
   });
 
   test('rejects truncated output without EOF', () {
@@ -104,6 +106,7 @@ void main() {
     expect(inspection.hasEofMarker, isTrue);
     expect(inspection.hasStartXref, isFalse);
     expect(inspection.startXrefTargetRecognized, isFalse);
+    expect(inspection.xrefHasRootReference, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
@@ -113,6 +116,7 @@ void main() {
     expect(inspection.hasStartXref, isTrue);
     expect(inspection.startXrefOffset, 999999);
     expect(inspection.startXrefTargetRecognized, isFalse);
+    expect(inspection.xrefHasRootReference, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
@@ -121,6 +125,15 @@ void main() {
     final inspection = inspector.inspect(malformed);
     expect(inspection.startXrefOffset, 0);
     expect(inspection.startXrefTargetRecognized, isFalse);
+    expect(inspection.xrefHasRootReference, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects xref trailer that does not declare a Root reference', () {
+    final malformed = fakePdfWithPages(1, includeRoot: false);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.startXrefTargetRecognized, isTrue);
+    expect(inspection.xrefHasRootReference, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
