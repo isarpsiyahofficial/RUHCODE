@@ -35,6 +35,20 @@ Commits:
 - `75a5cf3ae9648b5d0aab99ba2475bd6f0a985cb9`
 - `b04fb6fa4dd701f64d822e72a3c67cb19946fcb4`
 
+### 3. Professional PDF contract merkezi requirement kapısına bağlandı
+
+`.github/workflows/requirements-contract.yml` artık `tools/pdf/validate_professional_pdf_application.py` validator'ını doğrudan çalıştırıyor.
+
+Böylece:
+
+- eski PDF action ID'leri geri dönerse,
+- `RC-0952` full-parser kanıtı olmadan yeniden sahiplenilirse,
+- professional PDF runtime/source/evidence sözleşmesi birbirinden koparsa,
+
+merkezi 1.442 requirement CI kapısı fail-closed olacak.
+
+Commit: `8e10ce04442e283cb4ad9bbc0c456efc96ae4b70`
+
 ## DONE / FINAL durumu
 
 Hiçbir requirement yalnız bu source-level düzeltmeler nedeniyle DONE yapılmadı.
@@ -52,9 +66,9 @@ Açık kritik kanıtlar devam ediyor:
 
 ## Next safe work
 
-1. Professional PDF validator/evidence semantic sahipliğini merkezi Requirements Contract ile çaprazlamayı genişlet.
-2. Kalan PDF evidence dosyalarında RC ownership overclaim taramasını sürdür.
-3. Font gerektirmeyen persisted snapshot/data parity ve UI/action/accessibility regressionlarını ilerlet.
+1. Kalan PDF evidence dosyalarında RC ownership overclaim taramasını sürdür.
+2. Font gerektirmeyen persisted snapshot/data parity ve UI/action/accessibility regressionlarını ilerlet.
+3. Professional PDF combined-report requirement'ını gerçek multi-system persistence/handler composition olmadan kapatma.
 4. Blocker'larda kanıtsız DONE verme.
 
 **FINAL: NO.**
