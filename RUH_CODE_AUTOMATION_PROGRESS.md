@@ -19,8 +19,9 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Numeroloji: Pythagorean, Chaldean, Lo Shu, cycles, Pinnacles/Challenges, name metrics, Karmic Debt, compatibility, canonical snapshot/fingerprint, UI/PDF parity.
 - BaZi primitives: stems/branches, sexagenary cycle, Hidden Stems, Five Elements, Yin/Yang, Day Master, Ten Gods.
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline snapshot/time anchor, Google Play lifetime restore composition, rewarded-ad cancel/failure safety.
-- Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration.
+- Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration, canonical tek-tabla CSV exporter.
 - Professional PDF: local A4 planning/renderer contracts, structural inspector, `/Pages /Count` consistency, final EOF + `startxref` + xref-target validation, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection, strong UI↔PDF subject/snapshot parity.
+- Professional PDF preflight preview: exact `PdfReportPlan` üzerinden section order/locale/cover/page-spec/branding taşıyan, byte üretiminden önce çalışan fail-closed preview modeli source-level mevcut.
 
 ## UI / Accessibility — güncel durum
 
@@ -38,7 +39,6 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Backup create/share/import kontrolleri explicit Semantics + 48dp regression altında.
 - [x] Valid backup preview sonrası `Birleştir` / `Değiştir` canonical ACTION-ID, explicit Semantics, 48dp ve deterministic merge→replace focus-order regression altında.
 - [x] UI accessibility evidence ailesi exact MASTER-aware semantic validatorlarla korunuyor.
-- [x] Critical semantics evidence içindeki eski merge/replace blocker'ı gerçek kaynak durumuyla eşitlendi.
 - [ ] Real-device screen-reader/focus-order traversal.
 - [ ] Tüm gerekli ekran/state'lerde 2.0x text-scale overflow/golden regression.
 - [ ] APPROVED UI visual regression.
@@ -47,20 +47,14 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 ## Backup native transport — güncel durum
 
 - [x] Gerçek `BackupSettingsPage` artık `Tam Yedek Oluştur`, `Yedeği Paylaş`, `Yedek Dosyası Seç` yüzeylerini gösteriyor.
-- [x] `ACTION-BACKUP-SHARE` canonical runtime extension ve runtime binding olarak kayıtlı.
-- [x] `ACTION-BACKUP-RESTORE-MERGE` / `ACTION-BACKUP-RESTORE-REPLACE` valid preview state'inde canonical runtime action olarak kayıtlı.
+- [x] `ACTION-BACKUP-SHARE`, restore merge/replace canonical runtime action olarak kayıtlı.
 - [x] Share/merge/replace action'ları FREE, offline-available ve a11y-label-required.
-- [x] UI share action gerçek `BackupApplicationActions.exportAndShare()` sınırını çağırıyor ve `.ruhcode.zip` dosya adı kullanıyor.
-- [x] Kullanıcı native share sheet'i kapattığında normal cancellation state gösteriliyor.
-- [x] Valid preview merge/replace gerçek `BackupImportMode.merge/replace` çağrılarına bağlı.
-- [x] Backup action wording/restore-preview validatorları runtime registry + binding + widget sözleşmesini doğruluyor.
-- [x] `evidence/backup/native_share_transport_contract.json` exact `RC-1300 / RC-1301` sahipliğiyle MASTER-aware audit altında.
-- [x] `evidence/ui/backup_restore_preview_accessibility_contract.json` RC-0832→0839 + RC-1440/1441 sahipliğiyle MASTER-aware structural audit altında.
-- [x] Backup application-service evidence semantic drift düzeltildi: RC-0794 tek-tabla export ve RC-0936/0937/0938 PDF delivery yanlış sahipliği kaldırıldı.
-- [x] Backup application-service exact RC sahipliği ayrı MASTER-aware validator ile kilitlendi.
+- [x] UI share action gerçek `.ruhcode.zip` native paylaşım sınırını çağırıyor.
+- [x] Native share cancellation normal state.
+- [x] Valid preview merge/replace gerçek import mode'larına bağlı.
+- [x] RC-0794 için full backup'tan ayrı canonical UTF-8 tek-tabla CSV exporter source-level mevcut.
 - [ ] Android real-device share-sheet smoke proof.
 - [ ] Android real-device restore focus/screen-reader proof.
-- [ ] iOS dağıtım hedeflenirse iOS share-sheet smoke proof.
 - [ ] Exact visible Backup/UI/Flutter CI SUCCESS.
 
 ## Evidence / requirement audit — güncel durum
@@ -68,13 +62,11 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Genel integrity validator bütün `evidence/**/*.json` dosyalarında RC/path/UTF-8/JSON bütünlüğünü fail-closed doğruluyor.
 - [x] Seçilmiş evidence aileleri exact MASTER-aware semantic ownership altında.
 - [x] UI accessibility için ayrı RC-1441 semantic validator mevcut.
-- [x] Exact UI evidence gate design-token/runtime-theme/text-scale/critical-semantics/restore-preview evidence ailelerini doğruluyor.
-- [x] Backup native transport için ayrı RC-1300/RC-1301 semantic validator mevcut.
-- [x] Backup application-service için ayrı exact semantic validator mevcut.
-- [x] Backup restore preview için RC-0832→0839 + RC-1440/1441 semantic/action validator mevcut.
+- [x] Backup native transport, application-service ve restore-preview exact semantic validatorlar altında.
 - [x] Persisted Western snapshot / technical manifest / PDF service ayrı semantic audit altında.
 - [x] Local PDF renderer evidence exact RC-0950/0951/0953 sahipliği altında; RC-0952 full-parser/open kanıtı gelmeden sahiplenilmiyor.
-- [x] Western production calculation write-boundary structural audit mevcut.
+- [x] PDF report-planning evidence RC-0929'u yanlış sahiplenmiyor.
+- [x] Yeni preflight-preview evidence yalnız exact RC-0929 sahipliğiyle MASTER-aware validator altında ve `done=false`.
 - [ ] Semantic allowlist dışında kalan requirement-bearing evidence aileleri kademeli olarak exact MASTER ownership denetimine alınmaya devam edecek.
 - [ ] Exact görünür CI başarı kanıtı hâlâ yok; combined-status son commitlerde `statuses=[]` dönüyor.
 
@@ -83,9 +75,11 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Western snapshot + SHA + CalculationManifest tek transaction persistence boundary'sine sahip.
 - [x] Persisted Western PDF historical astronomy'yi yeniden hesaplamıyor.
 - [x] Placements / houses / aspects + technical manifest PDF projection source-level mevcut.
-- [x] Structural inspector `/Pages /Count` ile gerçek `/Page` object sayısının birebir eşleşmesini zorunlu kılıyor; missing/mismatched count reddediliyor.
-- [x] Structural inspector final `%%EOF` + `startxref` + in-range xref/XRef target zorunluluğunu getiriyor; trailing junk reddediliyor.
-- [x] UI↔PDF parity yalnız digest değil subject kind + stable subject ID + digest birlikte eşleşecek şekilde güçlendirildi.
+- [x] Structural inspector `/Pages /Count`, final `%%EOF`, `startxref`, xref/XRef target ve `/Root` sınırlarını fail-closed doğruluyor.
+- [x] UI↔PDF parity subject kind + stable subject ID + digest üçlüsüyle korunuyor.
+- [x] RC-0929 için byte üretiminden önce exact report-plan preview modeli source-level mevcut.
+- [ ] RC-0929 preflight preview modelini `SCR-PDF-BUILDER-001` gerçek `Önizle` action/state'ine bağla.
+- [ ] Preview→create aynı exact report-plan parity widget/integration kanıtı.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Independent full-parser/open proof.
 - [ ] Western production vector painter + APPROVED glyph assets.
@@ -113,20 +107,19 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - Play/rewarded-ad gerçek cihaz kanıtları.
 - Airplane-mode + Golden Lifecycle + final 1.442 RC audit.
 
-## Son checkpoint — 2026-08-23 04:55
+## Son checkpoint — 2026-08-23 10:55
 
-Checkpoint: `automation_runs/2026-08-23_0455_pdf_xref_subject_parity_semantic_audit.md`
+Checkpoint: `automation_runs/2026-08-23_1055_pdf_preflight_preview.md`
 
-Bu turda PDF parser sınırı final EOF + startxref + gerçek xref/XRef target doğrulamasına yükseltildi; malformed trailer/offset/junk regresyonları eklendi. UI↔PDF parity subject kind + stable subject ID + SHA snapshot digest üçlüsüne genişletildi. Local PDF evidence exact RC-0950/0951/0953 sahipliğine bağlandı; RC-0952 bağımsız full-parser/open kanıtı gelmeden açık bırakıldı. UI accessibility evidence exact semantic gate'e alındı. Backup application-service evidence'daki RC-0794 ve RC-0936/0937/0938 yanlış sahiplikleri temizlenip exact validator ile kilitlendi.
+Bu turda RC-0929 için demo/sample PDF'den ayrı professional preflight preview modeli eklendi. Preview exact `PdfReportPlan` üzerinden section order, locale, cover style, A4/page spec ve branding bilgisini koruyor; empty/duplicate/unknown planlar fail-closed. Unit test, exact RC-0929 evidence, MASTER-aware validator ve Professional PDF Contract wiring eklendi. Runtime builder `Önizle` action/state bağlantısı henüz yapılmadığı ve exact CI görünmediği için RC-0929 DONE değildir.
 
-Son contract hedef commit `a9560973c2d466dcd10412c92e09b9e5766bd4b8` için GitHub combined-status yine `statuses=[]` döndürdü. Bu yüzden ilgili RC'ler DONE yapılmadı.
+Workflow-target source commit `8cc69aa4f554ef61eda4e999d85136acb2c36d79` için GitHub combined-status yine `statuses=[]` döndürdü.
 
 ## Sıradaki çalışma
 
-1. Remaining backup/PDF requirement-bearing evidence ailelerini semantic RC drift açısından audit et.
-2. Approved font gerektirmeyen PDF snapshot/data parity ve malformed-parser sınırlarını genişlet.
-3. UI/accessibility action coverage'da dead-action / missing semantics kalan yüzeyleri tara.
-4. `pubspec.lock` yalnız gerçek Flutter dependency resolution kanıtı elde edildiğinde ekle.
-5. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
+1. Builder-specific canonical preview ACTION-ID oluştur ve preflight preview modelini `SCR-PDF-BUILDER-001` gerçek state'ine bağla.
+2. Preview → create aynı exact report-plan parity testini ekle.
+3. Remaining backup/PDF requirement-bearing evidence ailelerini semantic RC drift açısından audit et.
+4. Fiziksel artifact/font/UI blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
 **FINAL: NO.**
