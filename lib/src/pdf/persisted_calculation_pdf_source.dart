@@ -1,3 +1,6 @@
+export 'professional_pdf_application_service.dart'
+    show ProfessionalPdfSnapshotSource;
+
 import '../data/local/core_model_codecs.dart';
 import '../data/local/local_database.dart';
 import '../domain/models/core_models.dart';
