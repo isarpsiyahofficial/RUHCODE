@@ -16,6 +16,8 @@ EXPECTED = {
     "evidence/pdf/professional_application_service.json": {
         918, 936, 939, 940, 950, 951, 953, 964, 1085, 1086, 1088, 1089
     },
+    "evidence/pdf/numerology_data_adapter.json": {925},
+    "evidence/pdf/persisted_pythagorean_pdf.json": {925, 964},
 }
 
 KEYWORDS = {
@@ -28,6 +30,7 @@ KEYWORDS = {
     903: "Kombine danışmanlık raporu",
     918: "rapor bölümlerini açıp kapatabilecek",
     919: "bölüm sırası değiştirilebilecek",
+    925: "Numeroloji sonuçları bölümü",
     929: "PDF oluşturulmadan önce önizleme",
     931: "içerik yoksa boş bölüm",
     936: "paylaşım menüsünden PDF",
@@ -46,6 +49,8 @@ KEYWORDS = {
 FORBIDDEN_OWNERSHIP = {
     "evidence/pdf/report_planning_contract.json": {865, 956},
     "evidence/pdf/professional_application_service.json": {952},
+    "evidence/pdf/numerology_data_adapter.json": {875, 903, 954},
+    "evidence/pdf/persisted_pythagorean_pdf.json": {875},
 }
 
 
@@ -101,8 +106,8 @@ def main() -> None:
             raise AssertionError(f"{path}: unresolved PDF requirements must remain open: {sorted(leaked)}")
 
     print(
-        "OK: local renderer, report planning, and professional PDF application evidence "
-        "are bound to exact MASTER ownership; RC-0865/0952/0956 remain open where proof is missing"
+        "OK: PDF renderer/planning/application/numerology evidence is bound to exact MASTER ownership; "
+        "unproven Unicode/open/visual/table requirements remain explicitly open"
     )
 
 
