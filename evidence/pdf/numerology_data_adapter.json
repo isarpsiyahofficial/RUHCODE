@@ -7,10 +7,7 @@
     "test/pdf/pdf_numerology_data_test.dart"
   ],
   "requirements": [
-    "RC-0875",
-    "RC-0903",
-    "RC-0925",
-    "RC-0954"
+    "RC-0925"
   ],
   "invariants": [
     "PDF numerology values are projected from PythagoreanNumerologySnapshot and are not independently recalculated",
@@ -21,6 +18,9 @@
     "translated labels and interpretation prose remain outside calculation identity"
   ],
   "notProvenYet": [
+    "RC-0875 remains open until numerology data is proven as real rendered PDF table output with approved production fonts.",
+    "RC-0903 remains open here because a numerology data adapter alone does not prove a combined multi-system consultation report.",
+    "RC-0954 remains open here because required-text presence must be checked on actual generated PDF bytes, not only source data.",
     "exact Flutter/GitHub Actions SUCCESS for the workflow target commit",
     "production Unicode font artifact and real rendered numerology report",
     "approved numerology PDF visual reference and visual regression",
