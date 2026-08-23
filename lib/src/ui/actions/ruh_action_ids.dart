@@ -31,6 +31,7 @@ abstract final class RuhActionIds {
 
   /// These controls live on SCR-PDF-BUILDER-001. Historical PREVIEW action
   /// IDs must never be used by the professional builder runtime.
+  static const pdfPreflight = 'ACTION-PDF-BUILDER-PREVIEW';
   static const pdfCreate = 'ACTION-PDF-BUILDER-CREATE';
   static const pdfShare = 'ACTION-PDF-BUILDER-SHARE';
 
@@ -61,6 +62,7 @@ abstract final class RuhActionIds {
     settingsBackup,
     pdfPreview,
     pdfBuild,
+    pdfPreflight,
     pdfCreate,
     pdfShare,
     backupExport,
