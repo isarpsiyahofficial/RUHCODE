@@ -32,6 +32,8 @@ jobs:
         run: python tools/requirements/validate_persisted_western_traceability.py
       - name: Validate UI accessibility semantic ownership
         run: python tools/requirements/validate_ui_accessibility_traceability.py
+      - name: Validate backup application-service semantic ownership
+        run: python tools/requirements/validate_backup_application_traceability.py
       - name: Validate backup transport semantic ownership
         run: python tools/requirements/validate_backup_transport_traceability.py
       - name: Validate backup restore preview semantic/action ownership
