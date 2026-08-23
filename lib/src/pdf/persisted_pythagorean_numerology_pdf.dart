@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 
 import '../calculation_core/numerology/pythagorean_snapshot.dart';
 import '../calculation_core/numerology/pythagorean_snapshot_fingerprint.dart';
+import 'pdf_cover_section.dart';
 import 'pdf_data_contract.dart';
 import 'pdf_local_renderer.dart';
 import 'pdf_local_service.dart';
@@ -12,6 +13,7 @@ import 'pdf_numerology_section.dart';
 import 'pdf_report_contract.dart';
 import 'pdf_service.dart';
 import 'persisted_calculation_pdf_source.dart';
+import 'persisted_manifest_section.dart';
 
 /// Production persisted-payload contract for canonical Pythagorean snapshots.
 ///
@@ -264,6 +266,7 @@ final class _PersistedNumerologyContentAdapter
         calculationManifestId: snapshot.manifest.id.value,
       ),
       sections: <PdfSectionDataRef>[
+        PdfCoverSectionAdapter.dataRef(snapshotDigest: parsed.digest),
         PdfSectionDataRef(
           sectionId: PdfSectionIds.numerology,
           snapshotDigest: parsed.digest,
@@ -281,18 +284,31 @@ final class _PersistedNumerologyContentAdapter
   @override
   List<PdfRenderSection> sections(PersistedCalculationPdfSnapshot snapshot) {
     _validateLocale(localeTag);
+    final labels = _labels[localeTag]!;
     final payload = PdfNumerologyPayload(
       dataset: dataset(snapshot),
       snapshotDigest: parsed.digest,
       metricRows: parsed.rows,
     );
     return <PdfRenderSection>[
+      PdfCoverSectionAdapter.build(
+        snapshotDigest: parsed.digest,
+        title: labels['coverTitle']!,
+      ),
       PdfNumerologySectionAdapter.build(
         payload: payload,
-        title: localeTag == 'tr' ? 'Numeroloji Özeti' : 'Numerology Summary',
-        metricHeader: localeTag == 'tr' ? 'Gösterge' : 'Metric',
-        valueHeader: localeTag == 'tr' ? 'Değer' : 'Value',
-        labelForMetric: (metricId) => _labels[localeTag]![metricId] ?? '',
+        title: labels['numerologyTitle']!,
+        metricHeader: labels['metricHeader']!,
+        valueHeader: labels['valueHeader']!,
+        labelForMetric: (metricId) => _metricLabels[localeTag]![metricId] ?? '',
+      ),
+      PersistedManifestSectionAdapter.build(
+        manifest: snapshot.manifest,
+        snapshotDigest: parsed.digest,
+        title: labels['technicalTitle']!,
+        fieldHeader: labels['fieldHeader']!,
+        valueHeader: labels['valueHeader']!,
+        labelForField: (id) => _manifestFieldLabels[localeTag]?[id] ?? '',
       ),
     ];
   }
@@ -304,6 +320,25 @@ final class _PersistedNumerologyContentAdapter
   }
 
   static const Map<String, Map<String, String>> _labels = <String, Map<String, String>>{
+    'tr': <String, String>{
+      'coverTitle': 'Numeroloji Raporu',
+      'numerologyTitle': 'Numeroloji Özeti',
+      'metricHeader': 'Gösterge',
+      'valueHeader': 'Değer',
+      'technicalTitle': 'Hesaplama Bilgileri',
+      'fieldHeader': 'Alan',
+    },
+    'en': <String, String>{
+      'coverTitle': 'Numerology Report',
+      'numerologyTitle': 'Numerology Summary',
+      'metricHeader': 'Metric',
+      'valueHeader': 'Value',
+      'technicalTitle': 'Calculation Details',
+      'fieldHeader': 'Field',
+    },
+  };
+
+  static const Map<String, Map<String, String>> _metricLabels = <String, Map<String, String>>{
     'tr': <String, String>{
       'life_path': 'Yaşam Yolu',
       'expression': 'Kader / İfade',
@@ -335,6 +370,47 @@ final class _PersistedNumerologyContentAdapter
       'personal_year': 'Personal Year',
       'personal_month': 'Personal Month',
       'personal_day': 'Personal Day',
+    },
+  };
+
+  static const _manifestFieldLabels = <String, Map<String, String>>{
+    'tr': <String, String>{
+      'engineId': 'Motor',
+      'engineVersion': 'Motor Sürümü',
+      'algorithmVersion': 'Algoritma Sürümü',
+      'dataVersion': 'Veri Sürümü',
+      'timezoneDatabaseVersion': 'Zaman Dilimi Verisi',
+      'localDateTime': 'Yerel Tarih/Saat',
+      'utcDateTime': 'UTC Tarih/Saat',
+      'locationLabel': 'Konum',
+      'countryCode': 'Ülke Kodu',
+      'latitude': 'Enlem',
+      'longitude': 'Boylam',
+      'ianaTimeZoneId': 'IANA Zaman Dilimi',
+      'validity': 'Geçerlilik',
+      'houseSystemId': 'Ev Sistemi',
+      'zodiacSystemId': 'Zodyak Sistemi',
+      'ayanamshaId': 'Ayanamsha',
+      'nodeModeId': 'Ay Düğümü Modu',
+    },
+    'en': <String, String>{
+      'engineId': 'Engine',
+      'engineVersion': 'Engine Version',
+      'algorithmVersion': 'Algorithm Version',
+      'dataVersion': 'Data Version',
+      'timezoneDatabaseVersion': 'Time Zone Data',
+      'localDateTime': 'Local Date/Time',
+      'utcDateTime': 'UTC Date/Time',
+      'locationLabel': 'Location',
+      'countryCode': 'Country Code',
+      'latitude': 'Latitude',
+      'longitude': 'Longitude',
+      'ianaTimeZoneId': 'IANA Time Zone',
+      'validity': 'Validity',
+      'houseSystemId': 'House System',
+      'zodiacSystemId': 'Zodiac System',
+      'ayanamshaId': 'Ayanamsha',
+      'nodeModeId': 'Node Mode',
     },
   };
 }
