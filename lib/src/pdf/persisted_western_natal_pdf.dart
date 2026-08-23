@@ -1,3 +1,4 @@
+import 'pdf_data_contract.dart';
 import 'pdf_western_chart_geometry.dart';
 import 'persisted_calculation_pdf_source.dart';
 import 'persisted_western_natal_snapshot.dart';
@@ -11,6 +12,7 @@ final class PersistedWesternNatalPdfData {
   const PersistedWesternNatalPdfData({
     required this.recordId,
     required this.ownerEntityId,
+    required this.subjectKind,
     required this.snapshotSha256,
     required this.snapshot,
     required this.geometry,
@@ -18,6 +20,7 @@ final class PersistedWesternNatalPdfData {
 
   final String recordId;
   final String ownerEntityId;
+  final PdfSubjectKind subjectKind;
   final String snapshotSha256;
   final PersistedWesternNatalSnapshot snapshot;
   final PdfWesternChartGeometry geometry;
@@ -56,9 +59,22 @@ abstract final class PersistedWesternNatalPdfReader {
     return PersistedWesternNatalPdfData(
       recordId: persisted.recordId,
       ownerEntityId: persisted.ownerEntityId,
+      subjectKind: _subjectKind(persisted.payload['subjectKind']),
       snapshotSha256: envelope.snapshotSha256,
       snapshot: snapshot,
       geometry: PdfWesternChartGeometryAdapter.fromPersistedSnapshot(snapshot),
+    );
+  }
+
+  static PdfSubjectKind _subjectKind(Object? raw) {
+    // Schema-v1 Western rows created before explicit subject-kind persistence
+    // represented only personal profiles. Preserve those exact rows without
+    // inventing client ownership. New client rows must carry subjectKind.
+    if (raw == null) return PdfSubjectKind.profile;
+    if (raw == 'profile') return PdfSubjectKind.profile;
+    if (raw == 'client') return PdfSubjectKind.client;
+    throw const FormatException(
+      'Persisted Western subjectKind must be profile or client.',
     );
   }
 }
