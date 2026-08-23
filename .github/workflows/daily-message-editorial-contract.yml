@@ -1,0 +1,58 @@
+name: Daily Message Editorial Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/content/daily_messages/**'
+      - 'requirements/content_manifests/daily_messages.json'
+      - 'tools/content/build_daily_message_catalog.py'
+      - 'tools/content/validate_daily_message_catalog.py'
+      - 'tools/content/test_validate_daily_message_catalog.py'
+      - 'tools/content/test_daily_message_shards.py'
+      - '.github/workflows/daily-message-editorial-contract.yml'
+  pull_request:
+    paths:
+      - 'assets/content/daily_messages/**'
+      - 'requirements/content_manifests/daily_messages.json'
+      - 'tools/content/build_daily_message_catalog.py'
+      - 'tools/content/validate_daily_message_catalog.py'
+      - 'tools/content/test_validate_daily_message_catalog.py'
+      - 'tools/content/test_daily_message_shards.py'
+      - '.github/workflows/daily-message-editorial-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  daily-message-editorial-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test daily-message auditor
+        run: python -m unittest tools/content/test_validate_daily_message_catalog.py
+      - name: Test sharded editorial pipeline
+        run: python -m unittest tools/content/test_daily_message_shards.py
+      - name: Compile deterministic partial catalog
+        run: >-
+          python tools/content/build_daily_message_catalog.py
+          --shards-root assets/content/daily_messages
+          --manifest requirements/content_manifests/daily_messages.json
+          --output build/daily_messages.csv
+      - name: Audit current editorial content without relaxing release completeness
+        run: >-
+          python tools/content/validate_daily_message_catalog.py
+          --catalog build/daily_messages.csv
+          --manifest requirements/content_manifests/daily_messages.json
+          --allow-incomplete
+          --report build/daily_messages_editorial_report.json
+      - name: Upload current editorial audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruh-code-daily-message-editorial-audit
+          path: build/daily_messages_editorial_report.json
+          if-no-files-found: error
+          retention-days: 30
