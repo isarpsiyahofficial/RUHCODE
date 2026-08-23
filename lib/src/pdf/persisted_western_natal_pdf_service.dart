@@ -1,3 +1,4 @@
+import 'pdf_cover_section.dart';
 import 'pdf_data_contract.dart';
 import 'pdf_local_renderer.dart';
 import 'pdf_local_service.dart';
@@ -84,6 +85,7 @@ final class _PersistedWesternNatalContentAdapter
         calculationManifestId: snapshot.manifest.id.value,
       ),
       sections: <PdfSectionDataRef>[
+        PdfCoverSectionAdapter.dataRef(snapshotDigest: digest),
         PdfSectionDataRef(
           sectionId: PdfSectionIds.placements,
           snapshotDigest: digest,
@@ -139,6 +141,10 @@ final class _PersistedWesternNatalContentAdapter
     );
 
     return List<PdfRenderSection>.unmodifiable(<PdfRenderSection>[
+      PdfCoverSectionAdapter.build(
+        snapshotDigest: parsed.snapshotSha256,
+        title: labels['coverTitle']!,
+      ),
       ...sections,
       PersistedManifestSectionAdapter.build(
         manifest: snapshot.manifest,
@@ -168,6 +174,7 @@ final class _PersistedWesternNatalContentAdapter
 
   static const _labels = <String, Map<String, String>>{
     'tr': <String, String>{
+      'coverTitle': 'Batı Astrolojisi Doğum Haritası Raporu',
       'placementsTitle': 'Gezegen Yerleşimleri',
       'housesTitle': 'Ev Başlangıçları',
       'aspectsTitle': 'Açılar',
@@ -185,6 +192,7 @@ final class _PersistedWesternNatalContentAdapter
       'valueHeader': 'Değer',
     },
     'en': <String, String>{
+      'coverTitle': 'Western Natal Chart Report',
       'placementsTitle': 'Planet Placements',
       'housesTitle': 'House Cusps',
       'aspectsTitle': 'Aspects',
