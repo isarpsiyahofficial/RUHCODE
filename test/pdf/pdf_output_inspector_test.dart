@@ -14,6 +14,8 @@ void main() {
     int? declaredPageCount,
     bool includeStartXref = true,
     bool includeRoot = true,
+    bool includePageParent = true,
+    int pageParentObjectNumber = 2,
     int rootObjectNumber = 1,
     int catalogPagesObjectNumber = 2,
     int? startXrefOffsetOverride,
@@ -21,7 +23,9 @@ void main() {
   }) {
     final pageObjects = List<String>.generate(
       pageCount,
-      (index) => '${index + 3} 0 obj << /Type /Page /Parent 2 0 R >> endobj',
+      (index) => '${index + 3} 0 obj << /Type /Page '
+          '${includePageParent ? '/Parent $pageParentObjectNumber 0 R ' : ''}'
+          '>> endobj',
     ).join('\n');
     final body =
         '%PDF-1.7\n'
@@ -47,6 +51,9 @@ void main() {
     expect(inspection.pageObjectCount, 1);
     expect(inspection.declaredPageCount, 1);
     expect(inspection.pageTreeCountConsistent, isTrue);
+    expect(inspection.pageParentsPresent, isTrue);
+    expect(inspection.pageParentsResolveToPages, isTrue);
+    expect(inspection.pageParentLinksValid, isTrue);
     expect(inspection.hasStartXref, isTrue);
     expect(inspection.startXrefOffset, isNotNull);
     expect(inspection.startXrefTargetRecognized, isTrue);
@@ -73,6 +80,7 @@ void main() {
     expect(inspection.pageObjectCount, 0);
     expect(inspection.declaredPageCount, 0);
     expect(inspection.pageTreeCountConsistent, isTrue);
+    expect(inspection.pageParentLinksValid, isFalse);
     expect(inspection.structurallyUsable, isFalse);
   });
 
@@ -101,6 +109,25 @@ void main() {
     final inspection = inspector.inspect(malformed);
     expect(inspection.declaredPageCount, isNull);
     expect(inspection.pageTreeCountConsistent, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects a Page object that omits mandatory Parent reference', () {
+    final malformed = fakePdfWithPages(1, includePageParent: false);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.pageObjectCount, 1);
+    expect(inspection.pageParentsPresent, isFalse);
+    expect(inspection.pageParentsResolveToPages, isFalse);
+    expect(inspection.pageParentLinksValid, isFalse);
+    expect(() => inspector.requireUsable(malformed), throwsStateError);
+  });
+
+  test('rejects a Page Parent reference that resolves to non-Pages object', () {
+    final malformed = fakePdfWithPages(1, pageParentObjectNumber: 1);
+    final inspection = inspector.inspect(malformed);
+    expect(inspection.pageParentsPresent, isTrue);
+    expect(inspection.pageParentsResolveToPages, isFalse);
+    expect(inspection.pageParentLinksValid, isFalse);
     expect(() => inspector.requireUsable(malformed), throwsStateError);
   });
 
