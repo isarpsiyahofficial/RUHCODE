@@ -42,8 +42,8 @@ void main() {
       databaseExporter: LocalDatabaseBackupExporter(database: _FakeDatabase(const {})),
     );
 
-    expect(
-      () => exporter.export('made_up.csv'),
+    await expectLater(
+      exporter.export('made_up.csv'),
       throwsA(isA<ArgumentError>()),
     );
   });
