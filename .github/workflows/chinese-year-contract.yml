@@ -40,5 +40,5 @@ jobs:
           cache: true
       - name: Resolve Flutter dependencies
         run: flutter pub get
-      - name: Run Chinese zodiac year regression tests
-        run: flutter test test/calculation_core/chinese/chinese_year_test.dart
+      - name: Run Chinese zodiac regression tests
+        run: flutter test test/calculation_core/chinese
