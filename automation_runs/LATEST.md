@@ -17,16 +17,20 @@ Latest source-level checkpoint:
    - gerçek persisted multi-system composition + production render gelene kadar blocker olarak açık
    - semantic validator bu ownership'in yanlışlıkla geri eklenmesini engelliyor
 
+3. **Professional PDF merkezi Requirements Contract gate**
+   - `tools/pdf/validate_professional_pdf_application.py` artık ana 1.442 requirement workflow'unda da çalışıyor
+   - action-ID drift, RC ownership drift ve professional PDF runtime/source sözleşmesi ana şartname CI kapısında fail-closed
+
 ## Validation limitation
 
 Source-level contract/evidence drift düzeltildi; exact görünür GitHub Actions SUCCESS ve full Flutter/device proof görülmeden requirement durumları DONE yapılmadı.
 
 ## Next safe work
 
-- professional PDF semantic ownership'i merkezi Requirements Contract tarafında daha da sıkılaştır
 - kalan PDF evidence overclaim/drift taramasını sürdür
 - font gerektirmeyen persisted PDF snapshot/data parity testlerini genişlet
 - UI/action/accessibility blocker-dışı işleri ilerlet
+- RC-0903 gerçek multi-system combined report composition gelmeden kapatılmasın
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts, Play/rewarded device proof ve clean-checkout release proof blocker olarak kalır
 
 **FINAL: NO.**
