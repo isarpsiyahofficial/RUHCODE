@@ -109,4 +109,26 @@ final class PdfReportDataValidator {
       throw const FormatException('UI and PDF calculation snapshots do not match.');
     }
   }
+
+  /// Strong UI/PDF identity boundary for client/profile report surfaces.
+  ///
+  /// A matching calculation digest alone is not enough: the UI subject kind
+  /// and stable subject ID must also match the PDF identity so a report cannot
+  /// be accidentally presented under another client/profile identity.
+  void requireUiPdfSubjectAndSnapshotParity({
+    required PdfSubjectKind uiSubjectKind,
+    required String uiSubjectId,
+    required String uiSnapshotDigest,
+    required PdfSnapshotIdentity pdfIdentity,
+  }) {
+    pdfIdentity.validate();
+    if (uiSubjectId.trim().isEmpty) {
+      throw const FormatException('UI PDF subject id cannot be blank.');
+    }
+    if (uiSubjectKind != pdfIdentity.subjectKind ||
+        uiSubjectId != pdfIdentity.subjectId ||
+        uiSnapshotDigest != pdfIdentity.snapshotDigest) {
+      throw const FormatException('UI and PDF subject/snapshot identities do not match.');
+    }
+  }
 }
