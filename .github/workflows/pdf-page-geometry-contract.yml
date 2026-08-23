@@ -1,0 +1,33 @@
+name: PDF Page Geometry Contract
+
+on:
+  push:
+    paths:
+      - 'lib/src/pdf/pdf_page_geometry_inspector.dart'
+      - 'lib/src/pdf/pdf_local_service.dart'
+      - 'test/pdf/pdf_page_geometry_inspector_test.dart'
+      - 'evidence/pdf/page_geometry_contract.json'
+      - 'tools/pdf/validate_pdf_page_geometry_contract.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/pdf-page-geometry-contract.yml'
+  pull_request:
+    paths:
+      - 'lib/src/pdf/pdf_page_geometry_inspector.dart'
+      - 'lib/src/pdf/pdf_local_service.dart'
+      - 'test/pdf/pdf_page_geometry_inspector_test.dart'
+      - 'evidence/pdf/page_geometry_contract.json'
+      - 'tools/pdf/validate_pdf_page_geometry_contract.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/pdf-page-geometry-contract.yml'
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: python tools/pdf/validate_pdf_page_geometry_contract.py
+      - run: flutter pub get
+      - run: flutter test test/pdf/pdf_page_geometry_inspector_test.dart
