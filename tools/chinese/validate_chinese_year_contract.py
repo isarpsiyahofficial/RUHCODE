@@ -9,7 +9,9 @@ ROOT = Path(__file__).resolve().parents[2]
 MASTER = ROOT / 'RUH_CODE_MASTER_SARTNAME.md'
 ADDENDUM = ROOT / 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
 SOURCE = ROOT / 'lib/src/calculation_core/chinese/chinese_year.dart'
+DATASET_SOURCE = ROOT / 'lib/src/calculation_core/chinese/chinese_new_year_dataset.dart'
 TEST = ROOT / 'test/calculation_core/chinese/chinese_year_test.dart'
+DATASET_TEST = ROOT / 'test/calculation_core/chinese/chinese_new_year_dataset_test.dart'
 EVIDENCE = ROOT / 'evidence/chinese/chinese_year_contract.json'
 EXPECTED = {137, 138, 139, 140, 141, 142}
 
@@ -47,7 +49,9 @@ def main() -> None:
             )
 
     source = SOURCE.read_text(encoding='utf-8')
+    dataset_source = DATASET_SOURCE.read_text(encoding='utf-8')
     test = TEST.read_text(encoding='utf-8')
+    dataset_test = DATASET_TEST.read_text(encoding='utf-8')
     payload = json.loads(EVIDENCE.read_text(encoding='utf-8'))
 
     requirements = payload.get('requirements')
@@ -74,10 +78,24 @@ def main() -> None:
     ):
         require(source, token, 'source')
 
+    for token in (
+        'ChineseNewYearDatasetManifest',
+        'expectedSha256',
+        'sha256.convert(bytes).toString()',
+        "decoded['schemaVersion'] != 1",
+        'Duplicate Chinese New Year boundary',
+        'coverage is incomplete',
+        'dataset is missing boundary year',
+        'CivilCalendar.minimumSupportedYear',
+        'CivilCalendar.maximumSupportedYear',
+    ):
+        require(dataset_source, token, 'dataset source')
+
     # RC-0142: basic Chinese zodiac must remain a separate module and must not
     # import the BaZi Four Pillars implementation.
-    if re.search(r"^import\s+['\"][^'\"]*bazi/", source, re.MULTILINE):
-        raise AssertionError('basic Chinese zodiac engine must not import BaZi runtime code')
+    for candidate, label in ((source, 'source'), (dataset_source, 'dataset source')):
+        if re.search(r"^import\s+['\"][^'\"]*bazi/", candidate, re.MULTILINE):
+            raise AssertionError(f'{label}: basic Chinese zodiac engine must not import BaZi runtime code')
 
     for token in (
         'CivilDate(2024, 2, 10)',
@@ -88,6 +106,15 @@ def main() -> None:
         'fails closed when a verified Chinese New Year boundary is unavailable',
     ):
         require(test, token, 'test')
+
+    for token in (
+        'loads a checksum-verified contiguous boundary dataset',
+        'rejects artifact bytes that do not match the immutable SHA-256 manifest',
+        'rejects incomplete year coverage even when checksum is valid',
+        'rejects duplicate boundary years',
+        'production coverage manifest cannot exceed Ruh Code supported civil years',
+    ):
+        require(dataset_test, token, 'dataset test')
 
     fixtures = payload.get('referenceFixtures')
     expected_fixtures = {
@@ -107,8 +134,13 @@ def main() -> None:
     blockers = '\n'.join(str(item) for item in payload.get('remainingBeforeDone', [])).casefold()
     if 'complete verified offline chinese new year boundary dataset' not in blockers:
         raise AssertionError('evidence must keep the full offline boundary dataset blocker explicit')
+    if '1890 through 2110' not in blockers:
+        raise AssertionError('evidence must keep exact 1890-2110 production coverage blocker explicit')
 
-    print('OK: Chinese zodiac year contract preserves 12 animals, element/polarity, exact CNY boundary handling, and BaZi separation')
+    print(
+        'OK: Chinese zodiac year contract preserves 12 animals, element/polarity, exact CNY boundary handling, '
+        'checksum/coverage-validated dataset loading, and BaZi separation'
+    )
 
 
 if __name__ == '__main__':
