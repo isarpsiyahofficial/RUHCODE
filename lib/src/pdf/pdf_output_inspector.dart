@@ -18,6 +18,7 @@ final class PdfOutputInspection {
     required this.hasStartXref,
     required this.startXrefOffset,
     required this.startXrefTargetRecognized,
+    required this.xrefHasRootReference,
   });
 
   final int byteLength;
@@ -30,6 +31,7 @@ final class PdfOutputInspection {
   final bool hasStartXref;
   final int? startXrefOffset;
   final bool startXrefTargetRecognized;
+  final bool xrefHasRootReference;
 
   bool get pageTreeCountConsistent =>
       declaredPageCount != null && declaredPageCount == pageObjectCount;
@@ -44,7 +46,8 @@ final class PdfOutputInspection {
       pageTreeCountConsistent &&
       hasStartXref &&
       startXrefOffset != null &&
-      startXrefTargetRecognized;
+      startXrefTargetRecognized &&
+      xrefHasRootReference;
 }
 
 final class PdfOutputInspector {
@@ -58,6 +61,8 @@ final class PdfOutputInspector {
         bytes[3] == 0x46 &&
         bytes[4] == 0x2D;
 
+    // latin1 preserves a one-code-unit-per-byte mapping, so startxref's byte
+    // offset can be validated directly against String indices here.
     final text = latin1.decode(bytes, allowInvalid: true);
     final pageObjectCount = RegExp(r'/Type\s*/Page(?!s)\b').allMatches(text).length;
     final pagesTreeMatch = RegExp(
@@ -77,6 +82,9 @@ final class PdfOutputInspector {
         : int.tryParse(startXrefMatch.group(1)!);
     final startXrefTargetRecognized = startXrefOffset != null &&
         _pointsToRecognizedXref(text, startXrefOffset);
+    final xrefHasRootReference = startXrefOffset != null &&
+        startXrefTargetRecognized &&
+        _xrefDeclaresRoot(text, startXrefOffset);
 
     return PdfOutputInspection(
       byteLength: bytes.length,
@@ -89,6 +97,7 @@ final class PdfOutputInspector {
       hasStartXref: startXrefMatch != null,
       startXrefOffset: startXrefOffset,
       startXrefTargetRecognized: startXrefTargetRecognized,
+      xrefHasRootReference: xrefHasRootReference,
     );
   }
 
@@ -106,6 +115,23 @@ final class PdfOutputInspector {
     ).hasMatch(tail);
   }
 
+  bool _xrefDeclaresRoot(String text, int offset) {
+    if (offset < 0 || offset >= text.length) {
+      return false;
+    }
+    final tail = text.substring(offset);
+    if (RegExp(r'^xref\b').hasMatch(tail)) {
+      return RegExp(
+        r'^xref\b(?:(?!startxref).)*?trailer\s*<<(?:(?!>>).)*?/Root\s+\d+\s+\d+\s+R\b',
+        dotAll: true,
+      ).hasMatch(tail);
+    }
+    return RegExp(
+      r'^\d+\s+\d+\s+obj\b(?:(?!endobj).)*?/Type\s*/XRef\b(?:(?!endobj).)*?/Root\s+\d+\s+\d+\s+R\b',
+      dotAll: true,
+    ).hasMatch(tail);
+  }
+
   PdfOutputInspection requireUsable(Uint8List bytes) {
     final inspection = inspect(bytes);
     if (!inspection.structurallyUsable) {
@@ -118,7 +144,8 @@ final class PdfOutputInspector {
         'pageCountConsistent=${inspection.pageTreeCountConsistent}, '
         'startXref=${inspection.hasStartXref}, '
         'startXrefOffset=${inspection.startXrefOffset}, '
-        'xrefTarget=${inspection.startXrefTargetRecognized}.',
+        'xrefTarget=${inspection.startXrefTargetRecognized}, '
+        'xrefRoot=${inspection.xrefHasRootReference}.',
       );
     }
     return inspection;
