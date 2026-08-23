@@ -9,9 +9,9 @@ EVIDENCE = ROOT / "evidence/pdf/report_planning_contract.json"
 
 EXPECTED = {
     "RC-0862", "RC-0863", "RC-0868", "RC-0878", "RC-0881", "RC-0898",
-    "RC-0903", "RC-0918", "RC-0919", "RC-0931", "RC-0951", "RC-0964",
+    "RC-0918", "RC-0919", "RC-0931", "RC-0951", "RC-0964",
 }
-MUST_REMAIN_OPEN = {"RC-0865", "RC-0929", "RC-0956"}
+MUST_REMAIN_OPEN = {"RC-0865", "RC-0903", "RC-0929", "RC-0956"}
 
 
 def require(condition: bool, message: str) -> None:
@@ -33,7 +33,6 @@ semantic_checks = {
     878: "A4/Letter benzeri gerçek belge ölçülerine göre layout’u olacak",
     881: "güvenli kenar boşlukları",
     898: "Kapak sayfası profesyonel biçimde oluşturulacak",
-    903: "Kombine danışmanlık raporu birden fazla sistemi kapsayabilecek",
     918: "rapor bölümlerini açıp kapatabilecek",
     919: "bölüm sırası değiştirilebilecek",
     931: "içerik yoksa boş bölüm oluşturulmayacak",
@@ -44,6 +43,16 @@ for number, phrase in semantic_checks.items():
     match = re.search(rf"^{number}\.\s+(.+)$", master, re.MULTILINE)
     require(match is not None, f"RC-{number:04d} missing from MASTER")
     require(phrase in match.group(1), f"RC-{number:04d} semantic text drifted")
+
+# A report-kind enum value is not enough to prove a real multi-system combined
+# consultation report. Keep RC-0903 open until multiple persisted calculation
+# types are composed and rendered together through a production handler.
+combined_match = re.search(r"^903\.\s+(.+)$", master, re.MULTILINE)
+require(combined_match is not None, "RC-0903 missing from MASTER")
+require(
+    "Kombine danışmanlık raporu birden fazla sistemi kapsayabilecek" in combined_match.group(1),
+    "RC-0903 semantic text drifted",
+)
 
 blockers = "\n".join(evidence.get("releaseBlockers", []))
 for rc in MUST_REMAIN_OPEN:
