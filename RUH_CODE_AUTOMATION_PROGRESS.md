@@ -14,6 +14,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Requirements Contract 1.442 satırlık generated matrix'i Actions artifact'i olarak saklayacak.
 - Evidence integrity validator `sources/tests/validators` yanında `source_files/sourceFiles/test_files/testFiles` ve tekil repo-path biçimlerini de doğrular.
 - PDF semantic gate'teki stale RC ownership listeleri güncel evidence dosyalarıyla eşitlendi.
+- `page_geometry_contract.json` artık ayrı MASTER-aware semantic gate ile exact `RC-0878/0879` sahipliğine kilitli.
 
 ## Source-level ilerlemiş ana bloklar
 
@@ -28,7 +29,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Çin Astrolojisi basic year core: 12 hayvan, element, Yin/Yang, exact Chinese New Year boundary, checksum/coverage-validated boundary dataset loader.
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline entitlement snapshot/time anchor, Play lifetime restore composition, rewarded cancel/failure safety.
 - Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
-- Professional PDF: local report planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural PDF inspection, native delivery, strong subject/snapshot parity.
+- Professional PDF: local report planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural PDF inspection, native delivery, strong subject/snapshot parity, serialized page geometry validation.
 
 ## PDF structural — güncel
 
@@ -39,6 +40,8 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - her gerçek `/Type /Page`, indirect `/Parent` taşımak zorunda.
 - her Page Parent exact `/Type /Pages` object/generation'a çözülmek zorunda.
 - missing Parent veya Catalog/non-Pages Parent fail-closed.
+- serialized `/MediaBox` gerçek planlanan sayfa geometrisiyle eşleşmek zorunda; A4 planından Letter çıktısı gibi format drift fail-closed.
+- `RC-0878/0879` page-geometry evidence exact semantic ownership ile merkezi Requirements Contract'a bağlı.
 - dedicated `PDF Structural Contract` workflow source validator + Flutter inspector regressionlarını çalıştıracak.
 - `RC-0952` bağımsız full-parser/open kanıtı olmadan açık.
 
@@ -103,18 +106,17 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 ## Son checkpoint
 
-`automation_runs/2026-08-23_1653_traceability_chinese_year.md`
+`automation_runs/2026-08-23_1853_pdf_page_geometry_traceability.md`
 
-Bu turda requirement matrix provenance, evidence path integrity, PDF Page→Parent→Pages structural gate ve Çin Astrolojisi basic year + boundary dataset sözleşmesi ilerletildi.
+Bu turda PDF page geometry evidence exact `RC-0878/0879` semantic ownership'a kilitlendi ve merkezi Requirements Contract'a bağlandı. Evidence approved-font rendered fixture, visual regression, device-open ve exact CI kanıtı olmadan DONE olamaz.
 
-GitHub combined-status yeni commitlerde yine `statuses=[]` döndürdüğü için hiçbir ilgili requirement DONE yapılmadı.
+Workflow-target commit `6baed733344eb932f34c59cd709b79b975ec1439` için GitHub combined-status yine `statuses=[]` döndürdüğü için hiçbir ilgili requirement DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. 1890–2110 Chinese New Year boundary artifact provenance/licensing stratejisini çöz; sahte dataset ekleme.
+1. Font gerektirmeyen persisted PDF snapshot/data parity regressionlarını genişlet.
 2. Kalan evidence semantic ownership drift auditini sürdür.
-3. Font gerektirmeyen PDF persisted snapshot/data parity regressionlarını genişlet.
-4. UI/action/accessibility blocker-dışı requirement'ları ilerlet.
-5. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
+3. UI/action/accessibility blocker-dışı requirement'ları ilerlet.
+4. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
 
 **FINAL: NO.**
