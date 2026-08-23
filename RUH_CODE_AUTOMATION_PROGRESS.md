@@ -20,7 +20,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - BaZi primitives: stems/branches, sexagenary cycle, Hidden Stems, Five Elements, Yin/Yang, Day Master, Ten Gods.
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline snapshot/time anchor, Google Play lifetime restore composition, rewarded-ad cancel/failure safety.
 - Backup: strict CSV, 15-table schema, SHA/checksum/FK preview, transactional merge/replace/rollback, SQLite importer/exporter, portable `.ruhcode.zip`, native Save As/picker/share, legacy migration.
-- Professional PDF: local A4 planning/renderer contracts, structural inspector, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection.
+- Professional PDF: local A4 planning/renderer contracts, structural inspector, declared `/Pages /Count` consistency, table chunking, native delivery, persisted Pythagorean handler, sealed persisted Western snapshot + technical manifest + section projection.
 
 ## UI / Accessibility — güncel durum
 
@@ -77,6 +77,7 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 - [x] Western snapshot + SHA + CalculationManifest tek transaction persistence boundary'sine sahip.
 - [x] Persisted Western PDF historical astronomy'yi yeniden hesaplamıyor.
 - [x] Placements / houses / aspects + technical manifest PDF projection source-level mevcut.
+- [x] Structural inspector `/Pages /Count` ile gerçek `/Page` object sayısının birebir eşleşmesini zorunlu kılıyor; missing/mismatched count reddediliyor.
 - [ ] Production Unicode TR/EN font binary + lisans + immutable SHA.
 - [ ] Western production vector painter + APPROVED glyph assets.
 - [ ] 5/25/50+ gerçek rendered PDF, parser/crop/glyph/visual regression.
@@ -106,14 +107,14 @@ Bu dosya tekrar eden geliştirme çalışmalarında **güncel** checkpoint'i tut
 
 Checkpoint: `automation_runs/2026-08-23_0252_backup_restore_preview_accessibility.md`
 
-Bu turda valid backup preview sonrası merge/replace canonical action sözleşmesi, explicit Semantics, 48dp hedef, deterministic focus order, widget regression, MASTER-aware evidence ve CI trigger/gate kapsamı eklendi.
+Bu turda valid backup preview sonrası merge/replace canonical action sözleşmesi, explicit Semantics, 48dp hedef, deterministic focus order, widget regression, MASTER-aware evidence ve CI trigger/gate kapsamı eklendi. Ayrıca PDF inspector `/Pages /Count` ile gerçek `/Page` sayısını çaprazlayacak şekilde sertleştirildi; missing veya mismatch fail-closed.
 
-Workflow-target commit `330a9cc307afce51f2bf22a067975ea5c634237a` için GitHub combined-status yine `statuses=[]` döndürdü. Bu yüzden RC-0832→0839, RC-1440 ve RC-1441 DONE yapılmadı.
+Son workflow/contract hedef commit `c6e167453f2d65d28c348ce477d9e49aaba5a846` için GitHub combined-status yine `statuses=[]` döndürdü. Bu yüzden ilgili RC’ler DONE yapılmadı.
 
 ## Sıradaki çalışma
 
 1. Requirement-bearing kalan evidence dosyalarını semantic RC drift açısından audit et ve merkezi gate'e bağlamaya devam et.
-2. Approved font gerektirmeyen PDF structural/page/parity regression kapsamını genişlet.
+2. Approved font gerektirmeyen PDF snapshot/data parity ve parser-boundary regression kapsamını genişlet.
 3. `pubspec.lock` yalnız gerçek Flutter dependency resolution kanıtı elde edildiğinde ekle.
 4. Fiziksel artifact blocker'larında sahte veri/checksum üretme; blocker dışı requirement'larda ilerlemeyi sürdür.
 
