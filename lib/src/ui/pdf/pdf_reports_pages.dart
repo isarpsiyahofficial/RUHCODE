@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../entitlements/feature_access_guard.dart';
 import '../../entitlements/feature_catalog.dart';
+import '../../pdf/pdf_preflight_preview.dart';
+import '../../pdf/pdf_report_contract.dart';
 import '../actions/ruh_action_ids.dart';
 import 'professional_pdf_ui_actions.dart';
 
@@ -151,21 +153,27 @@ class ProfessionalPdfBuilderPage extends StatefulWidget {
 }
 
 class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage> {
-  final _selected = <String>{'chart', 'placements', 'interpretation', 'notes'};
+  final _selected = <String>{
+    PdfSectionIds.chart,
+    PdfSectionIds.placements,
+    PdfSectionIds.interpretation,
+    PdfSectionIds.customNotes,
+  };
   bool _busy = false;
   bool _loadingRecords = false;
   bool _deliveryBusy = false;
   List<ProfessionalPdfUiRecord> _records = const <ProfessionalPdfUiRecord>[];
   String? _selectedRecordId;
   ProfessionalPdfUiBuildResult? _result;
+  _ProfessionalPdfPlanDraft? _previewDraft;
   String? _error;
   String? _deliveryNotice;
 
   static const _sections = <(String, String, String)>[
-    ('chart', 'Harita', 'Hesaplama kaydına bağlı harita ve temel göstergeler'),
-    ('placements', 'Yerleşimler', 'Hesaplanan yerleşim ve tablo bilgileri'),
-    ('interpretation', 'Yorum', 'Seçilen yorum ve açıklama bölümleri'),
-    ('notes', 'Notlar', 'Profesyonelin rapora eklediği notlar'),
+    (PdfSectionIds.chart, 'Harita', 'Hesaplama kaydına bağlı harita ve temel göstergeler'),
+    (PdfSectionIds.placements, 'Yerleşimler', 'Hesaplanan yerleşim ve tablo bilgileri'),
+    (PdfSectionIds.interpretation, 'Yorum', 'Seçilen yorum ve açıklama bölümleri'),
+    (PdfSectionIds.customNotes, 'Notlar', 'Profesyonelin rapora eklediği notlar'),
   ];
 
   ProfessionalPdfRecordActions? get _recordActions =>
@@ -186,6 +194,67 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
           if (_selected.contains(section.$1)) section.$1,
       ];
 
+  String _canonicalLocaleTag() {
+    final languageCode = Localizations.localeOf(context).languageCode.toLowerCase();
+    if (languageCode != 'tr' && languageCode != 'en') {
+      throw FormatException('Desteklenmeyen PDF dili: $languageCode');
+    }
+    return languageCode;
+  }
+
+  ProfessionalPdfUiRecord _selectedRecord() {
+    final recordId = _selectedRecordId;
+    if (recordId == null) {
+      throw const FormatException('Önce kayıtlı bir hesaplama seç.');
+    }
+    return _records.firstWhere(
+      (record) => record.recordId == recordId,
+      orElse: () => throw StateError('Seçilen hesaplama artık mevcut değil.'),
+    );
+  }
+
+  PdfReportKind _reportKindFor(String calculationType) {
+    if (calculationType.startsWith('western.')) return PdfReportKind.western;
+    if (calculationType.startsWith('vedic.')) return PdfReportKind.vedic;
+    if (calculationType.startsWith('numerology.')) return PdfReportKind.numerology;
+    if (calculationType.startsWith('bazi.')) return PdfReportKind.bazi;
+    throw FormatException('Bu hesaplama türü için profesyonel PDF planı tanımlı değil: $calculationType');
+  }
+
+  _ProfessionalPdfPlanDraft _createPlanDraft() {
+    final record = _selectedRecord();
+    final sectionIds = _selectedSectionIds();
+    if (sectionIds.isEmpty) {
+      throw const FormatException('En az bir rapor bölümü seçmelisin.');
+    }
+    final localeTag = _canonicalLocaleTag();
+    final plan = const PdfReportPlanner().build(
+      request: PdfReportRequest(
+        kind: _reportKindFor(record.calculationType),
+        dataOrigin: PdfDataOrigin.user,
+        localeTag: localeTag,
+        coverStyle: PdfCoverStyle.professional,
+        requestedSectionIds: sectionIds,
+      ),
+      availableSections: <PdfSectionInput>[
+        const PdfSectionInput(id: PdfSectionIds.cover, hasContent: true),
+        for (final id in sectionIds) PdfSectionInput(id: id, hasContent: true),
+      ],
+    );
+    return _ProfessionalPdfPlanDraft(
+      recordId: record.recordId,
+      localeTag: localeTag,
+      requestedSectionIds: List<String>.unmodifiable(sectionIds),
+      preview: const PdfPreflightPreviewBuilder().fromPlan(plan),
+    );
+  }
+
+  void _invalidatePlan() {
+    _previewDraft = null;
+    _result = null;
+    _deliveryNotice = null;
+  }
+
   Future<void> _loadRecords() async {
     final source = _recordActions;
     if (source == null) return;
@@ -201,6 +270,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
         if (_selectedRecordId != null &&
             !records.any((record) => record.recordId == _selectedRecordId)) {
           _selectedRecordId = null;
+          _invalidatePlan();
         }
       });
     } catch (error) {
@@ -208,10 +278,29 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
       setState(() {
         _records = const <ProfessionalPdfUiRecord>[];
         _selectedRecordId = null;
+        _invalidatePlan();
         _error = 'Kayıtlı hesaplamalar yüklenemedi: $error';
       });
     } finally {
       if (mounted) setState(() => _loadingRecords = false);
+    }
+  }
+
+  void _previewPdf() {
+    try {
+      final draft = _createPlanDraft();
+      setState(() {
+        _previewDraft = draft;
+        _result = null;
+        _error = null;
+        _deliveryNotice = null;
+      });
+    } catch (error) {
+      setState(() {
+        _previewDraft = null;
+        _result = null;
+        _error = 'PDF önizlemesi hazırlanamadı: $error';
+      });
     }
   }
 
@@ -224,18 +313,22 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
       });
       return;
     }
-    final recordId = _selectedRecordId;
-    if (recordId == null) {
+
+    _ProfessionalPdfPlanDraft currentDraft;
+    try {
+      currentDraft = _createPlanDraft();
+    } catch (error) {
       setState(() {
         _result = null;
-        _error = 'Önce kayıtlı bir hesaplama seç.';
+        _error = 'PDF oluşturulamadı: $error';
       });
       return;
     }
-    if (_selected.isEmpty) {
+    final previewDraft = _previewDraft;
+    if (previewDraft == null || !previewDraft.sameBuildInputAs(currentDraft)) {
       setState(() {
         _result = null;
-        _error = 'En az bir rapor bölümü seçmelisin.';
+        _error = 'PDF oluşturmadan önce güncel rapor planını Önizle.';
       });
       return;
     }
@@ -248,9 +341,9 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
     });
     try {
       final result = await actions.build(
-        recordId: recordId,
-        localeTag: Localizations.localeOf(context).toLanguageTag(),
-        sectionIds: _selectedSectionIds(),
+        recordId: previewDraft.recordId,
+        localeTag: previewDraft.localeTag,
+        sectionIds: previewDraft.requestedSectionIds,
       );
       if (!mounted) return;
       setState(() => _result = result);
@@ -264,8 +357,8 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
 
   Future<void> _sharePdf() async {
     final delivery = _deliveryActions;
-    final recordId = _selectedRecordId;
-    if (delivery == null || recordId == null || _result == null) return;
+    final draft = _previewDraft;
+    if (delivery == null || draft == null || _result == null) return;
     setState(() {
       _deliveryBusy = true;
       _deliveryNotice = null;
@@ -273,9 +366,9 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
     });
     try {
       final result = await delivery.share(
-        recordId: recordId,
-        localeTag: Localizations.localeOf(context).toLanguageTag(),
-        sectionIds: _selectedSectionIds(),
+        recordId: draft.recordId,
+        localeTag: draft.localeTag,
+        sectionIds: draft.requestedSectionIds,
       );
       if (!mounted) return;
       setState(() {
@@ -299,9 +392,26 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
     return '${record.calculationType} · $date';
   }
 
+  String _kindLabel(PdfReportKind kind) => switch (kind) {
+        PdfReportKind.western => 'Batı Astrolojisi',
+        PdfReportKind.vedic => 'Vedik Astroloji',
+        PdfReportKind.numerology => 'Numeroloji',
+        PdfReportKind.bazi => 'BaZi',
+        PdfReportKind.combined => 'Birleşik',
+        PdfReportKind.sample => 'Örnek',
+      };
+
+  String _sectionLabel(String id) {
+    for (final section in _sections) {
+      if (section.$1 == id) return section.$2;
+    }
+    return id;
+  }
+
   @override
   Widget build(BuildContext context) {
     final result = _result;
+    final previewDraft = _previewDraft;
     final recordSourceAvailable = _recordActions != null;
     final deliveryAvailable = _deliveryActions != null;
     return Scaffold(
@@ -334,9 +444,8 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
                   ? null
                   : (value) => setState(() {
                         _selectedRecordId = value;
-                        _result = null;
+                        _invalidatePlan();
                         _error = null;
-                        _deliveryNotice = null;
                       }),
             ),
           const SizedBox(height: 20),
@@ -355,10 +464,47 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
                         } else {
                           _selected.remove(section.$1);
                         }
-                        _result = null;
-                        _deliveryNotice = null;
+                        _invalidatePlan();
+                        _error = null;
                       }),
             ),
+          const SizedBox(height: 12),
+          Semantics(
+            label: 'PDF Önizle',
+            button: true,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 48),
+              child: OutlinedButton.icon(
+                key: const ValueKey(RuhActionIds.pdfPreflight),
+                onPressed: _busy || _loadingRecords || _deliveryBusy ? null : _previewPdf,
+                icon: const Icon(Icons.preview_outlined),
+                label: const Text('Önizle'),
+              ),
+            ),
+          ),
+          if (previewDraft != null) ...[
+            const SizedBox(height: 12),
+            Card(
+              key: const ValueKey('professional-pdf-preflight-preview'),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Rapor Önizlemesi', style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    Text('${_kindLabel(previewDraft.preview.kind)} · ${previewDraft.preview.localeTag.toUpperCase()}'),
+                    Text('A4 · ${previewDraft.preview.pageSpec.widthMm.toInt()} × ${previewDraft.preview.pageSpec.heightMm.toInt()} mm'),
+                    const SizedBox(height: 8),
+                    for (final id in previewDraft.preview.sectionIds)
+                      Text('• ${id == PdfSectionIds.cover ? 'Kapak' : _sectionLabel(id)}'),
+                    const SizedBox(height: 8),
+                    const Text('PDF, bu önizlemede gösterilen aynı kayıt ve bölüm sırasıyla oluşturulur.'),
+                  ],
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           Semantics(
             label: 'PDF Oluştur',
@@ -367,12 +513,18 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
               constraints: const BoxConstraints(minHeight: 48),
               child: FilledButton.icon(
                 key: const ValueKey(RuhActionIds.pdfCreate),
-                onPressed: _busy || _loadingRecords || _deliveryBusy ? null : _buildPdf,
+                onPressed: _busy || _loadingRecords || _deliveryBusy || previewDraft == null
+                    ? null
+                    : _buildPdf,
                 icon: const Icon(Icons.picture_as_pdf_outlined),
                 label: Text(_busy ? 'Oluşturuluyor…' : 'PDF Oluştur'),
               ),
             ),
           ),
+          if (previewDraft == null) ...[
+            const SizedBox(height: 8),
+            const Text('PDF oluşturmadan önce güncel rapor planını önizle.'),
+          ],
           if (_busy || _deliveryBusy) ...[
             const SizedBox(height: 12),
             const LinearProgressIndicator(),
@@ -416,6 +568,29 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
         ],
       ),
     );
+  }
+}
+
+final class _ProfessionalPdfPlanDraft {
+  const _ProfessionalPdfPlanDraft({
+    required this.recordId,
+    required this.localeTag,
+    required this.requestedSectionIds,
+    required this.preview,
+  });
+
+  final String recordId;
+  final String localeTag;
+  final List<String> requestedSectionIds;
+  final PdfPreflightPreview preview;
+
+  bool sameBuildInputAs(_ProfessionalPdfPlanDraft other) {
+    if (recordId != other.recordId || localeTag != other.localeTag) return false;
+    if (requestedSectionIds.length != other.requestedSectionIds.length) return false;
+    for (var i = 0; i < requestedSectionIds.length; i++) {
+      if (requestedSectionIds[i] != other.requestedSectionIds[i]) return false;
+    }
+    return true;
   }
 }
 
