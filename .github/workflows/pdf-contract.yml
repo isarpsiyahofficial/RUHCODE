@@ -36,6 +36,8 @@ jobs:
           python-version: '3.12'
       - name: Validate PDF planning structural contract
         run: python tools/pdf/validate_pdf_report_contract.py
+      - name: Validate PDF preflight preview contract
+        run: python tools/pdf/validate_pdf_preflight_preview.py
       - name: Validate PDF output inspector xref contract
         run: python tools/pdf/validate_pdf_output_inspector.py
       - name: Validate Western PDF vector geometry contract
