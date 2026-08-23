@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'pdf_data_contract.dart';
 import 'pdf_local_renderer.dart';
+import 'pdf_page_geometry_inspector.dart';
 import 'pdf_report_contract.dart';
 import 'pdf_service.dart';
 
@@ -28,13 +29,17 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
     this.planner = const PdfReportPlanner(),
     this.dataValidator = const PdfReportDataValidator(),
     this.renderer = const PdfLocalRenderer(),
+    this.pageGeometryInspector = const PdfPageGeometryInspector(),
   });
+
+  static const double _pointsPerMillimeter = 72.0 / 25.4;
 
   final PdfReportContentAdapter<TSnapshot> adapter;
   final PdfFontBundleProvider fontProvider;
   final PdfReportPlanner planner;
   final PdfReportDataValidator dataValidator;
   final PdfLocalRenderer renderer;
+  final PdfPageGeometryInspector pageGeometryInspector;
 
   @override
   Future<List<int>> buildReport({
@@ -64,7 +69,7 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
     }
 
     final fonts = await fontProvider.loadForLocale(options.localeTag);
-    final bytes = await renderer.render(
+    final bytes = Uint8List.fromList(await renderer.render(
       PdfRenderPayload(
         plan: plan,
         dataset: dataset,
@@ -72,7 +77,13 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
         sections: adapter.sections(snapshot),
         fonts: fonts,
       ),
+    ));
+
+    pageGeometryInspector.requireExpectedGeometry(
+      bytes,
+      expectedWidthPt: plan.pageSpec.widthMm * _pointsPerMillimeter,
+      expectedHeightPt: plan.pageSpec.heightMm * _pointsPerMillimeter,
     );
-    return Uint8List.fromList(bytes);
+    return bytes;
   }
 }
