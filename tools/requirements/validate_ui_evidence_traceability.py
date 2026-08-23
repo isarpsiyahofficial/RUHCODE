@@ -13,6 +13,7 @@ EXPECTED = {
     "evidence/ui/runtime_theme_token_contract.json": {1441},
     "evidence/ui/accessibility_text_scale_contract.json": {1441},
     "evidence/ui/critical_semantics_contract.json": {1441},
+    "evidence/ui/runtime_action_coverage_contract.json": {1440},
     "evidence/ui/backup_restore_preview_accessibility_contract.json": {
         832, 833, 834, 835, 836, 837, 838, 839, 1440, 1441,
     },
@@ -78,7 +79,7 @@ def main() -> None:
             )
 
     print(
-        "OK: exact UI/accessibility evidence ownership validated for "
+        "OK: exact UI/accessibility/action evidence ownership validated for "
         f"{len(EXPECTED)} contracts"
     )
 
