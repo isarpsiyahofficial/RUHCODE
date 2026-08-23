@@ -18,19 +18,34 @@ def main() -> None:
     test = TEST.read_text(encoding="utf-8")
     evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
 
-    require(source, "hasStartXref", "source")
-    require(source, "startXrefOffset", "source")
-    require(source, "startXrefTargetRecognized", "source")
-    require(source, r"startxref\s+(\d+)\s+%%EOF\s*$", "source")
-    require(source, r"^xref\b", "source")
-    require(source, r"/Type\s*/XRef", "source")
-    require(source, "pageTreeCountConsistent", "source")
+    for token in (
+        "hasStartXref",
+        "startXrefOffset",
+        "startXrefTargetRecognized",
+        "xrefHasRootReference",
+        "rootReferenceResolvesToCatalog",
+        "catalogPagesReferenceResolves",
+        "_rootReference",
+        "_catalogPagesReference",
+        "_objectHasType",
+        r"startxref\s+(\d+)\s+%%EOF\s*$",
+        r"^xref\b",
+        r"/Type\s*/XRef",
+        "pageTreeCountConsistent",
+    ):
+        require(source, token, "source")
 
-    require(test, "rejects EOF-only trailer without mandatory startxref", "test")
-    require(test, "rejects startxref offset outside the PDF byte range", "test")
-    require(test, "rejects startxref offset that points to non-xref content", "test")
-    require(test, "rejects junk after final EOF marker", "test")
-    require(test, "page-count gate verifies 50+ page regression fixture", "test")
+    for token in (
+        "rejects EOF-only trailer without mandatory startxref",
+        "rejects startxref offset outside the PDF byte range",
+        "rejects startxref offset that points to non-xref content",
+        "rejects xref trailer that does not declare a Root reference",
+        "rejects Root reference that does not resolve to Catalog object",
+        "rejects Catalog Pages reference that does not resolve to Pages tree",
+        "rejects junk after final EOF marker",
+        "page-count gate verifies 50+ page regression fixture",
+    ):
+        require(test, token, "test")
 
     properties = evidence.get("requiredProperties")
     if not isinstance(properties, list):
@@ -41,6 +56,8 @@ def main() -> None:
         "xref table or xref stream",
         "junk appended after the final eof",
         "pages-tree declared count",
+        "root reference must resolve to the referenced catalog object",
+        "catalog pages reference must resolve to the referenced pages-tree object",
     ):
         if phrase not in joined:
             raise AssertionError(f"evidence: required property missing phrase {phrase!r}")
@@ -48,7 +65,10 @@ def main() -> None:
     if evidence.get("done") is not False:
         raise AssertionError("evidence must remain done=false until independent parser/render proof exists")
 
-    print("OK: PDF structural inspector requires final EOF, startxref, valid xref target, and page-tree count consistency")
+    print(
+        "OK: PDF structural inspector requires final EOF, startxref, valid xref target, "
+        "Root->Catalog->Pages resolution, and page-tree count consistency"
+    )
 
 
 if __name__ == "__main__":
