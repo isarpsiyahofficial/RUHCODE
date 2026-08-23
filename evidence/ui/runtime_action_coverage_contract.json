@@ -1,0 +1,28 @@
+{
+  "contract": "runtime-action-coverage-v1",
+  "status": "SOURCE_LEVEL_IMPLEMENTED",
+  "done": false,
+  "requirements": [
+    "RC-1440"
+  ],
+  "sources": [
+    "ui/runtime_action_bindings.csv",
+    "lib/src/ui/actions/ruh_action_ids.dart",
+    "lib/src/ui/navigation/main_navigation_shell.dart",
+    "lib/src/ui/backup/backup_settings_page.dart",
+    "lib/src/ui/pdf/pdf_reports_pages.dart",
+    "tools/ui/validate_runtime_action_coverage.py"
+  ],
+  "proven_behaviors": [
+    "every canonical RuhActionIds constant has exactly one runtime_action_bindings.csv row",
+    "every runtime binding row resolves to the exact canonical ACTION-ID value",
+    "every declared binding_file exists",
+    "every binding_file contains a live RuhActionIds.<constant> reference so stale/dead manifest rows fail closed",
+    "allRuntimeBindings contains exactly the same canonical constant set as the runtime binding manifest"
+  ],
+  "releaseBlockers": [
+    "Real-device interaction traversal is not yet proven.",
+    "Not every planned non-runtime action in the full registry is implemented yet; this contract covers currently implemented runtime actions only.",
+    "Exact visible GitHub Actions SUCCESS for the current source commit is not yet attached."
+  ]
+}
