@@ -16,6 +16,7 @@ LEGACY_PDF_BUILDER_IDS = {
     'ACTION-PDF-PREVIEW-SHARE',
 }
 CANONICAL_PDF_BUILDER_IDS = {
+    'ACTION-PDF-BUILDER-PREVIEW',
     'ACTION-PDF-BUILDER-CREATE',
     'ACTION-PDF-BUILDER-SHARE',
 }
@@ -78,7 +79,10 @@ def main() -> None:
     bindings = list(csv.DictReader(BINDINGS.open(encoding='utf-8', newline='')))
     seen_actions = set()
     seen_constants = set()
-    allowed_kinds = {'NAVIGATION', 'ROUTE', 'INPUT', 'DATA', 'TOGGLE', 'FILTER', 'BACKUP', 'PDF', 'SHARE'}
+    allowed_kinds = {
+        'NAVIGATION', 'ROUTE', 'INPUT', 'DATA', 'TOGGLE', 'FILTER',
+        'BACKUP', 'PDF', 'SHARE', 'PREVIEW'
+    }
 
     for line, row in enumerate(bindings, 2):
         action_id = row['action_id'].strip()
@@ -136,7 +140,7 @@ def main() -> None:
                 )
 
     if not CANONICAL_PDF_BUILDER_IDS.issubset(seen_actions):
-        die('professional PDF builder must bind canonical create/share action IDs')
+        die('professional PDF builder must bind canonical preview/create/share action IDs')
 
     pdf_source = (ROOT / 'lib/src/ui/pdf/pdf_reports_pages.dart').read_text(encoding='utf-8')
     for legacy_id in LEGACY_PDF_BUILDER_IDS:
