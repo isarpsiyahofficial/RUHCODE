@@ -6,8 +6,11 @@ on:
     paths:
       - 'assets/content/daily_messages/**'
       - 'requirements/content_manifests/daily_messages.json'
+      - 'evidence/content/daily_messages_editorial_progress.json'
       - 'tools/content/build_daily_message_catalog.py'
       - 'tools/content/validate_daily_message_catalog.py'
+      - 'tools/content/validate_daily_message_contract.py'
+      - 'tools/content/validate_daily_message_editorial_progress.py'
       - 'tools/content/test_validate_daily_message_catalog.py'
       - 'tools/content/test_daily_message_shards.py'
       - '.github/workflows/daily-message-editorial-contract.yml'
@@ -15,8 +18,11 @@ on:
     paths:
       - 'assets/content/daily_messages/**'
       - 'requirements/content_manifests/daily_messages.json'
+      - 'evidence/content/daily_messages_editorial_progress.json'
       - 'tools/content/build_daily_message_catalog.py'
       - 'tools/content/validate_daily_message_catalog.py'
+      - 'tools/content/validate_daily_message_contract.py'
+      - 'tools/content/validate_daily_message_editorial_progress.py'
       - 'tools/content/test_validate_daily_message_catalog.py'
       - 'tools/content/test_daily_message_shards.py'
       - '.github/workflows/daily-message-editorial-contract.yml'
@@ -32,6 +38,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate daily-message structural lifecycle contract
+        run: python tools/content/validate_daily_message_contract.py
+      - name: Validate committed editorial progress ledger
+        run: python tools/content/validate_daily_message_editorial_progress.py
       - name: Test daily-message auditor
         run: python -m unittest tools/content/test_validate_daily_message_catalog.py
       - name: Test sharded editorial pipeline
