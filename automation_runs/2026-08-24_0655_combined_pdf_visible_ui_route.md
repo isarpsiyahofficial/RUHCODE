@@ -8,6 +8,7 @@
 - Gerçek subject seçimi (`profile` / `client`) production combined catalog üzerinden geliyor.
 - Aynı subject için persisted calculation kayıtları çoklu seçilebiliyor.
 - Kombine rapor için yalnız iki kayıt değil, en az iki **farklı calculation sistemi** zorunlu hale getirildi.
+- Subject discovery de iki aynı-system kaydı kombine rapora uygun subject olarak göstermiyor.
 - Western + Pythagorean için seçilebilir gerçek handler bölümleri UI'da gösteriliyor.
 - Subject/record/locale/section değişikliği sealed preview token'ı geçersiz kılıyor.
 - Preview kartı exact systems, sections, locale ve combined snapshot digest'i gösteriyor.
@@ -18,6 +19,7 @@
 - `Profil → Ayarlar → Kombine PDF Raporu` görünür action'ı eklendi.
 - Route açılmadan önce canonical `pdf.professional_export` PRO guard kontrol ediliyor.
 - Free kullanıcı için route fail-closed kalıyor.
+- Ayrı widget regression Free kullanıcının route'a giremediğini ve PRO kullanıcının gerçek builder route'una ulaştığını doğruluyor.
 
 ### Exact preview-token native delivery
 
@@ -49,8 +51,11 @@ Hepsi action registry + runtime binding manifestine bağlandı. Critical control
   - exact sealed preview'ın share adapterına aktarılması,
   - 48dp kritik action kontrolü,
   - 2.0x text-scale smoke contract.
-- `validate_combined_pdf_ui_runtime.py` görünür page/route, PRO guard, runtime delivery binding, action registry ve widget testlerini zorunlu kılacak şekilde genişletildi.
-- `Combined PDF UI Runtime Contract` workflow'u iki Flutter testini birlikte çalıştıracak şekilde genişletildi.
+- `combined_pdf_route_entitlement_test.dart` eklendi:
+  - Free route reddi,
+  - PRO route erişimi.
+- `validate_combined_pdf_ui_runtime.py` görünür page/route, PRO guard, runtime delivery binding, action registry ve üç widget/state test ailesini zorunlu kılacak şekilde genişletildi.
+- `Combined PDF UI Runtime Contract` workflow'u üç Flutter testini birlikte çalıştıracak şekilde genişletildi.
 - Aynı validator merkezi `Requirements Contract` içine de bağlandı.
 
 ## Requirement durumu
@@ -63,7 +68,7 @@ Hepsi action registry + runtime binding manifestine bağlandı. Critical control
 
 ## Validation limitation
 
-Requirements workflow-target commit `8f5271d45865d00fb6ae405e7cdb7aae6ac9bf4a` için GitHub combined status yine `statuses=[]` döndürdü. Exact visible CI SUCCESS olmadığı için TESTED/VERIFIED/DONE seviyesi uydurulmadı.
+Latest dedicated workflow-target commit `eb56f4a6317f46c440a82215444361381689e210` için GitHub combined status `statuses=[]` döndürdü. Exact visible CI SUCCESS olmadığı için TESTED/VERIFIED/DONE seviyesi uydurulmadı.
 
 ## Açık blocker'lar
 
@@ -79,8 +84,8 @@ Requirements workflow-target commit `8f5271d45865d00fb6ae405e7cdb7aae6ac9bf4a` i
 
 1. Combined builder'ın selected-system sayısını UI disabled-state'e de bağla; same-system selection hata butonu yerine önceden anlaşılır olsun.
 2. Combined builder TR/EN section labels'ı tam locale-aware yap; mevcut section catalog TR label alanını EN'de göstermesin.
-3. Combined route için Free/PRO route widget regression ekle.
-4. Combined UI evidence'ı semantic traceability family içinde exact RC ownership ile yeniden kontrol et.
+3. Combined UI evidence'ı semantic traceability family içinde exact RC ownership ile yeniden kontrol et.
+4. RC-0905'i persisted Vedik PDF sistemi olmadan sahiplenme.
 5. Blocker gerektirmeyen PDF/UI/accessibility işlerine devam et.
 
 **FINAL: NO.**
