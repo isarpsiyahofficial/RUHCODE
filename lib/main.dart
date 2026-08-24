@@ -21,6 +21,11 @@ Future<void> main() async {
       catalog: runtime.professionalPdfSnapshotSource,
     ),
   );
+  CombinedProfessionalPdfUiRuntimeBindings.bindDelivery(
+    CombinedProfessionalPdfDeliveryApplicationActions(
+      service: runtime.combinedProfessionalPdfDelivery,
+    ),
+  );
   runApp(
     RuhCodeApp(
       featureAccess: runtime.featureAccess,
