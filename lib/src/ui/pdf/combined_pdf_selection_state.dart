@@ -4,8 +4,8 @@ import 'combined_professional_pdf_ui_actions.dart';
 /// Deterministic state controller for a multi-record professional PDF UI.
 ///
 /// Any input that contributes to the sealed preview token invalidates that
-/// preview immediately. Build is allowed only when current record/locale/
-/// section state is byte-for-byte equivalent to the preview input.
+/// preview immediately. Build or native delivery is allowed only when current
+/// record/locale/section state is byte-for-byte equivalent to the preview input.
 final class CombinedPdfSelectionState {
   CombinedPdfSelectionState({required this.actions});
 
@@ -101,7 +101,17 @@ final class CombinedPdfSelectionState {
     return preview;
   }
 
+  /// Returns the exact sealed preview only when the current selection still
+  /// matches it. Native Save As/share must call this before delivery so it
+  /// cannot bypass preview invalidation rules.
+  CombinedPdfUiPreview sealedPreviewForDelivery() => _validateCurrentPreview();
+
   Future<List<int>> build() {
+    final current = _validateCurrentPreview();
+    return actions.build(preview: current);
+  }
+
+  CombinedPdfUiPreview _validateCurrentPreview() {
     final current = _preview;
     if (current == null) {
       throw const StateError('Create a current combined PDF preview before build.');
@@ -114,7 +124,7 @@ final class CombinedPdfSelectionState {
       _preview = null;
       throw const StateError('Combined PDF selection changed after preview.');
     }
-    return actions.build(preview: current);
+    return current;
   }
 
   List<String> _orderedSelectedRecordIds() => <String>[
