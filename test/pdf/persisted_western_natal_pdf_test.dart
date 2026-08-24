@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/domain/ids/entity_id.dart';
 import 'package:ruh_code/src/domain/models/core_models.dart';
+import 'package:ruh_code/src/pdf/pdf_data_contract.dart';
 import 'package:ruh_code/src/pdf/persisted_calculation_pdf_source.dart';
 import 'package:ruh_code/src/pdf/persisted_western_natal_pdf.dart';
 import 'package:ruh_code/src/pdf/persisted_western_natal_snapshot.dart';
@@ -19,43 +20,18 @@ PersistedWesternNatalSnapshot _westernSnapshot({
       requestedHouseSystem: 'EQUAL',
       effectiveHouseSystem: 'EQUAL',
       houseCuspsDeg: const <double>[
-        90,
-        120,
-        150,
-        180,
-        210,
-        240,
-        270,
-        300,
-        330,
-        0,
-        30,
-        60,
+        90, 120, 150, 180, 210, 240, 270, 300, 330, 0, 30, 60,
       ],
       placements: const <PersistedWesternNatalPlacement>[
         PersistedWesternNatalPlacement(
-          body: 'sun',
-          longitudeDeg: 45,
-          houseNumber: 11,
-          motion: 'direct',
-        ),
+          body: 'sun', longitudeDeg: 45, houseNumber: 11, motion: 'direct'),
         PersistedWesternNatalPlacement(
-          body: 'moon',
-          longitudeDeg: 165,
-          houseNumber: 3,
-          motion: 'direct',
-        ),
+          body: 'moon', longitudeDeg: 165, houseNumber: 3, motion: 'direct'),
       ],
       aspects: const <PersistedWesternNatalAspect>[
         PersistedWesternNatalAspect(
-          bodyA: 'sun',
-          bodyB: 'moon',
-          type: 'trine',
-          exactAngleDeg: 120,
-          separationDeg: 120,
-          deltaFromExactDeg: 0,
-          allowedOrbDeg: 7,
-        ),
+          bodyA: 'sun', bodyB: 'moon', type: 'trine', exactAngleDeg: 120,
+          separationDeg: 120, deltaFromExactDeg: 0, allowedOrbDeg: 7),
       ],
     );
 
@@ -73,12 +49,8 @@ CalculationManifest _manifest({
       localDateTime: DateTime(2026, 8, 22, 12),
       utcDateTime: DateTime.utc(2026, 8, 22, 9),
       location: const LocationRecord(
-        label: 'İstanbul',
-        countryCode: 'TR',
-        latitude: 41.0082,
-        longitude: 28.9784,
-        ianaTimeZoneId: 'Europe/Istanbul',
-      ),
+        label: 'İstanbul', countryCode: 'TR', latitude: 41.0082,
+        longitude: 28.9784, ianaTimeZoneId: 'Europe/Istanbul'),
       validity: CalculationValidity.valid,
       houseSystemId: 'EQUAL',
       zodiacSystemId: 'TROPICAL',
@@ -89,14 +61,17 @@ PersistedCalculationPdfSnapshot _persisted({
   String manifestEngineVersion = 'western-engine-1',
   String manifestAlgorithmVersion = 'western-natal-1',
   String manifestDataVersion = 'ephemeris-1',
+  Object? subjectKind,
 }) {
   final western = _westernSnapshot();
   final envelope = PersistedWesternNatalEnvelope.seal(western);
+  final payload = Map<String, Object?>.from(envelope.toCalculationResult());
+  if (subjectKind != null) payload['subjectKind'] = subjectKind;
   return PersistedCalculationPdfSnapshot(
     recordId: 'calc-1',
     ownerEntityId: 'profile-1',
     calculationType: calculationType,
-    payload: Map<String, Object?>.from(envelope.toCalculationResult()),
+    payload: payload,
     createdAtUtc: DateTime.utc(2026, 8, 22, 9),
     manifest: _manifest(
       engineVersion: manifestEngineVersion,
@@ -109,12 +84,33 @@ PersistedCalculationPdfSnapshot _persisted({
 void main() {
   test('reader returns fingerprinted geometry from exact persisted snapshot', () {
     final data = PersistedWesternNatalPdfReader.read(_persisted());
-
     expect(data.recordId, 'calc-1');
+    expect(data.subjectKind, PdfSubjectKind.profile);
     expect(data.snapshotSha256, data.snapshot.sha256Hex);
     expect(data.geometry.houseRays, hasLength(12));
     expect(data.geometry.planetMarkers, hasLength(2));
     expect(data.geometry.aspectChords, hasLength(1));
+  });
+
+  test('explicit client subject kind survives persisted Western read', () {
+    final data = PersistedWesternNatalPdfReader.read(
+      _persisted(subjectKind: 'client'),
+    );
+    expect(data.subjectKind, PdfSubjectKind.client);
+  });
+
+  test('legacy missing subject kind remains profile instead of guessing client', () {
+    final data = PersistedWesternNatalPdfReader.read(_persisted());
+    expect(data.subjectKind, PdfSubjectKind.profile);
+  });
+
+  test('invalid persisted subject kind fails closed', () {
+    expect(
+      () => PersistedWesternNatalPdfReader.read(
+        _persisted(subjectKind: 'professional'),
+      ),
+      throwsFormatException,
+    );
   });
 
   test('wrong calculation type fails closed', () {
