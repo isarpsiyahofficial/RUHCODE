@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EVIDENCE = ROOT / 'evidence/pdf/persisted_combined_projection.json'
 ACTIONS = ROOT / 'lib/src/ui/pdf/combined_professional_pdf_ui_actions.dart'
 STATE = ROOT / 'lib/src/ui/pdf/combined_pdf_selection_state.dart'
+DELIVERY = ROOT / 'lib/src/pdf/combined_professional_pdf_delivery_service.dart'
 RUNTIME = ROOT / 'lib/src/app/app_runtime.dart'
 MAIN = ROOT / 'lib/main.dart'
 TEST = ROOT / 'test/ui/pdf/combined_pdf_selection_state_test.dart'
@@ -19,6 +20,7 @@ def main() -> None:
     evidence = json.loads(EVIDENCE.read_text(encoding='utf-8'))
     actions = ACTIONS.read_text(encoding='utf-8')
     state = STATE.read_text(encoding='utf-8')
+    delivery = DELIVERY.read_text(encoding='utf-8')
     runtime = RUNTIME.read_text(encoding='utf-8')
     main = MAIN.read_text(encoding='utf-8')
     test = TEST.read_text(encoding='utf-8')
@@ -51,9 +53,22 @@ def main() -> None:
         require(token in state, f'Missing combined selection-state token: {token}')
 
     for token in [
+        'CombinedProfessionalPdfDeliveryService',
+        'application.buildFromPreview',
+        'platform.savePdf',
+        'platform.sharePdf',
+        'CombinedPdfDeliveryStatus.cancelled',
+        'CombinedPdfDeliveryStatus.unavailable',
+    ]:
+        require(token in delivery, f'Missing combined native-delivery token: {token}')
+
+    for token in [
         'CombinedProfessionalPdfApplicationService',
         'PersistedCombinedPdfProjectionSource',
         'combinedProfessionalPdf',
+        'combinedProfessionalPdfDelivery',
+        'CombinedProfessionalPdfDeliveryService',
+        'NativePdfPlatformGateway',
         'UnavailablePdfService<PdfCombinedReportProjection>',
     ]:
         require(token in runtime, f'Missing combined runtime token: {token}')
@@ -74,7 +89,7 @@ def main() -> None:
     for rel in evidence.get('sources', []) + evidence.get('tests', []) + evidence.get('validators', []):
         require((ROOT / rel).is_file(), f'Combined evidence path missing: {rel}')
 
-    print('Combined PDF runtime/UI selection contract: OK')
+    print('Combined PDF runtime/UI selection/native-delivery contract: OK')
 
 
 if __name__ == '__main__':
