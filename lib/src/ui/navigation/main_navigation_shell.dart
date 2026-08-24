@@ -434,6 +434,18 @@ class _SettingsPage extends StatelessWidget {
   final FeatureAccessGuard featureAccess;
   final BackupApplicationActions? backupActions;
 
+  Future<void> _openCombined(BuildContext context) async {
+    final decision = await featureAccess.forRoute(RuhFeatureIds.pdfProfessionalExport);
+    if (!context.mounted) return;
+    if (!decision.allowed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kombine PDF raporu PRO kullanıcılar içindir.')),
+      );
+      return;
+    }
+    await Navigator.of(context).pushNamed<void>('/pdf/combined');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -464,6 +476,16 @@ class _SettingsPage extends StatelessWidget {
                 context,
                 PdfReportsHubPage(featureAccess: featureAccess),
               ),
+            ),
+          ),
+          Card(
+            child: _ActionListTile(
+              actionId: RuhActionIds.pdfCombined,
+              title: 'Kombine PDF Raporu',
+              subtitle: 'Aynı kişiye ait Batı Astrolojisi ve Numeroloji kayıtlarını tek raporda birleştir',
+              icon: Icons.library_books_outlined,
+              trailing: const Icon(Icons.lock_outline),
+              onTap: () => _openCombined(context),
             ),
           ),
         ],
