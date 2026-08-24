@@ -8,6 +8,9 @@ DART_TEST = ROOT / 'test/content/daily_message_catalog_test.dart'
 MANIFEST = ROOT / 'requirements/content_manifests/daily_messages.json'
 AUDITOR = ROOT / 'tools/content/validate_daily_message_catalog.py'
 AUDITOR_TEST = ROOT / 'tools/content/test_validate_daily_message_catalog.py'
+BUILDER = ROOT / 'tools/content/build_daily_message_catalog.py'
+APPENDER = ROOT / 'tools/content/append_daily_message_batch.py'
+APPENDER_TEST = ROOT / 'tools/content/test_append_daily_message_batch.py'
 
 
 def read(path: Path) -> str:
@@ -22,6 +25,9 @@ try:
     manifest = json.loads(read(MANIFEST))
     auditor = read(AUDITOR)
     auditor_test = read(AUDITOR_TEST)
+    builder = read(BUILDER)
+    appender = read(APPENDER)
+    appender_test = read(APPENDER_TEST)
 
     for token in (
         'DailyMessageEntry',
@@ -56,6 +62,24 @@ try:
         'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT',
         'RELEASE_AUDIT_COMPLETE',
     }, f"unsupported daily-message lifecycle status: {manifest['status']!r}"
+
+    storage = manifest['storage']
+    assert storage['model'] == 'locale_period_csv_shards'
+    assert storage['shards_root'] == 'assets/content/daily_messages'
+    assert storage['shard_patterns'] == ['{locale}/{year}.csv', '{locale}/{year}-{month}.csv']
+    assert storage['compiler'] == 'tools/content/build_daily_message_catalog.py'
+    assert storage['release_audit_must_be_complete'] is True
+
+    for token in ('SHARD_FILE', 'date {row["date"]!r} does not match shard month', 'Duplicate exact daily-message key across shards'):
+        assert token in builder, f'missing period-shard compiler token: {token}'
+    for token in ('append_paired_batch', "f'{year:04d}-{month:02d}.csv'", 'batch overlaps committed dates'):
+        assert token in appender, f'missing safe paired batch appender token: {token}'
+    for token in (
+        'test_appends_paired_contiguous_batch_to_month_shards_and_updates_ledger',
+        'test_rejects_gap_without_mutating_shards_or_evidence',
+        'test_rejects_mismatched_language_date_ranges',
+    ):
+        assert token in appender_test, f'missing paired batch appender test: {token}'
 
     gates = set(manifest['quality_gates'])
     for gate in (
@@ -103,4 +127,4 @@ except (AssertionError, KeyError, json.JSONDecodeError) as exc:
     print(f'daily message contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('daily message contract OK: exact-date TR/EN lookup, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
+print('daily message contract OK: exact-date TR/EN lookup, scalable deterministic period shards, safe paired append, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
