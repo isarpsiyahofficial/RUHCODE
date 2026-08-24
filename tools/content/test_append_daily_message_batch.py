@@ -55,7 +55,7 @@ class AppendDailyMessageBatchTest(unittest.TestCase):
         en_batch = root / 'en_batch.csv'
         return shards, evidence, tr_batch, en_batch, temp
 
-    def test_appends_paired_contiguous_batch_and_updates_ledger(self) -> None:
+    def test_appends_paired_contiguous_batch_to_month_shards_and_updates_ledger(self) -> None:
         shards, evidence, tr_batch, en_batch, temp = self.fixture()
         self.addCleanup(temp.cleanup)
         write_csv(tr_batch, [row('2026-01-03', 'tr', 'three'), row('2026-01-04', 'tr', 'four')])
@@ -73,12 +73,15 @@ class AppendDailyMessageBatchTest(unittest.TestCase):
         self.assertEqual(summary.end, '2026-01-04')
         self.assertEqual(summary.records_per_locale, 2)
         self.assertEqual(summary.total_records_after, 8)
+        self.assertTrue(summary.target_shards[0].endswith('/tr/2026-01.csv'))
+        self.assertTrue(summary.target_shards[1].endswith('/en/2026-01.csv'))
         updated = json.loads(evidence.read_text(encoding='utf-8'))['currentReviewedCoverage']
         self.assertEqual(updated['tr']['records'], 4)
         self.assertEqual(updated['en']['records'], 4)
         self.assertEqual(updated['totalRecords'], 8)
-        self.assertEqual(len(list(csv.DictReader((shards / 'tr/2026.csv').open(encoding='utf-8')))), 4)
-        self.assertEqual(len(list(csv.DictReader((shards / 'en/2026.csv').open(encoding='utf-8')))), 4)
+        self.assertEqual(len(list(csv.DictReader((shards / 'tr/2026.csv').open(encoding='utf-8')))), 2)
+        self.assertEqual(len(list(csv.DictReader((shards / 'tr/2026-01.csv').open(encoding='utf-8')))), 2)
+        self.assertEqual(len(list(csv.DictReader((shards / 'en/2026-01.csv').open(encoding='utf-8')))), 2)
 
     def test_rejects_gap_without_mutating_shards_or_evidence(self) -> None:
         shards, evidence, tr_batch, en_batch, temp = self.fixture()
@@ -100,6 +103,8 @@ class AppendDailyMessageBatchTest(unittest.TestCase):
 
         self.assertEqual((shards / 'tr/2026.csv').read_text(encoding='utf-8'), before_tr)
         self.assertEqual((shards / 'en/2026.csv').read_text(encoding='utf-8'), before_en)
+        self.assertFalse((shards / 'tr/2026-01.csv').exists())
+        self.assertFalse((shards / 'en/2026-01.csv').exists())
         self.assertEqual(evidence.read_text(encoding='utf-8'), before_evidence)
 
     def test_rejects_mismatched_language_date_ranges(self) -> None:
@@ -107,6 +112,31 @@ class AppendDailyMessageBatchTest(unittest.TestCase):
         self.addCleanup(temp.cleanup)
         write_csv(tr_batch, [row('2026-01-03', 'tr', 'three')])
         write_csv(en_batch, [row('2026-01-03', 'en', 'THREE'), row('2026-01-04', 'en', 'FOUR')])
+
+        with self.assertRaises(BatchAppendError):
+            append_paired_batch(
+                shards_root=shards,
+                evidence_path=evidence,
+                tr_batch=tr_batch,
+                en_batch=en_batch,
+                year=2026,
+            )
+
+    def test_rejects_batch_spanning_two_months(self) -> None:
+        shards, evidence, tr_batch, en_batch, temp = self.fixture()
+        self.addCleanup(temp.cleanup)
+        # Move committed coverage to the end of January.
+        for locale in ('tr', 'en'):
+            write_csv(shards / locale / '2026.csv', [row('2026-01-31', locale, 'last')])
+        current = json.loads(evidence.read_text(encoding='utf-8'))
+        for locale in ('tr', 'en'):
+            current['currentReviewedCoverage'][locale] = {
+                'start': '2026-01-31', 'end': '2026-01-31', 'records': 1,
+            }
+        current['currentReviewedCoverage']['totalRecords'] = 2
+        evidence.write_text(json.dumps(current), encoding='utf-8')
+        write_csv(tr_batch, [row('2026-02-01', 'tr', 'one'), row('2026-03-01', 'tr', 'two')])
+        write_csv(en_batch, [row('2026-02-01', 'en', 'ONE'), row('2026-03-01', 'en', 'TWO')])
 
         with self.assertRaises(BatchAppendError):
             append_paired_batch(
