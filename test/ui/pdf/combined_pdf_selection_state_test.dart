@@ -118,7 +118,7 @@ final class _FakeCombinedActions implements CombinedProfessionalPdfUiActions {
         localeTag: localeTag,
         subjectKind: PdfSubjectKind.profile,
         subjectId: 'profile-1',
-        compositeSnapshotDigest: 'a' * 64,
+        compositeSnapshotDigest: List<String>.filled(64, 'a').join(),
         memberSystemIds: const <String>['western.natal', 'numerology.pythagorean'],
         sectionIds: List<String>.unmodifiable(<String>['cover', ...sectionIds]),
       ),
