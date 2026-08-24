@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../backup/backup_application_service.dart';
 import '../entitlements/feature_access_guard.dart';
 import '../ui/navigation/main_navigation_shell.dart';
+import '../ui/pdf/combined_pdf_builder_page.dart';
 import '../ui/theme/ruh_design_tokens.dart';
 
 class RuhCodeApp extends StatelessWidget {
@@ -11,6 +12,8 @@ class RuhCodeApp extends StatelessWidget {
     required this.featureAccess,
     required this.backupActions,
   });
+
+  static const combinedPdfRoute = '/pdf/combined';
 
   final FeatureAccessGuard featureAccess;
   final BackupApplicationActions backupActions;
@@ -21,6 +24,9 @@ class RuhCodeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Ruh Code',
       theme: RuhAppTheme.light(),
+      routes: <String, WidgetBuilder>{
+        combinedPdfRoute: (_) => const CombinedProfessionalPdfBuilderPage(),
+      },
       home: MainNavigationShell(
         featureAccess: featureAccess,
         backupActions: backupActions,
