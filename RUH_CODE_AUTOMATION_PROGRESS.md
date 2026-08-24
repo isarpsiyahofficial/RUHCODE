@@ -7,11 +7,10 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 ## Requirement traceability — güncel
 
 - Kapsam exact `RC-0001 → RC-1442`.
-- `requirement_state.csv` sparse explicit override ledger'ıdır.
 - Evidence yalnız ilgili RC'yi en fazla `IMPLEMENTED` seviyesine çıkarabilir; source-level kanıt otomatik TESTED/VERIFIED/DONE üretmez.
 - Repository-wide evidence integrity, semantic ownership ve matrix provenance kapıları aktiftir.
 - PDF/backup/UI/Western/combined semantic validator'ları merkezi Requirements Contract'a bağlıdır.
-- Visible combined PDF runtime/action/accessibility validator'ı da merkezi Requirements Contract'a bağlandı.
+- Visible combined PDF runtime/action/accessibility validator'ı da merkezi Requirements Contract'a bağlıdır.
 
 ## Source-level ilerlemiş ana bloklar
 
@@ -27,46 +26,41 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline entitlement snapshot/time anchor, Play lifetime restore composition, rewarded cancel/failure safety.
 - Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
 - Professional PDF: local planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural inspection, native delivery, subject/snapshot parity ve page geometry validation.
-- Combined PDF: persisted Western + Pythagorean projection, localized system separation, guarded multi-record preview/build application service, visible multi-select route, sealed-preview native Save As/share ve action/accessibility sözleşmesi.
+- Combined PDF: persisted Western + Pythagorean projection, localized system separation, guarded multi-record preview/build, görünür Flutter route, exact-preview native delivery ve action/accessibility sözleşmesi.
 
 ## Combined PDF — güncel
 
 `RC-0903` ve `RC-0904` source-level evidence altında, DONE değil:
 
 - en az iki **farklı calculation system** zorunlu,
-- aynı kişide iki aynı-system kayıt olması kombine rapor için yeterli değil,
+- iki aynı-system kayıt subject discovery, selection-state ve visible Preview disabled-state seviyesinde yeterli sayılmıyor,
 - child calculations PDF sırasında yeniden hesaplanmıyor,
 - exact persisted Western + Pythagorean snapshot/provenance doğrulanıyor,
-- yeni Western kayıtları explicit `subjectKind=profile|client` saklıyor,
-- legacy Western subjectKind'sız kayıt yalnız profile kabul ediliyor,
 - tüm member snapshot'lar aynı stable `subjectKind + subjectId` değerine ait olmalı,
-- candidate subject discovery en az iki distinct system şartını önceden uygular,
 - child digest/collision/shared-section kontrolleri fail-closed,
 - exact child identities deterministic combined SHA-256 üretiyor,
-- TR/EN child başlıkları açık `Batı Astrolojisi / Western Astrology` ve `Numeroloji / Numerology` prefix'i taşıyor,
+- TR/EN child ve visible section başlıkları ayrı,
 - combined application service canonical `pdf.professional_export` PRO guard kullanıyor,
 - preview exact record IDs + locale + subject + composite digest + systems + section order mühürlüyor,
+- subject/record/locale/section değişikliği sealed preview'ı geçersiz kılıyor,
 - build persisted records'ı yeniden yükleyip digest/system/section drift varsa reddediyor,
-- production runtime persisted combined projection + application service + native delivery service'i gerçek SQLite snapshot source ile kuruyor,
+- production runtime combined application + native delivery bridge'ini gerçek SQLite snapshot source ile kuruyor,
 - görünür `CombinedProfessionalPdfBuilderPage` `/pdf/combined` route'una bağlı,
 - `Profil → Ayarlar → Kombine PDF Raporu` canonical PRO-guarded route action'ı mevcut,
-- UI subject/record/section seçimleri gerçek persisted catalog ve handler capability'lerinden geliyor,
-- subject/record/locale/section değişikliği sealed preview'ı anında geçersiz kılıyor,
+- Free route reddi ve PRO route erişimi widget regression'a bağlı,
 - Save As/share `sealedPreviewForDelivery()` ile current selection'ı tekrar doğruluyor,
-- native delivery exact preview token üzerinden tekrar `buildFromPreview` zincirine giriyor,
-- route/preview/create/save/share için canonical ACTION-ID'ler action registry ve runtime binding manifestine bağlı,
+- route/preview/create/save/share canonical ACTION-ID'leri action registry + runtime binding manifestine bağlı,
 - kritik combined kontroller Semantics + minimum 48dp kullanıyor,
-- 2.0x text-scale widget smoke contract eklendi,
-- approved font/render zinciri hazır değilken combined byte üretimi açıkça fail-closed.
+- 2.0x text-scale ve EN section-label leakage regression'ları eklendi,
+- approved font/render zinciri hazır değilken combined byte üretimi fail-closed.
 
-`RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan “Batı sonucu Vedik gibi gösterilmez” requirement'ı sahiplenilmiyor.
+`RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan “Batı sonucu Vedik sonuç gibi gösterilmeyecek” requirement'ı sahiplenilmiyor.
 
 ## PDF structural — güncel
 
 - `/Pages /Count` actual Page sayısıyla eşleşmek zorunda.
 - final `%%EOF`, `startxref`, xref/XRef target zorunlu.
-- xref `/Root` exact Catalog nesnesine çözülmek zorunda.
-- Catalog `/Pages` exact Pages-tree nesnesine çözülmek zorunda.
+- xref `/Root` exact Catalog nesnesine, Catalog `/Pages` exact Pages-tree nesnesine çözülmek zorunda.
 - Page Parent zinciri doğrulanıyor.
 - `/MediaBox` gerçek planlanan sayfa geometrisiyle eşleşmek zorunda.
 - `RC-0952` bağımsız full-parser/open kanıtı olmadan açık.
@@ -75,9 +69,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 - Canonical ana navigasyon: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Design token contrast, 48dp, Semantics ve kritik 2.0x text-scale kaynak sözleşmeleri mevcut.
-- Combined PDF görünür multi-select route artık source-level bağlı.
-- Combined builder selected-system şartını state/service seviyesinde fail-closed uygular; visible disabled-state'i ayrıca netleştirilecek.
-- Combined section etiketlerinin tam TR/EN UI localization'ı tamamlanmalı.
+- Combined PDF görünür multi-select route artık source-level bağlı ve test sözleşmesine sahip.
 - APPROVED final UI PNG/reference/hash seti tamamlanmadı.
 - Real-device screen-reader/focus traversal ve tam visual regression açık.
 
@@ -92,10 +84,10 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Production Unicode TR/EN font binary + license + immutable SHA.
 - Independent full PDF parser/open proof.
 - Western production vector painter + approved glyph assets.
-- Vedic vector chart / BaZi production tables gereken kapsamda tamamlanmalı.
+- Vedic vector chart / persisted Vedic PDF schema.
+- BaZi production tables gereken kapsamda tamamlanmalı.
 - 5/25/50+ gerçek rendered PDF, low-memory, glyph/crop/visual regression.
 - gerçek cihaz Save As/share smoke evidence.
-- combined renderer approved-font production chain.
 
 ## Fiziksel veri / içerik blocker'ları
 
@@ -121,15 +113,14 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 `automation_runs/2026-08-24_0655_combined_pdf_visible_ui_route.md`
 
-Requirements workflow-target `8f5271d45865d00fb6ae405e7cdb7aae6ac9bf4a` için GitHub combined status `statuses=[]` döndürdü. Exact görünür SUCCESS olmadığı için `RC-0903/0904` veya accessibility/action requirement'ları DONE yapılmadı.
+Latest dedicated workflow-target `62ff34493459bd0dc80191b5c76f26993f73f92a` için GitHub combined status `statuses=[]` döndürdü. Exact görünür SUCCESS olmadığı için `RC-0903/0904` veya global accessibility/action requirement'ları DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Combined builder selected-system sayısını visible disabled-state'e de bağla.
-2. Combined section etiketlerini tam TR/EN locale-aware yap.
-3. Combined route için Free/PRO route widget regression ekle.
-4. Combined evidence semantic ownership auditini sürdür.
-5. RC-0905'i persisted Vedik PDF sistemi olmadan sahiplenme.
-6. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme; bağımsız işlere devam et.
+1. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
+2. Doğrulanmış persisted Vedik schema yoksa format uydurma; başka blocker-dışı requirement'a geç.
+3. PDF/UI/accessibility/evidence işlerini sürdür.
+4. Daily-message editorial catalog işini release completeness gate'i kırmadan staging/editoryal akışta ilerlet.
+5. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
 
 **FINAL: NO.**
