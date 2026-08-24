@@ -31,7 +31,8 @@
     "test/pdf/combined_professional_pdf_application_service_test.dart",
     "test/pdf/pdf_combined_report_test.dart",
     "test/ui/pdf/combined_pdf_selection_state_test.dart",
-    "test/ui/pdf/combined_pdf_builder_page_test.dart"
+    "test/ui/pdf/combined_pdf_builder_page_test.dart",
+    "test/ui/pdf/combined_pdf_route_entitlement_test.dart"
   ],
   "validators": [
     "tools/pdf/validate_persisted_combined_projection.py",
@@ -49,7 +50,7 @@
     "Professional combined preview/build is protected by the canonical PDF PRO service guard.",
     "Preview seals the exact persisted record IDs, locale, composite digest, member system list and ordered section list; build reloads records and fails closed on drift.",
     "Production runtime composes the persisted combined projection source, UI-safe application bridge and native delivery bridge.",
-    "A visible Flutter route is reachable from Settings through a canonical PRO-guarded action.",
+    "A visible Flutter route is reachable from Settings through a canonical PRO-guarded action; a widget regression proves Free is blocked and PRO can enter.",
     "The combined builder exposes subject selection, multi-record selection, section selection, preview, create, Save As and share controls with canonical ACTION IDs, Semantics and minimum 48dp targets.",
     "Combined UI selection state invalidates its sealed preview whenever subject, record set, locale or section selection changes.",
     "Native Save As/share delivery receives the exact sealed preview token and therefore cannot bypass preview/build drift validation.",
