@@ -5,7 +5,7 @@ import 'package:ruh_code/src/ui/pdf/combined_pdf_selection_state.dart';
 import 'package:ruh_code/src/ui/pdf/combined_professional_pdf_ui_actions.dart';
 
 void main() {
-  test('exact preview input can build', () async {
+  test('exact preview input can build and can be sealed for delivery', () async {
     final actions = _FakeCombinedActions();
     final state = CombinedPdfSelectionState(actions: actions);
 
@@ -19,12 +19,13 @@ void main() {
 
     final preview = await state.createPreview();
     expect(preview.recordIds, const <String>['western-1', 'numerology-1']);
+    expect(state.sealedPreviewForDelivery(), same(preview));
     final bytes = await state.build();
     expect(bytes, const <int>[1, 2, 3]);
     expect(actions.buildCalls, 1);
   });
 
-  test('record change invalidates preview before build', () async {
+  test('record change invalidates preview before build or delivery', () async {
     final actions = _FakeCombinedActions();
     final state = CombinedPdfSelectionState(actions: actions);
     await state.selectSubject(
@@ -40,6 +41,7 @@ void main() {
 
     expect(state.preview, isNull);
     expect(() => state.build(), throwsStateError);
+    expect(() => state.sealedPreviewForDelivery(), throwsStateError);
   });
 
   test('locale and section changes invalidate preview', () async {
@@ -69,6 +71,19 @@ void main() {
     );
 
     expect(() => state.toggleRecord('other-record'), throwsFormatException);
+  });
+
+  test('two records from the same calculation system cannot preview', () async {
+    final state = CombinedPdfSelectionState(actions: _SameSystemCombinedActions());
+    await state.selectSubject(
+      subjectKind: PdfSubjectKind.profile,
+      subjectId: 'profile-1',
+    );
+    state.toggleRecord('western-1');
+    state.toggleRecord('western-2');
+    state.setSections(const <String>['placements']);
+
+    await expectLater(state.createPreview(), throwsStateError);
   });
 }
 
@@ -130,4 +145,23 @@ final class _FakeCombinedActions implements CombinedProfessionalPdfUiActions {
     buildCalls += 1;
     return const <int>[1, 2, 3];
   }
+}
+
+final class _SameSystemCombinedActions extends _FakeCombinedActions {
+  @override
+  Future<List<CombinedPdfUiRecord>> listCandidates({
+    required PdfSubjectKind subjectKind,
+    required String subjectId,
+  }) async => <CombinedPdfUiRecord>[
+        CombinedPdfUiRecord(
+          recordId: 'western-1',
+          calculationType: 'western.natal',
+          createdAtUtc: DateTime.utc(2026, 8, 1),
+        ),
+        CombinedPdfUiRecord(
+          recordId: 'western-2',
+          calculationType: 'western.natal',
+          createdAtUtc: DateTime.utc(2026, 8, 2),
+        ),
+      ];
 }
