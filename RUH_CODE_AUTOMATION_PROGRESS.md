@@ -10,7 +10,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Evidence yalnız ilgili RC'yi en fazla `IMPLEMENTED` seviyesine çıkarabilir; source-level kanıt otomatik TESTED/VERIFIED/DONE üretmez.
 - Repository-wide evidence integrity, semantic ownership ve matrix provenance kapıları aktiftir.
 - PDF/backup/UI/Western/combined semantic validator'ları merkezi Requirements Contract'a bağlıdır.
-- Visible combined PDF runtime/action/accessibility validator'ı da merkezi Requirements Contract'a bağlıdır.
+- Daily-message structural lifecycle ve contiguous editorial-progress validator'ları da merkezi Requirements Contract'a bağlıdır.
 
 ## Source-level ilerlemiş ana bloklar
 
@@ -27,6 +27,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
 - Professional PDF: local planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural inspection, native delivery, subject/snapshot parity ve page geometry validation.
 - Combined PDF: persisted Western + Pythagorean projection, localized system separation, guarded multi-record preview/build, görünür Flutter route, exact-preview native delivery ve action/accessibility sözleşmesi.
+- Daily-message editorial pipeline: deterministic locale/year shards, partial QA without weakening strict release completeness ve current ledger-backed contiguous coverage.
 
 ## Combined PDF — güncel
 
@@ -56,6 +57,29 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 `RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan “Batı sonucu Vedik sonuç gibi gösterilmeyecek” requirement'ı sahiplenilmiyor.
 
+## Günün Mesajı — güncel editoryal ilerleme
+
+Bağlayıcı hedef başlangıç kataloğu **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
+
+Güncel committed ve evidence-ledger ile eşleşen contiguous coverage:
+
+- TR: `2026-01-01 → 2026-02-28` = **59 kayıt**
+- EN: `2026-01-01 → 2026-02-28` = **59 kayıt**
+- toplam: **118 / 8.036**
+- kalan: **7.918 kayıt**
+
+Bu turda Şubat 2026 için 28 TR + 28 bağımsız EN mesaj eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
+
+Kalite/ilerleme güvenliği:
+
+- exact `YYYY-MM-DD|locale` anahtar sözleşmesi korunuyor,
+- partial editorial compiler/auditor eksik gelecekteki tarihleri editoryal çalışma sırasında toleranslı ele alıyor ama malformed row, duplicate exact key, exact/near duplicate metin, repetitive opening ve unsafe certainty kontrollerini gevşetmiyor,
+- strict release audit `--allow-incomplete` kullanmayacak ve 8.036 kaydı zorunlu tutacak,
+- manifest lifecycle validator editoryal durumla uyumlu hale getirildi,
+- yeni progress validator evidence count ↔ gerçek CSV row count eşitliğini, locale/year uyumunu ve başlangıçtan end-date'e kesintisiz coverage'ı doğruluyor.
+
+`RC-1424/1425/1426/1427/1433/1434` **DONE değildir**. 8.036 completeness + rolling release horizon + exact visible CI kanıtı olmadan DONE verilmez.
+
 ## PDF structural — güncel
 
 - `/Pages /Count` actual Page sayısıyla eşleşmek zorunda.
@@ -69,7 +93,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 - Canonical ana navigasyon: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Design token contrast, 48dp, Semantics ve kritik 2.0x text-scale kaynak sözleşmeleri mevcut.
-- Combined PDF görünür multi-select route artık source-level bağlı ve test sözleşmesine sahip.
+- Combined PDF görünür multi-select route source-level bağlı ve test sözleşmesine sahip.
 - APPROVED final UI PNG/reference/hash seti tamamlanmadı.
 - Real-device screen-reader/focus traversal ve tam visual regression açık.
 
@@ -96,7 +120,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - production Lahiri/Chitrapaksha artifact.
 - GeoNames source/output SHA + bulk IANA integrity.
 - independent astronomical golden accuracy suite.
-- 4.018 TR + bağımsız 4.018 EN gerçek editoryal Günün Mesajı.
+- günlük mesajlarda kalan 7.918 editoryal kayıt ve strict release audit.
 - 1890–2110 verified Chinese New Year boundary artifact.
 
 ## Release blocker'ları
@@ -111,16 +135,17 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 ## Son checkpoint
 
-`automation_runs/2026-08-24_0655_combined_pdf_visible_ui_route.md`
+`automation_runs/2026-08-24_0655_daily_messages_february.md`
 
-Latest dedicated workflow-target `62ff34493459bd0dc80191b5c76f26993f73f92a` için GitHub combined status `statuses=[]` döndürdü. Exact görünür SUCCESS olmadığı için `RC-0903/0904` veya global accessibility/action requirement'ları DONE yapılmadı.
+Latest Requirements workflow-target `5da4ef88b4187e22dd4b64ebd3e7423b020b465c` için GitHub combined status `statuses=[]` döndürdü. Exact görünür SUCCESS olmadığı için ilgili RC'ler DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
-2. Doğrulanmış persisted Vedik schema yoksa format uydurma; başka blocker-dışı requirement'a geç.
-3. PDF/UI/accessibility/evidence işlerini sürdür.
-4. Daily-message editorial catalog işini release completeness gate'i kırmadan staging/editoryal akışta ilerlet.
-5. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
+1. Daily messages: `2026-03-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
+2. Her content batch sonrası partial QA ve contiguous ledger gate'i koru.
+3. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
+4. Doğrulanmış persisted Vedik schema yoksa format uydurma; başka blocker-dışı requirement'a geç.
+5. PDF/UI/accessibility/evidence işlerini sürdür.
+6. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
 
 **FINAL: NO.**
