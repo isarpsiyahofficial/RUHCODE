@@ -2,20 +2,21 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-24_2055_daily_messages_january_2027.md`
+`automation_runs/2026-08-24_2255_daily_messages_february_2027.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Günün Mesajı — Ocak 2027**
-   - 31 TR + 31 bağımsız EN
-   - bu tur toplam **62 yeni kayıt**
+1. **Günün Mesajı — Şubat 2027**
+   - 28 TR + 28 bağımsız EN
+   - bu tur toplam **56 yeni kayıt**
+   - TR dosyasındaki bir yazım hatası ledger ilerletilmeden önce düzeltildi
 
 2. **Contiguous editorial ledger**
-   - TR `2026-01-01 → 2027-01-31` = 396
-   - EN `2026-01-01 → 2027-01-31` = 396
-   - toplam **792 / 8.036**
-   - kalan **7.244**
-   - sıradaki başlangıç **2027-02-01**
+   - TR `2026-01-01 → 2027-02-28` = 424
+   - EN `2026-01-01 → 2027-02-28` = 424
+   - toplam **848 / 8.036**
+   - kalan **7.188**
+   - sıradaki başlangıç **2027-03-01**
 
 3. **Requirement güvenliği**
    - RC-1424/1425/1426/1427/1433/1434 `done=false`
@@ -23,7 +24,7 @@ Latest source-level checkpoint:
 
 ## Next safe work
 
-- daily messages: `2027-02-01` tarihinden TR + bağımsız EN editoryal üretime devam et
+- daily messages: `2027-03-01` tarihinden TR + bağımsız EN editoryal üretime devam et
 - monthly shard + exact-date uniqueness + contiguous ledger gate'ini koru
 - partial QA'yı sürdür; release completeness kapısını gevşetme
 - font/physical-data/APPROVED-UI blocker'ı gerektirmeyen PDF/UI/accessibility/evidence işlerine devam et
