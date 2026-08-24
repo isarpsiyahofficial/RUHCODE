@@ -132,13 +132,15 @@ class _CombinedProfessionalPdfBuilderPageState
     }
   }
 
+  Set<String> _selectedSystemIds(CombinedPdfSelectionState state) => <String>{
+        for (final candidate in state.candidates)
+          if (state.selectedRecordIds.contains(candidate.recordId)) candidate.calculationType,
+      };
+
   List<ProfessionalPdfUiSectionOption> _availableSections() {
     final state = _selection;
     if (state == null) return const <ProfessionalPdfUiSectionOption>[];
-    final selectedTypes = <String>{
-      for (final candidate in state.candidates)
-        if (state.selectedRecordIds.contains(candidate.recordId)) candidate.calculationType,
-    };
+    final selectedTypes = _selectedSystemIds(state);
     final byId = <String, ProfessionalPdfUiSectionOption>{};
     for (final type in selectedTypes) {
       if (!ProfessionalPdfSectionCatalog.supports(type)) continue;
@@ -159,6 +161,15 @@ class _CombinedProfessionalPdfBuilderPageState
     }
     return List<ProfessionalPdfUiSectionOption>.unmodifiable(ordered);
   }
+
+  String _sectionLabel(ProfessionalPdfUiSectionOption option) => switch (option.id) {
+        PdfSectionIds.placements => _t('Yerleşimler', 'Placements'),
+        PdfSectionIds.houses => _t('Evler', 'Houses'),
+        PdfSectionIds.aspects => _t('Açılar', 'Aspects'),
+        PdfSectionIds.numerology => _t('Numeroloji', 'Numerology'),
+        PdfSectionIds.technicalManifest => _t('Hesaplama Bilgileri', 'Calculation Details'),
+        _ => _t(option.labelTr, option.labelTr),
+      };
 
   void _toggleRecord(CombinedPdfUiRecord record) {
     final state = _selection!;
@@ -307,8 +318,10 @@ class _CombinedProfessionalPdfBuilderPageState
     final preview = state?.preview;
     final selectedSubject = _selectedSubject();
     final sections = _availableSections();
+    final selectedSystemCount = state == null ? 0 : _selectedSystemIds(state).length;
     final canPreview = state != null &&
         state.selectedRecordIds.length >= 2 &&
+        selectedSystemCount >= 2 &&
         state.selectedSectionIds.isNotEmpty &&
         !_busy;
     final canDeliver = preview != null && _delivery != null && !_busy;
@@ -335,8 +348,8 @@ class _CombinedProfessionalPdfBuilderPageState
             const LinearProgressIndicator()
           else if (_subjects.isEmpty)
             Text(_t(
-              'Kombine rapor için aynı kişiye ait en az iki uygun kayıtlı hesaplama bulunamadı.',
-              'No subject has at least two eligible persisted calculations for a combined report.',
+              'Kombine rapor için aynı kişiye ait en az iki farklı sistem kaydı bulunamadı.',
+              'No subject has at least two distinct persisted calculation systems for a combined report.',
             ))
           else
             Semantics(
@@ -373,6 +386,16 @@ class _CombinedProfessionalPdfBuilderPageState
                   ),
                 ),
               ),
+            if (state.selectedRecordIds.length >= 2 && selectedSystemCount < 2)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  _t(
+                    'Önizleme için iki farklı hesaplama sistemi seç.',
+                    'Select two distinct calculation systems to preview.',
+                  ),
+                ),
+              ),
           ],
           if (sections.isNotEmpty) ...[
             const SizedBox(height: 20),
@@ -380,13 +403,13 @@ class _CombinedProfessionalPdfBuilderPageState
             const SizedBox(height: 8),
             for (final section in sections)
               Semantics(
-                label: section.labelTr,
+                label: _sectionLabel(section),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 48),
                   child: CheckboxListTile(
                     key: ValueKey('combined-section-${section.id}'),
                     value: state!.selectedSectionIds.contains(section.id),
-                    title: Text(section.labelTr),
+                    title: Text(_sectionLabel(section)),
                     onChanged: _busy
                         ? null
                         : (value) => _toggleSection(section.id, value == true),
