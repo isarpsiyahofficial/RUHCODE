@@ -24,6 +24,10 @@ jobs:
         run: python tools/requirements/validate_evidence_integrity.py
       - name: Validate evidence semantic ownership
         run: python tools/requirements/validate_evidence_traceability.py
+      - name: Validate daily-message structural lifecycle contract
+        run: python tools/content/validate_daily_message_contract.py
+      - name: Validate daily-message editorial progress ledger
+        run: python tools/content/validate_daily_message_editorial_progress.py
       - name: Validate Chinese zodiac semantic ownership
         run: python tools/chinese/validate_chinese_year_contract.py
       - name: Validate exact UI evidence semantic ownership
