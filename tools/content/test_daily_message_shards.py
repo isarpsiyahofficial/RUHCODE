@@ -31,10 +31,10 @@ def write_manifest(path: Path) -> None:
     path.write_text(
         json.dumps({
             'initial_coverage_start': '2026-01-01',
-            'initial_coverage_end': '2026-01-03',
+            'initial_coverage_end': '2026-03-31',
             'locales': ['tr', 'en'],
-            'initial_days': 3,
-            'initial_total_records': 6,
+            'initial_days': 90,
+            'initial_total_records': 180,
             'required_leap_dates': [],
             'quality_thresholds': {
                 'near_duplicate_similarity': 0.90,
@@ -86,11 +86,39 @@ class DailyMessageShardTest(unittest.TestCase):
             result = auditor.audit(output, manifest, allow_incomplete=True)
             self.assertTrue(result['ok'], result['errors'])
             self.assertFalse(result['complete'])
-            self.assertEqual(result['missing_record_count'], 4)
+            self.assertEqual(result['missing_record_count'], 178)
 
             strict = auditor.audit(output, manifest)
             self.assertFalse(strict['ok'])
             self.assertTrue(any('missing exact date/locale keys' in item for item in strict['errors']))
+
+    def test_year_and_month_shards_compile_deterministically(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            shards = root / 'shards'
+            output = root / 'catalog.csv'
+            write_manifest(manifest)
+            for locale in ('tr', 'en'):
+                write_shard(shards / locale / '2026.csv', [row('2026-02-28', locale, f'{locale}-feb')])
+                write_shard(shards / locale / '2026-03.csv', [
+                    row('2026-03-01', locale, f'{locale}-mar-one'),
+                    row('2026-03-02', locale, f'{locale}-mar-two'),
+                ])
+
+            summary = builder.build(shards_root=shards, manifest_path=manifest, output=output)
+            self.assertEqual(summary['records'], 6)
+            self.assertEqual(summary['shards'], 4)
+            with output.open(encoding='utf-8', newline='') as handle:
+                rows = list(csv.DictReader(handle))
+            self.assertEqual(
+                [(item['date'], item['locale']) for item in rows],
+                [
+                    ('2026-02-28', 'en'), ('2026-02-28', 'tr'),
+                    ('2026-03-01', 'en'), ('2026-03-01', 'tr'),
+                    ('2026-03-02', 'en'), ('2026-03-02', 'tr'),
+                ],
+            )
 
     def test_builder_rejects_locale_directory_and_row_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -104,7 +132,7 @@ class DailyMessageShardTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'does not match shard directory'):
                 builder.build(shards_root=shards, manifest_path=manifest, output=output)
 
-    def test_builder_rejects_date outside shard year(self) -> None:
+    def test_builder_rejects_date_outside_shard_year(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             manifest = root / 'manifest.json'
@@ -114,6 +142,18 @@ class DailyMessageShardTest(unittest.TestCase):
             write_shard(shards / 'tr' / '2026.csv', [row('2027-01-01', 'tr', 'wrong-year')])
 
             with self.assertRaisesRegex(ValueError, 'does not match shard year'):
+                builder.build(shards_root=shards, manifest_path=manifest, output=output)
+
+    def test_builder_rejects_date_outside_month_shard(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            shards = root / 'shards'
+            output = root / 'catalog.csv'
+            write_manifest(manifest)
+            write_shard(shards / 'tr' / '2026-03.csv', [row('2026-04-01', 'tr', 'wrong-month')])
+
+            with self.assertRaisesRegex(ValueError, 'does not match shard month'):
                 builder.build(shards_root=shards, manifest_path=manifest, output=output)
 
 
