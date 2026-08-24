@@ -14,6 +14,7 @@ on:
       - 'ui/runtime_action_bindings.csv'
       - 'test/ui/pdf/combined_pdf_selection_state_test.dart'
       - 'test/ui/pdf/combined_pdf_builder_page_test.dart'
+      - 'test/ui/pdf/combined_pdf_route_entitlement_test.dart'
       - 'evidence/pdf/persisted_combined_projection.json'
       - 'tools/pdf/validate_combined_pdf_ui_runtime.py'
       - '.github/workflows/combined-pdf-ui-runtime-contract.yml'
@@ -30,6 +31,7 @@ on:
       - 'ui/runtime_action_bindings.csv'
       - 'test/ui/pdf/combined_pdf_selection_state_test.dart'
       - 'test/ui/pdf/combined_pdf_builder_page_test.dart'
+      - 'test/ui/pdf/combined_pdf_route_entitlement_test.dart'
       - 'evidence/pdf/persisted_combined_projection.json'
       - 'tools/pdf/validate_combined_pdf_ui_runtime.py'
       - '.github/workflows/combined-pdf-ui-runtime-contract.yml'
@@ -46,4 +48,4 @@ jobs:
       - run: python tools/pdf/validate_persisted_combined_projection.py
       - run: python tools/pdf/validate_combined_pdf_ui_runtime.py
       - run: flutter pub get
-      - run: flutter test test/ui/pdf/combined_pdf_selection_state_test.dart test/ui/pdf/combined_pdf_builder_page_test.dart
+      - run: flutter test test/ui/pdf/combined_pdf_selection_state_test.dart test/ui/pdf/combined_pdf_builder_page_test.dart test/ui/pdf/combined_pdf_route_entitlement_test.dart
