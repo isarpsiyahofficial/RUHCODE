@@ -26,7 +26,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Entitlement: canonical Feature IDs, UI/route/service guards, offline entitlement snapshot/time anchor, Play lifetime restore composition, rewarded cancel/failure safety.
 - Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
 - Professional PDF: local planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural inspection, native delivery, subject/snapshot parity ve page geometry validation.
-- Combined PDF: persisted Western + Pythagorean projection, localized system separation ve guarded multi-record preview/build application service.
+- Combined PDF: persisted Western + Pythagorean projection, localized system separation, guarded multi-record preview/build application service, runtime/UI action bridge, preview invalidation state ve native delivery composition.
 
 ## Combined PDF — güncel
 
@@ -45,7 +45,12 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - TR/EN child başlıkları açık `Batı Astrolojisi / Western Astrology` ve `Numeroloji / Numerology` prefix'i taşıyor,
 - combined application service canonical `pdf.professional_export` PRO guard kullanıyor,
 - preview exact record IDs + locale + subject + composite digest + systems + section order mühürlüyor,
-- build persisted records'ı yeniden yükleyip digest/system/section drift varsa reddediyor.
+- build persisted records'ı yeniden yükleyip digest/system/section drift varsa reddediyor,
+- production runtime persisted combined projection + application service'i gerçek SQLite snapshot source ile kuruyor,
+- UI-safe action bridge subject discovery/candidate/preview/build sınırlarını expose ediyor,
+- subject/record/locale/section değişikliği sealed preview'ı anında geçersiz kılıyor,
+- native Save As/share exact preview token üzerinden yeniden build doğrulamasına giriyor,
+- approved font/render zinciri hazır değilken combined byte üretimi açıkça fail-closed.
 
 `RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan “Batı sonucu Vedik gibi gösterilmez” requirement'ı sahiplenilmiyor.
 
@@ -63,6 +68,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 - Canonical ana navigasyon: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Design token contrast, 48dp, Semantics ve kritik 2.0x text-scale kaynak sözleşmeleri mevcut.
+- Combined PDF için final görünür multi-select Flutter page/route henüz bağlanmadı.
 - APPROVED final UI PNG/reference/hash seti tamamlanmadı.
 - Real-device screen-reader/focus traversal ve tam visual regression açık.
 
@@ -80,7 +86,7 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Vedic vector chart / BaZi production tables gereken kapsamda tamamlanmalı.
 - 5/25/50+ gerçek rendered PDF, low-memory, glyph/crop/visual regression.
 - gerçek cihaz Save As/share smoke evidence.
-- combined application service'in final runtime composition + multi-select builder UI bağlantısı.
+- combined final visible multi-select builder UI/route ve approved-font renderer.
 
 ## Fiziksel veri / içerik blocker'ları
 
@@ -104,15 +110,15 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 
 ## Son checkpoint
 
-`automation_runs/2026-08-24_0255_combined_pdf_application_subject_kind.md`
+`automation_runs/2026-08-24_0452_combined_pdf_runtime_selection_delivery.md`
 
-Workflow-target commit `6accc318df7b3515e682b67f45445e01d7f3bacf` için GitHub combined-status `statuses=[]` döndürdüğü için `RC-0903/0904` DONE yapılmadı.
+Combined UI Runtime Contract için exact görünür GitHub Actions SUCCESS kanıtı henüz olmadığı için `RC-0903/0904` DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Combined application service'i production runtime + gerçek multi-select builder UI'a bağla.
-2. Selection değiştiğinde preview token'ı geçersiz kıl ve exact record-set UI parity testi ekle.
-3. Combined native Save As/share delivery zincirini preview token üzerinden bağla.
+1. Gerçek Flutter combined multi-select page/route oluştur ve runtime binding'e bağla.
+2. 48dp + Semantics + 2.0x text-scale widget contract ekle.
+3. Combined Save As/share UI actions'ı exact preview token üzerinden bağla.
 4. RC-0905'i persisted Vedik PDF sistemi olmadan sahiplenme.
 5. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme; bağımsız işlere devam et.
 
