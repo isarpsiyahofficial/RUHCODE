@@ -13,13 +13,17 @@
   "sources": [
     "requirements/content_manifests/daily_messages.json",
     "assets/content/daily_messages/tr/2026.csv",
+    "assets/content/daily_messages/tr/2026-03.csv",
     "assets/content/daily_messages/en/2026.csv",
+    "assets/content/daily_messages/en/2026-03.csv",
     "tools/content/build_daily_message_catalog.py",
+    "tools/content/append_daily_message_batch.py",
     "tools/content/validate_daily_message_catalog.py"
   ],
   "tests": [
     "tools/content/test_validate_daily_message_catalog.py",
-    "tools/content/test_daily_message_shards.py"
+    "tools/content/test_daily_message_shards.py",
+    "tools/content/test_append_daily_message_batch.py"
   ],
   "validators": [
     "tools/content/validate_daily_message_contract.py",
@@ -28,15 +32,15 @@
   "currentReviewedCoverage": {
     "tr": {
       "start": "2026-01-01",
-      "end": "2026-02-28",
-      "records": 59
+      "end": "2026-03-31",
+      "records": 90
     },
     "en": {
       "start": "2026-01-01",
-      "end": "2026-02-28",
-      "records": 59
+      "end": "2026-03-31",
+      "records": 90
     },
-    "totalRecords": 118
+    "totalRecords": 180
   },
   "requiredFinalCoverage": {
     "start": "2026-01-01",
@@ -49,14 +53,14 @@
     "runtime AI generation remains forbidden",
     "random fallback remains forbidden",
     "TR and EN are separate editorial tracks and machine translation is forbidden",
-    "year/locale shards are compiled deterministically before audit",
+    "locale/year and locale/year-month shards are compiled deterministically before audit",
     "editorial progress ledger counts must exactly match contiguous committed locale shards",
-    "partial editorial audit may ignore missing dates but may not ignore malformed rows, duplicate exact keys, exact/near duplicate text, repetitive opening patterns, or unsafe certainty",
+    "partial editorial audit may ignore missing future dates but may not ignore malformed rows, duplicate exact keys, exact/near duplicate text, repetitive opening patterns, or unsafe certainty",
     "release audit must run without allow-incomplete and therefore requires all 8,036 initial records including leap dates"
   ],
   "remainingBeforeDone": [
-    "write and editorially review Turkish daily messages from 2026-03-01 through 2036-12-31",
-    "write and editorially review independent English daily messages from 2026-03-01 through 2036-12-31",
+    "write and editorially review Turkish daily messages from 2026-04-01 through 2036-12-31",
+    "write and editorially review independent English daily messages from 2026-04-01 through 2036-12-31",
     "pass strict exact-date completeness for all 8,036 records",
     "pass leap-date, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates",
     "prove the rolling ten-year horizon at the release date",
