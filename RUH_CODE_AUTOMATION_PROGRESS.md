@@ -29,23 +29,19 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Combined PDF: persisted Western + Pythagorean projection, localized system separation, guarded multi-record preview/build, görünür Flutter route, exact-preview native delivery ve action/accessibility sözleşmesi.
 - Daily-message editorial pipeline: deterministic period shards, safe paired batch append, partial QA without weakening strict release completeness ve ledger-backed contiguous coverage.
 
-## Combined PDF — güncel
-
-`RC-0903` ve `RC-0904` source-level evidence altında, DONE değil. Persisted Western + Pythagorean snapshot'lar aynı stable subject'e ait olmak zorunda; exact preview token record-set/locale/subject/section parity'yi koruyor; drift fail-closed; production runtime ve native delivery bridge source-level bağlı. `RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan Batı/Vedik ayrım requirement'ı sahiplenilmiyor.
-
 ## Günün Mesajı — güncel editoryal ilerleme
 
 Bağlayıcı başlangıç hedefi **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
 Committed ve evidence-ledger ile eşleşen contiguous coverage:
 
-- TR: `2026-01-01 → 2026-12-31` = **365 kayıt**
-- EN: `2026-01-01 → 2026-12-31` = **365 kayıt**
-- toplam: **730 / 8.036**
-- kalan: **7.306 kayıt**
-- sıradaki exact başlangıç: **2027-01-01**
+- TR: `2026-01-01 → 2027-01-31` = **396 kayıt**
+- EN: `2026-01-01 → 2027-01-31` = **396 kayıt**
+- toplam: **792 / 8.036**
+- kalan: **7.244 kayıt**
+- sıradaki exact başlangıç: **2027-02-01**
 
-Bu turda Kasım ve Aralık 2026 için toplam **61 TR + 61 bağımsız EN = 122 yeni mesaj** eklendi. Böylece 2026 takvim yılı iki dilde de contiguous editoryal olarak tamamen kaplandı. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
+Bu turda Ocak 2027 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
 
 Kalite/ilerleme güvenliği:
 
@@ -58,38 +54,27 @@ Kalite/ilerleme güvenliği:
 
 `RC-1424/1425/1426/1427/1433/1434` **DONE değildir**. Full completeness + rolling release horizon + final QA + exact visible CI olmadan DONE verilmez.
 
-## PDF structural — güncel
+## Combined PDF — güncel
 
-- `/Pages /Count` actual Page sayısıyla eşleşmek zorunda.
-- final `%%EOF`, `startxref`, xref/XRef target zorunlu.
-- xref `/Root` exact Catalog nesnesine, Catalog `/Pages` exact Pages-tree nesnesine çözülmek zorunda.
-- Page Parent zinciri doğrulanıyor.
-- `/MediaBox` gerçek planlanan sayfa geometrisiyle eşleşmek zorunda.
-- `RC-0952` bağımsız full-parser/open kanıtı olmadan açık.
+`RC-0903` ve `RC-0904` source-level evidence altında, DONE değil. Persisted Western + Pythagorean snapshot'lar aynı stable subject'e ait olmak zorunda; exact preview token record-set/locale/subject/section parity'yi koruyor; drift fail-closed. `RC-0905` gerçek persisted Vedik PDF sistemi olmadan açık tutuluyor.
 
 ## UI / Accessibility — açık kalanlar
 
 - Canonical ana navigasyon: `Bugün · Araçlar · Kayıtlar · Profil`.
 - Design token contrast, 48dp, Semantics ve kritik 2.0x text-scale kaynak sözleşmeleri mevcut.
-- Combined PDF görünür multi-select route source-level bağlı ve test sözleşmesine sahip.
 - APPROVED final UI PNG/reference/hash seti tamamlanmadı.
 - Real-device screen-reader/focus traversal ve tam visual regression açık.
 
-## Backup — açık kalanlar
+## Backup / PDF — açık kalanlar
 
-- Android gerçek cihaz save/pick/share smoke proof.
+- Android gerçek cihaz backup save/pick/share smoke proof.
 - Release-candidate clean-install export→erase→restore proof.
-- Exact visible Backup/UI/Flutter CI success.
-
-## PDF — açık kalanlar
-
-- Production Unicode TR/EN font binary + license + immutable SHA.
+- Production Unicode TR/EN PDF font binary + license + immutable SHA.
 - Independent full PDF parser/open proof.
 - Western production vector painter + approved glyph assets.
-- Vedic vector chart / persisted Vedic PDF schema.
-- BaZi production tabloları gereken kapsamda tamamlanmalı.
+- Persisted Vedik PDF/vector chart, gereken BaZi production tabloları.
 - 5/25/50+ gerçek rendered PDF, low-memory, glyph/crop/visual regression.
-- gerçek cihaz Save As/share smoke evidence.
+- gerçek cihaz PDF Save As/share smoke evidence.
 
 ## Fiziksel veri / içerik blocker'ları
 
@@ -98,7 +83,7 @@ Kalite/ilerleme güvenliği:
 - production Lahiri/Chitrapaksha artifact.
 - GeoNames source/output SHA + bulk IANA integrity.
 - independent astronomical golden accuracy suite.
-- günlük mesajlarda kalan **7.306** editoryal kayıt ve strict release audit.
+- günlük mesajlarda kalan **7.244** editoryal kayıt ve strict release audit.
 - 1890–2110 verified Chinese New Year boundary artifact.
 
 ## Release blocker'ları
@@ -113,13 +98,13 @@ Kalite/ilerleme güvenliği:
 
 ## Son checkpoint
 
-`automation_runs/2026-08-24_1859_daily_messages_november_december.md`
+`automation_runs/2026-08-24_2055_daily_messages_january_2027.md`
 
-Latest editorial evidence commit `570015c15c97611cfce8da81dfb24fbd524b0e67` için exact görünür SUCCESS henüz doğrulanmadı. İlgili RC'ler DONE yapılmadı.
+İlgili daily-message RC'leri DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Daily messages: `2027-01-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
+1. Daily messages: `2027-02-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
 2. Yeni ayları `YYYY-MM.csv` shard olarak ekle; exact-date uniqueness ve contiguous ledger gate'ini koru.
 3. Her content batch sonrası partial QA ve evidence-ledger parity'yi koru.
 4. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
