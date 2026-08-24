@@ -16,7 +16,9 @@ import '../entitlements/local_entitlement_snapshot_store.dart';
 import '../entitlements/local_entitlement_time_anchor.dart';
 import '../entitlements/professional_repository_bundle.dart';
 import '../pdf/combined_professional_pdf_application_service.dart';
+import '../pdf/combined_professional_pdf_delivery_service.dart';
 import '../pdf/pdf_combined_report.dart';
+import '../pdf/pdf_platform_gateway.dart';
 import '../pdf/persisted_calculation_pdf_source.dart';
 import '../pdf/persisted_combined_pdf_projection.dart';
 import '../pdf/unavailable_pdf_service.dart';
@@ -32,6 +34,7 @@ final class RuhCodeRuntime {
     required this.backupActions,
     required this.professionalPdfSnapshotSource,
     required this.combinedProfessionalPdf,
+    required this.combinedProfessionalPdfDelivery,
     required this.westernNatalPersistence,
     required this.startupOwnershipSync,
   });
@@ -52,6 +55,11 @@ final class RuhCodeRuntime {
   /// production-wired now. Byte rendering remains explicitly fail-closed until
   /// the approved Unicode font/render chain is available.
   final CombinedProfessionalPdfApplicationService combinedProfessionalPdf;
+
+  /// Native Save As/share delivery boundary for the exact sealed combined
+  /// preview token. It still calls [combinedProfessionalPdf] before delivery,
+  /// therefore rendering remains fail-closed while approved fonts are absent.
+  final CombinedProfessionalPdfDeliveryService combinedProfessionalPdfDelivery;
 
   /// The single production persistence boundary for verified Western natal
   /// snapshots. CalculationManifest + sealed snapshot are committed atomically
@@ -120,6 +128,10 @@ final class RuhCodeRuntime {
         'Combined PDF byte rendering is unavailable until the approved Unicode font/render chain is production-ready.',
       ),
     );
+    final combinedProfessionalPdfDelivery = CombinedProfessionalPdfDeliveryService(
+      application: combinedProfessionalPdf,
+      platform: const NativePdfPlatformGateway(),
+    );
     final westernNatalPersistence = WesternNatalPersistenceService(
       database: database,
     );
@@ -148,6 +160,7 @@ final class RuhCodeRuntime {
       backupActions: backupActions,
       professionalPdfSnapshotSource: professionalPdfSnapshotSource,
       combinedProfessionalPdf: combinedProfessionalPdf,
+      combinedProfessionalPdfDelivery: combinedProfessionalPdfDelivery,
       westernNatalPersistence: westernNatalPersistence,
       startupOwnershipSync: startupOwnershipSync,
     );
