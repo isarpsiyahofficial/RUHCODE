@@ -50,7 +50,12 @@ try:
     assert manifest['runtime_ai_generation_allowed'] is False
     assert manifest['random_fallback_allowed'] is False
     assert manifest['machine_translation_between_tr_en_allowed'] is False
-    assert manifest['status'] == 'SCHEMA_AND_QA_READY_CONTENT_NOT_POPULATED'
+    assert manifest['status'] in {
+        'SCHEMA_AND_QA_READY_CONTENT_NOT_POPULATED',
+        'EDITORIAL_CONTENT_IN_PROGRESS',
+        'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT',
+        'RELEASE_AUDIT_COMPLETE',
+    }, f"unsupported daily-message lifecycle status: {manifest['status']!r}"
 
     gates = set(manifest['quality_gates'])
     for gate in (
@@ -98,4 +103,4 @@ except (AssertionError, KeyError, json.JSONDecodeError) as exc:
     print(f'daily message contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('daily message contract OK: exact-date TR/EN lookup plus duplicate, near-duplicate, repetitive-opening and unsafe-certainty QA gates are present')
+print('daily message contract OK: exact-date TR/EN lookup, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
