@@ -7,9 +7,11 @@
 - `CombinedProfessionalPdfBuilderPage` eklendi.
 - Gerçek subject seçimi (`profile` / `client`) production combined catalog üzerinden geliyor.
 - Aynı subject için persisted calculation kayıtları çoklu seçilebiliyor.
-- Kombine rapor için yalnız iki kayıt değil, en az iki **farklı calculation sistemi** zorunlu hale getirildi.
-- Subject discovery de iki aynı-system kaydı kombine rapora uygun subject olarak göstermiyor.
+- Kombine rapor için yalnız iki kayıt değil, en az iki **farklı calculation sistemi** zorunlu.
+- Subject discovery iki aynı-system kaydı kombine rapora uygun subject olarak göstermiyor.
+- UI Preview butonu da iki farklı sistem seçilmeden aktif olmuyor; kullanıcıya açık yönlendirme gösteriliyor.
 - Western + Pythagorean için seçilebilir gerçek handler bölümleri UI'da gösteriliyor.
+- Bölüm adları TR/EN locale'e göre ayrı gösteriliyor (`Yerleşimler/Placements`, `Evler/Houses`, `Açılar/Aspects`, `Numeroloji/Numerology`, `Hesaplama Bilgileri/Calculation Details`).
 - Subject/record/locale/section değişikliği sealed preview token'ı geçersiz kılıyor.
 - Preview kartı exact systems, sections, locale ve combined snapshot digest'i gösteriyor.
 
@@ -18,7 +20,6 @@
 - `RuhCodeApp` içine `/pdf/combined` route'u eklendi.
 - `Profil → Ayarlar → Kombine PDF Raporu` görünür action'ı eklendi.
 - Route açılmadan önce canonical `pdf.professional_export` PRO guard kontrol ediliyor.
-- Free kullanıcı için route fail-closed kalıyor.
 - Ayrı widget regression Free kullanıcının route'a giremediğini ve PRO kullanıcının gerçek builder route'una ulaştığını doğruluyor.
 
 ### Exact preview-token native delivery
@@ -26,12 +27,12 @@
 - Combined Save As/share UI adapter'ı eklendi.
 - Production startup `combinedProfessionalPdfDelivery` servisini UI runtime'a bağlıyor.
 - Save/share öncesinde `CombinedPdfSelectionState.sealedPreviewForDelivery()` current selection ile preview'ın exact eşleşmesini tekrar doğruluyor.
-- Native delivery kendi başına PDF üretmiyor; aynı sealed preview tekrar application service `buildFromPreview` zincirine giriyor.
+- Native delivery aynı sealed preview'ı tekrar application service `buildFromPreview` zincirine sokuyor.
 - Cancelled/unavailable sonuçlar success olarak gösterilmiyor.
 
 ### Action / accessibility sözleşmesi
 
-Yeni canonical runtime action'lar:
+Canonical runtime action'lar:
 
 - `ACTION-PDF-COMBINED`
 - `ACTION-PDF-COMBINED-PREVIEW`
@@ -39,24 +40,17 @@ Yeni canonical runtime action'lar:
 - `ACTION-PDF-COMBINED-SAVE`
 - `ACTION-PDF-COMBINED-SHARE`
 
-Hepsi action registry + runtime binding manifestine bağlandı. Critical controls Semantics ve minimum 48dp target kullanıyor.
+Hepsi action registry + runtime binding manifestine bağlı. Kritik kontroller Semantics ve minimum 48dp target kullanıyor.
 
 ### Test / CI contract
 
-- `combined_pdf_selection_state_test.dart` exact delivery preview ve same-system rejection için genişletildi.
-- `combined_pdf_builder_page_test.dart` eklendi:
-  - gerçek multi-record seçim akışı,
-  - preview oluşturma,
-  - preview invalidation,
-  - exact sealed preview'ın share adapterına aktarılması,
-  - 48dp kritik action kontrolü,
-  - 2.0x text-scale smoke contract.
-- `combined_pdf_route_entitlement_test.dart` eklendi:
-  - Free route reddi,
-  - PRO route erişimi.
-- `validate_combined_pdf_ui_runtime.py` görünür page/route, PRO guard, runtime delivery binding, action registry ve üç widget/state test ailesini zorunlu kılacak şekilde genişletildi.
-- `Combined PDF UI Runtime Contract` workflow'u üç Flutter testini birlikte çalıştıracak şekilde genişletildi.
-- Aynı validator merkezi `Requirements Contract` içine de bağlandı.
+- `combined_pdf_selection_state_test.dart`: exact delivery preview + preview invalidation + same-system rejection.
+- `combined_pdf_builder_page_test.dart`: multi-record seçim + preview + exact share token + 48dp + 2.0x text scale.
+- `combined_pdf_route_entitlement_test.dart`: Free route reddi + PRO route erişimi.
+- `combined_pdf_localization_gate_test.dart`: same-system UI disable + English section labels.
+- `validate_combined_pdf_ui_runtime.py` görünür page/route, PRO guard, runtime delivery binding, action registry ve dört test ailesini zorunlu kılıyor.
+- `Combined PDF UI Runtime Contract` dört Flutter testini birlikte çalıştıracak şekilde genişletildi.
+- Aynı validator merkezi `Requirements Contract` içine bağlı.
 
 ## Requirement durumu
 
@@ -64,11 +58,11 @@ Hepsi action registry + runtime binding manifestine bağlandı. Critical control
 
 `RC-0905` bilinçli olarak açık tutulur; persisted Vedik PDF sistemi olmadan sahiplenilmez.
 
-`RC-1440/RC-1441` için combined UI action/accessibility kanıtı ilerlemiştir fakat genel requirement'ların tüm uygulama çapı henüz tamamlanmadığı için DONE değildir.
+`RC-1440/RC-1441` için combined UI action/accessibility kanıtı ilerlemiştir fakat uygulama çapındaki requirement'lar tamamlanmadığı için DONE değildir.
 
 ## Validation limitation
 
-Latest dedicated workflow-target commit `eb56f4a6317f46c440a82215444361381689e210` için GitHub combined status `statuses=[]` döndürdü. Exact visible CI SUCCESS olmadığı için TESTED/VERIFIED/DONE seviyesi uydurulmadı.
+Latest dedicated workflow-target commit `62ff34493459bd0dc80191b5c76f26993f73f92a` için GitHub combined status `statuses=[]` döndürdü. Exact görünür CI SUCCESS olmadığı için TESTED/VERIFIED/DONE seviyesi uydurulmadı.
 
 ## Açık blocker'lar
 
@@ -82,10 +76,9 @@ Latest dedicated workflow-target commit `eb56f4a6317f46c440a82215444361381689e21
 
 ## Next safe work
 
-1. Combined builder'ın selected-system sayısını UI disabled-state'e de bağla; same-system selection hata butonu yerine önceden anlaşılır olsun.
-2. Combined builder TR/EN section labels'ı tam locale-aware yap; mevcut section catalog TR label alanını EN'de göstermesin.
-3. Combined UI evidence'ı semantic traceability family içinde exact RC ownership ile yeniden kontrol et.
-4. RC-0905'i persisted Vedik PDF sistemi olmadan sahiplenme.
-5. Blocker gerektirmeyen PDF/UI/accessibility işlerine devam et.
+1. Combined UI evidence semantic ownership auditini sürdür; RC-0905'i persisted Vedik PDF olmadan sahiplenme.
+2. Persisted Vedik PDF için doğrulanmış persistence schema yoksa veri formatı uydurma; blocker olarak bırak.
+3. Font/physical-data blocker'ı gerektirmeyen PDF/UI/accessibility/evidence işlerine devam et.
+4. Günün Mesajı editorial catalog işini parça parça ilerletirken release completeness gate'i kırmadan staging/editoryal akış kullan.
 
 **FINAL: NO.**
