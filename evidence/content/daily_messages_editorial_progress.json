@@ -21,6 +21,10 @@
     "tools/content/test_validate_daily_message_catalog.py",
     "tools/content/test_daily_message_shards.py"
   ],
+  "validators": [
+    "tools/content/validate_daily_message_contract.py",
+    "tools/content/validate_daily_message_editorial_progress.py"
+  ],
   "currentReviewedCoverage": {
     "tr": {
       "start": "2026-01-01",
@@ -46,6 +50,7 @@
     "random fallback remains forbidden",
     "TR and EN are separate editorial tracks and machine translation is forbidden",
     "year/locale shards are compiled deterministically before audit",
+    "editorial progress ledger counts must exactly match contiguous committed locale shards",
     "partial editorial audit may ignore missing dates but may not ignore malformed rows, duplicate exact keys, exact/near duplicate text, repetitive opening patterns, or unsafe certainty",
     "release audit must run without allow-incomplete and therefore requires all 8,036 initial records including leap dates"
   ],
