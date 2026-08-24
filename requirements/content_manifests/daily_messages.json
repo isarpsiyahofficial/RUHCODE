@@ -15,9 +15,9 @@
   "machine_translation_between_tr_en_allowed": false,
   "required_fields": ["date", "locale", "title", "teaser", "full_text", "theme_tag"],
   "storage": {
-    "model": "locale_year_csv_shards",
+    "model": "locale_period_csv_shards",
     "shards_root": "assets/content/daily_messages",
-    "shard_pattern": "{locale}/{year}.csv",
+    "shard_patterns": ["{locale}/{year}.csv", "{locale}/{year}-{month}.csv"],
     "compiler": "tools/content/build_daily_message_catalog.py",
     "strict_auditor": "tools/content/validate_daily_message_catalog.py",
     "partial_editorial_audit_allowed_before_release": true,
