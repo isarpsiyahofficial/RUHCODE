@@ -5,12 +5,14 @@ from datetime import date, timedelta
 from pathlib import Path
 import csv
 import json
+import re
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'requirements/content_manifests/daily_messages.json'
 EVIDENCE = ROOT / 'evidence/content/daily_messages_editorial_progress.json'
 SHARDS = ROOT / 'assets/content/daily_messages'
 FIELDS = ['date', 'locale', 'title', 'teaser', 'full_text', 'theme_tag']
+SHARD_FILE = re.compile(r'^(\d{4})(?:-(\d{2}))?\.csv$')
 
 
 def require(condition: bool, message: str) -> None:
@@ -25,12 +27,22 @@ def parse_iso(raw: str) -> date:
         raise SystemExit(f'invalid ISO date {raw!r}: {exc}') from exc
 
 
+def shard_period(path: Path) -> tuple[int, int | None]:
+    match = SHARD_FILE.fullmatch(path.name)
+    require(match is not None, f'unexpected daily-message shard name: {path.relative_to(ROOT)}')
+    year = int(match.group(1))
+    month = int(match.group(2)) if match.group(2) else None
+    require(month is None or 1 <= month <= 12, f'invalid shard month: {path.relative_to(ROOT)}')
+    return year, month
+
+
 def read_locale_rows(locale: str) -> list[dict[str, str]]:
     folder = SHARDS / locale
     require(folder.is_dir(), f'missing daily-message locale directory: {folder.relative_to(ROOT)}')
     rows: list[dict[str, str]] = []
     seen: set[str] = set()
     for path in sorted(folder.glob('*.csv')):
+        year, month = shard_period(path)
         with path.open(encoding='utf-8', newline='') as handle:
             reader = csv.DictReader(handle)
             require(reader.fieldnames == FIELDS,
@@ -42,8 +54,10 @@ def read_locale_rows(locale: str) -> list[dict[str, str]]:
                 require(key not in seen, f'duplicate {locale} editorial date: {key}')
                 seen.add(key)
                 parsed = parse_iso(key)
-                require(path.stem == f'{parsed.year:04d}',
+                require(parsed.year == year,
                         f'{path.relative_to(ROOT)}:{line} date/year shard mismatch: {key}')
+                require(month is None or parsed.month == month,
+                        f'{path.relative_to(ROOT)}:{line} date/month shard mismatch: {key}')
                 for field in FIELDS[2:]:
                     require(row[field].strip(),
                             f'{path.relative_to(ROOT)}:{line} blank {field} for {key}|{locale}')
