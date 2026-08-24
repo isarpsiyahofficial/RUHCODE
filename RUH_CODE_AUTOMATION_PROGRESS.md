@@ -27,61 +27,36 @@ Bu dosya güncel source-level checkpoint'i özetler. Ayrıntılı çalışma ge�
 - Backup: strict CSV, 15-table schema, manifest/checksum/FK preview, transactional merge/replace/rollback, SQLite export/import, `.ruhcode.zip`, native save/pick/share, legacy migration, tek-tabla CSV export.
 - Professional PDF: local planning/renderer contracts, preview→build parity, persisted Numerology/Western handlers, structural inspection, native delivery, subject/snapshot parity ve page geometry validation.
 - Combined PDF: persisted Western + Pythagorean projection, localized system separation, guarded multi-record preview/build, görünür Flutter route, exact-preview native delivery ve action/accessibility sözleşmesi.
-- Daily-message editorial pipeline: deterministic period shards, safe paired batch append, partial QA without weakening strict release completeness ve current ledger-backed contiguous coverage.
+- Daily-message editorial pipeline: deterministic period shards, safe paired batch append, partial QA without weakening strict release completeness ve ledger-backed contiguous coverage.
 
 ## Combined PDF — güncel
 
-`RC-0903` ve `RC-0904` source-level evidence altında, DONE değil:
-
-- en az iki **farklı calculation system** zorunlu,
-- iki aynı-system kayıt subject discovery, selection-state ve visible Preview disabled-state seviyesinde yeterli sayılmıyor,
-- child calculations PDF sırasında yeniden hesaplanmıyor,
-- exact persisted Western + Pythagorean snapshot/provenance doğrulanıyor,
-- tüm member snapshot'lar aynı stable `subjectKind + subjectId` değerine ait olmalı,
-- child digest/collision/shared-section kontrolleri fail-closed,
-- exact child identities deterministic combined SHA-256 üretiyor,
-- TR/EN child ve visible section başlıkları ayrı,
-- combined application service canonical `pdf.professional_export` PRO guard kullanıyor,
-- preview exact record IDs + locale + subject + composite digest + systems + section order mühürlüyor,
-- subject/record/locale/section değişikliği sealed preview'ı geçersiz kılıyor,
-- build persisted records'ı yeniden yükleyip digest/system/section drift varsa reddediyor,
-- production runtime combined application + native delivery bridge'ini gerçek SQLite snapshot source ile kuruyor,
-- görünür `CombinedProfessionalPdfBuilderPage` `/pdf/combined` route'una bağlı,
-- `Profil → Ayarlar → Kombine PDF Raporu` canonical PRO-guarded route action'ı mevcut,
-- Free route reddi ve PRO route erişimi widget regression'a bağlı,
-- Save As/share `sealedPreviewForDelivery()` ile current selection'ı tekrar doğruluyor,
-- route/preview/create/save/share canonical ACTION-ID'leri action registry + runtime binding manifestine bağlı,
-- kritik combined kontroller Semantics + minimum 48dp kullanıyor,
-- 2.0x text-scale ve EN section-label leakage regression'ları eklendi,
-- approved font/render zinciri hazır değilken combined byte üretimi fail-closed.
-
-`RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan “Batı sonucu Vedik sonuç gibi gösterilmeyecek” requirement'ı sahiplenilmiyor.
+`RC-0903` ve `RC-0904` source-level evidence altında, DONE değil. Persisted Western + Pythagorean snapshot'lar aynı stable subject'e ait olmak zorunda; exact preview token record-set/locale/subject/section parity'yi koruyor; drift fail-closed; production runtime ve native delivery bridge source-level bağlı. `RC-0905` bilinçli olarak açık: gerçek persisted Vedik PDF sistemi olmadan Batı/Vedik ayrım requirement'ı sahiplenilmiyor.
 
 ## Günün Mesajı — güncel editoryal ilerleme
 
-Bağlayıcı hedef başlangıç kataloğu **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
+Bağlayıcı başlangıç hedefi **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-Güncel committed ve evidence-ledger ile eşleşen contiguous coverage:
+Committed ve evidence-ledger ile eşleşen contiguous coverage:
 
-- TR: `2026-01-01 → 2026-03-31` = **90 kayıt**
-- EN: `2026-01-01 → 2026-03-31` = **90 kayıt**
-- toplam: **180 / 8.036**
-- kalan: **7.856 kayıt**
+- TR: `2026-01-01 → 2026-06-30` = **181 kayıt**
+- EN: `2026-01-01 → 2026-06-30` = **181 kayıt**
+- toplam: **362 / 8.036**
+- kalan: **7.674 kayıt**
+- sıradaki exact başlangıç: **2026-07-01**
 
-Bu turda Mart 2026 için 31 TR + 31 bağımsız EN mesaj eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
+Haziran 2026 için 30 TR + 30 bağımsız EN mesaj eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor. Türkçe shard'da bulunan bir yazım hatası aynı turda düzeltildi.
 
 Kalite/ilerleme güvenliği:
 
 - exact `YYYY-MM-DD|locale` anahtar sözleşmesi korunuyor,
-- eski `{locale}/{year}.csv` shard'ları korunurken yeni `{locale}/{year}-{month}.csv` period shard desteği eklendi,
-- compiler bütün shard'ları deterministic tek katalogda birleştiriyor ve global duplicate exact key'i reddediyor,
-- monthly shard içindeki date/month uyuşmazlığı fail-closed,
-- paired editorial append aracı TR+EN exact aynı tarih aralığını, committed coverage'ın hemen sonrasını, global overlap kontrolünü ve evidence-ledger parity'yi zorunlu tutuyor,
-- partial editorial compiler/auditor eksik gelecekteki tarihleri editoryal çalışma sırasında toleranslı ele alıyor ama malformed row, duplicate exact key, exact/near duplicate metin, repetitive opening ve unsafe certainty kontrollerini gevşetmiyor,
-- strict release audit `--allow-incomplete` kullanmayacak ve 8.036 kaydı zorunlu tutacak,
-- progress validator evidence count ↔ gerçek CSV row count eşitliğini, locale/period uyumunu ve başlangıçtan end-date'e kesintisiz coverage'ı doğruluyor.
+- `{locale}/{year}.csv` ve `{locale}/{year}-{month}.csv` shard'ları deterministic katalogda birleşiyor,
+- global duplicate exact key ve shard period/date uyuşmazlığı fail-closed,
+- paired editorial append TR+EN exact tarih aralığını ve contiguous ledger parity'yi zorunlu tutuyor,
+- partial editorial audit gelecekte eksik tarihleri çalışma sırasında toleranslı ele alabilir ama malformed row, duplicate, exact/near duplicate, opening-pattern ve unsafe-certainty kontrollerini gevşetmez,
+- strict release audit 8.036 kaydı ve leap dates'i zorunlu tutar.
 
-`RC-1424/1425/1426/1427/1433/1434` **DONE değildir**. 8.036 completeness + rolling release horizon + exact visible CI kanıtı olmadan DONE verilmez.
+`RC-1424/1425/1426/1427/1433/1434` **DONE değildir**. Full completeness + rolling release horizon + final QA + exact visible CI olmadan DONE verilmez.
 
 ## PDF structural — güncel
 
@@ -112,7 +87,7 @@ Kalite/ilerleme güvenliği:
 - Independent full PDF parser/open proof.
 - Western production vector painter + approved glyph assets.
 - Vedic vector chart / persisted Vedic PDF schema.
-- BaZi production tables gereken kapsamda tamamlanmalı.
+- BaZi production tabloları gereken kapsamda tamamlanmalı.
 - 5/25/50+ gerçek rendered PDF, low-memory, glyph/crop/visual regression.
 - gerçek cihaz Save As/share smoke evidence.
 
@@ -123,7 +98,7 @@ Kalite/ilerleme güvenliği:
 - production Lahiri/Chitrapaksha artifact.
 - GeoNames source/output SHA + bulk IANA integrity.
 - independent astronomical golden accuracy suite.
-- günlük mesajlarda kalan 7.856 editoryal kayıt ve strict release audit.
+- günlük mesajlarda kalan **7.674** editoryal kayıt ve strict release audit.
 - 1890–2110 verified Chinese New Year boundary artifact.
 
 ## Release blocker'ları
@@ -138,18 +113,17 @@ Kalite/ilerleme güvenliği:
 
 ## Son checkpoint
 
-`automation_runs/2026-08-24_0723_daily_messages_march_period_shards.md`
+`automation_runs/2026-08-24_1110_daily_messages_june.md`
 
-Latest contract source commit `2ca54362d98b8f23367d7eb627cfdaa370c82223` için GitHub combined status `statuses=[]` döndürdü. Exact görünür SUCCESS olmadığı için ilgili RC'ler DONE yapılmadı.
+Latest evidence commit `7cffabf149333dab5f48ed90e88ea77c48e43548` için GitHub combined status `statuses=[]` döndürdü. Exact görünür SUCCESS olmadığı için ilgili RC'ler DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Daily messages: `2026-04-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
-2. Yeni ayları `YYYY-MM.csv` shard olarak ekle; year file rewrite yapma.
-3. Her content batch sonrası partial QA ve contiguous ledger gate'i koru.
+1. Daily messages: `2026-07-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
+2. Yeni ayları `YYYY-MM.csv` shard olarak ekle; exact-date uniqueness ve contiguous ledger gate'ini koru.
+3. Her content batch sonrası partial QA ve evidence-ledger parity'yi koru.
 4. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
-5. Doğrulanmış persisted Vedik schema yoksa format uydurma; başka blocker-dışı requirement'a geç.
-6. PDF/UI/accessibility/evidence işlerini sürdür.
-7. Fiziksel artifact/font/UI blocker'larında kanıtsız DONE verme.
+5. PDF/UI/accessibility/evidence blocker-dışı işlerini sürdür.
+6. Fiziksel artifact/font/UI/device-test blocker'larında kanıtsız DONE verme.
 
 **FINAL: NO.**
