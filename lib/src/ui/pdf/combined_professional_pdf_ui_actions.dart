@@ -1,4 +1,5 @@
 import '../../pdf/combined_professional_pdf_application_service.dart';
+import '../../pdf/combined_professional_pdf_delivery_service.dart';
 import '../../pdf/pdf_data_contract.dart';
 import '../../pdf/persisted_calculation_pdf_source.dart';
 
@@ -142,18 +143,100 @@ final class CombinedProfessionalPdfApplicationActions
   }
 }
 
+enum CombinedPdfUiDeliveryOutcome {
+  saved,
+  shared,
+  cancelled,
+  unavailable,
+}
+
+final class CombinedPdfUiDeliveryResult {
+  const CombinedPdfUiDeliveryResult({
+    required this.outcome,
+    this.savedUri,
+  });
+
+  final CombinedPdfUiDeliveryOutcome outcome;
+  final Uri? savedUri;
+}
+
+abstract interface class CombinedProfessionalPdfDeliveryActions {
+  Future<CombinedPdfUiDeliveryResult> save({
+    required CombinedPdfUiPreview preview,
+    required String fileName,
+  });
+
+  Future<CombinedPdfUiDeliveryResult> share({
+    required CombinedPdfUiPreview preview,
+    required String fileName,
+  });
+}
+
+/// UI bridge for native delivery. Every call forwards the exact sealed preview
+/// back to [CombinedProfessionalPdfDeliveryService], so Save As/share cannot
+/// bypass preview/build persisted-snapshot drift validation.
+final class CombinedProfessionalPdfDeliveryApplicationActions
+    implements CombinedProfessionalPdfDeliveryActions {
+  const CombinedProfessionalPdfDeliveryApplicationActions({required this.service});
+
+  final CombinedProfessionalPdfDeliveryService service;
+
+  @override
+  Future<CombinedPdfUiDeliveryResult> save({
+    required CombinedPdfUiPreview preview,
+    required String fileName,
+  }) async {
+    final result = await service.save(preview: preview.value, fileName: fileName);
+    return CombinedPdfUiDeliveryResult(
+      outcome: switch (result.status) {
+        CombinedPdfDeliveryStatus.saved => CombinedPdfUiDeliveryOutcome.saved,
+        CombinedPdfDeliveryStatus.shared => CombinedPdfUiDeliveryOutcome.shared,
+        CombinedPdfDeliveryStatus.cancelled => CombinedPdfUiDeliveryOutcome.cancelled,
+        CombinedPdfDeliveryStatus.unavailable => CombinedPdfUiDeliveryOutcome.unavailable,
+      },
+      savedUri: result.savedUri,
+    );
+  }
+
+  @override
+  Future<CombinedPdfUiDeliveryResult> share({
+    required CombinedPdfUiPreview preview,
+    required String fileName,
+  }) async {
+    final result = await service.share(preview: preview.value, fileName: fileName);
+    return CombinedPdfUiDeliveryResult(
+      outcome: switch (result.status) {
+        CombinedPdfDeliveryStatus.saved => CombinedPdfUiDeliveryOutcome.saved,
+        CombinedPdfDeliveryStatus.shared => CombinedPdfUiDeliveryOutcome.shared,
+        CombinedPdfDeliveryStatus.cancelled => CombinedPdfUiDeliveryOutcome.cancelled,
+        CombinedPdfDeliveryStatus.unavailable => CombinedPdfUiDeliveryOutcome.unavailable,
+      },
+      savedUri: result.savedUri,
+    );
+  }
+}
+
 /// One-time production binding for combined-report UI surfaces.
 final class CombinedProfessionalPdfUiRuntimeBindings {
   CombinedProfessionalPdfUiRuntimeBindings._();
 
   static CombinedProfessionalPdfUiActions? _actions;
+  static CombinedProfessionalPdfDeliveryActions? _delivery;
 
   static CombinedProfessionalPdfUiActions? get actions => _actions;
+  static CombinedProfessionalPdfDeliveryActions? get delivery => _delivery;
 
   static void bind(CombinedProfessionalPdfUiActions actions) {
     if (_actions != null) {
       throw StateError('Combined professional PDF UI actions are already bound.');
     }
     _actions = actions;
+  }
+
+  static void bindDelivery(CombinedProfessionalPdfDeliveryActions delivery) {
+    if (_delivery != null) {
+      throw StateError('Combined professional PDF delivery actions are already bound.');
+    }
+    _delivery = delivery;
   }
 }
