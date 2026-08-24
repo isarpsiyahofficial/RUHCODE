@@ -2,42 +2,42 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-24_0255_combined_pdf_application_subject_kind.md`
+`automation_runs/2026-08-24_0452_combined_pdf_runtime_selection_delivery.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Western profile/client subject identity**
-   - yeni Western kayıtları explicit `subjectKind=profile|client` taşıyor
-   - legacy subjectKind'sız Western kayıtları yalnız `profile` olarak korunuyor
-   - unknown subject kind fail-closed
-   - combined Western projector artık hard-coded profile kullanmıyor
+1. **Combined PDF production runtime**
+   - persisted combined projection gerçek SQLite professional snapshot source ile bağlandı
+   - canonical PRO-guarded combined application service runtime composition'a girdi
+   - approved font/render zinciri yokken build açıkça fail-closed
 
-2. **Combined professional PDF application service**
-   - canonical PRO service guard
-   - aynı subject kind + stable subject ID için filtered record catalog
+2. **Multi-record UI action/state contract**
+   - subject discovery + subject-filtered record candidates
    - exact multi-record preview token
-   - preview token record IDs + locale + subject + composite SHA + systems + ordered sections saklıyor
-   - build kayıtları yeniden okuyup snapshot/system/section drift varsa fail-closed
+   - subject/record/locale/section değişiminde preview invalidation
+   - current selection ile preview aynı değilse build yasak
+   - regression testleri eklendi
 
-3. **Regression/evidence/CI**
-   - preview→build exact parity testi
-   - preview sonrası persisted digest drift rejection testi
-   - Free/locked service-guard testi
-   - Western client/legacy-profile/invalid-subject-kind testleri
-   - combined evidence yalnız RC-0903/0904 sahipleniyor
-   - RC-0905 gerçek Vedik/Western isolation kanıtı olmadan açık tutuluyor
-   - dedicated combined workflow ve merkezi Requirements Contract genişletildi
+3. **Native delivery composition**
+   - combined Save As/share exact sealed preview token üzerinden tekrar build doğrulamasına giriyor
+   - cancellation / unavailable ayrı durumlar
+   - native delivery preview/build drift kontrolünü bypass edemiyor
+
+4. **Evidence / CI**
+   - persisted combined evidence runtime/UI/native-delivery kaynaklarıyla güncellendi
+   - combined runtime structural validator eklendi/genişletildi
+   - ayrı Combined PDF UI Runtime Contract workflow'u eklendi
 
 ## Validation limitation
 
-Exact workflow-target commit `6accc318df7b3515e682b67f45445e01d7f3bacf` için GitHub combined-status `statuses=[]` döndürdü. Bu nedenle CI SUCCESS varsayılmadı ve ilgili RC'ler DONE yapılmadı.
+Exact görünür workflow SUCCESS kanıtı henüz yok. Bu nedenle RC-0903/0904 DONE yapılmadı.
 
 ## Next safe work
 
-- combined application service'i production runtime + gerçek multi-select builder UI'a bağla
-- multi-select değişince preview invalidation ve exact record-set UI parity ekle
-- combined native Save As/share delivery zincirini preview token üzerinden bağla
-- RC-0905'i Vedik persisted PDF mevcut olmadan sahiplenme
+- gerçek Flutter combined multi-select page/route oluştur
+- 48dp + Semantics + 2.0x text-scale widget contract ekle
+- combined Save As/share UI actions'ı exact preview token'a bağla
+- RC-0905'i persisted Vedik PDF sistemi olmadan sahiplenme
 - physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts, Play/rewarded device proof ve clean-checkout release proof blocker olarak kalır
 
 **FINAL: NO.**
