@@ -17,14 +17,21 @@
     "lib/src/pdf/unavailable_pdf_service.dart",
     "lib/src/ui/pdf/combined_professional_pdf_ui_actions.dart",
     "lib/src/ui/pdf/combined_pdf_selection_state.dart",
+    "lib/src/ui/pdf/combined_pdf_builder_page.dart",
+    "lib/src/ui/actions/ruh_action_ids.dart",
+    "lib/src/ui/navigation/main_navigation_shell.dart",
+    "lib/src/app/ruh_code_app.dart",
     "lib/src/app/app_runtime.dart",
-    "lib/main.dart"
+    "lib/main.dart",
+    "ui/action_registry_runtime_extensions.csv",
+    "ui/runtime_action_bindings.csv"
   ],
   "tests": [
     "test/pdf/persisted_combined_pdf_projection_test.dart",
     "test/pdf/combined_professional_pdf_application_service_test.dart",
     "test/pdf/pdf_combined_report_test.dart",
-    "test/ui/pdf/combined_pdf_selection_state_test.dart"
+    "test/ui/pdf/combined_pdf_selection_state_test.dart",
+    "test/ui/pdf/combined_pdf_builder_page_test.dart"
   ],
   "validators": [
     "tools/pdf/validate_persisted_combined_projection.py",
@@ -36,19 +43,23 @@
     "Western persistence records explicit profile/client subjectKind for new rows; legacy Western rows remain profile-only rather than guessing client ownership.",
     "All selected persisted records must have the same stable subject ID and the combined builder also requires the same subject kind.",
     "The multi-select candidate catalog is filtered to one exact subject kind plus stable subject ID before selection.",
+    "Subject discovery and preview require at least two distinct calculation systems, not merely two records from the same system.",
     "Child snapshot SHA/provenance is validated before the combined composite SHA is created.",
     "Turkish and English system headings are explicit and child section titles are prefixed with the localized system name.",
     "Professional combined preview/build is protected by the canonical PDF PRO service guard.",
     "Preview seals the exact persisted record IDs, locale, composite digest, member system list and ordered section list; build reloads records and fails closed on drift.",
-    "Production runtime composes the persisted combined projection source and UI-safe application bridge.",
+    "Production runtime composes the persisted combined projection source, UI-safe application bridge and native delivery bridge.",
+    "A visible Flutter route is reachable from Settings through a canonical PRO-guarded action.",
+    "The combined builder exposes subject selection, multi-record selection, section selection, preview, create, Save As and share controls with canonical ACTION IDs, Semantics and minimum 48dp targets.",
     "Combined UI selection state invalidates its sealed preview whenever subject, record set, locale or section selection changes.",
-    "Native Save As/share delivery is composed from the exact sealed preview token and therefore cannot bypass preview/build drift validation.",
+    "Native Save As/share delivery receives the exact sealed preview token and therefore cannot bypass preview/build drift validation.",
+    "The combined builder has a 2.0x text-scale widget regression contract for critical controls.",
     "Combined byte rendering remains explicitly unavailable rather than pretending approved-font production rendering is ready.",
-    "Unsupported calculation types, duplicate record IDs, duplicate projectors, subject drift, locale drift, section drift and digest drift fail closed."
+    "Unsupported calculation types, duplicate record IDs, duplicate projectors, same-system-only selection, subject drift, locale drift, section drift and digest drift fail closed."
   ],
   "blockers": [
     "Exact Flutter/GitHub Actions success evidence is not yet visible.",
-    "The final visible multi-select Flutter page/route is not yet connected to the runtime UI binding.",
-    "Approved production Unicode PDF font artifacts and final visual regression remain open."
+    "Approved production Unicode PDF font artifacts and final visual regression remain open.",
+    "RC-0905 remains open until a persisted Vedik PDF system exists and cross-system identity rules can be proven."
   ]
 }
