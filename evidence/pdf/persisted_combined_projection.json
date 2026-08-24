@@ -6,14 +6,17 @@
   "requirements": ["RC-0903", "RC-0904"],
   "sources": [
     "lib/src/pdf/persisted_combined_pdf_projection.dart",
+    "lib/src/pdf/combined_professional_pdf_application_service.dart",
     "lib/src/pdf/pdf_combined_report.dart",
     "lib/src/pdf/persisted_calculation_pdf_source.dart",
     "lib/src/pdf/persisted_western_natal_pdf.dart",
     "lib/src/pdf/persisted_western_natal_sections.dart",
-    "lib/src/pdf/persisted_pythagorean_numerology_pdf.dart"
+    "lib/src/pdf/persisted_pythagorean_numerology_pdf.dart",
+    "lib/src/pdf/western_natal_persistence_service.dart"
   ],
   "tests": [
     "test/pdf/persisted_combined_pdf_projection_test.dart",
+    "test/pdf/combined_professional_pdf_application_service_test.dart",
     "test/pdf/pdf_combined_report_test.dart"
   ],
   "validators": [
@@ -22,14 +25,18 @@
   "claims": [
     "A combined report may load multiple exact persisted calculation records instead of recomputing child systems.",
     "Western natal and Pythagorean numerology have concrete persisted member projectors.",
-    "All selected persisted records must have the same ownerEntityId before composition.",
+    "Western persistence now records explicit profile/client subjectKind for new rows; legacy Western rows remain profile-only rather than guessing client ownership.",
+    "All selected persisted records must have the same stable subject ID and the combined builder also requires the same subject kind.",
+    "The multi-select candidate catalog is filtered to one exact subject kind plus stable subject ID before selection.",
     "Child snapshot SHA/provenance is validated before the combined composite SHA is created.",
     "Turkish and English system headings are explicit and child section titles are prefixed with the localized system name.",
-    "Unsupported calculation types, duplicate record IDs, duplicate projectors, subject drift, locale drift and digest drift fail closed."
+    "Professional combined preview/build is protected by the canonical PDF PRO service guard.",
+    "Preview seals the exact persisted record IDs, locale, composite digest, member system list and ordered section list; build reloads records and fails closed on drift.",
+    "Unsupported calculation types, duplicate record IDs, duplicate projectors, subject drift, locale drift, section drift and digest drift fail closed."
   ],
   "blockers": [
     "Exact Flutter/GitHub Actions success evidence is not yet visible.",
-    "The persisted combined projection source is not yet wired into the production PDF builder/runtime selection flow.",
+    "The combined application service is not yet exposed through the final production multi-select builder UI/runtime composition.",
     "Approved production Unicode PDF font artifacts and final visual regression remain open."
   ]
 }
