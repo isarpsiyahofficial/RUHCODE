@@ -7,6 +7,7 @@
   "sources": [
     "lib/src/pdf/persisted_combined_pdf_projection.dart",
     "lib/src/pdf/combined_professional_pdf_application_service.dart",
+    "lib/src/pdf/combined_professional_pdf_delivery_service.dart",
     "lib/src/pdf/pdf_combined_report.dart",
     "lib/src/pdf/persisted_calculation_pdf_source.dart",
     "lib/src/pdf/persisted_western_natal_pdf.dart",
@@ -39,8 +40,9 @@
     "Turkish and English system headings are explicit and child section titles are prefixed with the localized system name.",
     "Professional combined preview/build is protected by the canonical PDF PRO service guard.",
     "Preview seals the exact persisted record IDs, locale, composite digest, member system list and ordered section list; build reloads records and fails closed on drift.",
-    "Production runtime now composes the persisted combined projection source and UI-safe application bridge.",
+    "Production runtime composes the persisted combined projection source and UI-safe application bridge.",
     "Combined UI selection state invalidates its sealed preview whenever subject, record set, locale or section selection changes.",
+    "Native Save As/share delivery is composed from the exact sealed preview token and therefore cannot bypass preview/build drift validation.",
     "Combined byte rendering remains explicitly unavailable rather than pretending approved-font production rendering is ready.",
     "Unsupported calculation types, duplicate record IDs, duplicate projectors, subject drift, locale drift, section drift and digest drift fail closed."
   ],
