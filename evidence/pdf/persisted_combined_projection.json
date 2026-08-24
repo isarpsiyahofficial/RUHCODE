@@ -32,7 +32,8 @@
     "test/pdf/pdf_combined_report_test.dart",
     "test/ui/pdf/combined_pdf_selection_state_test.dart",
     "test/ui/pdf/combined_pdf_builder_page_test.dart",
-    "test/ui/pdf/combined_pdf_route_entitlement_test.dart"
+    "test/ui/pdf/combined_pdf_route_entitlement_test.dart",
+    "test/ui/pdf/combined_pdf_localization_gate_test.dart"
   ],
   "validators": [
     "tools/pdf/validate_persisted_combined_projection.py",
@@ -44,9 +45,10 @@
     "Western persistence records explicit profile/client subjectKind for new rows; legacy Western rows remain profile-only rather than guessing client ownership.",
     "All selected persisted records must have the same stable subject ID and the combined builder also requires the same subject kind.",
     "The multi-select candidate catalog is filtered to one exact subject kind plus stable subject ID before selection.",
-    "Subject discovery and preview require at least two distinct calculation systems, not merely two records from the same system.",
+    "Subject discovery, UI enablement and preview require at least two distinct calculation systems, not merely two records from the same system.",
     "Child snapshot SHA/provenance is validated before the combined composite SHA is created.",
     "Turkish and English system headings are explicit and child section titles are prefixed with the localized system name.",
+    "Visible combined section labels are locale-aware for Turkish and English.",
     "Professional combined preview/build is protected by the canonical PDF PRO service guard.",
     "Preview seals the exact persisted record IDs, locale, composite digest, member system list and ordered section list; build reloads records and fails closed on drift.",
     "Production runtime composes the persisted combined projection source, UI-safe application bridge and native delivery bridge.",
