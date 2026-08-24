@@ -8,7 +8,18 @@ import json
 import re
 
 REQUIRED_COLUMNS = ['date', 'locale', 'title', 'teaser', 'full_text', 'theme_tag']
-YEAR_FILE = re.compile(r'^(\d{4})\.csv$')
+SHARD_FILE = re.compile(r'^(\d{4})(?:-(\d{2}))?\.csv$')
+
+
+def _shard_period(path: Path) -> tuple[int, int | None]:
+    match = SHARD_FILE.fullmatch(path.name)
+    if match is None:
+        raise ValueError(f'Unexpected daily-message shard file name: {path}')
+    year = int(match.group(1))
+    month = int(match.group(2)) if match.group(2) is not None else None
+    if month is not None and not 1 <= month <= 12:
+        raise ValueError(f'Invalid daily-message shard month: {path}')
+    return year, month
 
 
 def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, object]:
@@ -31,10 +42,7 @@ def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, 
         for path in sorted(locale_dir.iterdir()):
             if not path.is_file():
                 continue
-            match = YEAR_FILE.fullmatch(path.name)
-            if match is None:
-                raise ValueError(f'Unexpected daily-message shard file name: {path}')
-            year = int(match.group(1))
+            year, month = _shard_period(path)
             if year < start_year or year > end_year:
                 raise ValueError(f'Shard year outside manifest coverage: {path}')
 
@@ -49,11 +57,17 @@ def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, 
                         raise ValueError(
                             f'{path}:{line_number}: locale {row["locale"]!r} does not match shard directory {locale!r}'
                         )
-                    if not row['date'].startswith(f'{year:04d}-'):
+                    raw_date = row['date'].strip()
+                    if not raw_date.startswith(f'{year:04d}-'):
                         raise ValueError(
                             f'{path}:{line_number}: date {row["date"]!r} does not match shard year {year}'
                         )
-                    key = f"{row['date'].strip()}|{locale}"
+                    if month is not None and not raw_date.startswith(f'{year:04d}-{month:02d}-'):
+                        raise ValueError(
+                            f'{path}:{line_number}: date {row["date"]!r} does not match shard month '
+                            f'{year:04d}-{month:02d}'
+                        )
+                    key = f"{raw_date}|{locale}"
                     if key in seen_keys:
                         raise ValueError(f'Duplicate exact daily-message key across shards: {key}')
                     seen_keys.add(key)
@@ -76,7 +90,9 @@ def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, 
 
 
 def parser() -> argparse.ArgumentParser:
-    result = argparse.ArgumentParser(description='Build one deterministic Ruh Code daily-message catalog from locale/year shards.')
+    result = argparse.ArgumentParser(
+        description='Build one deterministic Ruh Code daily-message catalog from locale/year or locale/year-month shards.'
+    )
     result.add_argument('--shards-root', type=Path, default=Path('assets/content/daily_messages'))
     result.add_argument('--manifest', type=Path, default=Path('requirements/content_manifests/daily_messages.json'))
     result.add_argument('--output', type=Path, required=True)
