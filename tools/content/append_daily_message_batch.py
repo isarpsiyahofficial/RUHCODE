@@ -8,10 +8,12 @@ import argparse
 import csv
 import json
 import os
+import re
 import tempfile
 
 FIELDS = ['date', 'locale', 'title', 'teaser', 'full_text', 'theme_tag']
 LOCALES = ('tr', 'en')
+SHARD_FILE = re.compile(r'^(\d{4})(?:-(\d{2}))?\.csv$')
 
 
 class BatchAppendError(ValueError):
@@ -24,6 +26,7 @@ class AppendSummary:
     end: str
     records_per_locale: int
     total_records_after: int
+    target_shards: tuple[str, str]
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -31,8 +34,7 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
         reader = csv.DictReader(handle)
         if reader.fieldnames != FIELDS:
             raise BatchAppendError(f'{path}: expected exact columns {FIELDS}, got {reader.fieldnames}')
-        rows = [{field: (row[field] or '').strip() for field in FIELDS} for row in reader]
-    return rows
+        return [{field: (row[field] or '').strip() for field in FIELDS} for row in reader]
 
 
 def _parse_date(raw: str, *, context: str) -> date:
@@ -64,7 +66,34 @@ def _validate_rows(rows: list[dict[str, str]], *, locale: str, year: int, contex
     for previous, current in zip(parsed, parsed[1:]):
         if current != previous + timedelta(days=1):
             raise BatchAppendError(f'{context}: batch dates are not contiguous at {previous} -> {current}')
+    if any(item.month != parsed[0].month for item in parsed):
+        raise BatchAppendError(f'{context}: one append batch must stay inside one calendar month')
     return parsed
+
+
+def _read_all_locale_rows(folder: Path, *, locale: str) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for path in sorted(folder.glob('*.csv')):
+        match = SHARD_FILE.fullmatch(path.name)
+        if match is None:
+            raise BatchAppendError(f'unexpected shard name: {path}')
+        year = int(match.group(1))
+        month = int(match.group(2)) if match.group(2) else None
+        if month is not None and not 1 <= month <= 12:
+            raise BatchAppendError(f'invalid shard month: {path}')
+        for row in _read_csv(path):
+            parsed = _parse_date(row['date'], context=str(path))
+            if parsed.year != year or (month is not None and parsed.month != month):
+                raise BatchAppendError(f'{path}: date {parsed} does not match shard period')
+            if row['locale'] != locale:
+                raise BatchAppendError(f'{path}: locale {row["locale"]!r} does not match {locale!r}')
+            if row['date'] in seen:
+                raise BatchAppendError(f'{locale}: duplicate committed date across shards: {row["date"]}')
+            seen.add(row['date'])
+            rows.append(row)
+    rows.sort(key=lambda item: item['date'])
+    return rows
 
 
 def _render_csv(rows: list[dict[str, str]]) -> str:
@@ -103,38 +132,46 @@ def append_paired_batch(
     if evidence.get('status') != 'EDITORIAL_IN_PROGRESS' or evidence.get('done') is not False:
         raise BatchAppendError('editorial evidence must be EDITORIAL_IN_PROGRESS and done=false')
 
-    batches: dict[str, list[dict[str, str]]] = {
-        'tr': _read_csv(tr_batch),
-        'en': _read_csv(en_batch),
-    }
+    batches = {'tr': _read_csv(tr_batch), 'en': _read_csv(en_batch)}
     batch_dates = {
-        locale: _validate_rows(rows, locale=locale, year=year, context=str(tr_batch if locale == 'tr' else en_batch))
+        locale: _validate_rows(
+            rows,
+            locale=locale,
+            year=year,
+            context=str(tr_batch if locale == 'tr' else en_batch),
+        )
         for locale, rows in batches.items()
     }
     if batch_dates['tr'] != batch_dates['en']:
         raise BatchAppendError('TR and EN editorial batches must cover the exact same dates')
 
-    shard_rows: dict[str, list[dict[str, str]]] = {}
+    month = batch_dates['tr'][0].month
+    committed: dict[str, list[dict[str, str]]] = {}
+    target_paths: dict[str, Path] = {}
+    target_rows: dict[str, list[dict[str, str]]] = {}
+
     for locale in LOCALES:
-        shard = shards_root / locale / f'{year}.csv'
-        current = _read_csv(shard)
-        if not current:
-            expected_start = batch_dates[locale][0]
-        else:
-            last = _parse_date(current[-1]['date'], context=str(shard))
-            expected_start = last + timedelta(days=1)
+        folder = shards_root / locale
+        current_all = _read_all_locale_rows(folder, locale=locale)
+        committed[locale] = current_all
+        expected_start = batch_dates[locale][0] if not current_all else _parse_date(
+            current_all[-1]['date'], context=f'{locale} committed coverage'
+        ) + timedelta(days=1)
         if batch_dates[locale][0] != expected_start:
             raise BatchAppendError(
                 f'{locale}: batch must start immediately after committed coverage: '
                 f'expected {expected_start}, got {batch_dates[locale][0]}'
             )
-        existing_dates = {row['date'] for row in current}
+        existing_dates = {row['date'] for row in current_all}
         overlap = existing_dates.intersection(row['date'] for row in batches[locale])
         if overlap:
             raise BatchAppendError(f'{locale}: batch overlaps committed dates: {sorted(overlap)}')
-        shard_rows[locale] = current + batches[locale]
 
-    # Keep language tracks editorially independent at a minimum structural level.
+        target = folder / f'{year:04d}-{month:02d}.csv'
+        target_paths[locale] = target
+        current_target = _read_csv(target) if target.exists() else []
+        target_rows[locale] = current_target + batches[locale]
+
     for tr_row, en_row in zip(batches['tr'], batches['en']):
         if tr_row['title'].casefold() == en_row['title'].casefold():
             raise BatchAppendError(f'{tr_row["date"]}: TR and EN titles are unexpectedly identical')
@@ -144,24 +181,27 @@ def append_paired_batch(
     reviewed = evidence['currentReviewedCoverage']
     end = batch_dates['tr'][-1].isoformat()
     increment = len(batch_dates['tr'])
+    new_counts: dict[str, int] = {}
     for locale in LOCALES:
         ledger = reviewed[locale]
-        if int(ledger['records']) != len(shard_rows[locale]) - increment:
+        if int(ledger['records']) != len(committed[locale]):
             raise BatchAppendError(
-                f'{locale}: evidence ledger count {ledger["records"]} does not match committed shard before append '
-                f'{len(shard_rows[locale]) - increment}'
+                f'{locale}: evidence ledger count {ledger["records"]} does not match committed shard rows '
+                f'{len(committed[locale])}'
             )
+        new_counts[locale] = len(committed[locale]) + increment
         ledger['end'] = end
-        ledger['records'] = len(shard_rows[locale])
-    reviewed['totalRecords'] = len(shard_rows['tr']) + len(shard_rows['en'])
+        ledger['records'] = new_counts[locale]
+    reviewed['totalRecords'] = new_counts['tr'] + new_counts['en']
 
-    # All validation happens before any replacement. Preserve originals for rollback on write failure.
-    targets = {
-        shards_root / 'tr' / f'{year}.csv': _render_csv(shard_rows['tr']),
-        shards_root / 'en' / f'{year}.csv': _render_csv(shard_rows['en']),
+    targets: dict[Path, str] = {
+        target_paths['tr']: _render_csv(target_rows['tr']),
+        target_paths['en']: _render_csv(target_rows['en']),
         evidence_path: json.dumps(evidence, ensure_ascii=False, indent=2) + '\n',
     }
-    originals = {path: path.read_text(encoding='utf-8') for path in targets}
+    originals: dict[Path, str | None] = {
+        path: path.read_text(encoding='utf-8') if path.exists() else None for path in targets
+    }
     written: list[Path] = []
     try:
         for path, text in targets.items():
@@ -169,7 +209,11 @@ def append_paired_batch(
             written.append(path)
     except Exception:
         for path in reversed(written):
-            _atomic_write_text(path, originals[path])
+            original = originals[path]
+            if original is None:
+                path.unlink(missing_ok=True)
+            else:
+                _atomic_write_text(path, original)
         raise
 
     return AppendSummary(
@@ -177,11 +221,12 @@ def append_paired_batch(
         end=end,
         records_per_locale=increment,
         total_records_after=int(reviewed['totalRecords']),
+        target_shards=(target_paths['tr'].as_posix(), target_paths['en'].as_posix()),
     )
 
 
 def parser() -> argparse.ArgumentParser:
-    result = argparse.ArgumentParser(description='Safely append one paired TR+EN editorial batch to Ruh Code year shards.')
+    result = argparse.ArgumentParser(description='Safely append one paired TR+EN editorial batch to Ruh Code monthly shards.')
     result.add_argument('--shards-root', type=Path, default=Path('assets/content/daily_messages'))
     result.add_argument('--evidence', type=Path, default=Path('evidence/content/daily_messages_editorial_progress.json'))
     result.add_argument('--tr-batch', type=Path, required=True)
