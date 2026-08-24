@@ -10,40 +10,41 @@ Latest source-level checkpoint:
    - gerçek `CombinedProfessionalPdfBuilderPage`
    - `Profil → Ayarlar → Kombine PDF Raporu`
    - canonical `pdf.professional_export` PRO route guard
+   - Free/PRO route widget regression
 
 2. **True multi-system selection**
    - aynı subject için çoklu persisted calculation seçimi
    - en az iki farklı calculation system zorunlu
-   - same-system-only selection fail-closed
-   - subject discovery aynı kuralı önceden uygular
+   - same-system-only seçim state ve visible UI seviyesinde engelli
+   - subject discovery de aynı kuralı uygular
 
-3. **Exact sealed preview delivery**
+3. **TR/EN visible contract**
+   - combined section labels Türkçe ve İngilizce ayrı
+   - English widget regression Türkçe bölüm sızıntısını reddeder
+
+4. **Exact sealed preview delivery**
    - subject/record/locale/section değişikliği preview'ı invalid eder
    - build ve native Save As/share current selection ile exact sealed preview eşleşmesini tekrar doğrular
-   - startup native delivery bridge'i production runtime'a bağlar
+   - startup native delivery bridge'i production runtime'a bağlı
 
-4. **Action/accessibility**
-   - combined route/preview/create/save/share için canonical ACTION-ID'ler
+5. **Action/accessibility + CI**
+   - combined route/preview/create/save/share canonical ACTION-ID'ler
    - action registry + runtime binding manifest
    - 48dp + Semantics kritik kontroller
    - 2.0x text-scale widget contract
-
-5. **CI / evidence**
-   - state ve visible builder widget testleri
-   - Combined PDF UI Runtime Contract genişletildi
-   - combined UI validator merkezi Requirements Contract'a bağlandı
+   - dört combined Flutter test ailesi dedicated workflow'a bağlı
+   - combined runtime validator merkezi Requirements Contract içinde
 
 ## Validation limitation
 
-Requirements workflow-target `8f5271d45865d00fb6ae405e7cdb7aae6ac9bf4a` için GitHub combined status `statuses=[]` döndürdü. Exact görünür workflow SUCCESS olmadığı için RC-0903/0904 DONE yapılmadı.
+Latest dedicated workflow-target `62ff34493459bd0dc80191b5c76f26993f73f92a` için GitHub combined status `statuses=[]` döndürdü. Exact görünür workflow SUCCESS olmadığı için RC-0903/0904 DONE yapılmadı.
 
 ## Next safe work
 
-- selected-system sayısını visible disabled-state'e bağla
-- combined section etiketlerini tam TR/EN locale-aware yap
-- Free/PRO route widget regression ekle
 - combined evidence semantic ownership auditini sürdür
-- RC-0905'i persisted Vedik PDF olmadan sahiplenme
-- physical ephemeris/EOP/Lahiri/GeoNames, 8.036 editorial daily messages, APPROVED UI refs, production PDF fonts, Play/rewarded device proof ve clean-checkout release proof blocker olarak kalır
+- RC-0905'i persisted Vedik PDF sistemi olmadan sahiplenme
+- doğrulanmış Vedik persistence schema yoksa format uydurma
+- font/physical-data blocker'ı gerektirmeyen PDF/UI/accessibility/evidence işlerine devam et
+- 8.036 editorial daily-message işi için release catalog'u kırmadan staging/editoryal akışı ilerlet
 
 **FINAL: NO.**
