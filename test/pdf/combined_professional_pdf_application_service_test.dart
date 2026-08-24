@@ -12,11 +12,15 @@ import 'package:ruh_code/src/pdf/pdf_service.dart';
 import 'package:ruh_code/src/pdf/persisted_calculation_pdf_source.dart';
 import 'package:ruh_code/src/pdf/persisted_combined_pdf_projection.dart';
 
+const _digestA = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+const _digestB = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+const _digestC = 'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc';
+
 void main() {
   test('preview and build preserve exact persisted record/locale/section set', () async {
     final source = _FakeSource(<String, PersistedCalculationPdfSnapshot>{
-      'a': _snapshot('a', 'subject-1', 'fake.a', 'a' * 64),
-      'b': _snapshot('b', 'subject-1', 'fake.b', 'b' * 64),
+      'a': _snapshot('a', 'subject-1', 'fake.a', _digestA),
+      'b': _snapshot('b', 'subject-1', 'fake.b', _digestB),
     });
     final projection = PersistedCombinedPdfProjectionSource(
       snapshotSource: source,
@@ -60,8 +64,8 @@ void main() {
 
   test('build rejects persisted digest drift after preview', () async {
     final source = _FakeSource(<String, PersistedCalculationPdfSnapshot>{
-      'a': _snapshot('a', 'subject-1', 'fake.a', 'a' * 64),
-      'b': _snapshot('b', 'subject-1', 'fake.b', 'b' * 64),
+      'a': _snapshot('a', 'subject-1', 'fake.a', _digestA),
+      'b': _snapshot('b', 'subject-1', 'fake.b', _digestB),
     });
     final service = CombinedProfessionalPdfApplicationService(
       featureAccess: FeatureAccessGuard(entitlements: const _AllowEntitlements()),
@@ -86,7 +90,7 @@ void main() {
       ],
     );
 
-    source.snapshots['b'] = _snapshot('b', 'subject-1', 'fake.b', 'c' * 64);
+    source.snapshots['b'] = _snapshot('b', 'subject-1', 'fake.b', _digestC);
     await expectLater(
       service.buildFromPreview(preview: preview),
       throwsStateError,
