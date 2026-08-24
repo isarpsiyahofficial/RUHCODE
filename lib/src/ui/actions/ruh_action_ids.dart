@@ -28,12 +28,19 @@ abstract final class RuhActionIds {
   static const settingsBackup = 'ACTION-SETTINGS-BACKUP';
   static const pdfPreview = 'ACTION-PDF-PREVIEW';
   static const pdfBuild = 'ACTION-PDF-BUILD';
+  static const pdfCombined = 'ACTION-PDF-COMBINED';
 
   /// These controls live on SCR-PDF-BUILDER-001. Historical PREVIEW action
   /// IDs must never be used by the professional builder runtime.
   static const pdfPreflight = 'ACTION-PDF-BUILDER-PREVIEW';
   static const pdfCreate = 'ACTION-PDF-BUILDER-CREATE';
   static const pdfShare = 'ACTION-PDF-BUILDER-SHARE';
+
+  /// True multi-record combined-report controls on SCR-PDF-COMBINED-001.
+  static const pdfCombinedPreview = 'ACTION-PDF-COMBINED-PREVIEW';
+  static const pdfCombinedCreate = 'ACTION-PDF-COMBINED-CREATE';
+  static const pdfCombinedSave = 'ACTION-PDF-COMBINED-SAVE';
+  static const pdfCombinedShare = 'ACTION-PDF-COMBINED-SHARE';
 
   static const backupExport = 'ACTION-BACKUP-EXPORT';
   static const backupShare = 'ACTION-BACKUP-SHARE';
@@ -62,9 +69,14 @@ abstract final class RuhActionIds {
     settingsBackup,
     pdfPreview,
     pdfBuild,
+    pdfCombined,
     pdfPreflight,
     pdfCreate,
     pdfShare,
+    pdfCombinedPreview,
+    pdfCombinedCreate,
+    pdfCombinedSave,
+    pdfCombinedShare,
     backupExport,
     backupShare,
     backupImport,
