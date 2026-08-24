@@ -39,13 +39,13 @@ Bağlayıcı başlangıç hedefi **4.018 tarih × 2 bağımsız dil = 8.036 kay�
 
 Committed ve evidence-ledger ile eşleşen contiguous coverage:
 
-- TR: `2026-01-01 → 2026-08-31` = **243 kayıt**
-- EN: `2026-01-01 → 2026-08-31` = **243 kayıt**
-- toplam: **486 / 8.036**
-- kalan: **7.550 kayıt**
-- sıradaki exact başlangıç: **2026-09-01**
+- TR: `2026-01-01 → 2026-10-31` = **304 kayıt**
+- EN: `2026-01-01 → 2026-10-31` = **304 kayıt**
+- toplam: **608 / 8.036**
+- kalan: **7.428 kayıt**
+- sıradaki exact başlangıç: **2026-11-01**
 
-Bu turda Temmuz ve Ağustos 2026 için toplam **62 TR + 62 bağımsız EN = 124 yeni mesaj** eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
+Bu turda Eylül ve Ekim 2026 için toplam **61 TR + 61 bağımsız EN = 122 yeni mesaj** eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
 
 Kalite/ilerleme güvenliği:
 
@@ -98,7 +98,7 @@ Kalite/ilerleme güvenliği:
 - production Lahiri/Chitrapaksha artifact.
 - GeoNames source/output SHA + bulk IANA integrity.
 - independent astronomical golden accuracy suite.
-- günlük mesajlarda kalan **7.550** editoryal kayıt ve strict release audit.
+- günlük mesajlarda kalan **7.428** editoryal kayıt ve strict release audit.
 - 1890–2110 verified Chinese New Year boundary artifact.
 
 ## Release blocker'ları
@@ -113,13 +113,13 @@ Kalite/ilerleme güvenliği:
 
 ## Son checkpoint
 
-`automation_runs/2026-08-24_1256_daily_messages_july_august.md`
+`automation_runs/2026-08-24_1458_daily_messages_september_october.md`
 
-Latest evidence commit `bb179b2ce43c36f699d7c37ddc9155fbc9ae42a7` için exact görünür SUCCESS henüz doğrulanmadı. İlgili RC'ler DONE yapılmadı.
+Latest editorial evidence commit `b0208638ad81cbde9393947612bb35cc79d2496a` için exact görünür SUCCESS henüz doğrulanmadı. İlgili RC'ler DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Daily messages: `2026-09-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
+1. Daily messages: `2026-11-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
 2. Yeni ayları `YYYY-MM.csv` shard olarak ekle; exact-date uniqueness ve contiguous ledger gate'ini koru.
 3. Her content batch sonrası partial QA ve evidence-ledger parity'yi koru.
 4. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
