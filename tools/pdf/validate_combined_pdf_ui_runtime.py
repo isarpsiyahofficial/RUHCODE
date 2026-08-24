@@ -17,6 +17,7 @@ RUNTIME_BINDINGS = ROOT / 'ui/runtime_action_bindings.csv'
 MAIN = ROOT / 'lib/main.dart'
 STATE_TEST = ROOT / 'test/ui/pdf/combined_pdf_selection_state_test.dart'
 WIDGET_TEST = ROOT / 'test/ui/pdf/combined_pdf_builder_page_test.dart'
+ROUTE_TEST = ROOT / 'test/ui/pdf/combined_pdf_route_entitlement_test.dart'
 
 
 def require(condition: bool, message: str) -> None:
@@ -42,6 +43,7 @@ def main() -> None:
     main_source = MAIN.read_text(encoding='utf-8')
     state_test = STATE_TEST.read_text(encoding='utf-8')
     widget_test = WIDGET_TEST.read_text(encoding='utf-8')
+    route_test = ROUTE_TEST.read_text(encoding='utf-8')
 
     require(evidence.get('requirements') == ['RC-0903', 'RC-0904'],
             'Combined UI runtime evidence may own only RC-0903 and RC-0904.')
@@ -164,6 +166,14 @@ def main() -> None:
         'same(preview)',
     ]:
         require(token in widget_test, f'Missing combined builder widget regression: {token}')
+
+    for token in [
+        'Free user cannot enter combined professional PDF route',
+        'PRO user can enter combined professional PDF route',
+        'Kombine PDF raporu PRO kullanıcılar içindir.',
+        "'/pdf/combined'",
+    ]:
+        require(token in route_test, f'Missing combined route entitlement regression: {token}')
 
     for rel in evidence.get('sources', []) + evidence.get('tests', []) + evidence.get('validators', []):
         require((ROOT / rel).is_file(), f'Combined evidence path missing: {rel}')
