@@ -4,12 +4,16 @@ on:
   push:
     paths:
       - 'lib/src/pdf/persisted_combined_pdf_projection.dart'
+      - 'lib/src/pdf/combined_professional_pdf_application_service.dart'
       - 'lib/src/pdf/pdf_combined_report.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_western_natal_sections.dart'
       - 'lib/src/pdf/persisted_pythagorean_numerology_pdf.dart'
+      - 'lib/src/pdf/western_natal_persistence_service.dart'
       - 'test/pdf/persisted_combined_pdf_projection_test.dart'
+      - 'test/pdf/combined_professional_pdf_application_service_test.dart'
+      - 'test/pdf/persisted_western_natal_pdf_test.dart'
       - 'test/pdf/pdf_combined_report_test.dart'
       - 'evidence/pdf/persisted_combined_projection.json'
       - 'tools/pdf/validate_persisted_combined_projection.py'
@@ -17,12 +21,16 @@ on:
   pull_request:
     paths:
       - 'lib/src/pdf/persisted_combined_pdf_projection.dart'
+      - 'lib/src/pdf/combined_professional_pdf_application_service.dart'
       - 'lib/src/pdf/pdf_combined_report.dart'
       - 'lib/src/pdf/persisted_calculation_pdf_source.dart'
       - 'lib/src/pdf/persisted_western_natal_pdf.dart'
       - 'lib/src/pdf/persisted_western_natal_sections.dart'
       - 'lib/src/pdf/persisted_pythagorean_numerology_pdf.dart'
+      - 'lib/src/pdf/western_natal_persistence_service.dart'
       - 'test/pdf/persisted_combined_pdf_projection_test.dart'
+      - 'test/pdf/combined_professional_pdf_application_service_test.dart'
+      - 'test/pdf/persisted_western_natal_pdf_test.dart'
       - 'test/pdf/pdf_combined_report_test.dart'
       - 'evidence/pdf/persisted_combined_projection.json'
       - 'tools/pdf/validate_persisted_combined_projection.py'
@@ -37,7 +45,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate persisted combined projection contract
+      - name: Validate persisted combined projection/application contract
         run: python tools/pdf/validate_persisted_combined_projection.py
       - uses: subosito/flutter-action@v2
         with:
@@ -45,8 +53,10 @@ jobs:
           cache: true
       - name: Resolve dependencies
         run: flutter pub get
-      - name: Persisted combined projection tests
+      - name: Persisted combined projection/application tests
         run: >-
           flutter test
           test/pdf/persisted_combined_pdf_projection_test.dart
+          test/pdf/combined_professional_pdf_application_service_test.dart
+          test/pdf/persisted_western_natal_pdf_test.dart
           test/pdf/pdf_combined_report_test.dart
