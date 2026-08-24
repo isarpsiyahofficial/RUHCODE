@@ -86,6 +86,13 @@ final class CombinedPdfSelectionState {
     if (_selectedRecordIds.length < 2) {
       throw const StateError('Select at least two calculation records.');
     }
+    final selectedSystems = <String>{
+      for (final candidate in _candidates)
+        if (_selectedRecordIds.contains(candidate.recordId)) candidate.calculationType,
+    };
+    if (selectedSystems.length < 2) {
+      throw const StateError('Combined PDF requires at least two distinct calculation systems.');
+    }
     if (_selectedSectionIds.isEmpty) {
       throw const StateError('Select at least one combined PDF section.');
     }
