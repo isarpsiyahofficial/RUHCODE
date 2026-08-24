@@ -15,7 +15,11 @@ import '../entitlements/google_play_lifetime_ownership.dart';
 import '../entitlements/local_entitlement_snapshot_store.dart';
 import '../entitlements/local_entitlement_time_anchor.dart';
 import '../entitlements/professional_repository_bundle.dart';
+import '../pdf/combined_professional_pdf_application_service.dart';
+import '../pdf/pdf_combined_report.dart';
 import '../pdf/persisted_calculation_pdf_source.dart';
+import '../pdf/persisted_combined_pdf_projection.dart';
+import '../pdf/unavailable_pdf_service.dart';
 import '../pdf/western_natal_persistence_service.dart';
 
 final class RuhCodeRuntime {
@@ -27,6 +31,7 @@ final class RuhCodeRuntime {
     required this.featureAccess,
     required this.backupActions,
     required this.professionalPdfSnapshotSource,
+    required this.combinedProfessionalPdf,
     required this.westernNatalPersistence,
     required this.startupOwnershipSync,
   });
@@ -42,6 +47,11 @@ final class RuhCodeRuntime {
   /// selection and build composition. It reads calculation + manifest in one
   /// LocalDatabase transaction and never fabricates a snapshot from UI input.
   final LocalDatabaseProfessionalPdfSnapshotSource professionalPdfSnapshotSource;
+
+  /// Combined-report application boundary. Catalog and preflight preview are
+  /// production-wired now. Byte rendering remains explicitly fail-closed until
+  /// the approved Unicode font/render chain is available.
+  final CombinedProfessionalPdfApplicationService combinedProfessionalPdf;
 
   /// The single production persistence boundary for verified Western natal
   /// snapshots. CalculationManifest + sealed snapshot are committed atomically
@@ -98,6 +108,18 @@ final class RuhCodeRuntime {
 
     final professionalPdfSnapshotSource =
         LocalDatabaseProfessionalPdfSnapshotSource(database: database);
+    final combinedProjectionSource = PersistedCombinedPdfProjectionSource(
+      snapshotSource: professionalPdfSnapshotSource,
+    );
+    final combinedProfessionalPdf = CombinedProfessionalPdfApplicationService(
+      featureAccess: featureAccess,
+      recordCatalog: professionalPdfSnapshotSource,
+      snapshotSource: professionalPdfSnapshotSource,
+      projectionSource: combinedProjectionSource,
+      pdfService: const UnavailablePdfService<PdfCombinedReportProjection>(
+        'Combined PDF byte rendering is unavailable until the approved Unicode font/render chain is production-ready.',
+      ),
+    );
     final westernNatalPersistence = WesternNatalPersistenceService(
       database: database,
     );
@@ -125,6 +147,7 @@ final class RuhCodeRuntime {
       featureAccess: featureAccess,
       backupActions: backupActions,
       professionalPdfSnapshotSource: professionalPdfSnapshotSource,
+      combinedProfessionalPdf: combinedProfessionalPdf,
       westernNatalPersistence: westernNatalPersistence,
       startupOwnershipSync: startupOwnershipSync,
     );
