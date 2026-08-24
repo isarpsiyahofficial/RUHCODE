@@ -62,8 +62,8 @@ abstract interface class CombinedProfessionalPdfUiActions {
 ///
 /// Subject discovery intentionally reuses [CombinedProfessionalPdfApplicationService]
 /// for subject-kind resolution. It never duplicates Western/Numerology parsing in
-/// widgets and it only exposes subjects that have at least two eligible persisted
-/// calculations.
+/// widgets and it only exposes subjects that have at least two distinct eligible
+/// calculation systems, not merely two records of the same system.
 final class CombinedProfessionalPdfApplicationActions
     implements CombinedProfessionalPdfUiActions {
   const CombinedProfessionalPdfApplicationActions({
@@ -86,7 +86,8 @@ final class CombinedProfessionalPdfApplicationActions
           subjectKind: kind,
           subjectId: ownerId,
         );
-        if (candidates.length < 2) continue;
+        final systems = candidates.map((item) => item.calculationType).toSet();
+        if (candidates.length < 2 || systems.length < 2) continue;
         subjects.add(
           CombinedPdfUiSubject(
             subjectKind: kind,
