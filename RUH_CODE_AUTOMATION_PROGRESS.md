@@ -26,15 +26,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2028-02-29` = **790**
-- EN contiguous reviewed: `2026-01-01 → 2028-02-29` = **790**
-- Toplam: **1.580 / 8.036**
-- Kalan: **6.456**
-- Sıradaki exact başlangıç: **2028-03-01**
+- TR contiguous reviewed: `2026-01-01 → 2028-03-31` = **821**
+- EN contiguous reviewed: `2026-01-01 → 2028-03-31` = **821**
+- Toplam: **1.642 / 8.036**
+- Kalan: **6.394**
+- Sıradaki exact başlangıç: **2028-04-01**
 
-Bu turda Şubat 2028 için **29 TR + 29 bağımsız EN = 58 yeni mesaj** eklendi. `2028-02-29` exact-date kaydı iki dilde de mevcut.
+Bu turda Mart 2028 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** eklendi. Şubat 2028 leap-day gate ve `2028-02-29` exact-date kaydı korunuyor.
 
-Editorial progress validator artık ledger bir `required_leap_date` tarihini geçtiği anda o exact tarihin locale shard'ında gerçekten bulunmasını zorunlu tutuyor. Böylece 2028/2032/2036 artık-gün completeness yalnız final audit'e bırakılmıyor.
+Editorial progress validator, ledger bir `required_leap_date` tarihini geçtiği anda o exact tarihin locale shard'ında gerçekten bulunmasını zorunlu tutuyor. Böylece 2028/2032/2036 artık-gün completeness yalnız final audit'e bırakılmıyor.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, kalan leap dates, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -52,11 +52,11 @@ Editorial progress validator artık ledger bir `required_leap_date` tarihini ge�
 
 ## Son checkpoint
 
-`automation_runs/2026-08-25_2254_daily_messages_february_2028_leap_gate.md`
+`automation_runs/2026-08-26_0053_daily_messages_march_2028.md`
 
 ## Sıradaki çalışma
 
-1. `2028-03-01 → 2028-03-31` TR + bağımsız EN Günün Mesajı üretimini tamamla.
+1. `2028-04-01 → 2028-04-30` TR + bağımsız EN Günün Mesajı üretimini tamamla.
 2. Monthly shard, exact-date uniqueness, partial QA ve ledger parity kapılarını koru.
 3. 2032-02-29 ve 2036-02-29 required-leap gate'lerini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
