@@ -26,13 +26,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2027-11-30` = **699**
-- EN contiguous reviewed: `2026-01-01 → 2027-11-30` = **699**
-- Toplam: **1.398 / 8.036**
-- Kalan: **6.638**
-- Sıradaki exact başlangıç: **2027-12-01**
+- TR contiguous reviewed: `2026-01-01 → 2028-01-31` = **761**
+- EN contiguous reviewed: `2026-01-01 → 2028-01-31` = **761**
+- Toplam: **1.522 / 8.036**
+- Kalan: **6.514**
+- Sıradaki exact başlangıç: **2028-02-01**
 
-Bu turda Ekim + Kasım 2027 için **61 TR + 61 bağımsız EN = 122 yeni mesaj** eklendi.
+Bu turda Aralık 2027 + Ocak 2028 için **62 TR + 62 bağımsız EN = 124 yeni mesaj** eklendi.
+
+2028 artık yıldır. Sıradaki `2028-02` shard'ı tam **29 gün** içermeli ve `2028-02-29` TR/EN exact-date kayıtları özel completeness kontrol noktasıdır.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, leap dates, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -50,13 +52,14 @@ Bu turda Ekim + Kasım 2027 için **61 TR + 61 bağımsız EN = 122 yeni mesaj**
 
 ## Son checkpoint
 
-`automation_runs/2026-08-25_1907_daily_messages_october_november_2027.md`
+`automation_runs/2026-08-25_2055_daily_messages_december_2027_january_2028.md`
 
 ## Sıradaki çalışma
 
-1. `2027-12-01` tarihinden TR + bağımsız EN Günün Mesajı üretimine devam et.
-2. Exact-date uniqueness, monthly shard, partial QA ve ledger parity kapılarını koru.
-3. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
-4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
+1. `2028-02-01 → 2028-02-29` TR + bağımsız EN Günün Mesajı üretimini tamamla.
+2. `2028-02-29` leap-date exact-key ve ledger completeness doğrulamasını özel kontrol olarak koru.
+3. Monthly shard, exact-date uniqueness, partial QA ve ledger parity kapılarını koru.
+4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
+5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
 **FINAL: NO.**
