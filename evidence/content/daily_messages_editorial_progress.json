@@ -6,17 +6,17 @@
   "sources": [
     "requirements/content_manifests/daily_messages.json",
     "assets/content/daily_messages/tr/2026.csv","assets/content/daily_messages/tr/2026-03.csv","assets/content/daily_messages/tr/2026-04.csv","assets/content/daily_messages/tr/2026-05.csv","assets/content/daily_messages/tr/2026-06.csv","assets/content/daily_messages/tr/2026-07.csv","assets/content/daily_messages/tr/2026-08.csv","assets/content/daily_messages/tr/2026-09.csv","assets/content/daily_messages/tr/2026-10.csv","assets/content/daily_messages/tr/2026-11.csv","assets/content/daily_messages/tr/2026-12.csv",
-    "assets/content/daily_messages/tr/2027-01.csv","assets/content/daily_messages/tr/2027-02.csv","assets/content/daily_messages/tr/2027-03.csv","assets/content/daily_messages/tr/2027-04.csv","assets/content/daily_messages/tr/2027-05.csv","assets/content/daily_messages/tr/2027-06.csv","assets/content/daily_messages/tr/2027-07.csv","assets/content/daily_messages/tr/2027-08.csv","assets/content/daily_messages/tr/2027-09.csv","assets/content/daily_messages/tr/2027-10.csv","assets/content/daily_messages/tr/2027-11.csv","assets/content/daily_messages/tr/2027-12.csv","assets/content/daily_messages/tr/2028-01.csv",
+    "assets/content/daily_messages/tr/2027-01.csv","assets/content/daily_messages/tr/2027-02.csv","assets/content/daily_messages/tr/2027-03.csv","assets/content/daily_messages/tr/2027-04.csv","assets/content/daily_messages/tr/2027-05.csv","assets/content/daily_messages/tr/2027-06.csv","assets/content/daily_messages/tr/2027-07.csv","assets/content/daily_messages/tr/2027-08.csv","assets/content/daily_messages/tr/2027-09.csv","assets/content/daily_messages/tr/2027-10.csv","assets/content/daily_messages/tr/2027-11.csv","assets/content/daily_messages/tr/2027-12.csv","assets/content/daily_messages/tr/2028-01.csv","assets/content/daily_messages/tr/2028-02.csv",
     "assets/content/daily_messages/en/2026.csv","assets/content/daily_messages/en/2026-03.csv","assets/content/daily_messages/en/2026-04.csv","assets/content/daily_messages/en/2026-05.csv","assets/content/daily_messages/en/2026-06.csv","assets/content/daily_messages/en/2026-07.csv","assets/content/daily_messages/en/2026-08.csv","assets/content/daily_messages/en/2026-09.csv","assets/content/daily_messages/en/2026-10.csv","assets/content/daily_messages/en/2026-11.csv","assets/content/daily_messages/en/2026-12.csv",
-    "assets/content/daily_messages/en/2027-01.csv","assets/content/daily_messages/en/2027-02.csv","assets/content/daily_messages/en/2027-03.csv","assets/content/daily_messages/en/2027-04.csv","assets/content/daily_messages/en/2027-05.csv","assets/content/daily_messages/en/2027-06.csv","assets/content/daily_messages/en/2027-07.csv","assets/content/daily_messages/en/2027-08.csv","assets/content/daily_messages/en/2027-09.csv","assets/content/daily_messages/en/2027-10.csv","assets/content/daily_messages/en/2027-11.csv","assets/content/daily_messages/en/2027-12.csv","assets/content/daily_messages/en/2028-01.csv",
+    "assets/content/daily_messages/en/2027-01.csv","assets/content/daily_messages/en/2027-02.csv","assets/content/daily_messages/en/2027-03.csv","assets/content/daily_messages/en/2027-04.csv","assets/content/daily_messages/en/2027-05.csv","assets/content/daily_messages/en/2027-06.csv","assets/content/daily_messages/en/2027-07.csv","assets/content/daily_messages/en/2027-08.csv","assets/content/daily_messages/en/2027-09.csv","assets/content/daily_messages/en/2027-10.csv","assets/content/daily_messages/en/2027-11.csv","assets/content/daily_messages/en/2027-12.csv","assets/content/daily_messages/en/2028-01.csv","assets/content/daily_messages/en/2028-02.csv",
     "tools/content/build_daily_message_catalog.py","tools/content/append_daily_message_batch.py","tools/content/validate_daily_message_catalog.py"
   ],
-  "tests": ["tools/content/test_validate_daily_message_catalog.py","tools/content/test_daily_message_shards.py","tools/content/test_append_daily_message_batch.py"],
+  "tests": ["tools/content/test_validate_daily_message_catalog.py","tools/content/test_daily_message_shards.py","tools/content/test_append_daily_message_batch.py","tools/content/test_validate_daily_message_editorial_progress.py"],
   "validators": ["tools/content/validate_daily_message_contract.py","tools/content/validate_daily_message_editorial_progress.py"],
   "currentReviewedCoverage": {
-    "tr": {"start":"2026-01-01","end":"2028-01-31","records":761},
-    "en": {"start":"2026-01-01","end":"2028-01-31","records":761},
-    "totalRecords": 1522
+    "tr": {"start":"2026-01-01","end":"2028-02-29","records":790},
+    "en": {"start":"2026-01-01","end":"2028-02-29","records":790},
+    "totalRecords": 1580
   },
   "requiredFinalCoverage": {"start":"2026-01-01","end":"2036-12-31","recordsPerLocale":4018,"totalRecords":8036,"rollingReleaseHorizonYears":10},
   "guardrails": [
@@ -25,14 +25,15 @@
     "TR and EN are separate editorial tracks and machine translation is forbidden",
     "locale/year and locale/year-month shards are compiled deterministically before audit",
     "editorial progress ledger counts must exactly match contiguous committed locale shards",
+    "any required leap date already crossed by the reviewed ledger must exist as an exact TR and EN record",
     "partial editorial audit may ignore missing future dates but may not ignore malformed rows, duplicate exact keys, exact/near duplicate text, repetitive opening patterns, or unsafe certainty",
     "release audit must run without allow-incomplete and therefore requires all 8,036 initial records including leap dates"
   ],
   "remainingBeforeDone": [
-    "write and editorially review Turkish daily messages from 2028-02-01 through 2036-12-31",
-    "write and editorially review independent English daily messages from 2028-02-01 through 2036-12-31",
+    "write and editorially review Turkish daily messages from 2028-03-01 through 2036-12-31",
+    "write and editorially review independent English daily messages from 2028-03-01 through 2036-12-31",
     "pass strict exact-date completeness for all 8,036 records",
-    "pass leap-date, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates",
+    "pass remaining leap-date, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates",
     "prove the rolling ten-year horizon at the release date",
     "obtain exact visible CI SUCCESS on the complete catalog"
   ]
