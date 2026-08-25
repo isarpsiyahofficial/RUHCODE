@@ -1,0 +1,32 @@
+# Ruh Code — Automation Checkpoint — April 2028 Daily Messages
+
+## Scope advanced
+
+- Added `assets/content/daily_messages/tr/2028-04.csv` with 30 editorially written Turkish records.
+- Added `assets/content/daily_messages/en/2028-04.csv` with 30 independently written English records.
+- Exact date range added: `2028-04-01 → 2028-04-30`.
+- Runtime AI generation remains forbidden; every row is an exact `YYYY-MM-DD` record.
+- TR and EN remain separate editorial tracks; no machine-translation fallback was introduced.
+
+## Updated contiguous coverage
+
+- TR: `2026-01-01 → 2028-04-30` = 851 reviewed records.
+- EN: `2026-01-01 → 2028-04-30` = 851 reviewed records.
+- Total: 1,702 / 8,036.
+- Remaining: 6,334.
+- Next exact start: `2028-05-01`.
+
+## Requirement state
+
+`RC-1424`, `RC-1425`, `RC-1426`, `RC-1427`, `RC-1433`, `RC-1434` remain OPEN / not DONE. April extends the reviewed catalog but does not satisfy the complete 2026–2036 catalog, rolling ten-year horizon, final duplicate/near-duplicate/opening-pattern/unsafe-certainty audit, remaining leap dates, or exact release CI proof.
+
+`2028-02-29` remains present in both locale tracks and the required-leap-date progress gate remains active for future 2032/2036 leap dates.
+
+## Next safe work
+
+1. Add independent TR/EN editorial shards for May 2028.
+2. Preserve exact-date uniqueness, locale independence and editorial ledger parity.
+3. Continue blocker-independent PDF/UI/accessibility/evidence work where safe.
+4. Do not close physical data, font, approved-UI, device-test or release requirements without their required evidence.
+
+**FINAL: NO.**
