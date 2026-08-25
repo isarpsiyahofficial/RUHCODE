@@ -26,13 +26,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2027-09-30` = **638**
-- EN contiguous reviewed: `2026-01-01 → 2027-09-30` = **638**
-- Toplam: **1.276 / 8.036**
-- Kalan: **6.760**
-- Sıradaki exact başlangıç: **2027-10-01**
+- TR contiguous reviewed: `2026-01-01 → 2027-10-31` = **669**
+- EN contiguous reviewed: `2026-01-01 → 2027-10-31` = **669**
+- Toplam: **1.338 / 8.036**
+- Kalan: **6.698**
+- Sıradaki exact başlangıç: **2027-11-01**
 
-Bu turda Eylül 2027 için **30 TR + 30 bağımsız EN = 60 yeni mesaj** eklendi.
+Bu turda Ekim 2027 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** eklendi.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, leap dates, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -50,11 +50,11 @@ Bu turda Eylül 2027 için **30 TR + 30 bağımsız EN = 60 yeni mesaj** eklendi
 
 ## Son checkpoint
 
-`automation_runs/2026-08-25_1654_daily_messages_september_2027.md`
+`automation_runs/2026-08-25_1857_daily_messages_october_2027.md`
 
 ## Sıradaki çalışma
 
-1. `2027-10-01` tarihinden TR + bağımsız EN Günün Mesajı üretimine devam et.
+1. `2027-11-01` tarihinden TR + bağımsız EN Günün Mesajı üretimine devam et.
 2. Exact-date uniqueness, monthly shard, partial QA ve ledger parity kapılarını koru.
 3. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
