@@ -89,6 +89,7 @@ def main() -> None:
 
     start = parse_iso(manifest['initial_coverage_start'])
     final_end = parse_iso(manifest['initial_coverage_end'])
+    required_leap_dates = tuple(parse_iso(value) for value in manifest.get('required_leap_dates', []))
     reviewed = evidence['currentReviewedCoverage']
     total = 0
 
@@ -112,9 +113,18 @@ def main() -> None:
                 f'{locale} last shard date does not match evidence end')
 
         actual_dates = [row['date'] for row in rows]
+        actual_date_set = set(actual_dates)
         expected_dates = expected_contiguous(ledger_start, ledger_end)
         require(actual_dates == expected_dates,
                 f'{locale} editorial coverage is not contiguous from {ledger_start} through {ledger_end}')
+
+        for leap_day in required_leap_dates:
+            if ledger_start <= leap_day <= ledger_end:
+                require(
+                    leap_day.isoformat() in actual_date_set,
+                    f'{locale} reviewed coverage crossed required leap date {leap_day.isoformat()} without an exact record',
+                )
+
         total += len(rows)
 
     require(total == int(reviewed['totalRecords']),
