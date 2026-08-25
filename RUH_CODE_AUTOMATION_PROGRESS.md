@@ -35,13 +35,13 @@ Bağlayıcı başlangıç hedefi **4.018 tarih × 2 bağımsız dil = 8.036 kay�
 
 Committed ve evidence-ledger ile eşleşen contiguous coverage:
 
-- TR: `2026-01-01 → 2027-06-30` = **546 kayıt**
-- EN: `2026-01-01 → 2027-06-30` = **546 kayıt**
-- toplam: **1.092 / 8.036**
-- kalan: **6.944 kayıt**
-- sıradaki exact başlangıç: **2027-07-01**
+- TR: `2026-01-01 → 2027-07-31` = **577 kayıt**
+- EN: `2026-01-01 → 2027-07-31` = **577 kayıt**
+- toplam: **1.154 / 8.036**
+- kalan: **6.882 kayıt**
+- sıradaki exact başlangıç: **2027-08-01**
 
-Bu turda Haziran 2027 için **30 TR + 30 bağımsız EN = 60 yeni mesaj** eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
+Bu turda Temmuz 2027 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** eklendi. İngilizce track Türkçe track'in makine çevirisi olarak kullanılmıyor.
 
 Kalite/ilerleme güvenliği:
 
@@ -83,7 +83,7 @@ Kalite/ilerleme güvenliği:
 - production Lahiri/Chitrapaksha artifact.
 - GeoNames source/output SHA + bulk IANA integrity.
 - independent astronomical golden accuracy suite.
-- günlük mesajlarda kalan **6.944** editoryal kayıt ve strict release audit.
+- günlük mesajlarda kalan **6.882** editoryal kayıt ve strict release audit.
 - 1890–2110 verified Chinese New Year boundary artifact.
 
 ## Release blocker'ları
@@ -98,13 +98,13 @@ Kalite/ilerleme güvenliği:
 
 ## Son checkpoint
 
-`automation_runs/2026-08-25_1057_daily_messages_june_2027.md`
+`automation_runs/2026-08-25_1257_daily_messages_july_2027.md`
 
 İlgili daily-message RC'leri DONE yapılmadı.
 
 ## Sıradaki çalışma
 
-1. Daily messages: `2027-07-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
+1. Daily messages: `2027-08-01` tarihinden TR + bağımsız EN editoryal üretime devam et.
 2. Yeni ayları `YYYY-MM.csv` shard olarak ekle; exact-date uniqueness ve contiguous ledger gate'ini koru.
 3. Her content batch sonrası partial QA ve evidence-ledger parity'yi koru.
 4. Combined evidence semantic ownership auditini sürdür; `RC-0905`'i persisted Vedik PDF olmadan sahiplenme.
