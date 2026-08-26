@@ -2,20 +2,20 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-26_2253_daily_messages_july_2029.md`
+`automation_runs/2026-08-27_0052_daily_messages_august_2029.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Günün Mesajı — Temmuz 2029**
+1. **Günün Mesajı — Ağustos 2029**
    - 31 TR + 31 bağımsız EN
    - bu tur toplam **62 yeni kayıt**
 
 2. **Contiguous editorial ledger**
-   - TR `2026-01-01 → 2029-07-31` = **1308**
-   - EN `2026-01-01 → 2029-07-31` = **1308**
-   - toplam **2616 / 8036**
-   - kalan **5420**
-   - sıradaki başlangıç **2029-08-01**
+   - TR `2026-01-01 → 2029-08-31` = **1339**
+   - EN `2026-01-01 → 2029-08-31` = **1339**
+   - toplam **2678 / 8036**
+   - kalan **5358**
+   - sıradaki başlangıç **2029-09-01**
 
 3. **Calendar/leap güvenliği**
    - `2028-02-29` exact TR/EN kayıtları korunuyor
@@ -27,7 +27,7 @@ Latest source-level checkpoint:
 
 ## Next safe work
 
-- daily messages: `2029-08-01 → 2029-08-31` TR + bağımsız EN editoryal üretim
+- daily messages: `2029-09-01 → 2029-09-30` TR + bağımsız EN editoryal üretim
 - partial QA, monthly shard, paired-locale, exact-date uniqueness ve ledger parity kapılarını koru
 - font/physical-data/APPROVED-UI blocker'ı gerektirmeyen PDF/UI/accessibility/evidence işlerine devam et
 - physical dataset/device-test blocker'larını kanıt olmadan kapatma
