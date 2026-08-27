@@ -26,13 +26,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2030-04-30` = **1581**
-- EN contiguous reviewed: `2026-01-01 → 2030-04-30` = **1581**
-- Toplam: **3162 / 8036**
-- Kalan: **4874**
-- Sıradaki exact başlangıç: **2030-05-01**
+- TR contiguous reviewed: `2026-01-01 → 2030-05-31` = **1612**
+- EN contiguous reviewed: `2026-01-01 → 2030-05-31` = **1612**
+- Toplam: **3224 / 8036**
+- Kalan: **4812**
+- Sıradaki exact başlangıç: **2030-06-01**
 
-Bu turda Nisan 2030 için **30 TR + 30 bağımsız EN = 60 yeni mesaj** eklendi. Exact-date sıra `2030-04-01 → 2030-04-30` olarak korunuyor; `2028-02-29` leap-day kaydı korunuyor.
+Bu turda Mayıs 2030 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** eklendi. Exact-date sıra `2030-05-01 → 2030-05-31` olarak korunuyor; `2028-02-29` leap-day kaydı korunuyor.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, kalan leap dates, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -50,11 +50,11 @@ Bu turda Nisan 2030 için **30 TR + 30 bağımsız EN = 60 yeni mesaj** eklendi.
 
 ## Son checkpoint
 
-`automation_runs/2026-08-27_1257_daily_messages_april_2030.md`
+`automation_runs/2026-08-27_1457_daily_messages_may_2030.md`
 
 ## Sıradaki çalışma
 
-1. `2030-05-01 → 2030-05-31` TR + bağımsız EN Günün Mesajı üretimini tamamla.
+1. `2030-06-01 → 2030-06-30` TR + bağımsız EN Günün Mesajı üretimini tamamla.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. 2032-02-29 ve 2036-02-29 required-leap gate'lerini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
