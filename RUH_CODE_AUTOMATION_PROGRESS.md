@@ -26,13 +26,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2031-09-30` = **2099**
-- EN contiguous reviewed: `2026-01-01 → 2031-09-30` = **2099**
-- Toplam: **4198 / 8036**
-- Kalan: **3838**
-- Sıradaki exact başlangıç: **2031-10-01**
+- TR contiguous reviewed: `2026-01-01 → 2031-11-30` = **2160**
+- EN contiguous reviewed: `2026-01-01 → 2031-11-30` = **2160**
+- Toplam: **4320 / 8036**
+- Kalan: **3716**
+- Sıradaki exact başlangıç: **2031-12-01**
 
-Bu turda Ağustos + Eylül 2031 için **61 TR + 61 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Exact-date sıra `2031-08-01 → 2031-09-30` olarak kesintisiz korunuyor.
+Bu turda Ekim + Kasım 2031 için **61 TR + 61 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Exact-date sıra `2031-10-01 → 2031-11-30` olarak kesintisiz korunuyor. Dört shard için satır sayısı, TR/EN tarih paritesi, title/message exact uniqueness, opening tekrarları ve batch içi kaba near-duplicate taraması yapıldı.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, kalan leap dates, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -50,14 +50,14 @@ Bu turda Ağustos + Eylül 2031 için **61 TR + 61 bağımsız EN** olmak üzere
 
 ## Son checkpoint
 
-`automation_runs/2026-08-28_1256_daily_messages_august_september_2031.md`
+`automation_runs/2026-08-28_1456_daily_messages_october_november_2031.md`
 
 ## Sıradaki çalışma
 
-1. `2031-10-01 → 2031-10-31` TR + bağımsız EN Günün Mesajı üretimini tamamla.
-2. Güvenli ve doğrulanabilir olduğu sürece sonraki aylara aynı turda art arda devam et.
+1. `2031-12-01 → 2031-12-31` TR + bağımsız EN Günün Mesajı üretimini tamamla.
+2. Ardından 2032-01 ve gerçek artık yıl Şubat 2032'yi ilerlet; `2032-02-29` exact TR+EN kaydı olmadan ledger'ı Mart 2032'ye geçirme.
 3. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
-4. `2032-02-29` ve `2036-02-29` required-leap gate'lerini ledger ulaştığında zorunlu tut.
+4. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 5. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 6. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
