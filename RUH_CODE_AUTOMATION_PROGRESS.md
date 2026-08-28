@@ -26,13 +26,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2032-03-31` = **2282**
-- EN contiguous reviewed: `2026-01-01 → 2032-03-31` = **2282**
-- Toplam: **4564 / 8036**
-- Kalan: **3472**
-- Sıradaki exact başlangıç: **2032-04-01**
+- TR contiguous reviewed: `2026-01-01 → 2032-05-31` = **2343**
+- EN contiguous reviewed: `2026-01-01 → 2032-05-31` = **2343**
+- Toplam: **4686 / 8036**
+- Kalan: **3350**
+- Sıradaki exact başlangıç: **2032-06-01**
 
-Bu turda Mart 2032 için **31 TR + 31 bağımsız EN** olmak üzere toplam **62 yeni mesaj** eklendi. Exact-date sıra `2032-03-01 → 2032-03-31` olarak kesintisiz korunuyor. Her iki locale shard'ı fiziksel olarak yeniden okunup 31 tarih içerdiği doğrulandı.
+Bu turda Nisan ve Mayıs 2032 için **61 TR + 61 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Exact-date sıra `2032-04-01 → 2032-05-31` olarak kesintisiz korunuyor. Dört locale shard'ı repository'ye fiziksel monthly CSV olarak işlendi ve editorial ledger aynı sınıra taşındı.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, kalan leap date, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -50,11 +50,11 @@ Bu turda Mart 2032 için **31 TR + 31 bağımsız EN** olmak üzere toplam **62 
 
 ## Son checkpoint
 
-`automation_runs/2026-08-28_1856_daily_messages_march_2032.md`
+`automation_runs/2026-08-28_2055_daily_messages_april_may_2032.md`
 
 ## Sıradaki çalışma
 
-1. `2032-04-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2032-06-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
