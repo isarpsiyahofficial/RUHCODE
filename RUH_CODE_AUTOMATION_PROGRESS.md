@@ -26,15 +26,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2032-07-31` = **2404**
-- EN contiguous reviewed: `2026-01-01 → 2032-07-31` = **2404**
-- Toplam: **4808 / 8036**
-- Kalan: **3228**
-- Sıradaki exact başlangıç: **2032-08-01**
+- TR contiguous reviewed: `2026-01-01 → 2032-08-31` = **2435**
+- EN contiguous reviewed: `2026-01-01 → 2032-08-31` = **2435**
+- Toplam: **4870 / 8036**
+- Kalan: **3166**
+- Sıradaki exact başlangıç: **2032-09-01**
 
-Bu turda Haziran ve Temmuz 2032 için **61 TR + 61 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Exact-date sıra `2032-06-01 → 2032-07-31` olarak kesintisiz korunuyor. Dört locale shard'ı repository'ye fiziksel monthly CSV olarak işlendi ve editorial ledger aynı sınıra taşındı. TR/EN Temmuz shard'ları repository üzerinden yeniden okunarak exact ilk/son tarih sınırları doğrulandı.
+Bu turda Ağustos 2032 için **31 TR + 31 bağımsız EN** olmak üzere toplam **62 yeni mesaj** eklendi. Exact-date sıra `2032-08-01 → 2032-08-31` olarak kesintisiz korunuyor. İki locale shard'ı repository'ye fiziksel monthly CSV olarak işlendi ve editorial ledger aynı sınıra taşındı. TR/EN Ağustos shard'ları repository üzerinden yeniden okunarak exact ilk/son tarih sınırları doğrulandı.
 
-Local clean-checkout validator çalıştırma girişimi ağ çözümlemesi olmadığı için GitHub clone aşamasında durdu; bu geçici ortam kısıtı CI SUCCESS olarak sayılmadı. İçerik ve ledger kanıtı commit edildi ancak exact görünür CI yeşili olmadan ilgili RC maddeleri DONE yapılmadı.
+Bu çalışma ortamında repository test komutlarını çalıştıran yerel checkout bulunmadığından full validator/clean-checkout sonucu üretilmedi; bu eksik kanıt SUCCESS sayılmadı. İçerik ve ledger kanıtı commit edildi ancak exact görünür CI yeşili olmadan ilgili RC maddeleri DONE yapılmadı.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, kalan leap date, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -52,11 +52,11 @@ Local clean-checkout validator çalıştırma girişimi ağ çözümlemesi olmad
 
 ## Son checkpoint
 
-`automation_runs/2026-08-28_2253_daily_messages_june_july_2032.md`
+`automation_runs/2026-08-29_0054_daily_messages_august_2032.md`
 
 ## Sıradaki çalışma
 
-1. `2032-08-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2032-09-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
