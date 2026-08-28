@@ -26,15 +26,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2032-08-31` = **2435**
-- EN contiguous reviewed: `2026-01-01 → 2032-08-31` = **2435**
-- Toplam: **4870 / 8036**
-- Kalan: **3166**
-- Sıradaki exact başlangıç: **2032-09-01**
+- TR contiguous reviewed: `2026-01-01 → 2032-10-31` = **2496**
+- EN contiguous reviewed: `2026-01-01 → 2032-10-31` = **2496**
+- Toplam: **4992 / 8036**
+- Kalan: **3044**
+- Sıradaki exact başlangıç: **2032-11-01**
 
-Bu turda Ağustos 2032 için **31 TR + 31 bağımsız EN** olmak üzere toplam **62 yeni mesaj** eklendi. Exact-date sıra `2032-08-01 → 2032-08-31` olarak kesintisiz korunuyor. İki locale shard'ı repository'ye fiziksel monthly CSV olarak işlendi ve editorial ledger aynı sınıra taşındı. TR/EN Ağustos shard'ları repository üzerinden yeniden okunarak exact ilk/son tarih sınırları doğrulandı.
+Bu turda Eylül 2032 için **30 TR + 30 bağımsız EN**, Ekim 2032 için **31 TR + 31 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Exact-date sıra iki locale için `2032-09-01 → 2032-10-31` olarak kesintisiz korunuyor. Dört monthly CSV repository'ye fiziksel olarak işlendi; Ekim TR ve EN shard'ları commit sonrası repository üzerinden yeniden okunarak `2032-10-01 → 2032-10-31` sınırları doğrulandı. Editorial ledger aynı sınıra ve **2496 + 2496 = 4992** toplamına taşındı.
 
-Bu çalışma ortamında repository test komutlarını çalıştıran yerel checkout bulunmadığından full validator/clean-checkout sonucu üretilmedi; bu eksik kanıt SUCCESS sayılmadı. İçerik ve ledger kanıtı commit edildi ancak exact görünür CI yeşili olmadan ilgili RC maddeleri DONE yapılmadı.
+Bu çalışma ortamında full local validator/clean-checkout komutları çalıştırılmadı; bu eksik kanıt SUCCESS sayılmadı. İçerik ve ledger kanıtı commit edildi ancak exact görünür CI yeşili olmadan ilgili RC maddeleri DONE yapılmadı.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, kalan leap date, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -52,11 +52,11 @@ Bu çalışma ortamında repository test komutlarını çalıştıran yerel chec
 
 ## Son checkpoint
 
-`automation_runs/2026-08-29_0054_daily_messages_august_2032.md`
+`automation_runs/2026-08-29_0252_daily_messages_september_october_2032.md`
 
 ## Sıradaki çalışma
 
-1. `2032-09-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2032-11-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
