@@ -1,0 +1,32 @@
+date,title,teaser,message,theme
+2032-10-01,Ekime Bir Ölçütle Başla,Hedefin yanında başarı ölçütü olması yönü netleştirebilir.,Bu ayın ana hedefi için ay sonunda bakacağın tek ölçülebilir göstergeyi belirle.,planning
+2032-10-02,Bir Varsayılan Ayarı Gözden Geçir,Eski tercihler yeni çalışma biçimine uymuyor olabilir.,Sık kullandığın bir uygulamadaki varsayılan ayarlardan birini gerçekten hâlâ işine yarayıp yaramadığı açısından kontrol et.,organization
+2032-10-03,Bir Kaynağın Tarihini Kontrol Et,Doğru görünen bilgi zamanla güncelliğini kaybedebilir.,Bugün kullandığın önemli bir referansın yayın veya son güncelleme tarihini doğrula.,accuracy
+2032-10-04,Bütçede Küçük Kaçakları Topla,Tek tek önemsiz görünen giderler birlikte anlamlı bir tutara ulaşabilir.,Son yedi gündeki küçük isteğe bağlı harcamaları topla ve toplamın seni şaşırtıp şaşırtmadığını not et.,finance
+2032-10-05,Bir Görevin Başlangıç Koşulunu Tanımla,Belirsiz başlangıç işleri sürekli erteleme alanında bırakabilir.,Bekleyen bir iş için hangi bilgi veya koşul oluştuğunda başlayacağını açıkça yaz.,productivity
+2032-10-06,Güvenlik Sorularını Yeniden Düşün,Kolay tahmin edilen kurtarma bilgileri hesabın zayıf noktası olabilir.,Bir hesabın kurtarma seçeneklerini kontrol et ve kamuya açık bilgilerle tahmin edilebilen yöntem varsa değiştir.,security
+2032-10-07,Günün Temposunu Bilerek Düşürmek İçin Yer Aç,Sürekli yüksek tempo kaliteyi ve enerjiyi aşındırabilir.,Bugün en az bir işi normalden daha yavaş yap ve hız yerine doğruluğa odaklan.,balance
+2032-10-08,Bir Mesajdan Gereksiz Cümleyi Çıkar,Kısa iletişim temel isteğin görünürlüğünü artırabilir.,Göndermeden önce önemli bir mesajdan anlamı değiştirmeyen bir cümleyi çıkar.,communication
+2032-10-09,Bir Acil Durum Bağlantısını Doğrula,Kriz anında yanlış veya eski iletişim bilgisi zaman kaybettirebilir.,Önemli bir hizmet veya kişi için sakladığın acil iletişim bilgisinin güncel olduğunu kontrol et.,risk
+2032-10-10,Karar Sonrası Kontrol Tarihi Koy,Bazı kararların değeri ancak belirli süre sonra görülebilir.,Bugün verdiğin bir karar için sonucu ne zaman yeniden değerlendireceğine takvimde tarih koy.,decision
+2032-10-11,Masaüstünde Tek Bir Toplama Noktası Oluştur,Dağınık geçici dosyalar kaybolma ve tekrar üretme riskini artırabilir.,Geçici dosyalar için tek bir klasör belirle ve masaüstündeki dağınık öğeleri oraya taşı.,organization
+2032-10-12,Birinin Sınırını Varsaymak Yerine Sor,İyi niyetli tahminler bile yanlış beklenti yaratabilir.,Ortak bir plan yaparken karşı tarafın zaman veya kapasite sınırını doğrudan sor.,relationships
+2032-10-13,Odak Bloklarında Tek İletişim Kanalı Bırak,Tüm kanalları açık tutmak kesinti ihtimalini büyütür.,Bir odak oturumu sırasında yalnız gerçekten gerekli tek iletişim kanalını açık bırak.,focus
+2032-10-14,Alışkanlık Takibinde Zincir Yerine Oran Kullan,Tek kaçırılan gün tüm ilerlemeyi başarısız hissettirmemeli.,Bir alışkanlığı bu hafta kaç gün yaptığını toplam gün sayısına oranlayarak değerlendir.,habits
+2032-10-15,Bütçede Bir Sonraki Ayı Önceden Gör,Önceden bilinen büyük giderler son anda sürpriz olmamalıdır.,Kasım ayında çıkacağını bildiğin en büyük üç gideri şimdiden bir listeye ekle.,finance
+2032-10-16,Bir Kontrolün Neyi Önlediğini Yaz,Anlamı unutulan kontrol adımları zamanla mekanikleşebilir.,Sık kullandığın bir kontrol listesindeki bir adımın hangi hatayı önlemeyi amaçladığını yanına yaz.,quality
+2032-10-17,Bir Öğrenme Notuna Örnek Ekle,Soyut bilgi gerçek örnekle daha kolay hatırlanabilir.,Bugün öğrendiğin bir kavramın yanına kendi hayatından veya işinden somut bir örnek ekle.,learning
+2032-10-18,Bir Fiyatı Yıllık Maliyete Çevir,Aylık küçük görünen ücret toplam etkisini gizleyebilir.,Bir düzenli ödemenin aylık tutarını on ikiyle çarp ve yıllık maliyetini açıkça gör.,finance
+2032-10-19,Eski Bir Cihazdaki Oturumu Kapat,Kullanılmayan cihazlarda açık oturumlar gereksiz erişim yüzeyi oluşturabilir.,Önemli bir hesabın bağlı cihazlar listesini kontrol et ve artık kullanmadığın bir oturumu kapat.,security
+2032-10-20,Planına Tampon Süre Ekle,Her şeyin kusursuz sırayla gitmesini varsayan takvimler kırılgandır.,Önümüzdeki haftadaki yoğun bir gün için en az otuz dakikalık boş tampon alan bırak.,planning
+2032-10-21,Bir Projede Başarıdan Çok Bitirme Kriterini Yaz,Belirsiz bitiş projelerin uzamasına yol açabilir.,Devam eden bir proje için hangi somut koşul oluştuğunda tamamlandı diyeceğini yaz.,project
+2032-10-22,Bir Arşiv Kuralı Belirle,Her şeyi sonsuza kadar saklamak aramayı ve bakım yükünü artırabilir.,Bir klasör için hangi dosyaların ne kadar süre sonra arşivleneceğine basit bir kural koy.,organization
+2032-10-23,Bir Hatanın Etkisini Sayısallaştır,Öncelik vermek için sorunun gerçek büyüklüğünü bilmek faydalıdır.,Yakın zamanda gördüğün bir hata için etkilenen kayıt zaman veya maliyet miktarını tahmin et.,quality
+2032-10-24,Bir Karşılaştırmada Aynı Dönemi Kullan,Farklı zaman aralıkları doğru olmayan sonuçlara götürebilir.,Bugün iki performans sayısını karşılaştırırken ikisinin de aynı tarih aralığını kapsadığını doğrula.,accuracy
+2032-10-25,Bir İşbirliğinde Son Karar Yetkisini Netleştir,Herkes katkı verse de nihai kararın kime ait olduğu bilinmelidir.,Ortak bir işte görüş ayrılığı olursa son kararı kimin vereceğini önceden netleştir.,collaboration
+2032-10-26,İndirim Yerine Toplam Maliyete Bak,Etiket indirimi gereksiz alışverişi değerli göstermez.,Bir satın alma kararında indirim yüzdesini değil ödeyeceğin toplam tutarı ve kullanım değerini karşılaştır.,finance
+2032-10-27,Bir Süreci Yeni Kullanıcı Gibi Dene,Alışkanlık sorunlu adımları görünmez hale getirebilir.,Sık kullandığın bir süreci ilk kez görüyormuş gibi baştan sona uygula ve takıldığın noktayı kaydet.,quality
+2032-10-28,Geri Bildirimde Davranışı Sonuçtan Ayır,Kişiyi değil gözlenen davranışı konuşmak daha uygulanabilir geri bildirim sağlar.,Bugün vereceğin bir geri bildirimde yalnız gözlediğin davranışı ve etkisini ifade et.,collaboration
+2032-10-29,Günün Enerji Kazandıran İşini İşaretle,Yalnız yorucu işleri izlemek çalışma düzenini eksik gösterir.,Bugün seni beklenmedik biçimde canlandıran bir işi not et ve nedenini düşün.,self-awareness
+2032-10-30,Bir Gecikmenin Zincir Etkisini Kontrol Et,Tek bir kayma başka teslimleri de etkileyebilir.,Geciken bir işin bağlı olduğu sonraki görev veya kişileri kontrol edip gerekiyorsa beklentiyi güncelle.,risk
+2032-10-31,Ekimi Bir Sonraki Ay Kararıyla Kapat,Yansıtma bir sonraki davranışa bağlandığında daha işe yarar.,Ekimden çıkardığın en önemli dersi Kasımda uygulayacağın tek somut karara dönüştür.,reflection
