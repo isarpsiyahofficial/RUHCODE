@@ -1,0 +1,31 @@
+date,title,teaser,message,theme
+2032-11-01,Kasıma Bir Öncelik Sınırı Koy,Her şeyi aynı anda önemli saymak gerçek önceliği görünmez yapabilir.,Bu ay için en fazla üç ana öncelik seç ve geri kalan işleri destekleyici olarak işaretle.,planning
+2032-11-02,Bir Dosyanın Sahibinin Kim Olduğunu Netleştir,Sahipsiz içerik zamanla güncelliğini ve doğruluğunu kaybedebilir.,Ortak kullanılan önemli bir dosya için güncelleme sorumluluğunun kimde olduğunu açıkça belirle.,ownership
+2032-11-03,Bir Tahmini Gerçek Sonuçla Karşılaştır,Tahmin kalitesi ancak sonuçla kıyaslandığında gelişir.,Yakın zamanda yaptığın bir süre veya maliyet tahminini gerçek sonuçla yan yana yaz ve farkı not et.,accuracy
+2032-11-04,Bir Aboneliğin Son Kullanımını Hatırla,Kullanılmayan düzenli ödemeler fark edilmeden devam edebilir.,Ödeme yaptığın bir hizmeti en son ne zaman gerçekten kullandığını kontrol et ve değerini yeniden değerlendir.,finance
+2032-11-05,Bir Görevin En Küçük Başlangıcını Yaz,Büyük görünen işler ilk hareket netleştiğinde daha kolay başlar.,Bekleyen bir iş için beş dakikada yapılabilecek ilk somut adımı yaz ve yalnız onu tamamla.,productivity
+2032-11-06,Yedek Kurtarma Kodlarını Kontrol Et,İki adımlı doğrulama yedeği erişim krizinde kritik olabilir.,Önemli bir hesap için kurtarma kodlarının güvenli ve erişilebilir bir yerde bulunduğunu doğrula.,security
+2032-11-07,Bir Dinlenme Kararını Takvime Yaz,Dinlenmeyi yalnız boş zaman kalırsa yapmak çoğu zaman gerçekleşmemesine yol açar.,Bu hafta için kısa ama gerçek bir dinlenme bloğunu takvimine yerleştir.,balance
+2032-11-08,Bir İsteği Tek Cümlede Netleştir,Uzun açıklamalar asıl beklentiyi saklayabilir.,Bugün göndereceğin bir isteğin ana talebini tek cümlede ifade edebildiğinden emin ol.,communication
+2032-11-09,Bir Risk İçin Erken Uyarı İşareti Belirle,Sorun büyümeden önce görülebilecek sinyaller müdahale şansını artırır.,Devam eden bir işte sorun çıkacağını gösterecek tek erken belirtiyi yaz.,risk
+2032-11-10,Bir Kararın Varsayımını Yaz,Kararlar çoğu zaman görünmeyen kabullere dayanır.,Bugün verdiğin önemli bir kararın doğru olabilmesi için hangi varsayımın geçerli olması gerektiğini not et.,decision
+2032-11-11,İndirilenler Klasörünü Temizle,Geçici dosyaların birikmesi hem aramayı hem depolamayı zorlaştırabilir.,İndirilenler klasöründeki artık gerekmediği açık olan dosyaları sil veya uygun yere taşı.,organization
+2032-11-12,Bir Beklentiyi Açıkça Doğrula,Sessiz varsayımlar ilişkilerde gereksiz hayal kırıklığı yaratabilir.,Ortak bir plan için karşı tarafla tek bir önemli beklentiyi açıkça doğrula.,relationships
+2032-11-13,Odak Başlamadan Önce Çıkış Kuralı Koy,Ne zaman duracağını bilmemek odak bloklarını gereksiz uzatabilir.,Bir çalışma bloğuna başlamadan önce hangi somut noktada ara vereceğini belirle.,focus
+2032-11-14,Alışkanlığın Tetikleyicisini Gözle,Davranışın hangi koşulda başladığını görmek değişimi kolaylaştırabilir.,Bugün tekrarladığın bir alışkanlığın hemen öncesinde ne olduğunu not et.,habits
+2032-11-15,Yıl Sonu Giderlerini Önceden Listele,Aralık harcamaları önceden görünür olduğunda bütçe daha kontrollü kalabilir.,Önümüzdeki altı haftada beklediğin büyük giderleri tek yerde listele.,finance
+2032-11-16,Bir Kontrol Listesinden Gereksiz Adımı Çıkar,Kontroller zamanla işlevini yitirmiş adımlar biriktirebilir.,Sık kullandığın bir listede artık gerçek risk azaltmayan bir adım olup olmadığını incele.,quality
+2032-11-17,Bir Konuyu Başkasına Anlatır Gibi Özetle,Anlatmak bilgi boşluklarını hızlı biçimde görünür kılar.,Bugün öğrendiğin bir şeyi üç kısa cümleyle hiç bilmeyen birine anlatır gibi yaz.,learning
+2032-11-18,Bir Fiyatın Alternatif Maliyetini Düşün,Harcanan para aynı anda başka bir amaç için kullanılamaz.,Planladığın bir harcamayı yapmazsan o tutarın hangi daha değerli amaca gidebileceğini yaz.,finance
+2032-11-19,Bir Hesabın Uygulama Erişimlerini Gözden Geçir,Eski üçüncü taraf izinları gereksiz veri erişimi bırakabilir.,Önemli bir hesabın bağlı uygulamalar listesini aç ve kullanmadığın bir erişimi kaldır.,security
+2032-11-20,Gelecek Haftaya Bir Boşluk Bırak,Tam dolu takvim beklenmeyen işleri yönetmeyi zorlaştırır.,Gelecek haftada en az bir saatlik plansız alanı özellikle boş bırak.,planning
+2032-11-21,Bir Projede Kapsam Dışını Yaz,Nelerin yapılmayacağını bilmek projenin sınırlarını korur.,Devam eden bir proje için bu aşamada özellikle kapsam dışında olan iki şeyi yaz.,project
+2032-11-22,Bir Klasör Adını Daha Anlamlı Yap,İyi adlandırma gelecekte arama süresini azaltır.,Belirsiz isimli bir klasörü içeriğini açıkça anlatan daha net bir adla değiştir.,organization
+2032-11-23,Bir Hatanın Tekrar Şartını Kaydet,Tekrar üretilemeyen sorunların çözümü ve doğrulaması zorlaşır.,Yakın zamanda gördüğün bir hata için ortaya çıkması gereken koşulları maddeler halinde yaz.,quality
+2032-11-24,Bir Sayının Kaynağını Yanına Yaz,Rakamın nereden geldiği bilinmezse doğrulama zorlaşır.,Bugün kullandığın önemli bir sayının yanına kaynak veya hesaplama yöntemini ekle.,accuracy
+2032-11-25,Ortak İşte Teslim Biçimini Netleştir,Tamamlandı kelimesi herkes için aynı şeyi ifade etmeyebilir.,Bir işbirliğinde teslimin hangi formatta ve hangi ayrıntı düzeyinde beklendiğini netleştir.,collaboration
+2032-11-26,Bir Alışveriş İçin Bekleme Süresi Koy,Kısa bekleme dürtüsel kararları filtrelemeye yardımcı olabilir.,Zorunlu olmayan bir satın alma için karar vermeden önce en az bir gün bekleme kuralı uygula.,finance
+2032-11-27,Bir Süreçte En Çok Bekleten Adımı Bul,Toplam sürenin büyük kısmı tek bir darboğazda kaybolabilir.,Sık yaptığın bir sürecin hangi adımında en fazla beklediğini ölç veya tahmin et.,quality
+2032-11-28,Geri Bildirimden Sonra Sonraki Adımı Sor,Yorumun davranışa dönüşmesi için takip hareketi net olmalıdır.,Bugün aldığın bir geri bildirim için bundan sonra neyi farklı yapacağını tek cümleyle belirle.,collaboration
+2032-11-29,Günün Zihinsel Yükünü Yazıya Dök,Aklında tutulan küçük işler dikkat kapasitesini tüketebilir.,Bugün zihnini meşgul eden açık işleri tek listeye çıkar ve kafanda taşımayı bırak.,self-awareness
+2032-11-30,Kasımı Tek Bir Bırakma Kararıyla Kapat,İlerleme bazen yeni şey eklemekten çok gereksizi bırakmakla gelir.,Kasım boyunca sana az değer sağlayan bir alışkanlık veya işi Aralıkta bırakmaya karar ver.,reflection
