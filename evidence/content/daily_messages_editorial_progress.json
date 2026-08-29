@@ -32,6 +32,7 @@
     "assets/content/daily_messages/tr/2033-01.csv",
     "assets/content/daily_messages/tr/2033-02.csv",
     "assets/content/daily_messages/tr/2033-03.csv",
+    "assets/content/daily_messages/tr/2033-04.csv",
     "assets/content/daily_messages/en/2031-01.csv",
     "assets/content/daily_messages/en/2031-02.csv",
     "assets/content/daily_messages/en/2031-03.csv",
@@ -59,6 +60,7 @@
     "assets/content/daily_messages/en/2033-01.csv",
     "assets/content/daily_messages/en/2033-02.csv",
     "assets/content/daily_messages/en/2033-03.csv",
+    "assets/content/daily_messages/en/2033-04.csv",
     "tools/content/build_daily_message_catalog.py",
     "tools/content/append_daily_message_batch.py",
     "tools/content/validate_daily_message_catalog.py"
@@ -74,9 +76,9 @@
     "tools/content/validate_daily_message_editorial_progress.py"
   ],
   "currentReviewedCoverage": {
-    "tr": {"start": "2026-01-01", "end": "2033-03-31", "records": 2647},
-    "en": {"start": "2026-01-01", "end": "2033-03-31", "records": 2647},
-    "totalRecords": 5294
+    "tr": {"start": "2026-01-01", "end": "2033-04-30", "records": 2677},
+    "en": {"start": "2026-01-01", "end": "2033-04-30", "records": 2677},
+    "totalRecords": 5354
   },
   "requiredFinalCoverage": {
     "start": "2026-01-01",
@@ -96,8 +98,8 @@
     "release audit must run without allow-incomplete and therefore requires all 8,036 initial records including leap dates"
   ],
   "remainingBeforeDone": [
-    "write and editorially review Turkish daily messages from 2033-04-01 through 2036-12-31",
-    "write and editorially review independent English daily messages from 2033-04-01 through 2036-12-31",
+    "write and editorially review Turkish daily messages from 2033-05-01 through 2036-12-31",
+    "write and editorially review independent English daily messages from 2033-05-01 through 2036-12-31",
     "pass strict exact-date completeness for all 8,036 records",
     "pass remaining leap-date, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates",
     "prove the rolling ten-year horizon at the release date",
