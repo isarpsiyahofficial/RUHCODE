@@ -27,17 +27,17 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2033-10-31` = **2861**
-- EN contiguous reviewed: `2026-01-01 → 2033-10-31` = **2861**
-- Toplam: **5722 / 8036**
-- Kalan: **2314**
-- Sıradaki exact başlangıç: **2033-11-01**
+- TR contiguous reviewed: `2026-01-01 → 2033-12-31` = **2922**
+- EN contiguous reviewed: `2026-01-01 → 2033-12-31` = **2922**
+- Toplam: **5844 / 8036**
+- Kalan: **2192**
+- Sıradaki exact başlangıç: **2034-01-01**
 
-Bu turda Eylül 2033 için **30 TR + 30 bağımsız EN**, Ekim 2033 için **31 TR + 31 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Dört monthly CSV repository'ye fiziksel olarak işlendi ve committed shard'lar yeniden okunarak `2033-09-01 → 2033-10-31` exact tarih dizisi ile paired-locale kapsamı doğrulandı. Editorial ledger aynı sınıra ve **2861 + 2861 = 5722** toplamına taşındı.
+Bu turda Kasım 2033 için **30 TR + 30 bağımsız EN**, Aralık 2033 için **31 TR + 31 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Dört monthly CSV repository'ye fiziksel olarak işlendi ve committed shard'lar yeniden okunarak `2033-11-01 → 2033-12-31` exact tarih dizisi ile paired-locale kapsamı doğrulandı. Editorial ledger aynı sınıra ve **2922 + 2922 = 5844** toplamına taşındı.
 
-`RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md`, mevcut progress, requirement state ve editorial ledger yeniden okundu. Bağlayıcı kapsamın `RC-0001 → RC-1442` olduğu teyit edildi; kanıtsız DONE/status eklenmedi.
+Yeni batch üzerinde production validator eşikleriyle aynı mantıkta yerel kontrol yapıldı: exact duplicate **0**, `>=0.90` near-duplicate aday **0**, unsafe-certainty **0**, repetitive six-token opening limit aşımı **0**. Bu batch-local kontrol full compiled-catalog release audit yerine geçirilmedi.
 
-Clean-checkout clone/test zinciri yeniden denendi ancak çalışma ortamı `github.com` DNS çözümleyemediği için clone aşamasında `Could not resolve host: github.com` ile durdu. Bu nedenle full content validator/test SUCCESS olarak işaretlenmedi.
+`RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md`, mevcut progress, requirement state, content manifest ve editorial ledger yeniden okundu. Bağlayıcı kapsamın `RC-0001 → RC-1442` olduğu teyit edildi; kanıtsız DONE/status eklenmedi.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, `2036-02-29`, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -55,11 +55,11 @@ Clean-checkout clone/test zinciri yeniden denendi ancak çalışma ortamı `gith
 
 ## Son checkpoint
 
-`automation_runs/2026-08-29_1853_daily_messages_september_october_2033.md`
+`automation_runs/2026-08-29_2055_daily_messages_november_december_2033.md`
 
 ## Sıradaki çalışma
 
-1. `2033-11-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2034-01-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
