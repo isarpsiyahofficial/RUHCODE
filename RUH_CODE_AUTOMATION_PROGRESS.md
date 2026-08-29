@@ -27,13 +27,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2032-12-31` = **2557**
-- EN contiguous reviewed: `2026-01-01 → 2032-12-31` = **2557**
-- Toplam: **5114 / 8036**
-- Kalan: **2922**
-- Sıradaki exact başlangıç: **2033-01-01**
+- TR contiguous reviewed: `2026-01-01 → 2033-01-31` = **2588**
+- EN contiguous reviewed: `2026-01-01 → 2033-01-31` = **2588**
+- Toplam: **5176 / 8036**
+- Kalan: **2860**
+- Sıradaki exact başlangıç: **2033-02-01**
 
-Bu turda Kasım 2032 için **30 TR + 30 bağımsız EN**, Aralık 2032 için **31 TR + 31 bağımsız EN** olmak üzere toplam **122 yeni mesaj** eklendi. Exact-date sıra iki locale için `2032-11-01 → 2032-12-31` olarak kesintisiz ilerletildi. Dört monthly CSV repository'ye fiziksel olarak işlendi ve editorial ledger aynı sınıra ve **2557 + 2557 = 5114** toplamına taşındı.
+Bu turda Ocak 2033 için **31 TR + 31 bağımsız EN** olmak üzere toplam **62 yeni mesaj** eklendi. İki monthly CSV repository'ye fiziksel olarak işlendi; committed shard'lar yeniden okunarak `2033-01-01 → 2033-01-31` exact tarih dizisi ve locale paritesi doğrulandı. Editorial ledger aynı sınıra ve **2588 + 2588 = 5176** toplamına taşındı.
 
 Bu çalışma ortamında full local validator/clean-checkout komutları çalıştırılmadı; bu eksik kanıt SUCCESS sayılmadı. İçerik ve ledger kanıtı commit edildi ancak exact görünür CI yeşili olmadan ilgili RC maddeleri DONE yapılmadı.
 
@@ -53,11 +53,11 @@ Bu çalışma ortamında full local validator/clean-checkout komutları çalış
 
 ## Son checkpoint
 
-`automation_runs/2026-08-29_0456_daily_messages_november_december_2032.md`
+`automation_runs/2026-08-29_0654_daily_messages_january_2033.md`
 
 ## Sıradaki çalışma
 
-1. `2033-01-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2033-02-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
