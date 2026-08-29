@@ -27,13 +27,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2034-01-31` = **2953**
-- EN contiguous reviewed: `2026-01-01 → 2034-01-31` = **2953**
-- Toplam: **5906 / 8036**
-- Kalan: **2130**
-- Sıradaki exact başlangıç: **2034-02-01**
+- TR contiguous reviewed: `2026-01-01 → 2034-02-28` = **2981**
+- EN contiguous reviewed: `2026-01-01 → 2034-02-28` = **2981**
+- Toplam: **5962 / 8036**
+- Kalan: **2074**
+- Sıradaki exact başlangıç: **2034-03-01**
 
-Bu turda Ocak 2034 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** repository'ye fiziksel olarak işlendi. İki committed shard yeniden okunarak `2034-01-01 → 2034-01-31` exact tarih dizisi ve paired-locale kapsamı doğrulandı. Editorial ledger aynı sınıra ve **2953 + 2953 = 5906** toplamına taşındı.
+Bu turda Ocak 2034 için **31 TR + 31 bağımsız EN**, Şubat 2034 için **28 TR + 28 bağımsız EN** olmak üzere toplam **118 yeni mesaj** repository'ye fiziksel olarak işlendi. Committed shard'lar yeniden okunarak aylık exact tarih dizileri ve paired-locale kapsamı doğrulandı. Editorial ledger aynı sınıra ve **2981 + 2981 = 5962** toplamına taşındı.
 
 `RUH_CODE_MASTER_TODO.md`, mevcut progress ve editorial ledger yeniden okundu; bağlayıcı kapsamın `RC-0001 → RC-1442` olduğu teyit edildi. Kanıtsız DONE/status eklenmedi.
 
@@ -53,11 +53,11 @@ Bu turda Ocak 2034 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** repositor
 
 ## Son checkpoint
 
-`automation_runs/2026-08-29_2254_daily_messages_january_2034.md`
+`automation_runs/2026-08-29_2254_daily_messages_january_february_2034.md`
 
 ## Sıradaki çalışma
 
-1. `2034-02-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2034-03-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
