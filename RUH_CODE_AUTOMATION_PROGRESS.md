@@ -27,15 +27,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2033-01-31` = **2588**
-- EN contiguous reviewed: `2026-01-01 → 2033-01-31` = **2588**
-- Toplam: **5176 / 8036**
-- Kalan: **2860**
-- Sıradaki exact başlangıç: **2033-02-01**
+- TR contiguous reviewed: `2026-01-01 → 2033-03-31` = **2647**
+- EN contiguous reviewed: `2026-01-01 → 2033-03-31` = **2647**
+- Toplam: **5294 / 8036**
+- Kalan: **2742**
+- Sıradaki exact başlangıç: **2033-04-01**
 
-Bu turda Ocak 2033 için **31 TR + 31 bağımsız EN** olmak üzere toplam **62 yeni mesaj** eklendi. İki monthly CSV repository'ye fiziksel olarak işlendi; committed shard'lar yeniden okunarak `2033-01-01 → 2033-01-31` exact tarih dizisi ve locale paritesi doğrulandı. Editorial ledger aynı sınıra ve **2588 + 2588 = 5176** toplamına taşındı.
+Bu turda Şubat 2033 için **28 TR + 28 bağımsız EN**, Mart 2033 için **31 TR + 31 bağımsız EN** olmak üzere toplam **118 yeni mesaj** eklendi. Dört monthly CSV repository'ye fiziksel olarak işlendi ve committed shard'lar yeniden okunarak `2033-02-01 → 2033-03-31` exact tarih dizisi ile paired-locale kapsamı doğrulandı. Editorial ledger aynı sınıra ve **2647 + 2647 = 5294** toplamına taşındı.
 
-Bu çalışma ortamında full local validator/clean-checkout komutları çalıştırılmadı; bu eksik kanıt SUCCESS sayılmadı. İçerik ve ledger kanıtı commit edildi ancak exact görünür CI yeşili olmadan ilgili RC maddeleri DONE yapılmadı.
+Clean-checkout validator yeniden denenmiştir ancak çalışma ortamı `github.com` DNS çözümleyemediği için `git clone` aşamasında `Could not resolve host: github.com` ile durmuştur. Bu transient altyapı engeli SUCCESS sayılmamış ve ilgili RC maddeleri DONE yapılmamıştır.
 
 `RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, `2036-02-29`, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
 
@@ -53,14 +53,15 @@ Bu çalışma ortamında full local validator/clean-checkout komutları çalış
 
 ## Son checkpoint
 
-`automation_runs/2026-08-29_0654_daily_messages_january_2033.md`
+`automation_runs/2026-08-29_0853_daily_messages_february_march_2033.md`
 
 ## Sıradaki çalışma
 
-1. `2033-02-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
+1. `2033-04-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
 2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
 3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
+6. DNS erişimi döndüğünde clean-checkout content validator/test zincirini yeniden çalıştır.
 
 **FINAL: NO.**
