@@ -36,6 +36,8 @@ Bu çalıştırmada toplam **61 TR + 61 EN = 122 yeni kayıt** repository'ye iş
 
 - Yeni dört shard kendi içinde exact tarih sırası ve tekil tarih anahtarları açısından kontrol edildi.
 - Commit sonrası dört dosya GitHub repository'sinden yeniden okundu.
+- Yeni 122 kayıt üzerinde production validator'daki kalite eşikleriyle batch-local kontrol yapıldı: exact duplicate **0**, near-duplicate (`>=0.90`) **0**, unsafe-certainty eşleşmesi **0**, opening-pattern limit aşımı **0**.
+- Bu batch-local sonuç full 5.722 kayıt katalog auditinin yerine geçmez.
 - Clean-checkout clone/test zinciri tekrar denendi ancak çalışma ortamı `github.com` DNS çözümleyemediği için clone aşamasında `Could not resolve host: github.com` ile durdu; bu nedenle full validator/test SUCCESS iddiası yapılmadı.
 
 ## DONE güvenliği
