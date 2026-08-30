@@ -70,7 +70,7 @@ final class PolicyEntitlementService implements EntitlementService {
 
     final now = await clock.nowUtc();
     if (!now.isUtc) {
-      throw const StateError('Entitlement clock must return UTC.');
+      throw StateError('Entitlement clock must return UTC.');
     }
 
     if (policy.temporaryUnlockAllowed) {
