@@ -167,19 +167,19 @@ final class CombinedProfessionalPdfApplicationService {
         if (identity.subjectKind != preview.subjectKind ||
             identity.subjectId != preview.subjectId ||
             identity.snapshotDigest != preview.compositeSnapshotDigest) {
-          throw const StateError(
+          throw StateError(
             'Combined PDF preview/build persisted snapshot drift detected.',
           );
         }
         if (!_sameStrings(projection.memberSystemIds, preview.memberSystemIds)) {
-          throw const StateError('Combined PDF preview/build system drift detected.');
+          throw StateError('Combined PDF preview/build system drift detected.');
         }
         final selected = _selectSections(
           projection: projection,
           requestedSectionIds: preview.sectionIds,
         );
         if (!_sameStrings(selected, preview.sectionIds)) {
-          throw const StateError('Combined PDF preview/build section drift detected.');
+          throw StateError('Combined PDF preview/build section drift detected.');
         }
         return pdfService.buildReport(
           snapshot: projection,
