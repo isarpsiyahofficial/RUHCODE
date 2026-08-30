@@ -81,11 +81,10 @@ abstract final class PlacidusHouses {
   }) {
     _finite(latitudeDegreesNorth, 'latitudeDegreesNorth');
     if (latitudeDegreesNorth <= -90.0 || latitudeDegreesNorth >= 90.0) {
-      throw RangeError.range(
+      throw RangeError.value(
         latitudeDegreesNorth,
-        -89.999999999,
-        89.999999999,
         'latitudeDegreesNorth',
+        'Expected a value strictly between -90 and 90 degrees.',
       );
     }
 
