@@ -22,33 +22,41 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Professional/combined PDF planning, persisted Western/Numerology projection, preview/build parity ve structural validation.
 - UI action/accessibility kontratları.
 - Daily-message deterministic shard + editorial ledger + partial QA hattı.
+- Daily-message legacy source adapter: committed 5-sütun shardlar canonical 6-sütun in-memory şemaya deterministik normalize edilir; yeni editorial batch girişleri yalnız canonical şema kabul eder.
 
 ## Günün Mesajı — doğrulanmış ledger
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2034-07-31` = **3134**
-- EN ledger: `2026-01-01 → 2034-07-31` = **3134**
-- Ledger toplamı: **6268 / 8036**
-- Ledger kalan: **1768**
-- Ledger'ın sıradaki exact başlangıcı: **2034-08-01**
+- TR ledger: `2026-01-01 → 2034-08-31` = **3165**
+- EN ledger: `2026-01-01 → 2034-08-31` = **3165**
+- Ledger toplamı: **6330 / 8036**
+- Ledger kalan: **1706**
+- Ledger'ın sıradaki exact başlangıcı: **2034-09-01**
 
-Bu turda `2034-08-01 → 2034-08-31` için **31 TR + 31 bağımsız EN = 62 yeni fiziksel editorial kayıt** hazırlandı ve repository'ye eklendi. Ancak bu 62 kayıt **henüz ledger'a sayılmadı**.
+`2034-08-01 → 2034-08-31` için daha önce eklenen **31 TR + 31 bağımsız EN = 62 kayıt**, bu turda source-schema adapter zinciriyle production builder/editorial-progress sözleşmesine bağlandı ve evidence ledger fiziksel shard setiyle eşitlendi.
 
-### Yeni tespit edilen content-schema blocker
+### Content-schema blocker — çözülen source-level bölüm
 
-Repository'deki mevcut aylık shard'lar `date,title,teaser,message,theme` sütunlarını kullanıyor. Buna karşılık production araçları `tools/content/build_daily_message_catalog.py`, `tools/content/append_daily_message_batch.py` ve `tools/content/validate_daily_message_editorial_progress.py` exact olarak `date,locale,title,teaser,full_text,theme_tag` bekliyor.
+Repository'deki legacy aylık shard formatı `date,title,teaser,message,theme`; canonical runtime/build formatı `date,locale,title,teaser,full_text,theme_tag`.
 
-Bu uyuşmazlık mevcut committed shard setini production builder/editorial-progress validator için doğrudan geçersiz kılıyor. Bu nedenle:
+Bu turda:
 
-- Ağustos 2034 fiziksel içeriği commit edildi fakat `evidence/content/daily_messages_editorial_progress.json` ileri taşınmadı.
-- Önceki otomasyon raporlarındaki shard varlığı doğrulaması, production validator SUCCESS ile aynı şey değildir.
-- Şema zinciri düzeltilmeden veya mevcut shard'lar canonical şemaya deterministik biçimde migrate edilmeden RC-1424/1425/1426/1427/1433/1434 ilerletilmeyecek.
-- Kanıtsız DONE/status override eklenmedi.
+- `tools/content/daily_message_schema.py` tek normalization sözleşmesi olarak eklendi.
+- Legacy committed shardlar yalnız deterministik adapter üzerinden okunuyor; `message → full_text`, `theme → theme_tag`, locale ise shard dizininden exact türetiliyor.
+- `tools/content/build_daily_message_catalog.py` adapter üzerinden canonical katalog üretiyor.
+- `tools/content/validate_daily_message_editorial_progress.py` aynı adapter üzerinden exact date/locale/nonblank/duplicate/contiguity/leap/ledger eşitliği denetliyor.
+- `tools/content/append_daily_message_batch.py` geçmiş legacy shardları okuyabiliyor fakat **yeni batch girdilerini yalnız canonical 6-sütun şemada kabul ediyor**; yeni/yeniden yazılan hedef shard canonical olur.
+- `tools/content/test_daily_message_schema.py` legacy normalization, canonical preservation, legacy-new-batch rejection ve locale mismatch vakalarını kapsıyor.
+- `.github/workflows/daily-message-editorial-contract.yml` yeni schema testini ve adapter path trigger'ını içeriyor.
+- `evidence/content/daily_messages_editorial_progress.json` August 2034 fiziksel shardlarıyla **6330/8036** seviyesine getirildi.
+
+Bu düzeltme yalnız source-level/ledger ilerlemesidir; strict full 8.036 release auditinin yerine geçmez. RC-1424/1425/1426/1427/1433/1434 bu nedenle DONE yapılmadı.
 
 ## Açık ana blocker'lar
 
-- daily-message source shard şeması ile production builder/validator sözleşmesi arasında 5-sütun / 6-sütun uyumsuzluğu
+- remaining daily-message editorial kapsamı: TR+EN `2034-09-01 → 2036-12-31` ve sonrasında strict 8.036-record release audit
+- exact HEAD üzerindeki GitHub Actions daily-message contract sonucunun görünür SUCCESS olması
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -61,13 +69,13 @@ Bu uyuşmazlık mevcut committed shard setini production builder/editorial-progr
 
 ## Son checkpoint
 
-`automation_runs/2026-08-30_0654_daily_message_schema_blocker_august_2034.md`
+`automation_runs/2026-08-30_0856_daily_message_schema_adapter_august_2034.md`
 
 ## Sıradaki çalışma
 
-1. Daily-message shard şemasını tek canonical sözleşmeye getir: ya committed legacy shard'ları deterministic migration ile `date,locale,title,teaser,full_text,theme_tag` şemasına dönüştür ya da source-adapter yaklaşımını testlerle açıkça sözleşmeye bağla.
-2. Builder + append + editorial-progress validator aynı source sözleşmesini kullansın; full existing shard set üzerinde clean-checkout test kanıtı olmadan ledger ilerletme.
-3. Şema kapısı yeşil olduğunda Ağustos 2034 shardlarını canonical hale getir/yeniden doğrula ve ledger'ı ancak o zaman `2034-08-31` sınırına taşı.
+1. Exact HEAD üzerinde `Daily Message Editorial Contract` workflow sonucunu doğrula; kırmızıysa root-cause düzelt ve yeniden çalıştır.
+2. Sonraki editorial batch `2034-09-01` tarihinden başlasın ve doğrudan canonical `date,locale,title,teaser,full_text,theme_tag` şemasıyla üretilecek/eklenecek.
+3. Günün Mesajı kapsamını TR ve bağımsız EN olarak 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp RC'leri kanıtla.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
