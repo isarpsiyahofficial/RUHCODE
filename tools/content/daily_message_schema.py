@@ -49,7 +49,8 @@ def read_shard_rows(
                 locale = _clean(row.get('locale'))
                 if locale != expected_locale:
                     raise DailyMessageSchemaError(
-                        f'{path}:{line_number}: locale {locale!r} does not match expected locale {expected_locale!r}'
+                        f'{path}:{line_number}: locale {locale!r} does not match shard directory '
+                        f'expected locale {expected_locale!r}'
                     )
                 normalized = {field: _clean(row.get(field)) for field in CANONICAL_FIELDS}
             else:
