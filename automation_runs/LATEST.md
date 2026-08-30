@@ -2,27 +2,26 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-30_1257_daily_messages_october_2034.md`
+`automation_runs/2026-08-30_1453_daily_messages_november_december_2034.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Ekim 2034 canonical daily-message batch tamamlandı**
-   - 31 TR kayıt
-   - 31 bağımsız EN kayıt
-   - yeni shardların ikisi de canonical `date,locale,title,teaser,full_text,theme_tag` şemasında
-   - exact kapsam `2034-10-01 → 2034-10-31`
+1. **Kasım + Aralık 2034 canonical daily-message batchleri tamamlandı**
+   - 61 TR kayıt
+   - 61 bağımsız EN kayıt
+   - dört shard da canonical `date,locale,title,teaser,full_text,theme_tag` şemasında
+   - exact kapsam `2034-11-01 → 2034-12-31`
 
 2. **Editorial ledger ilerledi**
-   - TR `2026-01-01 → 2034-10-31` = **3226**
-   - EN `2026-01-01 → 2034-10-31` = **3226**
-   - toplam **6452 / 8036**
-   - kalan **1584**
-   - sıradaki exact başlangıç **2034-11-01**
+   - TR `2026-01-01 → 2034-12-31` = **3287**
+   - EN `2026-01-01 → 2034-12-31` = **3287**
+   - toplam **6574 / 8036**
+   - kalan **1462**
+   - sıradaki exact başlangıç **2035-01-01**
 
 3. **Doğrulama durumu**
-   - committed Ekim shardları GitHub üzerinden yeniden okunarak canonical header locale ve 31 günlük exact tarih dizisi kontrol edildi
+   - committed Kasım ve Aralık shardları GitHub üzerinden yeniden okunarak canonical header locale ve exact tarih dizileri kontrol edildi
    - evidence ledger fiziksel kapsamla eşitlendi
-   - requirement traceability sözleşmesi yeniden doğrulandı: `requirement_state.csv` sparse override ledger'dır; full 1.442 satırlık matrix CI/build pathinde üretilir
    - exact HEAD CI sonucu görünür biçimde doğrulanmadan SUCCESS verilmeyecek
 
 4. **Requirement güvenliği**
@@ -34,7 +33,7 @@ Latest source-level checkpoint:
 ## Next safe work
 
 - exact HEAD `Daily Message Editorial Contract` sonucunu doğrula; failure varsa root-cause düzelt
-- `2034-11-01` sonrası canonical editorial batchleri devam ettir
+- `2035-01-01` sonrası canonical editorial batchleri devam ettir
 - full 8.036 catalog tamamlanana kadar TR ve bağımsız EN kapsamını ilerlet
 - blocker dışındaki PDF/UI/accessibility/evidence işlerini sürdür
 
