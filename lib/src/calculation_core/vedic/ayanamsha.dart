@@ -89,12 +89,10 @@ final class TabulatedAyanamshaProvider implements AyanamshaProvider {
       throw ArgumentError.value(julianDayTt, 'julianDayTt', 'Value must be finite.');
     }
     if (julianDayTt < coverageStartJulianDayTt || julianDayTt > coverageEndJulianDayTt) {
-      throw RangeError.range(
+      throw RangeError.value(
         julianDayTt,
-        coverageStartJulianDayTt,
-        coverageEndJulianDayTt,
         'julianDayTt',
-        'Ayanamsha extrapolation is forbidden.',
+        'Ayanamsha extrapolation is forbidden; value must stay within the tabulated TT coverage interval.',
       );
     }
 
