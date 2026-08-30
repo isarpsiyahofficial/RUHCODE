@@ -1,5 +1,6 @@
 {
   "id": "EVID-BACKUP-SINGLE-TABLE-CSV",
+  "contract": "single_table_csv_export",
   "status": "SOURCE_LEVEL_IMPLEMENTED",
   "done": false,
   "requirement_ids": ["RC-0794"],
@@ -15,7 +16,7 @@
   "validators": [
     "tools/backup/validate_single_table_csv_export.py"
   ],
-  "contract": {
+  "assertions": {
     "one_requested_table_only": true,
     "canonical_schema_header": true,
     "utf8": true,
