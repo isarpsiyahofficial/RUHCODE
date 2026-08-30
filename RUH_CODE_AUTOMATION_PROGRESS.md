@@ -28,32 +28,29 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2034-12-31` = **3287**
-- EN ledger: `2026-01-01 → 2034-12-31` = **3287**
-- Ledger toplamı: **6574 / 8036**
-- Ledger kalan: **1462**
-- Ledger'ın sıradaki exact başlangıcı: **2035-01-01**
+- TR ledger: `2026-01-01 → 2035-01-31` = **3318**
+- EN ledger: `2026-01-01 → 2035-01-31` = **3318**
+- Ledger toplamı: **6636 / 8036**
+- Ledger kalan: **1400**
+- Ledger'ın sıradaki exact başlangıcı: **2035-02-01**
 
-Bu turda editorial ledger bilinçli olarak ileri taşınmadı; kritik kırmızı CI kapıları dependency önceliğiyle ele alındı.
+Ocak 2035 canonical shardları commit sonrası `main` üzerinden yeniden okunarak 31 TR + 31 bağımsız EN exact tarih dizisi doğrulandıktan sonra ledger ileri taşındı.
 
-## Bu turdaki doğrulama ve düzeltme durumu
+## Bu turdaki doğrulama ve ilerleme
 
-- Önceki exact HEAD `7abc2f996cec40539bfcce2820e629a99f07a7b7` için gerçekte **23 GitHub Actions run** olduğu ve **8 workflow failure** bulunduğu doğrulandı. Önceki “workflow görünmüyor” varsayımı geçersizdir.
-- Western Aspect Grid validator'ındaki yanlış RC sahipliği düzeltildi: aspect grid binding sahibi `RC-0051`; ilgisiz Free/product access `RC-0277/RC-0278` artık bu astronomy kanıt kapısına zorla bağlanmıyor.
-- Western Essential Dignities validator'ındaki ilgisiz `RC-0276` bağı kaldırıldı; binding sahiplik `RC-0049/RC-0050` olarak korunuyor.
-- Requirements Contract'ın evidence-integrity kırmızısının ilk kök nedeni giderildi: `evidence/backup/single_table_csv_export.json` canonical string `contract` id kullanıyor, boolean detaylar `assertions` altında korunuyor.
-- `western/asc_mc.dart`, `vedic/ayanamsha.dart` ve `western/placidus_houses.dart` içinde güncel Dart'ın reddettiği `RangeError.range` double-bound çağrıları `RangeError.value` ile değiştirildi; fail-closed range davranışı korunuyor.
-- Earth Orientation Contract'ın 8/9 test durumundaki tek hata, büyük Julian Day double'larının subtraction cancellation hassasiyetinden kaynaklanıyordu. Regression toleransı `2e-10` gün (~17 µs) seviyesine çekildi; UT1-UTC semantic doğrulaması korunuyor.
-- Invalid `const StateError` kullanımları entitlement resolver, feature catalog ve rollback-resistant entitlement clock içinde kaldırıldı.
-- Eski Flutter Quality logunda toplam **70 analyzer issue** görüldü. Bu tur ortak köklerin bir kısmını temizledi; kalan const/import/type/test-constructor/PDF/backup analyzer borcu çözülmeden CI yeşil sayılmayacak.
-- Yeni exact commit zincirinde GitHub Actions tamamlanmadan `SUCCESS` verilmeyecek; queued/in-progress durum proof değildir.
+- `RUH_CODE_MASTER_TODO.md` ve `RUH_CODE_MASTER_INDEX.md` yeniden okundu; binding kapsamın `RC-0001 → RC-1442` olduğu ve DONE için doğrulama kapılarının zorunlu olduğu tekrar doğrulandı.
+- Önceki exact baseline `58f8cf8921e97ab2f997c16e921a1d8e64736c02` için GitHub Actions exact-SHA sorgusunda 23 workflow bulundu. Run setinde failure, cancelled, timed_out, skipped veya pending/null conclusion yok; baseline kritik CI blocker'ı bu SHA için temizdir. Yeni commit zinciri için kendi exact CI sonucu ayrıca gereklidir.
+- `assets/content/daily_messages/tr/2035-01.csv` eklendi: canonical header + 31 exact TR satır.
+- `assets/content/daily_messages/en/2035-01.csv` eklendi: canonical header + 31 bağımsız EN satır.
+- İki shard commit sonrası yeniden okundu; tarih aralığı `2035-01-01 → 2035-01-31`, locale ve fiziksel satırlar doğrulandı.
+- Batch-local authoring kontrolünde title/teaser/full_text exact duplicate bulunmadı; combined within-locale maksimum similarity TR ~0.3784, EN ~0.1468 ile 0.90 near-duplicate review eşiğinin altında kaldı.
+- `evidence/content/daily_messages_editorial_progress.json` yalnız doğrulanmış fiziksel shard sınırına göre 6636/8036 seviyesine ilerletildi.
+- `RC-1424/1425/1426/1427/1433/1434` full catalog ve release kanıtları olmadığı için DONE yapılmadı.
 
 ## Açık ana blocker'lar
 
-- Flutter Quality kalan analyzer/test borcu: invalid const exception kullanımları, backup/PDF symbol/import drift, eski `CivilDate` test construction ve analyzer warning/info kalıntıları
-- Requirements Contract'ın sonraki evidence-integrity/matrix aşamalarının yeni exact SHA üzerinde tam SUCCESS kanıtı
-- remaining daily-message editorial kapsamı: TR+EN `2035-01-01 → 2036-12-31` ve ardından strict 8.036-record release audit
-- exact HEAD üzerindeki GitHub Actions zorunlu contract sonuçlarının görünür SUCCESS olması
+- Yeni exact HEAD üzerindeki GitHub Actions zorunlu contract sonuçlarının tamamlanmış görünür SUCCESS olması
+- remaining daily-message editorial kapsamı: TR+EN `2035-02-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -66,15 +63,13 @@ Bu turda editorial ledger bilinçli olarak ileri taşınmadı; kritik kırmızı
 
 ## Son checkpoint
 
-`automation_runs/2026-08-30_1653_ci_contract_repair.md`
+`automation_runs/2026-08-30_1854_daily_messages_january_2035.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA için 23 workflow sonucunu yeniden oku; kırmızı job'ların decoded loglarını açarak kalan root-cause'ları düzelt.
-2. Flutter Quality analyzer hatalarını ortak köklerden temizleyip test aşamasına geçir; kritik kırmızı varken FINAL deme.
-3. Requirements Contract'ı evidence schema düzeltmesi sonrası yeniden doğrula; validator bir sonraki bozuk evidence kaydını gösterirse aynı şekilde düzelt.
-4. Kritik CI borcu kontrol altına alındığında canonical editorial batchlere `2035-01-01` tarihinden devam et.
-5. Günün Mesajı kapsamını TR ve bağımsız EN olarak 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp RC'leri kanıtla.
-6. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
+1. En yeni exact SHA workflow sonuçlarını tamamlanmış sonuçlarla yeniden oku; kırmızı varsa decoded job loglarından aynı turda düzelt.
+2. Canonical editorial batchlere `2035-02-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+3. Günün Mesajı kapsamını 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
+4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
 **FINAL: NO.**
