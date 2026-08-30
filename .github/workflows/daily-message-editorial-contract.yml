@@ -7,11 +7,13 @@ on:
       - 'assets/content/daily_messages/**'
       - 'requirements/content_manifests/daily_messages.json'
       - 'evidence/content/daily_messages_editorial_progress.json'
+      - 'tools/content/daily_message_schema.py'
       - 'tools/content/build_daily_message_catalog.py'
       - 'tools/content/append_daily_message_batch.py'
       - 'tools/content/validate_daily_message_catalog.py'
       - 'tools/content/validate_daily_message_contract.py'
       - 'tools/content/validate_daily_message_editorial_progress.py'
+      - 'tools/content/test_daily_message_schema.py'
       - 'tools/content/test_validate_daily_message_editorial_progress.py'
       - 'tools/content/test_validate_daily_message_catalog.py'
       - 'tools/content/test_daily_message_shards.py'
@@ -22,11 +24,13 @@ on:
       - 'assets/content/daily_messages/**'
       - 'requirements/content_manifests/daily_messages.json'
       - 'evidence/content/daily_messages_editorial_progress.json'
+      - 'tools/content/daily_message_schema.py'
       - 'tools/content/build_daily_message_catalog.py'
       - 'tools/content/append_daily_message_batch.py'
       - 'tools/content/validate_daily_message_catalog.py'
       - 'tools/content/validate_daily_message_contract.py'
       - 'tools/content/validate_daily_message_editorial_progress.py'
+      - 'tools/content/test_daily_message_schema.py'
       - 'tools/content/test_validate_daily_message_editorial_progress.py'
       - 'tools/content/test_validate_daily_message_catalog.py'
       - 'tools/content/test_daily_message_shards.py'
@@ -48,6 +52,8 @@ jobs:
         run: python tools/content/validate_daily_message_contract.py
       - name: Validate committed editorial progress ledger
         run: python tools/content/validate_daily_message_editorial_progress.py
+      - name: Test schema normalization contract
+        run: python -m unittest tools/content/test_daily_message_schema.py
       - name: Test editorial progress leap-date enforcement
         run: python -m unittest tools/content/test_validate_daily_message_editorial_progress.py
       - name: Test paired editorial batch appender
