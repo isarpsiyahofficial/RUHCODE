@@ -48,6 +48,11 @@ Bu fark nedeniyle yalnız shard varlığı, production validator SUCCESS kanıt�
 
 6. `.github/workflows/daily-message-editorial-contract.yml` adapter ve schema testini kapsayacak şekilde güncellendi.
 
+7. Existing regression contract ayrıca çapraz kontrol edildi.
+   - `tools/content/test_daily_message_shards.py` locale mismatch için mevcut `does not match shard directory` hata semantiğini assert ediyor.
+   - Adapter güvenlik davranışı değiştirilmeden bu error contract korunacak şekilde düzeltildi.
+   - Böylece yeni normalization katmanı mevcut test beklentisini gereksiz yere kırmıyor.
+
 ## Ledger
 
 August 2034 physical shards artık source adapter sözleşmesine bağlandığı için evidence ledger fiziksel committed set ile eşitlendi:
@@ -67,11 +72,15 @@ August 2034 physical shards artık source adapter sözleşmesine bağlandığı 
 
 ## CI / release durumu
 
-Yeni workflow exact commitlerde tetiklenecek şekilde repository'ye işlendi. Exact final HEAD workflow sonucu ayrıca doğrulanmalıdır; görünür SUCCESS olmadan CI yeşil kabul edilmeyecek.
+- Workflow adapter ve schema-test path'lerini izliyor.
+- Source değişikliğinin son commit SHA'sı `e64777be8dd8b37ab0da53d511d724a1a95ef165`.
+- Connector commit-status sorgusunda bu SHA için ayrı legacy status kaydı yok (`statuses=[]`); bu SUCCESS kanıtı değildir.
+- Push workflow sonucunu commit-status yokluğundan SUCCESS kabul etmiyoruz.
+- Clean-checkout test denemesi çalışma ortamındaki geçici DNS problemi nedeniyle `Could not resolve host: github.com` aşamasında kaldı; bu da test SUCCESS olarak sayılmadı.
 
 ## Sonraki güvenli iş
 
-1. Exact final HEAD üzerindeki Daily Message Editorial Contract sonucunu doğrula ve kırmızıysa aynı dependency hattında düzelt.
+1. Daily Message Editorial Contract push workflow sonucunu görünür olarak doğrula; failure varsa root-cause düzelt.
 2. `2034-09-01` tarihinden itibaren yeni batchleri yalnız canonical 6-sütun şema ile devam ettir.
 3. TR ve bağımsız EN editorial kapsamını 2036-12-31'e kadar ilerlet.
 4. 8.036 kayıt tamamlanınca strict completeness/duplicate/near-duplicate/opening-pattern/unsafe-certainty/leap/rolling-horizon auditlerini çalıştır.
