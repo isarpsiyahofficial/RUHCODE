@@ -28,25 +28,25 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2034-10-31` = **3226**
-- EN ledger: `2026-01-01 → 2034-10-31` = **3226**
-- Ledger toplamı: **6452 / 8036**
-- Ledger kalan: **1584**
-- Ledger'ın sıradaki exact başlangıcı: **2034-11-01**
+- TR ledger: `2026-01-01 → 2034-12-31` = **3287**
+- EN ledger: `2026-01-01 → 2034-12-31` = **3287**
+- Ledger toplamı: **6574 / 8036**
+- Ledger kalan: **1462**
+- Ledger'ın sıradaki exact başlangıcı: **2035-01-01**
 
-`2034-10-01 → 2034-10-31` için **31 TR + 31 bağımsız EN = 62 yeni kayıt** doğrudan canonical `date,locale,title,teaser,full_text,theme_tag` şemasıyla commit edildi. İki shard repository üzerinden yeniden okunarak exact header, locale ve tarih dizisi doğrulandı.
+`2034-11-01 → 2034-12-31` için **61 TR + 61 bağımsız EN = 122 yeni kayıt** canonical `date,locale,title,teaser,full_text,theme_tag` şemasıyla commit edildi. Dört shard repository üzerinden yeniden okunarak exact header, locale ve tarih dizileri doğrulandı.
 
 ## Bu turdaki doğrulama durumu
 
-- TR ve EN Ekim shardları fiziksel olarak committed ve canonical şemada.
-- İki shard yeniden okunarak 31'er günlük exact tarih dizisi ve locale alanları doğrulandı.
-- Editorial evidence ledger 6452/8036 seviyesine güncellendi.
-- Requirement traceability README yeniden okundu: `requirement_state.csv` sparse override ledger'dır; full 1.442 satırlık matrix builder/CI tarafından üretilir. Bu nedenle header-only görünümü blocker olarak yorumlanmadı.
-- Bu exact ilerleme zinciri için CI sonucu ayrıca doğrulanmadan SUCCESS verilmeyecek.
+- TR ve EN Kasım/Aralık shardları fiziksel olarak committed ve canonical şemada.
+- Kasım shardları 30'ar günlük ve Aralık shardları 31'er günlük exact tarih dizileriyle yeniden okundu.
+- Editorial evidence ledger 6574/8036 seviyesine güncellendi.
+- Önceki exact HEAD `4666c9339e7bcdcfc9ff9cb6ad1d32b1fc9e50b5` üzerinde görünür workflow run yoktu; CI SUCCESS verilmedi.
+- Yeni exact ilerleme zinciri için GitHub Actions sonucu ayrıca doğrulanmadan SUCCESS verilmeyecek.
 
 ## Açık ana blocker'lar
 
-- remaining daily-message editorial kapsamı: TR+EN `2034-11-01 → 2036-12-31` ve ardından strict 8.036-record release audit
+- remaining daily-message editorial kapsamı: TR+EN `2035-01-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - exact HEAD üzerindeki GitHub Actions daily-message contract sonucunun görünür SUCCESS olması
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
@@ -60,12 +60,12 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
 ## Son checkpoint
 
-`automation_runs/2026-08-30_1257_daily_messages_october_2034.md`
+`automation_runs/2026-08-30_1453_daily_messages_november_december_2034.md`
 
 ## Sıradaki çalışma
 
 1. Exact HEAD üzerinde `Daily Message Editorial Contract` workflow sonucunu doğrula; kırmızıysa root-cause düzelt ve yeniden çalıştır.
-2. Sonraki editorial batch `2034-11-01` tarihinden başlasın ve canonical şemayla devam etsin.
+2. Sonraki editorial batch `2035-01-01` tarihinden başlasın ve canonical şemayla devam etsin.
 3. Günün Mesajı kapsamını TR ve bağımsız EN olarak 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp RC'leri kanıtla.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
