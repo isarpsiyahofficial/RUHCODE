@@ -5,8 +5,6 @@
   "requirements": ["RC-1424", "RC-1425", "RC-1426", "RC-1427", "RC-1433", "RC-1434"],
   "sources": [
     "requirements/content_manifests/daily_messages.json",
-    "assets/content/daily_messages/tr",
-    "assets/content/daily_messages/en",
     "assets/content/daily_messages/tr/2035-04.csv",
     "assets/content/daily_messages/en/2035-04.csv",
     "assets/content/daily_messages/tr/2035-05.csv",
