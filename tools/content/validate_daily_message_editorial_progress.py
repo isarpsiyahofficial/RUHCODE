@@ -3,15 +3,21 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 from pathlib import Path
-import csv
 import json
 import re
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+TOOLS = Path(__file__).resolve().parent
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
+
+from daily_message_schema import CANONICAL_FIELDS, DailyMessageSchemaError, read_shard_rows
+
 MANIFEST = ROOT / 'requirements/content_manifests/daily_messages.json'
 EVIDENCE = ROOT / 'evidence/content/daily_messages_editorial_progress.json'
 SHARDS = ROOT / 'assets/content/daily_messages'
-FIELDS = ['date', 'locale', 'title', 'teaser', 'full_text', 'theme_tag']
+FIELDS = CANONICAL_FIELDS
 SHARD_FILE = re.compile(r'^(\d{4})(?:-(\d{2}))?\.csv$')
 
 
@@ -43,25 +49,23 @@ def read_locale_rows(locale: str) -> list[dict[str, str]]:
     seen: set[str] = set()
     for path in sorted(folder.glob('*.csv')):
         year, month = shard_period(path)
-        with path.open(encoding='utf-8', newline='') as handle:
-            reader = csv.DictReader(handle)
-            require(reader.fieldnames == FIELDS,
-                    f'{path.relative_to(ROOT)} must use exact columns {FIELDS}, got {reader.fieldnames}')
-            for line, row in enumerate(reader, start=2):
-                require(row['locale'].strip() == locale,
-                        f'{path.relative_to(ROOT)}:{line} locale mismatch: {row["locale"]!r}')
-                key = row['date'].strip()
-                require(key not in seen, f'duplicate {locale} editorial date: {key}')
-                seen.add(key)
-                parsed = parse_iso(key)
-                require(parsed.year == year,
-                        f'{path.relative_to(ROOT)}:{line} date/year shard mismatch: {key}')
-                require(month is None or parsed.month == month,
-                        f'{path.relative_to(ROOT)}:{line} date/month shard mismatch: {key}')
-                for field in FIELDS[2:]:
-                    require(row[field].strip(),
-                            f'{path.relative_to(ROOT)}:{line} blank {field} for {key}|{locale}')
-                rows.append(row)
+        try:
+            shard_rows, _schema = read_shard_rows(path, expected_locale=locale, allow_legacy=True)
+        except DailyMessageSchemaError as exc:
+            raise SystemExit(str(exc)) from exc
+        for line, row in enumerate(shard_rows, start=2):
+            key = row['date']
+            require(key not in seen, f'duplicate {locale} editorial date: {key}')
+            seen.add(key)
+            parsed = parse_iso(key)
+            require(parsed.year == year,
+                    f'{path.relative_to(ROOT)}:{line} date/year shard mismatch: {key}')
+            require(month is None or parsed.month == month,
+                    f'{path.relative_to(ROOT)}:{line} date/month shard mismatch: {key}')
+            for field in FIELDS[2:]:
+                require(row[field].strip(),
+                        f'{path.relative_to(ROOT)}:{line} blank {field} for {key}|{locale}')
+            rows.append(row)
     rows.sort(key=lambda item: item['date'])
     return rows
 
