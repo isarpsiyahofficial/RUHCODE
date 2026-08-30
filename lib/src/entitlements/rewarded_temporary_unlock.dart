@@ -52,7 +52,7 @@ final class RewardedTemporaryUnlockCoordinator {
 
     final now = await clock.nowUtc();
     if (!now.isUtc) {
-      throw const StateError('Rewarded entitlement clock must return UTC.');
+      throw StateError('Rewarded entitlement clock must return UTC.');
     }
     final requestedExpiry = now.add(duration);
     final current = await store.load();
