@@ -17,11 +17,11 @@ final class AspectOrbPolicy {
       : maximumOrbDegrees = Map.unmodifiable(
           maximumOrbDegrees ??
               const {
-                MajorAspect.conjunction: 8,
-                MajorAspect.sextile: 5,
-                MajorAspect.square: 7,
-                MajorAspect.trine: 7,
-                MajorAspect.opposition: 8,
+                MajorAspect.conjunction: 8.0,
+                MajorAspect.sextile: 5.0,
+                MajorAspect.square: 7.0,
+                MajorAspect.trine: 7.0,
+                MajorAspect.opposition: 8.0,
               },
         ) {
     validate();
@@ -119,14 +119,6 @@ abstract final class WesternNatalAspects {
       }
     }
 
-    hits.sort((a, b) {
-      final first = a.bodyA.index.compareTo(b.bodyA.index);
-      if (first != 0) return first;
-      final second = a.bodyB.index.compareTo(b.bodyB.index);
-      if (second != 0) return second;
-      return a.aspect.index.compareTo(b.aspect.index);
-    });
-
     return NatalAspectSet(
       jdTt: placements.jdTt,
       sourceId: placements.sourceId,
@@ -136,8 +128,7 @@ abstract final class WesternNatalAspects {
   }
 
   static double _shortestSeparation(double a, double b) {
-    var delta = (a - b).abs() % 360.0;
-    if (delta > 180.0) delta = 360.0 - delta;
-    return delta;
+    final difference = (a - b).abs() % 360.0;
+    return difference > 180.0 ? 360.0 - difference : difference;
   }
 }
