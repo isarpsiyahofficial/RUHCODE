@@ -6,12 +6,20 @@ from datetime import date, timedelta
 from pathlib import Path
 import argparse
 import csv
+import io
 import json
 import os
 import re
+import sys
 import tempfile
 
-FIELDS = ['date', 'locale', 'title', 'teaser', 'full_text', 'theme_tag']
+TOOLS = Path(__file__).resolve().parent
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
+
+from daily_message_schema import CANONICAL_FIELDS, DailyMessageSchemaError, read_canonical_batch, read_shard_rows
+
+FIELDS = CANONICAL_FIELDS
 LOCALES = ('tr', 'en')
 SHARD_FILE = re.compile(r'^(\d{4})(?:-(\d{2}))?\.csv$')
 
@@ -29,12 +37,19 @@ class AppendSummary:
     target_shards: tuple[str, str]
 
 
-def _read_csv(path: Path) -> list[dict[str, str]]:
-    with path.open(encoding='utf-8', newline='') as handle:
-        reader = csv.DictReader(handle)
-        if reader.fieldnames != FIELDS:
-            raise BatchAppendError(f'{path}: expected exact columns {FIELDS}, got {reader.fieldnames}')
-        return [{field: (row[field] or '').strip() for field in FIELDS} for row in reader]
+def _read_batch(path: Path, *, locale: str) -> list[dict[str, str]]:
+    try:
+        return read_canonical_batch(path, expected_locale=locale)
+    except DailyMessageSchemaError as exc:
+        raise BatchAppendError(str(exc)) from exc
+
+
+def _read_committed_shard(path: Path, *, locale: str) -> list[dict[str, str]]:
+    try:
+        rows, _schema = read_shard_rows(path, expected_locale=locale, allow_legacy=True)
+        return rows
+    except DailyMessageSchemaError as exc:
+        raise BatchAppendError(str(exc)) from exc
 
 
 def _parse_date(raw: str, *, context: str) -> date:
@@ -82,12 +97,10 @@ def _read_all_locale_rows(folder: Path, *, locale: str) -> list[dict[str, str]]:
         month = int(match.group(2)) if match.group(2) else None
         if month is not None and not 1 <= month <= 12:
             raise BatchAppendError(f'invalid shard month: {path}')
-        for row in _read_csv(path):
+        for row in _read_committed_shard(path, locale=locale):
             parsed = _parse_date(row['date'], context=str(path))
             if parsed.year != year or (month is not None and parsed.month != month):
                 raise BatchAppendError(f'{path}: date {parsed} does not match shard period')
-            if row['locale'] != locale:
-                raise BatchAppendError(f'{path}: locale {row["locale"]!r} does not match {locale!r}')
             if row['date'] in seen:
                 raise BatchAppendError(f'{locale}: duplicate committed date across shards: {row["date"]}')
             seen.add(row['date'])
@@ -97,7 +110,6 @@ def _read_all_locale_rows(folder: Path, *, locale: str) -> list[dict[str, str]]:
 
 
 def _render_csv(rows: list[dict[str, str]]) -> str:
-    import io
     output = io.StringIO(newline='')
     writer = csv.DictWriter(output, fieldnames=FIELDS, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
     writer.writeheader()
@@ -132,7 +144,7 @@ def append_paired_batch(
     if evidence.get('status') != 'EDITORIAL_IN_PROGRESS' or evidence.get('done') is not False:
         raise BatchAppendError('editorial evidence must be EDITORIAL_IN_PROGRESS and done=false')
 
-    batches = {'tr': _read_csv(tr_batch), 'en': _read_csv(en_batch)}
+    batches = {'tr': _read_batch(tr_batch, locale='tr'), 'en': _read_batch(en_batch, locale='en')}
     batch_dates = {
         locale: _validate_rows(
             rows,
@@ -169,7 +181,7 @@ def append_paired_batch(
 
         target = folder / f'{year:04d}-{month:02d}.csv'
         target_paths[locale] = target
-        current_target = _read_csv(target) if target.exists() else []
+        current_target = _read_committed_shard(target, locale=locale) if target.exists() else []
         target_rows[locale] = current_target + batches[locale]
 
     for tr_row, en_row in zip(batches['tr'], batches['en']):
