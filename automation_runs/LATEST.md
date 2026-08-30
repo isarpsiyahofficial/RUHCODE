@@ -2,43 +2,39 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-30_0452_daily_messages_july_2034.md`
+`automation_runs/2026-08-30_0654_daily_message_schema_blocker_august_2034.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Günün Mesajı — Temmuz 2034**
+1. **Günün Mesajı — Ağustos 2034 fiziksel içerik**
    - 31 TR + 31 bağımsız EN
-   - bu tur toplam **62 yeni kayıt**
-   - iki locale için exact yeni tarih aralığı `2034-07-01 → 2034-07-31`
+   - toplam **62 yeni kayıt**
+   - exact tarih aralığı `2034-08-01 → 2034-08-31`
 
-2. **Contiguous editorial ledger**
+2. **Yeni doğrulanan blocker — shard şeması**
+   - mevcut committed shard formatı: `date,title,teaser,message,theme`
+   - production builder/append/editorial validator formatı: `date,locale,title,teaser,full_text,theme_tag`
+   - bu nedenle production validator SUCCESS kanıtı yok
+   - Ağustos fiziksel shardları eklendi fakat editorial ledger kasıtlı olarak ilerletilmedi
+
+3. **Doğrulanmış ledger değişmedi**
    - TR `2026-01-01 → 2034-07-31` = **3134**
    - EN `2026-01-01 → 2034-07-31` = **3134**
    - toplam **6268 / 8036**
-   - kalan **1768**
-   - sıradaki başlangıç **2034-08-01**
+   - sıradaki ledger başlangıcı **2034-08-01**
 
-3. **Requirement güvenliği**
+4. **Requirement güvenliği**
    - bağlayıcı kapsam `RC-0001 → RC-1442`
-   - iki yeni committed shard yeniden okunarak exact monthly bounds ve paired-locale coverage doğrulandı
-   - batch-local exact birleşik text tekrarı 0; en yüksek benzerlik TR ~0.4722 ve EN ~0.4432
-   - opening-pattern maksimumu her iki locale için 1
-   - editorial ledger yeni kaynaklar ve contiguous count ile güncellendi
-   - kanıtsız status override eklenmedi
-   - full compiled-catalog validator/release audit shard doğrulaması ile ikame edilmedi
    - RC-1424/1425/1426/1427/1433/1434 `done=false`
-   - 2036-02-29 ledger ulaştığında zorunlu
-   - 8.036 exact completeness rolling horizon full QA ve exact visible CI olmadan DONE/FINAL yok
-
-## Blocker
-
-Clean-checkout tekrar denendi ancak çalışma ortamında `github.com` DNS çözümlemesi `Could not resolve host: github.com` ile kesildi. Bu hata SUCCESS sayılmadı. Fiziksel IERS/ephemeris/font/UI/device kanıtı gerektiren release kapıları da açık kalmaya devam ediyor.
+   - kanıtsız status override yok
+   - schema migration/adapter + full committed-set validator yeşil olmadan ledger veya FINAL ilerletilmeyecek
 
 ## Next safe work
 
-- daily messages: `2034-08-01` tarihinden itibaren TR + bağımsız EN
-- monthly shard paired-locale exact-date uniqueness ve ledger parity kapılarını koru
-- clean-checkout content validator/test zincirini execution erişimi kullanılabilir olduğunda çalıştır
-- blocker gerektirmeyen PDF/UI/accessibility/evidence işlerine devam et
+- daily-message source şemasını production tools ile tekleştir
+- deterministic migration veya testli adapter uygula
+- full existing shard set üzerinde builder/editorial validator çalıştır
+- ancak SUCCESS sonrası Ağustos 2034 ledger'ını ilerlet
+- blocker dışındaki PDF/UI/accessibility/evidence işlerini sürdür
 
 **FINAL: NO.**

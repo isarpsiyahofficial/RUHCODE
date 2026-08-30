@@ -23,24 +23,32 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - UI action/accessibility kontratları.
 - Daily-message deterministic shard + editorial ledger + partial QA hattı.
 
-## Günün Mesajı — güncel
+## Günün Mesajı — doğrulanmış ledger
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR contiguous reviewed: `2026-01-01 → 2034-07-31` = **3134**
-- EN contiguous reviewed: `2026-01-01 → 2034-07-31` = **3134**
-- Toplam: **6268 / 8036**
-- Kalan: **1768**
-- Sıradaki exact başlangıç: **2034-08-01**
+- TR ledger: `2026-01-01 → 2034-07-31` = **3134**
+- EN ledger: `2026-01-01 → 2034-07-31` = **3134**
+- Ledger toplamı: **6268 / 8036**
+- Ledger kalan: **1768**
+- Ledger'ın sıradaki exact başlangıcı: **2034-08-01**
 
-Bu turda Temmuz 2034 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** repository'ye fiziksel olarak işlendi. İki committed shard repository'den yeniden okunarak `2034-07-01 → 2034-07-31` exact tarih dizisi ve paired-locale kapsamı doğrulandı. Batch-local kontrolde exact title/teaser/message tekrarları **0**, locale içi en yüksek birleşik metin benzerliği TR için yaklaşık **0.4722**, EN için yaklaşık **0.4432** ve altı çıktı; bu değerler 0.90 near-duplicate eşiğinin belirgin biçimde altındadır. Altı kelimelik opening-pattern tekrar maksimumu her iki locale için **1** kaldı. Editorial ledger yalnız committed ve yeniden okunmuş kapsama göre **3134 + 3134 = 6268** toplamına taşındı.
+Bu turda `2034-08-01 → 2034-08-31` için **31 TR + 31 bağımsız EN = 62 yeni fiziksel editorial kayıt** hazırlandı ve repository'ye eklendi. Ancak bu 62 kayıt **henüz ledger'a sayılmadı**.
 
-`RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md`, mevcut progress ve editorial ledger yeniden okundu; bağlayıcı kapsamın `RC-0001 → RC-1442` olduğu teyit edildi. Kanıtsız DONE/status override eklenmedi.
+### Yeni tespit edilen content-schema blocker
 
-`RC-1424/1425/1426/1427/1433/1434` DONE değildir. 8.036 exact completeness, `2036-02-29`, full duplicate/near-duplicate/opening-pattern/unsafe-certainty QA, rolling 10 yıllık horizon ve exact görünür CI SUCCESS olmadan kapatılamaz.
+Repository'deki mevcut aylık shard'lar `date,title,teaser,message,theme` sütunlarını kullanıyor. Buna karşılık production araçları `tools/content/build_daily_message_catalog.py`, `tools/content/append_daily_message_batch.py` ve `tools/content/validate_daily_message_editorial_progress.py` exact olarak `date,locale,title,teaser,full_text,theme_tag` bekliyor.
+
+Bu uyuşmazlık mevcut committed shard setini production builder/editorial-progress validator için doğrudan geçersiz kılıyor. Bu nedenle:
+
+- Ağustos 2034 fiziksel içeriği commit edildi fakat `evidence/content/daily_messages_editorial_progress.json` ileri taşınmadı.
+- Önceki otomasyon raporlarındaki shard varlığı doğrulaması, production validator SUCCESS ile aynı şey değildir.
+- Şema zinciri düzeltilmeden veya mevcut shard'lar canonical şemaya deterministik biçimde migrate edilmeden RC-1424/1425/1426/1427/1433/1434 ilerletilmeyecek.
+- Kanıtsız DONE/status override eklenmedi.
 
 ## Açık ana blocker'lar
 
+- daily-message source shard şeması ile production builder/validator sözleşmesi arasında 5-sütun / 6-sütun uyumsuzluğu
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -53,15 +61,14 @@ Bu turda Temmuz 2034 için **31 TR + 31 bağımsız EN = 62 yeni mesaj** reposit
 
 ## Son checkpoint
 
-`automation_runs/2026-08-30_0452_daily_messages_july_2034.md`
+`automation_runs/2026-08-30_0654_daily_message_schema_blocker_august_2034.md`
 
 ## Sıradaki çalışma
 
-1. `2034-08-01` tarihinden itibaren TR + bağımsız EN Günün Mesajı üretimini devam ettir.
-2. Monthly shard, exact-date uniqueness, paired-locale, partial QA ve ledger parity kapılarını koru.
-3. `2036-02-29` required-leap gate'ini ledger ulaştığında zorunlu tut.
+1. Daily-message shard şemasını tek canonical sözleşmeye getir: ya committed legacy shard'ları deterministic migration ile `date,locale,title,teaser,full_text,theme_tag` şemasına dönüştür ya da source-adapter yaklaşımını testlerle açıkça sözleşmeye bağla.
+2. Builder + append + editorial-progress validator aynı source sözleşmesini kullansın; full existing shard set üzerinde clean-checkout test kanıtı olmadan ledger ilerletme.
+3. Şema kapısı yeşil olduğunda Ağustos 2034 shardlarını canonical hale getir/yeniden doğrula ve ledger'ı ancak o zaman `2034-08-31` sınırına taşı.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
-6. Clean-checkout erişimi kullanılabilir olduğunda content validator/test zincirini yeniden çalıştır.
 
 **FINAL: NO.**
