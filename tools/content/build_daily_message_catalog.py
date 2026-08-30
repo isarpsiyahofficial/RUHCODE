@@ -6,8 +6,15 @@ import argparse
 import csv
 import json
 import re
+import sys
 
-REQUIRED_COLUMNS = ['date', 'locale', 'title', 'teaser', 'full_text', 'theme_tag']
+TOOLS = Path(__file__).resolve().parent
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
+
+from daily_message_schema import CANONICAL_FIELDS, DailyMessageSchemaError, read_shard_rows
+
+REQUIRED_COLUMNS = CANONICAL_FIELDS
 SHARD_FILE = re.compile(r'^(\d{4})(?:-(\d{2}))?\.csv$')
 
 
@@ -30,6 +37,7 @@ def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, 
 
     rows: list[dict[str, str]] = []
     shard_paths: list[str] = []
+    legacy_shards: list[str] = []
     seen_keys: set[str] = set()
 
     if not shards_root.is_dir():
@@ -46,32 +54,29 @@ def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, 
             if year < start_year or year > end_year:
                 raise ValueError(f'Shard year outside manifest coverage: {path}')
 
-            with path.open(encoding='utf-8', newline='') as handle:
-                reader = csv.DictReader(handle)
-                if reader.fieldnames != REQUIRED_COLUMNS:
+            try:
+                shard_rows, schema = read_shard_rows(path, expected_locale=locale, allow_legacy=True)
+            except DailyMessageSchemaError as exc:
+                raise ValueError(str(exc)) from exc
+            if schema == 'legacy-v0':
+                legacy_shards.append(path.as_posix())
+
+            for line_number, row in enumerate(shard_rows, start=2):
+                raw_date = row['date']
+                if not raw_date.startswith(f'{year:04d}-'):
                     raise ValueError(
-                        f'{path}: expected exact columns {REQUIRED_COLUMNS}, got {reader.fieldnames}'
+                        f'{path}:{line_number}: date {row["date"]!r} does not match shard year {year}'
                     )
-                for line_number, row in enumerate(reader, start=2):
-                    if row['locale'].strip() != locale:
-                        raise ValueError(
-                            f'{path}:{line_number}: locale {row["locale"]!r} does not match shard directory {locale!r}'
-                        )
-                    raw_date = row['date'].strip()
-                    if not raw_date.startswith(f'{year:04d}-'):
-                        raise ValueError(
-                            f'{path}:{line_number}: date {row["date"]!r} does not match shard year {year}'
-                        )
-                    if month is not None and not raw_date.startswith(f'{year:04d}-{month:02d}-'):
-                        raise ValueError(
-                            f'{path}:{line_number}: date {row["date"]!r} does not match shard month '
-                            f'{year:04d}-{month:02d}'
-                        )
-                    key = f"{raw_date}|{locale}"
-                    if key in seen_keys:
-                        raise ValueError(f'Duplicate exact daily-message key across shards: {key}')
-                    seen_keys.add(key)
-                    rows.append({column: row[column] for column in REQUIRED_COLUMNS})
+                if month is not None and not raw_date.startswith(f'{year:04d}-{month:02d}-'):
+                    raise ValueError(
+                        f'{path}:{line_number}: date {row["date"]!r} does not match shard month '
+                        f'{year:04d}-{month:02d}'
+                    )
+                key = f"{raw_date}|{locale}"
+                if key in seen_keys:
+                    raise ValueError(f'Duplicate exact daily-message key across shards: {key}')
+                seen_keys.add(key)
+                rows.append({column: row[column] for column in REQUIRED_COLUMNS})
             shard_paths.append(path.as_posix())
 
     rows.sort(key=lambda row: (row['date'], row['locale']))
@@ -84,6 +89,8 @@ def build(*, shards_root: Path, manifest_path: Path, output: Path) -> dict[str, 
     return {
         'records': len(rows),
         'shards': len(shard_paths),
+        'legacy_shards_normalized': len(legacy_shards),
+        'legacy_shard_paths': legacy_shards,
         'shard_paths': shard_paths,
         'output': output.as_posix(),
     }
