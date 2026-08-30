@@ -181,7 +181,7 @@ final class GooglePlayLifetimeOwnershipSynchronizer {
 
     final now = await clock.nowUtc();
     if (!now.isUtc) {
-      throw const StateError('Ownership synchronization clock must return UTC.');
+      throw StateError('Ownership synchronization clock must return UTC.');
     }
     final previous = await cache.load();
     final next = CachedStoreOwnership(
