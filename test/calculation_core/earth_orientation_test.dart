@@ -33,9 +33,12 @@ void main() {
       utcInstant: utc,
       earthOrientationProvider: _FixedEopProvider(0.25),
     );
+    // Subtracting two Julian-day doubles near 2.46 million loses several low
+    // bits through cancellation. 2e-10 day (~17 microseconds) stays well below
+    // the EOP accuracy budget while testing the intended 0.25-second offset.
     expect(
       context.jdUt1 - context.jdUtc,
-      closeTo(0.25 / TimeScales.secondsPerDay, 1e-12),
+      closeTo(0.25 / TimeScales.secondsPerDay, 2e-10),
     );
     expect(context.ut1MinusUtcSeconds, 0.25);
     expect(context.earthOrientationSourceId, 'fixture-iers-eop');
