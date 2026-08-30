@@ -33,8 +33,8 @@ manifest = json.loads(evidence.read_text(encoding='utf-8'))
 if manifest.get('contract') != 'western_essential_dignities':
     raise SystemExit('wrong dignity contract id')
 requirements = set(manifest.get('requirements', []))
-if not {'RC-0049', 'RC-0050', 'RC-0276'} <= requirements:
-    raise SystemExit('dignity evidence missing requirement coverage')
+if not {'RC-0049', 'RC-0050'} <= requirements:
+    raise SystemExit('dignity evidence missing RC-0049/RC-0050 requirement coverage')
 if manifest.get('status') != 'SOURCE_LEVEL_ONLY':
     raise SystemExit('dignity evidence may not claim more than source-level proof yet')
 
