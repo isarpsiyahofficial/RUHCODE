@@ -141,7 +141,7 @@ abstract final class RuhFeatureCatalog {
 
   static void validate() {
     if (policies.length != RuhFeatureIds.all.length || !policies.keys.toSet().containsAll(RuhFeatureIds.all)) {
-      throw const StateError('Feature policy catalog must cover every canonical feature ID exactly once.');
+      throw StateError('Feature policy catalog must cover every canonical feature ID exactly once.');
     }
   }
 }
