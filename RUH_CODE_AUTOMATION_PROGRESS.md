@@ -9,7 +9,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Exact kapsam: `RC-0001 → RC-1442`.
 - Repository-wide evidence integrity, semantic ownership ve matrix provenance kapıları aktif.
 - Calculation, UI, backup, PDF, entitlement ve content kanıtları eksik final doğrulamalarını atlayarak DONE üretemez.
-- `requirements/requirement_state.csv` için kanıtsız DONE/status override eklenmedi.
+- `requirements/requirement_state.csv` hâlâ yalnız başlık içeriyor; kanıtsız DONE/status override eklenmedi.
 
 ## Source-level ilerlemiş ana bloklar
 
@@ -22,40 +22,30 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Professional/combined PDF planning, persisted Western/Numerology projection, preview/build parity ve structural validation.
 - UI action/accessibility kontratları.
 - Daily-message deterministic shard + editorial ledger + partial QA hattı.
-- Daily-message legacy source adapter: committed 5-sütun shardlar canonical 6-sütun in-memory şemaya deterministik normalize edilir; yeni editorial batch girişleri yalnız canonical şema kabul eder.
+- Daily-message legacy source adapter: geçmiş 5-sütun shardlar canonical 6-sütun in-memory şemaya normalize edilir; yeni editorial batchler canonical yazılır.
 
 ## Günün Mesajı — doğrulanmış ledger
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2034-08-31` = **3165**
-- EN ledger: `2026-01-01 → 2034-08-31` = **3165**
-- Ledger toplamı: **6330 / 8036**
-- Ledger kalan: **1706**
-- Ledger'ın sıradaki exact başlangıcı: **2034-09-01**
+- TR ledger: `2026-01-01 → 2034-09-30` = **3195**
+- EN ledger: `2026-01-01 → 2034-09-30` = **3195**
+- Ledger toplamı: **6390 / 8036**
+- Ledger kalan: **1646**
+- Ledger'ın sıradaki exact başlangıcı: **2034-10-01**
 
-`2034-08-01 → 2034-08-31` için daha önce eklenen **31 TR + 31 bağımsız EN = 62 kayıt**, bu turda source-schema adapter zinciriyle production builder/editorial-progress sözleşmesine bağlandı ve evidence ledger fiziksel shard setiyle eşitlendi.
+`2034-09-01 → 2034-09-30` için **30 TR + 30 bağımsız EN = 60 yeni kayıt** doğrudan canonical `date,locale,title,teaser,full_text,theme_tag` şemasıyla commit edildi. İki shard repository üzerinden yeniden okunarak exact header, locale ve tarih dizisi doğrulandı.
 
-### Content-schema blocker — çözülen source-level bölüm
+## Bu turdaki doğrulama durumu
 
-Repository'deki legacy aylık shard formatı `date,title,teaser,message,theme`; canonical runtime/build formatı `date,locale,title,teaser,full_text,theme_tag`.
-
-Bu turda:
-
-- `tools/content/daily_message_schema.py` tek normalization sözleşmesi olarak eklendi.
-- Legacy committed shardlar yalnız deterministik adapter üzerinden okunuyor; `message → full_text`, `theme → theme_tag`, locale ise shard dizininden exact türetiliyor.
-- `tools/content/build_daily_message_catalog.py` adapter üzerinden canonical katalog üretiyor.
-- `tools/content/validate_daily_message_editorial_progress.py` aynı adapter üzerinden exact date/locale/nonblank/duplicate/contiguity/leap/ledger eşitliği denetliyor.
-- `tools/content/append_daily_message_batch.py` geçmiş legacy shardları okuyabiliyor fakat **yeni batch girdilerini yalnız canonical 6-sütun şemada kabul ediyor**; yeni/yeniden yazılan hedef shard canonical olur.
-- `tools/content/test_daily_message_schema.py` legacy normalization, canonical preservation, legacy-new-batch rejection ve locale mismatch vakalarını kapsıyor.
-- `.github/workflows/daily-message-editorial-contract.yml` yeni schema testini ve adapter path trigger'ını içeriyor.
-- `evidence/content/daily_messages_editorial_progress.json` August 2034 fiziksel shardlarıyla **6330/8036** seviyesine getirildi.
-
-Bu düzeltme yalnız source-level/ledger ilerlemesidir; strict full 8.036 release auditinin yerine geçmez. RC-1424/1425/1426/1427/1433/1434 bu nedenle DONE yapılmadı.
+- TR ve EN Eylül shardları fiziksel olarak committed ve canonical şemada.
+- Editorial evidence ledger 6390/8036 seviyesine güncellendi.
+- Clean-checkout test zinciri denenmek istendi; çalışma ortamında `github.com` DNS çözümleme hatası nedeniyle clone aşamasında çalışamadı. Bu durum SUCCESS sayılmadı.
+- Exact ledger commit SHA üzerinde GitHub Actions API 24 workflow run gösteriyor; kontrol anında run'lar queued durumunda. CI SUCCESS verilmedi.
 
 ## Açık ana blocker'lar
 
-- remaining daily-message editorial kapsamı: TR+EN `2034-09-01 → 2036-12-31` ve sonrasında strict 8.036-record release audit
+- remaining daily-message editorial kapsamı: TR+EN `2034-10-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - exact HEAD üzerindeki GitHub Actions daily-message contract sonucunun görünür SUCCESS olması
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
@@ -69,12 +59,12 @@ Bu düzeltme yalnız source-level/ledger ilerlemesidir; strict full 8.036 releas
 
 ## Son checkpoint
 
-`automation_runs/2026-08-30_0856_daily_message_schema_adapter_august_2034.md`
+`automation_runs/2026-08-30_1056_daily_messages_september_2034.md`
 
 ## Sıradaki çalışma
 
 1. Exact HEAD üzerinde `Daily Message Editorial Contract` workflow sonucunu doğrula; kırmızıysa root-cause düzelt ve yeniden çalıştır.
-2. Sonraki editorial batch `2034-09-01` tarihinden başlasın ve doğrudan canonical `date,locale,title,teaser,full_text,theme_tag` şemasıyla üretilecek/eklenecek.
+2. Sonraki editorial batch `2034-10-01` tarihinden başlasın ve canonical şemayla devam etsin.
 3. Günün Mesajı kapsamını TR ve bağımsız EN olarak 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp RC'leri kanıtla.
 4. Blocker gerektirmeyen PDF/UI/accessibility/evidence requirement'larını paralel ilerlet.
 5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
