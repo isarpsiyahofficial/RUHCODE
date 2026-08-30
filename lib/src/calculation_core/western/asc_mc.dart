@@ -38,20 +38,17 @@ abstract final class WesternAscMc {
     _finite(latitudeDegreesNorth, 'latitudeDegreesNorth');
 
     if (longitudeDegreesEast < -180.0 || longitudeDegreesEast > 180.0) {
-      throw RangeError.range(
+      throw RangeError.value(
         longitudeDegreesEast,
-        -180.0,
-        180.0,
         'longitudeDegreesEast',
+        'Expected a value in [-180, 180] degrees.',
       );
     }
     if (latitudeDegreesNorth <= -90.0 || latitudeDegreesNorth >= 90.0) {
-      throw RangeError.range(
+      throw RangeError.value(
         latitudeDegreesNorth,
-        -89.999999999,
-        89.999999999,
         'latitudeDegreesNorth',
-        'Exact geographic poles do not have a stable ascendant.',
+        'Expected a value strictly between -90 and 90 degrees; exact geographic poles do not have a stable ascendant.',
       );
     }
 
@@ -82,19 +79,17 @@ abstract final class WesternAscMc {
     _finite(meanObliquityDegrees, 'meanObliquityDegrees');
 
     if (latitudeDegreesNorth <= -90.0 || latitudeDegreesNorth >= 90.0) {
-      throw RangeError.range(
+      throw RangeError.value(
         latitudeDegreesNorth,
-        -89.999999999,
-        89.999999999,
         'latitudeDegreesNorth',
+        'Expected a value strictly between -90 and 90 degrees.',
       );
     }
     if (meanObliquityDegrees <= 0.0 || meanObliquityDegrees >= 90.0) {
-      throw RangeError.range(
+      throw RangeError.value(
         meanObliquityDegrees,
-        0.0,
-        90.0,
         'meanObliquityDegrees',
+        'Expected a value strictly between 0 and 90 degrees.',
       );
     }
 
