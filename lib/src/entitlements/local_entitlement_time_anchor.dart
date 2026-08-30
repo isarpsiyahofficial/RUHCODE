@@ -36,7 +36,7 @@ final class LocalRollbackResistantEntitlementClock implements EntitlementClock {
   Future<DateTime> nowUtc() async {
     final wallNow = wallClock.nowUtc();
     if (!wallNow.isUtc) {
-      throw const StateError('Entitlement wall clock must return UTC.');
+      throw StateError('Entitlement wall clock must return UTC.');
     }
 
     return database.transaction((tx) async {
