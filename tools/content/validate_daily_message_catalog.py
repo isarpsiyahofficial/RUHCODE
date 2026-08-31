@@ -125,36 +125,51 @@ def _near_duplicate_pairs(
 
 
 def _certainty_match_is_negated(text: str, match: re.Match[str], locale: str) -> bool:
-    """Do not classify explicit anti-certainty language as a certainty claim.
+    """Ignore only guarantee uses that cannot be a positive certainty claim.
 
-    The audit still fails on positive guarantee/certainty claims. This only
-    suppresses a matched guarantee token when its immediate grammar explicitly
-    denies the guarantee (for example, ``garanti etmez`` / ``does not
-    guarantee``). The decision is per match, so a later positive guarantee in
-    the same message is still detected.
+    Positive predictive/certainty language remains release-blocking. We suppress
+    a guarantee-token match only when the local grammar explicitly denies the
+    guarantee or when Turkish ``garanti`` is clearly the product-warranty noun.
+    The decision is per match, so another positive claim in the same message is
+    still detected.
     """
     matched = match.group(0).casefold()
     if 'garanti' not in matched and 'guarantee' not in matched:
         return False
 
-    prefix = text[max(0, match.start() - 48):match.start()].casefold()
-    suffix = text[match.end():min(len(text), match.end() + 48)].casefold()
+    prefix = text[max(0, match.start() - 72):match.start()].casefold()
+    suffix = text[match.end():min(len(text), match.end() + 72)].casefold()
 
     if locale == 'tr':
+        # Product/legal warranty vocabulary is not a prediction about the
+        # user's future. Keep the certainty gate focused on interpretive claims.
+        if matched == 'garanti' and re.match(
+            r"\s+(?:belge(?:si|sini|sinde)?|bilgi(?:si|sini)?|kayd(?:ı|ını)?|süre(?:si|sini)?|koşul(?:u|unu)?|kapsam(?:ı|ını)?)\b",
+            suffix,
+            re.I,
+        ):
+            return True
         return bool(
             re.match(
                 r"\s+(?:etmez|etmiyor|edemez|değil(?:dir)?|vermez|yok(?:tur)?|anlamına\s+gelmez)\b",
                 suffix,
                 re.I,
             )
-            or re.search(r"\b(?:bir\s+)?(?:sonuç|başarı|değişim)?\s*(?:için\s+)?(?:hiçbir\s+)?$", prefix)
-            and re.match(r"\s+(?:değil(?:dir)?|yok(?:tur)?)\b", suffix, re.I)
+            or (
+                re.search(r"\b(?:bir\s+)?(?:sonuç|başarı|değişim)?\s*(?:için\s+)?(?:hiçbir\s+)?$", prefix)
+                and re.match(r"\s+(?:değil(?:dir)?|yok(?:tur)?)\b", suffix, re.I)
+            )
         )
 
     if locale == 'en':
         return bool(
             re.search(
                 r"\b(?:does\s+not|doesn't|do\s+not|don't|cannot|can't|can\s+not|never|no|without(?:\s+a)?|not)\s+$",
+                prefix,
+                re.I,
+            )
+            or re.search(
+                r"\b(?:not\s+enough\s+to|should\s+not\s+be\s+presented\s+as|must\s+not\s+be\s+presented\s+as)\s*$",
                 prefix,
                 re.I,
             )
