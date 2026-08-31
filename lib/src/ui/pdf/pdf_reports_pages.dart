@@ -457,7 +457,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
           else
             DropdownButtonFormField<String>(
               key: const ValueKey('professional-pdf-record-selector'),
-              value: _selectedRecordId,
+              initialValue: _selectedRecordId,
               decoration: const InputDecoration(
                 labelText: 'Kayıtlı Hesaplama',
                 helperText: 'PDF yalnız seçtiğin kayıt snapshot’ından oluşturulur.',
