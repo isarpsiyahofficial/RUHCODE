@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIME = ROOT / 'lib/src/app/app_runtime.dart'
@@ -26,16 +27,18 @@ if RUNTIME.is_file():
 
 if CORE.is_file():
     text = CORE.read_text(encoding='utf-8')
-    # A generic public calculations repository would allow production callers to
-    # bypass the atomic CalculationManifest + sealed snapshot boundary.
-    forbidden = [
-        "table: 'calculations'",
-        'final JsonRecordRepository<Calculation',
-        ' calculations;',
+    # A generic public repository for Calculation records would allow production
+    # callers to bypass the atomic CalculationManifest + sealed snapshot
+    # boundary. CalculationManifest itself is intentionally a separate allowed
+    # repository, so match the exact generic type rather than its prefix.
+    forbidden_patterns = [
+        (re.compile(r"table:\s*['\"]calculations['\"]"), "table: 'calculations'"),
+        (re.compile(r'JsonRecordRepository\s*<\s*Calculation\s*>'), 'JsonRecordRepository<Calculation>'),
+        (re.compile(r'\bcalculations\s*;'), 'calculations;'),
     ]
-    for token in forbidden:
-        if token in text:
-            errors.append(f'CoreRepositories must not expose a direct calculation write path: {token}')
+    for pattern, label in forbidden_patterns:
+        if pattern.search(text):
+            errors.append(f'CoreRepositories must not expose a direct calculation write path: {label}')
 
 if PERSISTENCE.is_file():
     text = PERSISTENCE.read_text(encoding='utf-8')
