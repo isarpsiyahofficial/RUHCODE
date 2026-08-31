@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/domain/ids/entity_id.dart';
 import 'package:ruh_code/src/domain/models/core_models.dart';
-import 'package:ruh_code/src/pdf/pdf_report_contract.dart';
 import 'package:ruh_code/src/pdf/pdf_service.dart';
 import 'package:ruh_code/src/pdf/persisted_calculation_pdf_router.dart';
 import 'package:ruh_code/src/pdf/persisted_calculation_pdf_source.dart';
