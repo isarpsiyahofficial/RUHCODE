@@ -28,28 +28,28 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2035-12-31` = **3652**
-- EN ledger: `2026-01-01 → 2035-12-31` = **3652**
-- Ledger toplamı: **7304 / 8036**
-- Ledger kalan: **732**
-- Ledger'ın sıradaki exact başlangıcı: **2036-01-01**
+- TR ledger: `2026-01-01 → 2036-02-29` = **3712**
+- EN ledger: `2026-01-01 → 2036-02-29` = **3712**
+- Ledger toplamı: **7424 / 8036**
+- Ledger kalan: **612**
+- Ledger'ın sıradaki exact başlangıcı: **2036-03-01**
 
-Kasım ve Aralık 2035 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 61 exact tarih doğrulandıktan sonra ledger ileri taşındı.
+Ocak ve Şubat 2036 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 60 exact tarih doğrulandıktan sonra ledger ileri taşındı. Leap-day `2036-02-29` hem TR hem EN trackinde fiziksel canonical kayıt olarak doğrulandı.
 
 ## Bu turdaki doğrulama ve ilerleme
 
 - Binding master TODO/index ve mevcut progress tekrar okundu; kapsamın `RC-0001 → RC-1442` olduğu yeniden doğrulandı.
-- Çalışma başlangıcı exact HEAD `43d6a0bd858abd52dd5619f398c73ca7941d462f` için exact-head Actions sorgusunda 23 workflow run bulundu; görünür run setinde `conclusion: failure` veya `status: queued` kaydı yoktu.
-- `assets/content/daily_messages/tr/2035-11.csv`, `en/2035-11.csv`, `tr/2035-12.csv`, `en/2035-12.csv` eklendi ve commit sonrası `main` üzerinden yeniden okundu.
-- Kasım shardları locale başına 30, Aralık shardları locale başına 31 exact canonical kayıt içeriyor.
-- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7304/8036 seviyesine ilerletildi.
+- Çalışma başlangıcı exact HEAD `93cf62b9e21a7eb3b2426c988a1cec373bff6166` için exact-head Actions sorgusunda 23 workflow run bulundu; görünür run seti completed durumundaydı ve görünen contractlarda failure yoktu.
+- `assets/content/daily_messages/tr/2036-01.csv`, `en/2036-01.csv`, `tr/2036-02.csv`, `en/2036-02.csv` eklendi ve commit sonrası `main` üzerinden yeniden okundu.
+- Ocak shardları locale başına 31; Şubat shardları leap-year nedeniyle locale başına 29 exact canonical kayıt içeriyor.
+- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7424/8036 seviyesine ilerletildi.
 - `RC-1424/1425/1426/1427/1433/1434` full catalog ve release kanıtları olmadığı için DONE yapılmadı.
 - Yeni commit zincirinin exact Actions sonucu yeniden görünür şekilde tamamlanmadan CI SUCCESS veya FINAL denmeyecek.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerindeki GitHub Actions zorunlu contract sonuçlarının tamamlanmış görünür SUCCESS olması
-- remaining daily-message editorial kapsamı: TR+EN `2036-01-01 → 2036-12-31` ve ardından strict 8.036-record release audit
+- remaining daily-message editorial kapsamı: TR+EN `2036-03-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -62,13 +62,13 @@ Kasım ve Aralık 2035 canonical shardları commit sonrası `main` üzerinden ye
 
 ## Son checkpoint
 
-`automation_runs/2026-08-31_0857_daily_messages_november_december_2035.md`
+`automation_runs/2026-08-31_1057_daily_messages_january_february_2036.md`
 
 ## Sıradaki çalışma
 
 1. En yeni exact SHA workflow sonuçlarını tamamlanmış sonuçlarla yeniden oku; kırmızı varsa decoded log üzerinden kök neden bazında kapat.
-2. Canonical editorial batchlere `2036-01-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
-3. 2036 leap-year coverage dahil Günün Mesajı kapsamını `2036-12-31` tarihine kadar kesintisiz tamamla; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
+2. Canonical editorial batchlere `2036-03-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+3. Günün Mesajı kapsamını `2036-12-31` tarihine kadar kesintisiz tamamla; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
 4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
 **FINAL: NO.**
