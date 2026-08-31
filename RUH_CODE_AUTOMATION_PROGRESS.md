@@ -28,28 +28,28 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2036-05-31` = **3804**
-- EN ledger: `2026-01-01 → 2036-05-31` = **3804**
-- Ledger toplamı: **7608 / 8036**
-- Ledger kalan: **428**
-- Ledger'ın sıradaki exact başlangıcı: **2036-06-01**
+- TR ledger: `2026-01-01 → 2036-07-31` = **3865**
+- EN ledger: `2026-01-01 → 2036-07-31` = **3865**
+- Ledger toplamı: **7730 / 8036**
+- Ledger kalan: **306**
+- Ledger'ın sıradaki exact başlangıcı: **2036-08-01**
 
-Nisan ve Mayıs 2036 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 61 exact tarih, doğru locale alanları ve canonical şema doğrulandıktan sonra ledger ileri taşındı.
+Haziran ve Temmuz 2036 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına toplam 61 exact tarih, doğru locale alanları ve canonical şema doğrulandıktan sonra ledger ileri taşındı.
 
 ## Bu turdaki doğrulama ve ilerleme
 
 - Binding master TODO/index ve mevcut progress tekrar okundu; kapsamın `RC-0001 → RC-1442` olduğu yeniden doğrulandı.
-- Başlangıç exact HEAD `b63e0a01035e5c2ed7860d4451c12d3ea54305b6` için GitHub Actions exact-head setinde 23 run bulundu ve görünür run setinde failure conclusion görülmedi; önceki turda queued olan baseline böylece yeniden doğrulandı.
-- `assets/content/daily_messages/tr/2036-04.csv`, `en/2036-04.csv`, `tr/2036-05.csv`, `en/2036-05.csv` eklendi: 61 TR + 61 bağımsız EN = 122 canonical kayıt.
-- Dört shard commit sonrası `main` üzerinden geri okunarak April `01→30`, May `01→31`, doğru locale ve canonical `date,locale,title,teaser,full_text,theme_tag` sözleşmesi doğrulandı.
-- Batch-local exact duplicate kontrolünde TR ve EN için title/teaser/full-text duplicate sayısı 0; en yüksek birleşik metin SequenceMatcher benzerliği yaklaşık TR 0.3191 / EN 0.2906.
-- `evidence/content/daily_messages_editorial_progress.json` yalnız bu committed doğrulamadan sonra 7608/8036 seviyesine ilerletildi.
+- Başlangıç exact HEAD `bb050256db7430861efad5f24257c755c4c2f8a3` için GitHub Actions exact-head sorgusunda 23 run bulundu; görünür set tamamlanmıştı ve gözlenen runlar SUCCESS durumundaydı.
+- `assets/content/daily_messages/tr/2036-06.csv`, `en/2036-06.csv`, `tr/2036-07.csv`, `en/2036-07.csv` eklendi: 61 TR + 61 bağımsız EN = 122 canonical kayıt.
+- Dört shard commit sonrası `main` üzerinden geri okunarak June `01→30`, July `01→31`, doğru locale ve canonical `date,locale,title,teaser,full_text,theme_tag` sözleşmesi doğrulandı.
+- Batch-local exact duplicate kontrolünde TR ve EN için title/teaser/full-text duplicate sayısı 0.
+- `evidence/content/daily_messages_editorial_progress.json` yalnız bu committed doğrulamadan sonra 7730/8036 seviyesine ilerletildi.
 - `RC-1424/1425/1426/1427/1433/1434` full catalog ve strict release kanıtları olmadığı için DONE yapılmadı.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions/Flutter Quality kapılarının tamamlanmış SUCCESS olması
-- remaining daily-message editorial kapsamı: TR+EN `2036-06-01 → 2036-12-31` ve ardından strict 8.036-record release audit
+- remaining daily-message editorial kapsamı: TR+EN `2036-08-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -62,12 +62,12 @@ Nisan ve Mayıs 2036 canonical shardları commit sonrası `main` üzerinden yeni
 
 ## Son checkpoint
 
-`automation_runs/2026-08-31_1452_april_may_2036.md`
+`automation_runs/2026-08-31_1658_june_july_2036.md`
 
 ## Sıradaki çalışma
 
 1. En yeni exact SHA Actions/Flutter Quality sonucunu yeniden oku; kırmızı varsa decoded log üzerinden kök nedeni kapat.
-2. Canonical editorial batchlere `2036-06-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+2. Canonical editorial batchlere `2036-08-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
 3. Günün Mesajı kapsamını `2036-12-31` tarihine kadar kesintisiz tamamla; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
 4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
