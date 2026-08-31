@@ -9,9 +9,13 @@ EVIDENCE = ROOT / "evidence/pdf/report_planning_contract.json"
 
 EXPECTED = {
     "RC-0862", "RC-0863", "RC-0868", "RC-0878", "RC-0881", "RC-0898",
-    "RC-0918", "RC-0919", "RC-0931", "RC-0951", "RC-0964",
+    "RC-0903", "RC-0918", "RC-0919", "RC-0931", "RC-0951", "RC-0964",
 }
-MUST_REMAIN_OPEN = {"RC-0865", "RC-0903", "RC-0929", "RC-0956"}
+# RC-0903 is legitimately owned by this evidence because the production planning
+# surface already exposes the combined-report contract. Ownership is not DONE:
+# its physical multi-system production proof remains an explicit release blocker.
+OWNED_BUT_MUST_REMAIN_OPEN = {"RC-0903"}
+MUST_REMAIN_UNOWNED_AND_OPEN = {"RC-0865", "RC-0929", "RC-0956"}
 
 
 def require(condition: bool, message: str) -> None:
@@ -24,7 +28,14 @@ evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
 owned = set(evidence.get("requirements", []))
 require(owned == EXPECTED, f"PDF planning evidence ownership drift: {sorted(owned)}")
 require(evidence.get("done") is False, "PDF planning evidence cannot be DONE yet")
-require(owned.isdisjoint(MUST_REMAIN_OPEN), "PDF planning evidence is claiming a known open requirement")
+require(
+    owned.isdisjoint(MUST_REMAIN_UNOWNED_AND_OPEN),
+    "PDF planning evidence is claiming a requirement that belongs to another proof surface",
+)
+require(
+    OWNED_BUT_MUST_REMAIN_OPEN.issubset(owned),
+    "PDF planning evidence lost ownership of its explicitly-open combined-report contract",
+)
 
 semantic_checks = {
     862: "PDF rapor sistemi tamamen cihaz üzerinde çalışacak",
@@ -55,7 +66,7 @@ require(
 )
 
 blockers = "\n".join(evidence.get("releaseBlockers", []))
-for rc in MUST_REMAIN_OPEN:
+for rc in OWNED_BUT_MUST_REMAIN_OPEN | MUST_REMAIN_UNOWNED_AND_OPEN:
     require(rc in blockers, f"{rc} must be explicitly documented as open")
 
 print("PDF report-planning semantic ownership: OK")
