@@ -5,7 +5,7 @@ import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
 void main() {
   group('PythagoreanPinnacleChallengeEngine', () {
-    const birthDate = CivilDate(year: 1990, month: 5, day: 19);
+    final birthDate = CivilDate(1990, 5, 19);
 
     test('calculates four Pinnacles and four Challenges deterministically', () {
       final result = PythagoreanPinnacleChallengeEngine.calculate(
@@ -37,7 +37,7 @@ void main() {
 
     test('single-digit policy is explicit and supported', () {
       final result = PythagoreanPinnacleChallengeEngine.calculate(
-        birthDate: const CivilDate(year: 1984, month: 11, day: 22),
+        birthDate: CivilDate(1984, 11, 22),
         policy: PersonalCycleReductionPolicy.singleDigit,
       );
 
