@@ -1,3 +1,5 @@
+export 'pdf_service.dart' show PdfReportOptions;
+
 enum PdfReportKind {
   western,
   vedic,
