@@ -2,44 +2,38 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-31_1857_ci_contract_analyzer_repair.md`
+`automation_runs/2026-08-31_2052_august_2036_ci_green.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Binding repository ve exact CI baseline yeniden okundu**
+1. **Binding scope ve exact CI yeniden doğrulandı**
    - kapsam `RC-0001 → RC-1442`
    - kanıtsız DONE yok
-   - baseline exact HEAD `33cee79ff671fc4a5dbc9614b549786cb05121e1`
-   - 23 workflow run tamamlandıktan sonra Requirements Contract ve Flutter Quality kırmızı doğrulandı
+   - repair baseline exact HEAD `0a7f54865b0e660914f73e9040f0818f6dda53ba`
+   - 23 workflow run tamamlanmış durumda; görünür failure/queued kalmadı
 
-2. **Requirements Contract kök nedeni kapatıldı**
-   - `evidence/pdf/report_planning_contract.json` semantik ownership listesine RC-0903 eklendi
-   - evidence hâlâ `done:false`; RC-0903 release blocker açık kaldı
+2. **Ağustos 2036 editorial kapsamı eklendi**
+   - TR: 31 canonical exact tarih
+   - EN: 31 bağımsız canonical exact tarih
+   - aralık: `2036-08-01 → 2036-08-31`
+   - iki shard commit sonrası `main` üzerinden yeniden okundu
 
-3. **Flutter analyzer borcunda gerçek düzeltmeler yapıldı**
-   - `BackupImportMode` coordinator public surface üzerinden re-export edildi
-   - numerology PDF/UI testlerinde `PdfSubjectKind` import driftleri düzeltildi
-   - `PdfReportOptions` report-contract yüzeyinden görünür hale getirildi
-   - combined PDF invalid `const StateError` kaldırıldı
-   - PDF asset-font test importları düzeltildi
-   - stale PDF router importu kaldırıldı
+3. **Editorial ledger kanıt sonrası ilerletildi**
+   - TR 3896 / 4018
+   - EN 3896 / 4018
+   - toplam 7792 / 8036
+   - kalan 244
+   - next exact start `2036-09-01`
 
-4. **Editorial ledger korunuyor**
-   - TR 3865
-   - EN 3865
-   - toplam 7730 / 8036
-   - kalan 306
-   - next exact start `2036-08-01`
-
-5. **Doğrulama güvenliği korunuyor**
-   - yeni exact HEAD CI tamamlanmadan bu düzeltmeler SUCCESS sayılmıyor
-   - `RC-1424/1425/1426/1427/1433/1434` full catalog/release proof tamamlanmadığı için DONE değil
+4. **Doğrulama güvenliği korunuyor**
+   - `RC-1424/1425/1426/1427/1433/1434` full catalog strict release audit tamamlanmadığı için DONE değil
+   - physical artifact/device/release blockerları açık
 
 ## Next safe work
 
-- newest exact SHA Requirements Contract + Flutter Quality sonucunu yeniden oku
-- kalan invalid PDF const/import/deprecation analyzer borcunu decoded log üzerinden kapat
-- analyzer yeşillenince test aşamasındaki gerçek kırmızıları aynı yöntemle düzelt
-- `2036-08-01` tarihinden canonical TR + bağımsız EN editorial hattına devam et
+- newest exact SHA Actions sonuçlarını yeniden oku
+- `2036-09-01` tarihinden canonical TR + bağımsız EN editorial hattına devam et
+- 8.036 kayıt tamamlandığında strict release audit çalıştır
+- kırmızı CI çıkarsa decoded log üzerinden kök nedeni kapat
 
 **FINAL: NO.**
