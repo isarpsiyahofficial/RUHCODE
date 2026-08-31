@@ -270,7 +270,7 @@ final class PdfCombinedReportContentAdapter
   String documentTitle(PdfCombinedReportProjection snapshot, String locale) {
     _requireLocale(locale);
     if (locale != localeTag) {
-      throw const StateError('Combined PDF locale drift detected.');
+      throw StateError('Combined PDF locale drift detected.');
     }
     return locale == 'tr'
         ? 'Kombine Danışmanlık Raporu'
