@@ -1,9 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
 import 'package:ruh_code/src/backup/backup_package_codec.dart';
-import 'package:ruh_code/src/backup/backup_schema.dart';
 import 'package:ruh_code/src/backup/backup_schema_validator.dart';
-import 'package:ruh_code/src/backup/backup_service.dart';
 
 void main() {
   test('merge is idempotent by primary key when the same backup is imported twice', () async {
