@@ -28,26 +28,27 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2035-07-31` = **3499**
-- EN ledger: `2026-01-01 → 2035-07-31` = **3499**
-- Ledger toplamı: **6998 / 8036**
-- Ledger kalan: **1038**
-- Ledger'ın sıradaki exact başlangıcı: **2035-08-01**
+- TR ledger: `2026-01-01 → 2035-08-31` = **3530**
+- EN ledger: `2026-01-01 → 2035-08-31` = **3530**
+- Ledger toplamı: **7060 / 8036**
+- Ledger kalan: **976**
+- Ledger'ın sıradaki exact başlangıcı: **2035-09-01**
 
-Temmuz 2035 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 31 exact tarih doğrulandıktan sonra ledger ileri taşındı.
+Ağustos 2035 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 31 exact tarih doğrulandıktan sonra ledger ileri taşındı.
 
 ## Bu turdaki doğrulama ve ilerleme
 
 - Binding master TODO/index ve mevcut progress tekrar okundu; kapsamın `RC-0001 → RC-1442` olduğu yeniden doğrulandı.
-- Önceki exact baseline HEAD `bc7539cbc20b3e0a58dbb825285fb771ce6470ac` için push Actions sorgusunda 23 workflow run bulundu ve failure conclusion bulunmadı; önceki Requirements/Western/Flutter Quality düzeltmelerinin bu SHA üzerinde yeniden kırmızı üretmediği görüldü.
-- `assets/content/daily_messages/tr/2035-07.csv` ve `assets/content/daily_messages/en/2035-07.csv` eklendi; iki shard commit sonrası `main` üzerinden yeniden okunarak `2035-07-01 → 2035-07-31` exact tarih dizisi ve canonical header doğrulandı.
-- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 6998/8036 seviyesine ilerletildi.
+- Çalışma başlangıcı exact HEAD `d60fd5ad33e1e5a0f969ddf61030677b6a557da0` için 23 Actions run bulundu; exact-head response içinde failure conclusion veya queued status bulunmadı.
+- `assets/content/daily_messages/tr/2035-08.csv` ve `assets/content/daily_messages/en/2035-08.csv` eklendi; iki shard commit sonrası `main` üzerinden yeniden okunarak `2035-08-01 → 2035-08-31` exact tarih dizisi ve canonical header doğrulandı.
+- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7060/8036 seviyesine ilerletildi.
+- Clean-checkout clone denemesi execution environment DNS hatası (`Could not resolve host: github.com`) nedeniyle checkout öncesi durdu; SUCCESS sayılmadı.
 - `RC-1424/1425/1426/1427/1433/1434` full catalog ve release kanıtları olmadığı için DONE yapılmadı.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerindeki GitHub Actions zorunlu contract sonuçlarının tamamlanmış görünür SUCCESS olması
-- remaining daily-message editorial kapsamı: TR+EN `2035-08-01 → 2036-12-31` ve ardından strict 8.036-record release audit
+- remaining daily-message editorial kapsamı: TR+EN `2035-09-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -60,12 +61,12 @@ Temmuz 2035 canonical shardları commit sonrası `main` üzerinden yeniden okuna
 
 ## Son checkpoint
 
-`automation_runs/2026-08-31_0253_daily_messages_july_2035.md`
+`automation_runs/2026-08-31_0453_daily_messages_august_2035.md`
 
 ## Sıradaki çalışma
 
 1. En yeni exact SHA workflow sonuçlarını tamamlanmış sonuçlarla yeniden oku; kırmızı varsa decoded log üzerinden kök neden bazında kapat.
-2. Canonical editorial batchlere `2035-08-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+2. Canonical editorial batchlere `2035-09-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
 3. Günün Mesajı kapsamını 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
 4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
