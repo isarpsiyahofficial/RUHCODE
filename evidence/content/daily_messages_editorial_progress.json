@@ -50,19 +50,22 @@
     "tools/content/daily_message_schema.py",
     "tools/content/build_daily_message_catalog.py",
     "tools/content/append_daily_message_batch.py",
-    "tools/content/validate_daily_message_catalog.py"
+    "tools/content/validate_daily_message_catalog.py",
+    "tools/content/validate_daily_message_release_horizon.py"
   ],
   "tests": [
     "tools/content/test_daily_message_schema.py",
     "tools/content/test_validate_daily_message_catalog.py",
     "tools/content/test_daily_message_shards.py",
     "tools/content/test_append_daily_message_batch.py",
-    "tools/content/test_validate_daily_message_editorial_progress.py"
+    "tools/content/test_validate_daily_message_editorial_progress.py",
+    "tools/content/test_validate_daily_message_release_horizon.py"
   ],
   "validators": [
     "tools/content/validate_daily_message_contract.py",
     "tools/content/validate_daily_message_editorial_progress.py",
-    "tools/content/validate_daily_message_catalog.py"
+    "tools/content/validate_daily_message_catalog.py",
+    "tools/content/validate_daily_message_release_horizon.py"
   ],
   "currentReviewedCoverage": {
     "tr": {"start": "2026-01-01", "end": "2036-12-31", "records": 4018},
@@ -85,12 +88,24 @@
     "editorial progress ledger counts must exactly match contiguous committed locale shards",
     "all required leap dates must exist as exact TR and EN records",
     "complete editorial coverage is not DONE until strict release audit passes without allow-incomplete",
-    "release audit must enforce exact-date completeness, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates across all 8,036 records"
+    "release audit must enforce exact-date completeness, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates across all 8,036 records",
+    "release horizon validation must require every TR and EN date from the release date through release date plus at least ten calendar years"
   ],
+  "verifiedReleaseAudit": {
+    "sourceHead": "4d68d5ad007657aafecad79173469ca6e60ffb1f",
+    "recordCount": 8036,
+    "missing": 0,
+    "nearDuplicate": 0,
+    "repetitiveOpening": 0,
+    "unsafeCertainty": 0,
+    "allowIncomplete": false,
+    "complete": true,
+    "ok": true,
+    "catalogSha256": "6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf"
+  },
   "remainingBeforeDone": [
-    "pass strict exact-date completeness for all 8,036 records",
-    "pass leap-date, duplicate, near-duplicate, opening-pattern and unsafe-certainty gates",
-    "prove the rolling ten-year horizon at the release date",
-    "obtain exact visible CI SUCCESS on the complete catalog"
+    "obtain exact visible CI SUCCESS for the rolling ten-year release-horizon validator on the complete catalog",
+    "prove app/release packaging and runtime consumption of the audited catalog",
+    "retain rolling future-stock maintenance so every actual release date stays at least ten full years ahead"
   ]
 }
