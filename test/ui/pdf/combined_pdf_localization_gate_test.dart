@@ -11,6 +11,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('en'),
+        supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
         home: CombinedProfessionalPdfBuilderPage(actions: _SameSystemUiActions()),
       ),
     );
@@ -22,16 +23,21 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('combined-record-western-2')));
     await tester.pump();
 
-    final previewFinder = find.byKey(const ValueKey(RuhActionIds.pdfCombinedPreview));
-    expect(tester.widget<OutlinedButton>(previewFinder).onPressed, isNull);
-    expect(find.text('Select two distinct calculation systems to preview.'), findsOneWidget);
+    final warning = find.text('Select two distinct calculation systems to preview.');
+    await tester.scrollUntilVisible(warning, 120);
+    expect(warning, findsOneWidget);
     expect(find.text('Önizleme için iki farklı hesaplama sistemi seç.'), findsNothing);
+
+    final previewFinder = find.byKey(const ValueKey(RuhActionIds.pdfCombinedPreview));
+    await tester.scrollUntilVisible(previewFinder, 120);
+    expect(tester.widget<OutlinedButton>(previewFinder).onPressed, isNull);
   });
 
   testWidgets('English locale uses English combined section labels', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('en'),
+        supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
         home: CombinedProfessionalPdfBuilderPage(actions: _MixedSystemUiActions()),
       ),
     );
@@ -43,6 +49,8 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('combined-record-numerology-1')));
     await tester.pump();
 
+    final numerologySection = find.byKey(const ValueKey('combined-section-numerology'));
+    await tester.scrollUntilVisible(numerologySection, 120);
     expect(find.text('Report Sections'), findsOneWidget);
     expect(find.text('Placements'), findsOneWidget);
     expect(find.text('Houses'), findsOneWidget);
