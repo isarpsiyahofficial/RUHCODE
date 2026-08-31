@@ -11,6 +11,8 @@ AUDITOR_TEST = ROOT / 'tools/content/test_validate_daily_message_catalog.py'
 BUILDER = ROOT / 'tools/content/build_daily_message_catalog.py'
 APPENDER = ROOT / 'tools/content/append_daily_message_batch.py'
 APPENDER_TEST = ROOT / 'tools/content/test_append_daily_message_batch.py'
+RELEASE_HORIZON = ROOT / 'tools/content/validate_daily_message_release_horizon.py'
+RELEASE_HORIZON_TEST = ROOT / 'tools/content/test_validate_daily_message_release_horizon.py'
 
 
 def read(path: Path) -> str:
@@ -28,6 +30,8 @@ try:
     builder = read(BUILDER)
     appender = read(APPENDER)
     appender_test = read(APPENDER_TEST)
+    release_horizon = read(RELEASE_HORIZON)
+    release_horizon_test = read(RELEASE_HORIZON_TEST)
 
     for token in (
         'DailyMessageEntry',
@@ -70,7 +74,7 @@ try:
     assert storage['compiler'] == 'tools/content/build_daily_message_catalog.py'
     assert storage['release_audit_must_be_complete'] is True
 
-    for token in ('SHARD_FILE', 'date {row["date"]!r} does not match shard month', 'Duplicate exact daily-message key across shards'):
+    for token in ('SHARD_FILE', 'date {row["date"]!r} does not match shard month', 'Duplicate exact daily message key across shards'):
         assert token in builder, f'missing period-shard compiler token: {token}'
     for token in ('append_paired_batch', "f'{year:04d}-{month:02d}.csv'", 'batch overlaps committed dates'):
         assert token in appender, f'missing safe paired batch appender token: {token}'
@@ -80,6 +84,21 @@ try:
         'test_rejects_mismatched_language_date_ranges',
     ):
         assert token in appender_test, f'missing paired batch appender test: {token}'
+
+    for token in (
+        'rolling_release_horizon_years',
+        'required_through',
+        'missing_release_window_records',
+        'release horizon is short',
+    ):
+        assert token in release_horizon, f'missing rolling release-horizon token: {token}'
+    for token in (
+        'test_full_ten_year_release_window_passes',
+        'test_one_missing_locale_date_is_release_blocker',
+        'test_catalog_ending_one_day_early_is_release_blocker',
+        'test_leap_day_release_clamps_target_to_february_28',
+    ):
+        assert token in release_horizon_test, f'missing rolling release-horizon test: {token}'
 
     gates = set(manifest['quality_gates'])
     for gate in (
@@ -127,4 +146,4 @@ except (AssertionError, KeyError, json.JSONDecodeError) as exc:
     print(f'daily message contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('daily message contract OK: exact-date TR/EN lookup, scalable deterministic period shards, safe paired append, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
+print('daily message contract OK: exact-date TR/EN lookup, scalable deterministic period shards, safe paired append, rolling ten-year release horizon, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
