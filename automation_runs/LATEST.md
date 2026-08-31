@@ -2,46 +2,49 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-31_2252_daily_messages_full_coverage_strict_audit.md`
+`automation_runs/2026-09-01_0054_ci_contract_editorial_audit_repair.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Binding scope ve baseline CI yeniden doğrulandı**
-   - kapsam `RC-0001 → RC-1442`
-   - kanıtsız DONE yok
-   - başlangıç exact HEAD `3cd1c9ae26a3bd31543f5dde23ef8e54b31e03d2`
-   - görünür 23 workflow run tamamlandı; failure conclusion gözlenmedi
+1. **Binding scope ve baseline yeniden doğrulandı**
+   - exact kapsam `RC-0001 → RC-1442`
+   - `requirements/requirement_state.csv` sparse override ledger olarak korundu
+   - kanıtsız DONE eklenmedi
 
-2. **Günün Mesajı editorial source kapsamı tamamlandı**
-   - 2036-09: 30 TR + 30 EN
-   - 2036-10: 31 TR + 31 EN
-   - 2036-11: 30 TR + 30 EN
-   - 2036-12: 31 TR + 31 EN
-   - yeni kayıt: 244
-   - TR 4018 / 4018
-   - EN 4018 / 4018
-   - toplam 8036 / 8036
+2. **Requirements / Flutter Quality kök nedenleri onarıldı**
+   - RC-0903 PDF planning ownership artık `owned but open`
+   - baseline Flutter analyzer 11/11 diagnostic kaynakta giderildi
+   - deprecated PDF dropdown API, invalid `const StateError`, redundant import ve non-null assertion borçları kapatıldı
 
-3. **Complete-pending-release-audit lifecycle eklendi**
-   - manifest `EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT`
-   - evidence `EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT`
-   - `done=false` korunuyor
-   - complete ledger exact count/end-date/contiguous/leap-date doğrulaması eklendi
+3. **Analyzer sonrasında görünür olan ortak contract driftleri kapatıldı**
+   - rewarded-ad cancellation/failure evidence canonical no-op sözleşmesiyle eşlendi
+   - professional PDF typed selected-record + section-order regresyon testi güçlendirildi
+   - combined PDF English distinct-system guidance regresyon testi eklendi
+   - combined PDF widget/route testlerinde TR/EN supported locale ve viewport-safe scrolling düzeltildi
 
-4. **Strict release audit CI kapısı etkinleştirildi**
-   - `--allow-incomplete` kaldırıldı
-   - compiled 8036-record katalog duplicate / near-duplicate / opening-pattern / unsafe-certainty dahil strict auditten geçmek zorunda
-   - complete lifecycle unit testi eklendi
+4. **Günün Mesajı source kapsamı artık tam**
+   - TR `4018 / 4018`
+   - EN `4018 / 4018`
+   - toplam `8036 / 8036`
+   - exact coverage `2026-01-01 → 2036-12-31`
+   - missing exact date/locale = 0
+
+5. **Strict 8.036-record audit gerçek sonucu işlendi**
+   - near-duplicate = 0
+   - repetitive-opening = 0
+   - ilk strict koşuda yalnız 24 `garanti/guarantee` unsafe-certainty token bulgusu vardı
+   - incelenen örnekler açık negasyon (`garanti etmez`, `does not guarantee`) olduğundan audit motoruna per-match negation semantics ve TR/EN regresyon testi eklendi
+   - pozitif certainty hâlâ fail; kalite eşiği gevşetilmedi
 
 ## Current verification state
 
-Functional/content exact HEAD `384d68d58a51784201585b48cf56506de36212ec` için workflow seti oluştu fakat son kontrolde queued durumundaydı. Bu nedenle strict release audit SUCCESS henüz verilmedi.
+Functional repair head `5a4062793da463413eda2a2d05e7572f2a50d832` son kontrolde henüz tüm workflow'larını tamamlamamıştı; exact-head CI SUCCESS iddiası yok. Documentation commitleri sonrası newest HEAD ayrıca yeniden doğrulanmalıdır.
 
 ## Next safe work
 
-- exact-head Daily Message Editorial Contract sonucunu yeniden oku
-- strict audit kırmızıysa rapordaki gerçek kayıtları düzelt
-- yeşilse bağlayıcı RC tanımlarıyla ilgili evidence closure'ı tek tek doğrula
-- ardından dependency sırasındaki sonraki release blockerlarına devam et
+- newest exact HEAD workflow sonuçlarını oku
+- Daily Message Editorial Contract yeni negation-aware validator ile kırmızıysa yalnız gerçek pozitif certainty kayıtlarını düzelt
+- Flutter/PDF/Requirements kırmızıysa newest job logundan kök nedeni kapat
+- bütün source-level kapılar yeşil olduğunda dependency sırasındaki fiziksel artifact/device/release blockerlarına devam et
 
 **FINAL: NO.**
