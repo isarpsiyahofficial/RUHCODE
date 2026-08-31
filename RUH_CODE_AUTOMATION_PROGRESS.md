@@ -38,17 +38,24 @@ Haziran ve Temmuz 2036 canonical shardları commit sonrası `main` üzerinden ye
 
 ## Bu turdaki doğrulama ve ilerleme
 
-- Binding master TODO/index ve mevcut progress tekrar okundu; kapsamın `RC-0001 → RC-1442` olduğu yeniden doğrulandı.
-- Başlangıç exact HEAD `bb050256db7430861efad5f24257c755c4c2f8a3` için GitHub Actions exact-head sorgusunda 23 run bulundu; görünür set tamamlanmıştı ve gözlenen runlar SUCCESS durumundaydı.
-- `assets/content/daily_messages/tr/2036-06.csv`, `en/2036-06.csv`, `tr/2036-07.csv`, `en/2036-07.csv` eklendi: 61 TR + 61 bağımsız EN = 122 canonical kayıt.
-- Dört shard commit sonrası `main` üzerinden geri okunarak June `01→30`, July `01→31`, doğru locale ve canonical `date,locale,title,teaser,full_text,theme_tag` sözleşmesi doğrulandı.
-- Batch-local exact duplicate kontrolünde TR ve EN için title/teaser/full-text duplicate sayısı 0.
-- `evidence/content/daily_messages_editorial_progress.json` yalnız bu committed doğrulamadan sonra 7730/8036 seviyesine ilerletildi.
-- `RC-1424/1425/1426/1427/1433/1434` full catalog ve strict release kanıtları olmadığı için DONE yapılmadı.
+- Binding master TODO/index, mevcut progress ve editorial ledger yeniden okundu; kapsam `RC-0001 → RC-1442` olarak doğrulandı.
+- Baseline exact HEAD `33cee79ff671fc4a5dbc9614b549786cb05121e1` için 23 Actions run tamamlandıktan sonra iki kritik kırmızı doğrulandı: `Requirements Contract` ve `Flutter Quality`.
+- Requirements decoded log kök nedeni: `evidence/pdf/report_planning_contract.json` semantik ownership mismatch, missing `RC-0903`.
+- `RC-0903` evidence requirement listesine eklendi; evidence `done:false` ve RC-0903 release blocker açık tutuldu.
+- Flutter Quality decoded log `flutter analyze --fatal-infos` aşamasında 29 diagnostic ile kırıldı; test aşaması analyzer kırmızı olduğu için çalışmadı.
+- Backup testlerinin kullandığı `BackupImportMode`, tek canonical enum korunarak `backup_import_coordinator.dart` üzerinden re-export edildi.
+- Numerology PDF/UI testlerindeki `PdfSubjectKind` import driftleri explicit `pdf_data_contract.dart` importlarıyla düzeltildi.
+- `PdfReportOptions`, `pdf_report_contract.dart` üzerinden görünür hale getirildi.
+- Combined PDF adapter'daki invalid `const StateError` kaldırıldı.
+- PDF asset-font testinde gereksiz `dart:typed_data` kaldırıldı ve `FlutterError` doğru Flutter foundation importundan alındı.
+- `persisted_calculation_pdf_router.dart` stale unused importu kaldırıldı.
+- Yeni exact-head CI tamamlanmadan bu değişikliklere SUCCESS statüsü verilmedi.
+- Bu turda daily-message ledger ileri taşınmadı; kanıtsız editorial kayıt sayılmadı.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions/Flutter Quality kapılarının tamamlanmış SUCCESS olması
+- baseline analyzer logundan kalan invalid PDF const/import/deprecation borçlarının kapatılması ve ardından gerçek test aşamasının çalıştırılması
 - remaining daily-message editorial kapsamı: TR+EN `2036-08-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
@@ -62,13 +69,14 @@ Haziran ve Temmuz 2036 canonical shardları commit sonrası `main` üzerinden ye
 
 ## Son checkpoint
 
-`automation_runs/2026-08-31_1658_june_july_2036.md`
+`automation_runs/2026-08-31_1857_ci_contract_analyzer_repair.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA Actions/Flutter Quality sonucunu yeniden oku; kırmızı varsa decoded log üzerinden kök nedeni kapat.
-2. Canonical editorial batchlere `2036-08-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
-3. Günün Mesajı kapsamını `2036-12-31` tarihine kadar kesintisiz tamamla; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
-4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
+1. En yeni exact SHA Actions sonucunu yeniden oku; Requirements Contract ve Flutter Quality kırmızıysa newest decoded log üzerinden kalan kök nedenleri kapat.
+2. Analyzer yeşil olduğunda açılan `flutter test` sonuçlarını gerçek test kapısı olarak ele al ve kırmızıları düzelt.
+3. Canonical editorial batchlere `2036-08-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+4. Günün Mesajı kapsamını `2036-12-31` tarihine kadar kesintisiz tamamla; strict release auditini ancak 8.036 kayıt tamamlanınca çalıştır.
+5. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
 **FINAL: NO.**
