@@ -124,14 +124,55 @@ def _near_duplicate_pairs(
     return findings
 
 
+def _certainty_match_is_negated(text: str, match: re.Match[str], locale: str) -> bool:
+    """Do not classify explicit anti-certainty language as a certainty claim.
+
+    The audit still fails on positive guarantee/certainty claims. This only
+    suppresses a matched guarantee token when its immediate grammar explicitly
+    denies the guarantee (for example, ``garanti etmez`` / ``does not
+    guarantee``). The decision is per match, so a later positive guarantee in
+    the same message is still detected.
+    """
+    matched = match.group(0).casefold()
+    if 'garanti' not in matched and 'guarantee' not in matched:
+        return False
+
+    prefix = text[max(0, match.start() - 48):match.start()].casefold()
+    suffix = text[match.end():min(len(text), match.end() + 48)].casefold()
+
+    if locale == 'tr':
+        return bool(
+            re.match(
+                r"\s+(?:etmez|etmiyor|edemez|değil(?:dir)?|vermez|yok(?:tur)?|anlamına\s+gelmez)\b",
+                suffix,
+                re.I,
+            )
+            or re.search(r"\b(?:bir\s+)?(?:sonuç|başarı|değişim)?\s*(?:için\s+)?(?:hiçbir\s+)?$", prefix)
+            and re.match(r"\s+(?:değil(?:dir)?|yok(?:tur)?)\b", suffix, re.I)
+        )
+
+    if locale == 'en':
+        return bool(
+            re.search(
+                r"\b(?:does\s+not|doesn't|do\s+not|don't|cannot|can't|can\s+not|never|no|without(?:\s+a)?|not)\s+$",
+                prefix,
+                re.I,
+            )
+            or re.match(r"\s+(?:is\s+not|isn't|does\s+not|doesn't)\b", suffix, re.I)
+        )
+
+    return False
+
+
 def _unsafe_certainty_findings(rows: list[dict[str, str]]) -> list[dict[str, object]]:
     findings: list[dict[str, object]] = []
     for row_index, row in enumerate(rows, start=2):
         locale = row['locale'].strip()
         text = f"{row['title']} {row['teaser']} {row['full_text']}"
         for pattern in UNSAFE_CERTAINTY_PATTERNS.get(locale, ()):
-            match = pattern.search(text)
-            if match:
+            for match in pattern.finditer(text):
+                if _certainty_match_is_negated(text, match, locale):
+                    continue
                 findings.append({
                     'row': row_index,
                     'locale': locale,
@@ -139,6 +180,9 @@ def _unsafe_certainty_findings(rows: list[dict[str, str]]) -> list[dict[str, obj
                     'match': match.group(0),
                 })
                 break
+            else:
+                continue
+            break
     return findings
 
 
