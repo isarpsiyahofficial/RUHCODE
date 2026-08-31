@@ -356,7 +356,7 @@ class _CombinedProfessionalPdfBuilderPageState
               label: _t('Kombine PDF kişi seçimi', 'Combined PDF subject selection'),
               child: DropdownButtonFormField<String>(
                 key: const ValueKey('combined-pdf-subject-selector'),
-                value: selectedSubject == null ? null : _subjectKey(selectedSubject),
+                initialValue: selectedSubject == null ? null : _subjectKey(selectedSubject),
                 decoration: InputDecoration(labelText: _t('Profil / Danışan', 'Profile / Client')),
                 items: [
                   for (final subject in _subjects)
