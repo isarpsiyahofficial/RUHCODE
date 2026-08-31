@@ -187,6 +187,28 @@ class DailyMessageAuditorTest(unittest.TestCase):
             self.assertEqual({item['locale'] for item in result['unsafe_certainty_findings']}, {'tr', 'en'})
             self.assertTrue(any('unsafe certainty review failed' in error for error in result['errors']))
 
+    def test_negated_guarantee_is_safe_but_positive_guarantee_still_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            catalog = root / 'catalog.csv'
+            write_manifest(manifest)
+            tr = row('2028-02-28', 'tr', 'tr-safe')
+            tr['full_text'] = 'Bu seçim aynı sonucu garanti etmez; yalnız daha dengeli bir seçenek sunabilir.'
+            en = row('2028-02-28', 'en', 'en-safe')
+            en['full_text'] = 'Writing does not guarantee the answer, but it can clarify the tradeoffs.'
+            tr_positive = row('2028-02-29', 'tr', 'tr-positive')
+            tr_positive['full_text'] = 'Bu yöntem başarıyı garanti eder.'
+            en_positive = row('2028-02-29', 'en', 'en-positive')
+            en_positive['full_text'] = 'This method guarantees the result.'
+            write_catalog(catalog, [tr, en, tr_positive, en_positive])
+
+            result = module.audit(catalog, manifest)
+            findings = result['unsafe_certainty_findings']
+            self.assertEqual({item['row'] for item in findings}, {4, 5})
+            self.assertEqual({item['locale'] for item in findings}, {'tr', 'en'})
+            self.assertTrue(any('unsafe certainty review failed' in error for error in result['errors']))
+
 
 if __name__ == '__main__':
     unittest.main()
