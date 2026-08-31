@@ -64,7 +64,7 @@ final class _PersistedWesternNatalContentAdapter
   String documentTitle(PersistedCalculationPdfSnapshot snapshot, String locale) {
     _validateLocale(locale);
     if (locale != localeTag) {
-      throw const StateError('Western PDF adapter locale drift detected.');
+      throw StateError('Western PDF adapter locale drift detected.');
     }
     return locale == 'tr' ? 'Batı Astrolojisi Doğum Haritası Raporu' : 'Western Natal Chart Report';
   }
@@ -162,7 +162,7 @@ final class _PersistedWesternNatalContentAdapter
         snapshot.ownerEntityId != parsed.ownerEntityId ||
         snapshot.calculationType != persistedWesternNatalCalculationType ||
         snapshot.recordId != persisted.recordId) {
-      throw const StateError('Western PDF persisted record identity drift detected.');
+      throw StateError('Western PDF persisted record identity drift detected.');
     }
   }
 
