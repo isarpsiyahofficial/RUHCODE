@@ -26,7 +26,7 @@ void main() {
     expect(actions.calls, 0);
   });
 
-  testWidgets('numerology preview and build use handler-supported canonical sections only', (tester) async {
+  testWidgets('builder invokes application actions with typed selected record and section order', (tester) async {
     final actions = _RecordingActions();
     await tester.pumpWidget(
       MaterialApp(
