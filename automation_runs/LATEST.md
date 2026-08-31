@@ -2,7 +2,7 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-08-31_0453_daily_messages_august_2035.md`
+`automation_runs/2026-08-31_0453_daily_messages_august_september_2035.md`
 
 ## Bu turda ilerleyen ana bloklar
 
@@ -12,17 +12,18 @@ Latest source-level checkpoint:
    - başlangıç exact HEAD `d60fd5ad33e1e5a0f969ddf61030677b6a557da0` için 23 workflow run bulundu
    - exact-head response içinde failure conclusion veya queued status bulunmadı
 
-2. **Ağustos 2035 Günün Mesajları eklendi ve main üzerinden doğrulandı**
-   - 31 canonical TR
-   - 31 bağımsız canonical EN
-   - exact aralık `2035-08-01 → 2035-08-31`
+2. **Ağustos + Eylül 2035 Günün Mesajları eklendi ve main üzerinden doğrulandı**
+   - Ağustos: 31 TR + 31 bağımsız EN
+   - Eylül: 30 TR + 30 bağımsız EN
+   - toplam 122 yeni canonical kayıt
+   - exact aralık `2035-08-01 → 2035-09-30`
 
 3. **Editorial ledger kanıtlı olarak ilerledi**
-   - TR 3530
-   - EN 3530
-   - toplam 7060 / 8036
-   - kalan 976
-   - next exact start `2035-09-01`
+   - TR 3560
+   - EN 3560
+   - toplam 7120 / 8036
+   - kalan 916
+   - next exact start `2035-10-01`
 
 4. **Doğrulama güvenliği korunuyor**
    - clean-checkout clone DNS çözümleme hatasıyla checkout öncesi durdu ve SUCCESS sayılmadı
@@ -32,7 +33,7 @@ Latest source-level checkpoint:
 ## Next safe work
 
 - newest exact SHA workflow sonuçlarını yeniden oku ve kırmızı varsa kök nedeni kapat
-- `2035-09-01` tarihinden canonical TR + bağımsız EN daily-message batchlerine devam et
+- `2035-10-01` tarihinden canonical TR + bağımsız EN daily-message batchlerine devam et
 - kalan fiziksel artifact/font/UI/device/release kanıtlarını dependency sırasıyla kapat
 
 **FINAL: NO.**
