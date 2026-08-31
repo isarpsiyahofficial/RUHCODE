@@ -61,7 +61,7 @@
     "cached confirmed Google Play lifetime ownership remains usable offline",
     "runtime entitlement resolution combines local entitlement state with cached Google Play lifetime ownership",
     "startup performs best-effort Google Play ownership synchronization without making store availability an application-start requirement",
-    "rewarded-ad cancellation and failure are strict entitlement-state no-ops at coordinator level",
+    "rewarded-ad cancellation and failure are strict entitlement-state no-ops",
     "only a verified rewarded outcome can add a temporary grant",
     "a rewarded grant cannot shorten an already longer active grant",
     "professional-only non-temporary features cannot be unlocked by rewarded ads"
