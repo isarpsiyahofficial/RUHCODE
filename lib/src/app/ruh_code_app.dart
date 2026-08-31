@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../backup/backup_application_service.dart';
-import '../content/daily_messages/daily_message_catalog.dart';
 import '../entitlements/feature_access_guard.dart';
 import '../ui/navigation/main_navigation_shell.dart';
 import '../ui/pdf/combined_pdf_builder_page.dart';
@@ -12,14 +11,12 @@ class RuhCodeApp extends StatelessWidget {
     super.key,
     required this.featureAccess,
     required this.backupActions,
-    required this.dailyMessages,
   });
 
   static const combinedPdfRoute = '/pdf/combined';
 
   final FeatureAccessGuard featureAccess;
   final BackupApplicationActions backupActions;
-  final DailyMessageCatalog dailyMessages;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +30,6 @@ class RuhCodeApp extends StatelessWidget {
       home: MainNavigationShell(
         featureAccess: featureAccess,
         backupActions: backupActions,
-        dailyMessages: dailyMessages,
       ),
     );
   }
