@@ -15,6 +15,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('tr'),
+        supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
         home: CombinedProfessionalPdfBuilderPage(
           actions: actions,
           deliveryActions: delivery,
@@ -41,16 +42,21 @@ void main() {
     final saveFinder = find.byKey(const ValueKey(RuhActionIds.pdfCombinedSave));
     final shareFinder = find.byKey(const ValueKey(RuhActionIds.pdfCombinedShare));
 
+    await tester.scrollUntilVisible(previewFinder, 160);
     expect(tester.getSize(previewFinder).height, greaterThanOrEqualTo(48));
+    await tester.scrollUntilVisible(createFinder, 160);
     expect(tester.getSize(createFinder).height, greaterThanOrEqualTo(48));
 
+    await tester.scrollUntilVisible(previewFinder, -160);
     await tester.tap(previewFinder);
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('combined-pdf-preview-card')), findsOneWidget);
     expect(find.textContaining('western.natal'), findsOneWidget);
     expect(find.textContaining('numerology.pythagorean'), findsOneWidget);
+    await tester.scrollUntilVisible(createFinder, 160);
     expect(tester.widget<FilledButton>(createFinder).onPressed, isNotNull);
+    await tester.scrollUntilVisible(saveFinder, 160);
     expect(tester.getSize(saveFinder).height, greaterThanOrEqualTo(48));
     expect(tester.getSize(shareFinder).height, greaterThanOrEqualTo(48));
 
@@ -62,10 +68,12 @@ void main() {
     expect(find.text('PDF paylaşım menüsüne aktarıldı.'), findsOneWidget);
 
     final section = find.byKey(const ValueKey('combined-section-placements'));
+    await tester.scrollUntilVisible(section, -160);
     expect(section, findsOneWidget);
     await tester.tap(section);
     await tester.pump();
     expect(find.byKey(const ValueKey('combined-pdf-preview-card')), findsNothing);
+    await tester.scrollUntilVisible(createFinder, 160);
     expect(tester.widget<FilledButton>(createFinder).onPressed, isNull);
   });
 
@@ -73,6 +81,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('tr'),
+        supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(2.0)),
           child: child!,
@@ -88,8 +97,10 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('Kombine PDF Raporu'), findsOneWidget);
     final previewFinder = find.byKey(const ValueKey(RuhActionIds.pdfCombinedPreview));
+    await tester.scrollUntilVisible(previewFinder, 160);
     expect(previewFinder, findsOneWidget);
     expect(tester.getSize(previewFinder).height, greaterThanOrEqualTo(48));
+    expect(tester.takeException(), isNull);
   });
 }
 
