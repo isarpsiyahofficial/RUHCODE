@@ -77,7 +77,7 @@ final class PersistedCombinedPdfProjectionSource {
       final projector = _projectorFor(snapshot.calculationType);
       final member = projector.project(snapshot: snapshot, localeTag: locale);
       if (member.systemId != projector.systemId) {
-        throw const StateError('Combined PDF projector system ID drift detected.');
+        throw StateError('Combined PDF projector system ID drift detected.');
       }
       members.add(member);
     }
