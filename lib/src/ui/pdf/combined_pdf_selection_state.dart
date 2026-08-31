@@ -81,20 +81,20 @@ final class CombinedPdfSelectionState {
 
   Future<CombinedPdfUiPreview> createPreview() async {
     if (_subjectKind == null || _subjectId == null) {
-      throw const StateError('Select a subject before combined PDF preview.');
+      throw StateError('Select a subject before combined PDF preview.');
     }
     if (_selectedRecordIds.length < 2) {
-      throw const StateError('Select at least two calculation records.');
+      throw StateError('Select at least two calculation records.');
     }
     final selectedSystems = <String>{
       for (final candidate in _candidates)
         if (_selectedRecordIds.contains(candidate.recordId)) candidate.calculationType,
     };
     if (selectedSystems.length < 2) {
-      throw const StateError('Combined PDF requires at least two distinct calculation systems.');
+      throw StateError('Combined PDF requires at least two distinct calculation systems.');
     }
     if (_selectedSectionIds.isEmpty) {
-      throw const StateError('Select at least one combined PDF section.');
+      throw StateError('Select at least one combined PDF section.');
     }
     final preview = await actions.preview(
       recordIds: _orderedSelectedRecordIds(),
@@ -102,7 +102,7 @@ final class CombinedPdfSelectionState {
       sectionIds: _selectedSectionIds.toList(growable: false),
     );
     if (preview.subjectKind != _subjectKind || preview.subjectId != _subjectId) {
-      throw const StateError('Combined PDF preview subject drift detected.');
+      throw StateError('Combined PDF preview subject drift detected.');
     }
     _preview = preview;
     return preview;
@@ -121,7 +121,7 @@ final class CombinedPdfSelectionState {
   CombinedPdfUiPreview _validateCurrentPreview() {
     final current = _preview;
     if (current == null) {
-      throw const StateError('Create a current combined PDF preview before build.');
+      throw StateError('Create a current combined PDF preview before build.');
     }
     if (current.localeTag != _localeTag ||
         current.subjectKind != _subjectKind ||
@@ -129,7 +129,7 @@ final class CombinedPdfSelectionState {
         !_sameSet(current.recordIds, _selectedRecordIds) ||
         !_sameSet(current.sectionIds.where((id) => id != 'cover'), _selectedSectionIds)) {
       _preview = null;
-      throw const StateError('Combined PDF selection changed after preview.');
+      throw StateError('Combined PDF selection changed after preview.');
     }
     return current;
   }
