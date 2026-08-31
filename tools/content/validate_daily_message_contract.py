@@ -4,7 +4,10 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 CORE = ROOT / 'lib/src/content/daily_messages/daily_message_catalog.dart'
+ASSET_LOADER = ROOT / 'lib/src/content/daily_messages/daily_message_asset_loader.dart'
 DART_TEST = ROOT / 'test/content/daily_message_catalog_test.dart'
+ASSET_LOADER_TEST = ROOT / 'test/content/daily_message_asset_loader_test.dart'
+PUBSPEC = ROOT / 'pubspec.yaml'
 MANIFEST = ROOT / 'requirements/content_manifests/daily_messages.json'
 AUDITOR = ROOT / 'tools/content/validate_daily_message_catalog.py'
 AUDITOR_TEST = ROOT / 'tools/content/test_validate_daily_message_catalog.py'
@@ -23,7 +26,10 @@ def read(path: Path) -> str:
 
 try:
     core = read(CORE)
+    asset_loader = read(ASSET_LOADER)
     dart_test = read(DART_TEST)
+    asset_loader_test = read(ASSET_LOADER_TEST)
+    pubspec = read(PUBSPEC)
     manifest = json.loads(read(MANIFEST))
     auditor = read(AUDITOR)
     auditor_test = read(AUDITOR_TEST)
@@ -41,6 +47,29 @@ try:
         'Missing daily message',
     ):
         assert token in core, f'missing daily-message runtime token: {token}'
+
+    for token in (
+        'DailyMessageAssetLoader',
+        'AssetManifest.loadFromAssetBundle',
+        'assets/content/daily_messages/',
+        'loadFromAssetPaths',
+        'CivilDate.parseIso',
+        'locale does not match asset path locale',
+        'No packaged daily-message CSV shards were found',
+    ):
+        assert token in asset_loader, f'missing packaged daily-message loader token: {token}'
+    for asset_dir in (
+        '- assets/content/daily_messages/tr/',
+        '- assets/content/daily_messages/en/',
+    ):
+        assert asset_dir in pubspec, f'missing packaged daily-message asset directory: {asset_dir}'
+    for token in (
+        'packaged shard loader resolves exact date and locale without fallback',
+        'CSV parser preserves quoted commas and escaped quotes',
+        'locale mismatch between path and row is rejected',
+        'duplicate exact date-locale rows across packaged shards are rejected',
+    ):
+        assert token in asset_loader_test, f'missing packaged daily-message loader test: {token}'
 
     for token in (
         'lookup uses exact YYYY-MM-DD plus locale key',
@@ -149,4 +178,4 @@ except (AssertionError, KeyError, json.JSONDecodeError) as exc:
     print(f'daily message contract FAILED: {exc}', file=sys.stderr)
     raise SystemExit(1)
 
-print('daily message contract OK: exact-date TR/EN lookup, scalable deterministic period shards, safe paired append, rolling ten-year release horizon, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
+print('daily message contract OK: exact-date TR/EN lookup, packaged offline runtime loader, scalable deterministic period shards, safe paired append, rolling ten-year release horizon, editorial lifecycle states and duplicate/near-duplicate/opening/certainty QA gates are present')
