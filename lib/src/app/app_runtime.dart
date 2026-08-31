@@ -7,6 +7,8 @@ import '../backup/backup_import_coordinator.dart';
 import '../backup/backup_platform_gateway.dart';
 import '../backup/local_database_backup_exporter.dart';
 import '../backup/local_database_backup_import_store.dart';
+import '../content/daily_messages/daily_message_asset_loader.dart';
+import '../content/daily_messages/daily_message_catalog.dart';
 import '../data/local/core_repositories.dart';
 import '../data/local/sqflite_local_database.dart';
 import '../entitlements/entitlement_service.dart';
@@ -32,6 +34,7 @@ final class RuhCodeRuntime {
     required this.entitlements,
     required this.featureAccess,
     required this.backupActions,
+    required this.dailyMessages,
     required this.professionalPdfSnapshotSource,
     required this.combinedProfessionalPdf,
     required this.combinedProfessionalPdfDelivery,
@@ -45,6 +48,11 @@ final class RuhCodeRuntime {
   final EntitlementService entitlements;
   final FeatureAccessGuard featureAccess;
   final BackupApplicationActions backupActions;
+
+  /// Pre-authored offline Daily Message catalog loaded from packaged assets.
+  /// Exact date+locale misses remain misses; no network, random fallback or
+  /// runtime AI generation path is part of this boundary.
+  final DailyMessageCatalog dailyMessages;
 
   /// Production persisted-calculation source shared by professional PDF
   /// selection and build composition. It reads calculation + manifest in one
@@ -75,6 +83,8 @@ final class RuhCodeRuntime {
   static Future<RuhCodeRuntime> create({
     LifetimeOwnershipQuery? lifetimeOwnershipQuery,
   }) async {
+    final dailyMessages = await const DailyMessageAssetLoader().loadPackaged();
+
     final database = SqfliteLocalDatabase();
     await database.open();
 
@@ -158,6 +168,7 @@ final class RuhCodeRuntime {
       entitlements: entitlementService,
       featureAccess: featureAccess,
       backupActions: backupActions,
+      dailyMessages: dailyMessages,
       professionalPdfSnapshotSource: professionalPdfSnapshotSource,
       combinedProfessionalPdf: combinedProfessionalPdf,
       combinedProfessionalPdfDelivery: combinedProfessionalPdfDelivery,
