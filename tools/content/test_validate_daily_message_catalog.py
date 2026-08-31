@@ -66,15 +66,12 @@ class DailyMessageAuditorTest(unittest.TestCase):
             manifest = root / 'manifest.json'
             catalog = root / 'catalog.csv'
             write_manifest(manifest)
-            write_catalog(
-                catalog,
-                [
-                    row('2028-02-28', 'tr', 'alpha'),
-                    row('2028-02-28', 'en', 'bravo'),
-                    row('2028-02-29', 'tr', 'charlie'),
-                    row('2028-02-29', 'en', 'delta'),
-                ],
-            )
+            write_catalog(catalog, [
+                row('2028-02-28', 'tr', 'alpha'),
+                row('2028-02-28', 'en', 'bravo'),
+                row('2028-02-29', 'tr', 'charlie'),
+                row('2028-02-29', 'en', 'delta'),
+            ])
             result = module.audit(catalog, manifest)
             self.assertTrue(result['ok'], result['errors'])
             self.assertEqual(result['record_count'], 4)
@@ -89,14 +86,11 @@ class DailyMessageAuditorTest(unittest.TestCase):
             manifest = root / 'manifest.json'
             catalog = root / 'catalog.csv'
             write_manifest(manifest)
-            write_catalog(
-                catalog,
-                [
-                    row('2028-02-28', 'tr', 'a'),
-                    row('2028-02-28', 'tr', 'b'),
-                    row('2028-02-28', 'en', 'c'),
-                ],
-            )
+            write_catalog(catalog, [
+                row('2028-02-28', 'tr', 'a'),
+                row('2028-02-28', 'tr', 'b'),
+                row('2028-02-28', 'en', 'c'),
+            ])
             result = module.audit(catalog, manifest)
             self.assertFalse(result['ok'])
             joined = '\n'.join(result['errors'])
@@ -118,10 +112,8 @@ class DailyMessageAuditorTest(unittest.TestCase):
             }
             rows = []
             for day, locale in (
-                ('2028-02-28', 'tr'),
-                ('2028-02-28', 'en'),
-                ('2028-02-29', 'tr'),
-                ('2028-02-29', 'en'),
+                ('2028-02-28', 'tr'), ('2028-02-28', 'en'),
+                ('2028-02-29', 'tr'), ('2028-02-29', 'en'),
             ):
                 rows.append({'date': day, 'locale': locale, **shared})
             write_catalog(catalog, rows)
@@ -147,10 +139,7 @@ class DailyMessageAuditorTest(unittest.TestCase):
                 'teaser': 'Bugün acele etmeden yönünü gör.',
                 'full_text': 'Kendi ritmini koruduğunda önündeki seçenekleri daha sakin ve daha net değerlendirebilirsin.',
             })
-            write_catalog(
-                catalog,
-                [first, row('2028-02-28', 'en', 'bravo'), second, row('2028-02-29', 'en', 'delta')],
-            )
+            write_catalog(catalog, [first, row('2028-02-28', 'en', 'bravo'), second, row('2028-02-29', 'en', 'delta')])
             result = module.audit(catalog, manifest)
             self.assertFalse(result['ok'])
             self.assertGreaterEqual(len(result['near_duplicate_candidates']), 1)
@@ -200,7 +189,7 @@ class DailyMessageAuditorTest(unittest.TestCase):
             tr_positive = row('2028-02-29', 'tr', 'tr-positive')
             tr_positive['full_text'] = 'Bu yöntem başarıyı garanti eder.'
             en_positive = row('2028-02-29', 'en', 'en-positive')
-            en_positive['full_text'] = 'This method guarantees the result.'
+            en_positive['full_text'] = 'The result is guaranteed.'
             write_catalog(catalog, [tr, en, tr_positive, en_positive])
 
             result = module.audit(catalog, manifest)
