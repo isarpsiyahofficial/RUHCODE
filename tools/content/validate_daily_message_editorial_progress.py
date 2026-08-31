@@ -83,12 +83,16 @@ def main() -> None:
     manifest = json.loads(MANIFEST.read_text(encoding='utf-8'))
     evidence = json.loads(EVIDENCE.read_text(encoding='utf-8'))
 
-    require(evidence.get('status') == 'EDITORIAL_IN_PROGRESS',
-            'daily-message progress evidence must remain EDITORIAL_IN_PROGRESS before complete release audit')
+    lifecycle = evidence.get('status')
+    manifest_status = manifest.get('status')
+    allowed_pairs = {
+        ('EDITORIAL_IN_PROGRESS', 'EDITORIAL_CONTENT_IN_PROGRESS'),
+        ('EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT', 'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT'),
+    }
+    require((lifecycle, manifest_status) in allowed_pairs,
+            f'daily-message lifecycle mismatch: evidence={lifecycle!r} manifest={manifest_status!r}')
     require(evidence.get('done') is False,
-            'daily-message editorial progress evidence cannot be DONE before all 8,036 records pass strict release audit')
-    require(manifest.get('status') == 'EDITORIAL_CONTENT_IN_PROGRESS',
-            'manifest must remain EDITORIAL_CONTENT_IN_PROGRESS while editorial ledger is partial')
+            'daily-message editorial progress evidence cannot be DONE before strict release audit is recorded')
     require(manifest.get('locales') == ['tr', 'en'], 'daily-message locale contract drifted')
 
     start = parse_iso(manifest['initial_coverage_start'])
@@ -131,16 +135,30 @@ def main() -> None:
 
         total += len(rows)
 
+    expected_total = int(manifest['initial_total_records'])
     require(total == int(reviewed['totalRecords']),
             f'evidence totalRecords {reviewed["totalRecords"]} does not match shard total {total}')
-    require(total < int(manifest['initial_total_records']),
-            'partial editorial progress validator must not be used to certify a complete release catalog')
 
-    remaining = int(manifest['initial_total_records']) - total
+    if lifecycle == 'EDITORIAL_IN_PROGRESS':
+        require(total < expected_total,
+                'in-progress editorial ledger cannot equal or exceed complete release catalog size')
+        remaining = expected_total - total
+        print(
+            'daily-message editorial progress OK: '
+            f'{total}/{expected_total} records are contiguous and ledger-backed; '
+            f'{remaining} remain before strict release completeness'
+        )
+        return
+
+    require(total == expected_total,
+            f'complete editorial ledger must contain exactly {expected_total} records; got {total}')
+    for locale in manifest['locales']:
+        require(parse_iso(reviewed[locale]['end']) == final_end,
+                f'{locale} complete editorial ledger must end at {final_end.isoformat()}')
     print(
-        'daily-message editorial progress OK: '
-        f'{total}/{manifest["initial_total_records"]} records are contiguous and ledger-backed; '
-        f'{remaining} remain before strict release completeness'
+        'daily-message editorial coverage OK: '
+        f'all {total}/{expected_total} records are contiguous and ledger-backed; '
+        'strict release audit is now required before DONE'
     )
 
 
