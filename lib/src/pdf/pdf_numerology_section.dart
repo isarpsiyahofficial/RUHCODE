@@ -37,10 +37,10 @@ abstract final class PdfNumerologySectionAdapter {
       (section) => section.sectionId == PdfSectionIds.numerology,
     );
     if (sectionRef.length != 1) {
-      throw const StateError('Numerology PDF dataset must contain exactly one numerology section.');
+      throw StateError('Numerology PDF dataset must contain exactly one numerology section.');
     }
     if (sectionRef.single.snapshotDigest != payload.snapshotDigest) {
-      throw const StateError('Numerology PDF section digest drift detected.');
+      throw StateError('Numerology PDF section digest drift detected.');
     }
 
     return PdfRenderSection(
