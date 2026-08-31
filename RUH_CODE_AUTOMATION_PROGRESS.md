@@ -28,28 +28,28 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2035-09-30` = **3560**
-- EN ledger: `2026-01-01 → 2035-09-30` = **3560**
-- Ledger toplamı: **7120 / 8036**
-- Ledger kalan: **916**
-- Ledger'ın sıradaki exact başlangıcı: **2035-10-01**
+- TR ledger: `2026-01-01 → 2035-10-31` = **3591**
+- EN ledger: `2026-01-01 → 2035-10-31` = **3591**
+- Ledger toplamı: **7182 / 8036**
+- Ledger kalan: **854**
+- Ledger'ın sıradaki exact başlangıcı: **2035-11-01**
 
-Ağustos ve Eylül 2035 canonical shardları commit sonrası `main` üzerinden yeniden okunarak sırasıyla locale başına 31 ve 30 exact tarih doğrulandıktan sonra ledger ileri taşındı.
+Ekim 2035 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 31 exact tarih doğrulandıktan sonra ledger ileri taşındı.
 
 ## Bu turdaki doğrulama ve ilerleme
 
 - Binding master TODO/index ve mevcut progress tekrar okundu; kapsamın `RC-0001 → RC-1442` olduğu yeniden doğrulandı.
-- Çalışma başlangıcı exact HEAD `d60fd5ad33e1e5a0f969ddf61030677b6a557da0` için 23 Actions run bulundu; exact-head response içinde failure conclusion veya queued status bulunmadı.
-- `assets/content/daily_messages/tr/2035-08.csv`, `en/2035-08.csv`, `tr/2035-09.csv` ve `en/2035-09.csv` eklendi ve commit sonrası `main` üzerinden yeniden okundu.
-- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7120/8036 seviyesine ilerletildi.
-- Clean-checkout clone denemesi execution environment DNS hatası (`Could not resolve host: github.com`) nedeniyle checkout öncesi durdu; SUCCESS sayılmadı.
-- Ağustos checkpoint exact HEAD'i için 23 yeni workflow oluştu ancak kontrol anında queued idi; ardından failure conclusion görülmeden Eylül bağımsız içerik hattı ilerletildi. Newest exact HEAD CI yeniden okunmadan SUCCESS sayılmayacak.
+- Çalışma başlangıcı exact HEAD `e07942fe527bcd464181694f1816d6d1ab4dcb7f` için exact-head Actions sorgusunda 23 workflow run bulundu; görünür run seti tamamlanmıştı ve `conclusion: failure` kaydı yoktu.
+- `assets/content/daily_messages/tr/2035-10.csv` ve `assets/content/daily_messages/en/2035-10.csv` eklendi ve commit sonrası `main` üzerinden yeniden okundu.
+- Her iki Ekim shardı canonical `date,locale,title,teaser,full_text,theme_tag` şemasını kullanıyor ve `2035-10-01 → 2035-10-31` aralığını 31 exact kayıtla kapsıyor.
+- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7182/8036 seviyesine ilerletildi.
 - `RC-1424/1425/1426/1427/1433/1434` full catalog ve release kanıtları olmadığı için DONE yapılmadı.
+- Yeni commit zincirinin exact Actions sonucu yeniden görünür şekilde tamamlanmadan CI SUCCESS veya FINAL denmeyecek.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerindeki GitHub Actions zorunlu contract sonuçlarının tamamlanmış görünür SUCCESS olması
-- remaining daily-message editorial kapsamı: TR+EN `2035-10-01 → 2036-12-31` ve ardından strict 8.036-record release audit
+- remaining daily-message editorial kapsamı: TR+EN `2035-11-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -62,12 +62,12 @@ Ağustos ve Eylül 2035 canonical shardları commit sonrası `main` üzerinden y
 
 ## Son checkpoint
 
-`automation_runs/2026-08-31_0453_daily_messages_august_september_2035.md`
+`automation_runs/2026-08-31_0654_daily_messages_october_2035.md`
 
 ## Sıradaki çalışma
 
 1. En yeni exact SHA workflow sonuçlarını tamamlanmış sonuçlarla yeniden oku; kırmızı varsa decoded log üzerinden kök neden bazında kapat.
-2. Canonical editorial batchlere `2035-10-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+2. Canonical editorial batchlere `2035-11-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
 3. Günün Mesajı kapsamını 2036-12-31'e kadar kesintisiz ilerlet; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
 4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
