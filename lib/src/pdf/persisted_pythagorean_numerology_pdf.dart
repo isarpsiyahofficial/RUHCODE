@@ -247,7 +247,7 @@ final class _PersistedNumerologyContentAdapter
   String documentTitle(PersistedCalculationPdfSnapshot snapshot, String locale) {
     _validateLocale(locale);
     if (locale != localeTag) {
-      throw const StateError('Numerology PDF adapter locale drift detected.');
+      throw StateError('Numerology PDF adapter locale drift detected.');
     }
     return locale == 'tr' ? 'Numeroloji Raporu' : 'Numerology Report';
   }
