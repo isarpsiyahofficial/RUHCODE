@@ -10,7 +10,7 @@ void main() {
   testWidgets('preview stays disabled for two records from only one system', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        locale: const Locale('tr'),
+        locale: const Locale('en'),
         home: CombinedProfessionalPdfBuilderPage(actions: _SameSystemUiActions()),
       ),
     );
@@ -24,7 +24,8 @@ void main() {
 
     final previewFinder = find.byKey(const ValueKey(RuhActionIds.pdfCombinedPreview));
     expect(tester.widget<OutlinedButton>(previewFinder).onPressed, isNull);
-    expect(find.text('Önizleme için iki farklı hesaplama sistemi seç.'), findsOneWidget);
+    expect(find.text('Select two distinct calculation systems to preview.'), findsOneWidget);
+    expect(find.text('Önizleme için iki farklı hesaplama sistemi seç.'), findsNothing);
   });
 
   testWidgets('English locale uses English combined section labels', (tester) async {
