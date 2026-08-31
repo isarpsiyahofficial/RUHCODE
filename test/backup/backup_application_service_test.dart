@@ -4,7 +4,6 @@ import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
 import 'package:ruh_code/src/backup/backup_package_codec.dart';
 import 'package:ruh_code/src/backup/backup_platform_gateway.dart';
 import 'package:ruh_code/src/backup/backup_schema.dart';
-import 'package:ruh_code/src/backup/backup_service.dart';
 import 'package:ruh_code/src/backup/portable_zip_backup_codec.dart';
 
 void main() {
