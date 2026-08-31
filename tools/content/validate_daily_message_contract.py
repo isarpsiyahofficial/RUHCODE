@@ -72,6 +72,8 @@ try:
     assert storage['shards_root'] == 'assets/content/daily_messages'
     assert storage['shard_patterns'] == ['{locale}/{year}.csv', '{locale}/{year}-{month}.csv']
     assert storage['compiler'] == 'tools/content/build_daily_message_catalog.py'
+    assert storage['strict_auditor'] == 'tools/content/validate_daily_message_catalog.py'
+    assert storage['release_horizon_validator'] == 'tools/content/validate_daily_message_release_horizon.py'
     assert storage['release_audit_must_be_complete'] is True
 
     for token in ('SHARD_FILE', 'date {row["date"]!r} does not match shard month', 'Duplicate exact daily-message key across shards'):
@@ -107,6 +109,7 @@ try:
         'repetitive_opening_pattern_review',
         'unsafe_certainty_review',
         'tr_en_independent_editorial_review',
+        'rolling_ten_year_release_horizon',
     ):
         assert gate in gates, f'missing quality gate: {gate}'
 
