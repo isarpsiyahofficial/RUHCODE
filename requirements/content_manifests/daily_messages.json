@@ -20,6 +20,7 @@
     "shard_patterns": ["{locale}/{year}.csv", "{locale}/{year}-{month}.csv"],
     "compiler": "tools/content/build_daily_message_catalog.py",
     "strict_auditor": "tools/content/validate_daily_message_catalog.py",
+    "release_horizon_validator": "tools/content/validate_daily_message_release_horizon.py",
     "partial_editorial_audit_allowed_before_release": true,
     "release_audit_must_be_complete": true
   },
@@ -31,7 +32,8 @@
     "near_duplicate_review",
     "repetitive_opening_pattern_review",
     "unsafe_certainty_review",
-    "tr_en_independent_editorial_review"
+    "tr_en_independent_editorial_review",
+    "rolling_ten_year_release_horizon"
   ],
   "quality_thresholds": {
     "near_duplicate_similarity": 0.90,
