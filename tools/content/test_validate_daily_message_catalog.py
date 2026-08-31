@@ -198,6 +198,26 @@ class DailyMessageAuditorTest(unittest.TestCase):
             self.assertEqual({item['locale'] for item in findings}, {'tr', 'en'})
             self.assertTrue(any('unsafe certainty review failed' in error for error in result['errors']))
 
+    def test_warranty_and_scoped_anti_certainty_guarantee_usage_are_safe(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            manifest = root / 'manifest.json'
+            catalog = root / 'catalog.csv'
+            write_manifest(manifest)
+            tr = row('2028-02-28', 'tr', 'warranty')
+            tr['title'] = 'Bir Satın Almanın Garanti Belgesini Sakla'
+            tr['full_text'] = 'Fatura ve garanti kaydını güvenli bir yerde sakla.'
+            en = row('2028-02-28', 'en', 'anti-certainty')
+            en['full_text'] = 'Symbolic guidance should not be presented as guaranteed future fact.'
+            tr_other = row('2028-02-29', 'tr', 'neutral')
+            en_other = row('2028-02-29', 'en', 'not-enough')
+            en_other['full_text'] = 'A city name alone is not enough to guarantee the intended coordinates.'
+            write_catalog(catalog, [tr, en, tr_other, en_other])
+
+            result = module.audit(catalog, manifest)
+            self.assertTrue(result['ok'], result['errors'])
+            self.assertEqual(result['unsafe_certainty_findings'], [])
+
 
 if __name__ == '__main__':
     unittest.main()
