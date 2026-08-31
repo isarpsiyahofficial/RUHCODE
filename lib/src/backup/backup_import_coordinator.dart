@@ -1,3 +1,5 @@
+export 'backup_service.dart' show BackupImportMode;
+
 import 'backup_package_codec.dart';
 import 'backup_schema.dart';
 import 'backup_service.dart';
