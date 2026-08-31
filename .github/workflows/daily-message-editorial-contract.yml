@@ -50,7 +50,7 @@ jobs:
           python-version: '3.12'
       - name: Validate daily-message structural lifecycle contract
         run: python tools/content/validate_daily_message_contract.py
-      - name: Validate committed editorial progress ledger
+      - name: Validate committed editorial coverage ledger
         run: python tools/content/validate_daily_message_editorial_progress.py
       - name: Test schema normalization contract
         run: python -m unittest tools/content/test_daily_message_schema.py
@@ -62,20 +62,19 @@ jobs:
         run: python -m unittest tools/content/test_validate_daily_message_catalog.py
       - name: Test sharded editorial pipeline
         run: python -m unittest tools/content/test_daily_message_shards.py
-      - name: Compile deterministic partial catalog
+      - name: Compile deterministic complete catalog
         run: >-
           python tools/content/build_daily_message_catalog.py
           --shards-root assets/content/daily_messages
           --manifest requirements/content_manifests/daily_messages.json
           --output build/daily_messages.csv
-      - name: Audit current editorial content without relaxing release completeness
+      - name: Strict audit complete editorial release catalog
         run: >-
           python tools/content/validate_daily_message_catalog.py
           --catalog build/daily_messages.csv
           --manifest requirements/content_manifests/daily_messages.json
-          --allow-incomplete
           --report build/daily_messages_editorial_report.json
-      - name: Upload current editorial audit
+      - name: Upload strict editorial audit
         uses: actions/upload-artifact@v4
         with:
           name: ruh-code-daily-message-editorial-audit
