@@ -32,6 +32,8 @@ final class _ProEntitlements implements EntitlementService {
 
 Widget _app(EntitlementService entitlements) {
   return MaterialApp(
+    locale: const Locale('tr'),
+    supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
     routes: <String, WidgetBuilder>{
       '/pdf/combined': (_) => const CombinedProfessionalPdfBuilderPage(),
     },
