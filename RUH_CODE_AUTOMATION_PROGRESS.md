@@ -28,28 +28,29 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
-- TR ledger: `2026-01-01 → 2036-02-29` = **3712**
-- EN ledger: `2026-01-01 → 2036-02-29` = **3712**
-- Ledger toplamı: **7424 / 8036**
-- Ledger kalan: **612**
-- Ledger'ın sıradaki exact başlangıcı: **2036-03-01**
+- TR ledger: `2026-01-01 → 2036-03-31` = **3743**
+- EN ledger: `2026-01-01 → 2036-03-31` = **3743**
+- Ledger toplamı: **7486 / 8036**
+- Ledger kalan: **550**
+- Ledger'ın sıradaki exact başlangıcı: **2036-04-01**
 
-Ocak ve Şubat 2036 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 60 exact tarih doğrulandıktan sonra ledger ileri taşındı. Leap-day `2036-02-29` hem TR hem EN trackinde fiziksel canonical kayıt olarak doğrulandı.
+Mart 2036 canonical shardları commit sonrası `main` üzerinden yeniden okunarak locale başına 31 exact tarih ve doğru locale alanları doğrulandıktan sonra ledger ileri taşındı.
 
 ## Bu turdaki doğrulama ve ilerleme
 
 - Binding master TODO/index ve mevcut progress tekrar okundu; kapsamın `RC-0001 → RC-1442` olduğu yeniden doğrulandı.
-- Çalışma başlangıcı exact HEAD `93cf62b9e21a7eb3b2426c988a1cec373bff6166` için exact-head Actions sorgusunda 23 workflow run bulundu; görünür run seti completed durumundaydı ve görünen contractlarda failure yoktu.
-- `assets/content/daily_messages/tr/2036-01.csv`, `en/2036-01.csv`, `tr/2036-02.csv`, `en/2036-02.csv` eklendi ve commit sonrası `main` üzerinden yeniden okundu.
-- Ocak shardları locale başına 31; Şubat shardları leap-year nedeniyle locale başına 29 exact canonical kayıt içeriyor.
-- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7424/8036 seviyesine ilerletildi.
+- Başlangıç exact HEAD `eb497fb92063adbb3283ee2ef526ceffa32027c4` için Flutter Quality decoded job logu alındı. `flutter analyze --fatal-infos` **50 issue** ile kırmızıydı ve test adımı bu nedenle çalışmamıştı.
+- Gate gevşetilmedi. Decoded analyzer çıktısından doğrulanan kök nedenlere göre `pdf_numerology_section.dart` içindeki 2 invalid `const StateError`, `combined_pdf_selection_state.dart` içindeki 7 invalid `const StateError`, `pinnacles_challenges_test.dart` içindeki iki eski named/const `CivilDate` çağrısı ve `pdf_asset_font_provider.dart` içindeki redundant `dart:typed_data` importu düzeltildi.
+- Bu patchler eski logdaki 20 analyzer diagnostic emissionını hedefliyor; yeni exact SHA CI sonucu oluşmadan bunlar SUCCESS sayılmayacak.
+- Analyzer logunda kalan doğrulanmış borçlar arasında diğer PDF `const StateError` çağrıları, `BackupImportMode` test import driftleri, PDF contract symbol/import driftleri, deprecated form-field kullanımları ve birkaç warning/info bulunuyor; sonraki tur bunları decoded log sırasıyla kapatacak.
+- `assets/content/daily_messages/tr/2036-03.csv` ve `assets/content/daily_messages/en/2036-03.csv` eklendi ve commit sonrası `main` üzerinden yeniden okundu.
+- `evidence/content/daily_messages_editorial_progress.json` yalnız committed contiguous shard sınırına göre 7486/8036 seviyesine ilerletildi.
 - `RC-1424/1425/1426/1427/1433/1434` full catalog ve release kanıtları olmadığı için DONE yapılmadı.
-- Yeni commit zincirinin exact Actions sonucu yeniden görünür şekilde tamamlanmadan CI SUCCESS veya FINAL denmeyecek.
 
 ## Açık ana blocker'lar
 
-- newest exact HEAD üzerindeki GitHub Actions zorunlu contract sonuçlarının tamamlanmış görünür SUCCESS olması
-- remaining daily-message editorial kapsamı: TR+EN `2036-03-01 → 2036-12-31` ve ardından strict 8.036-record release audit
+- Flutter Quality analyzer/test zincirinin exact newest HEAD üzerinde tamamlanmış SUCCESS olması
+- remaining daily-message editorial kapsamı: TR+EN `2036-04-01 → 2036-12-31` ve ardından strict 8.036-record release audit
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -62,12 +63,12 @@ Ocak ve Şubat 2036 canonical shardları commit sonrası `main` üzerinden yenid
 
 ## Son checkpoint
 
-`automation_runs/2026-08-31_1057_daily_messages_january_february_2036.md`
+`automation_runs/2026-08-31_1255_march_2036_flutter_analyzer_repair.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA workflow sonuçlarını tamamlanmış sonuçlarla yeniden oku; kırmızı varsa decoded log üzerinden kök neden bazında kapat.
-2. Canonical editorial batchlere `2036-03-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
+1. En yeni exact SHA Flutter Quality sonucunu decoded logla yeniden oku; kalan analyzer/test kırmızılarını kök neden bazında kapat.
+2. Canonical editorial batchlere `2036-04-01` tarihinden devam et; TR ve EN tracklerini bağımsız tut.
 3. Günün Mesajı kapsamını `2036-12-31` tarihine kadar kesintisiz tamamla; strict release completeness/quality auditini ancak 8.036 kayıt tamamlanınca çalıştırıp ilgili RC'leri kanıtla.
 4. Fiziksel artifact/font/UI/device-test gerektiren maddelere kanıtsız DONE verme.
 
