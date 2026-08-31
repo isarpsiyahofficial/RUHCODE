@@ -105,7 +105,7 @@ final class PdfOutputInspector {
     final rootReferenceResolvesToCatalog = rootReference != null &&
         _objectHasType(text, rootReference.$1, rootReference.$2, 'Catalog');
     final catalogPagesReference = rootReferenceResolvesToCatalog
-        ? _catalogPagesReference(text, rootReference!.$1, rootReference.$2)
+        ? _catalogPagesReference(text, rootReference.$1, rootReference.$2)
         : null;
     final catalogPagesReferenceResolves = catalogPagesReference != null &&
         _objectHasType(
