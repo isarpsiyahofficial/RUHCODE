@@ -1,7 +1,6 @@
 import 'backup_import_coordinator.dart';
 import 'backup_package_codec.dart';
 import 'backup_platform_gateway.dart';
-import 'backup_service.dart';
 import 'local_database_backup_exporter.dart';
 import 'portable_zip_backup_codec.dart';
 
