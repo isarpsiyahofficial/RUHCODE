@@ -24,7 +24,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Daily-message deterministic shard + editorial ledger + strict release QA hattı.
 - Daily-message legacy source adapter: geçmiş 5-sütun shardlar canonical 6-sütun in-memory şemaya normalize edilir; yeni editorial batchler canonical yazılır.
 
-## Günün Mesajı — doğrulanmış ledger
+## Günün Mesajı — doğrulanmış ledger ve strict audit
 
 Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
@@ -33,24 +33,28 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 - Ledger toplamı: **8036 / 8036**
 - Eksik exact tarih/locale kaydı: **0**
 - Editorial source coverage: **COMPLETE**
-- Release durumu: **PENDING_STRICT_RELEASE_AUDIT**; `done:false` korunuyor.
+- Strict release catalog audit: **SUCCESS** on exact source HEAD `4d68d5ad007657aafecad79173469ca6e60ffb1f`
+- Strict workflow run/job: `33445620611 / 99663941491`
+- Audit artifact: `9777939183`, digest `sha256:4aefada627afeda0257a24395b52a5e18b5484fc64c8b6c7b2fda454528a86b5`
+- Compiled catalog SHA-256: `6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf`
+- Audit report: `allow_incomplete=false`, `complete=true`, `ok=true`, `record_count=8036`, `missing=0`, near-duplicate=0, repetitive-opening=0, unsafe-certainty=0.
+- Requirement DONE durumu: strict source audit tek başına release APK packaging, rolling future-stock maintenance, editorial provenance ve runtime/device kapılarını kanıtlamadığından ilgili RC'ler otomatik DONE yapılmadı.
 
-Tam katalog derleme/audit zinciri exact 8.036 kayıt, `2026-01-01 → 2036-12-31` kesintisiz kapsam ve gerekli leap-day kayıtlarını doğruluyor. İlk strict tam-katalog koşusunda missing=0, near-duplicate=0 ve repetitive-opening=0 doğrulandı; 24 `garanti/guarantee` bulgusu nedeniyle unsafe-certainty kapısı kırmızı kaldı. İncelenen örnekler `garanti etmez` / `does not guarantee` gibi açık negasyonlar içerdiğinden audit motoru negasyon bağlamını ayırt edecek biçimde düzeltildi ve TR/EN pozitif-negatif regresyon testi eklendi. Yeni strict exact-head sonucu henüz tamamlanmadan DONE verilmeyecek.
+İlk strict tam-katalog koşusunda görülen 24 `garanti/guarantee` false-positive bulgusu, açık negasyon (`garanti etmez` / `does not guarantee`) bağlamını ayıran per-match semantics ile giderildi; gerçek pozitif certainty örnekleri hâlâ fail verir. Yeni strict audit bu düzeltme ile SUCCESS oldu ve kalite eşiği düşürülmedi.
 
 ## Son çalışma — CI/contract onarımı
 
-- Başlangıç exact HEAD `638c36bbb6a6094011cfad64cf707ef3c3a4085b` üzerinde Requirements Contract ve Flutter Quality kırmızıları yeniden okunup kök nedenleri çıkarıldı.
-- PDF planning semantic ownership validatorı RC-0903'ü artık `owned but explicitly open` olarak modeller; evidence `done:false` ve fiziksel multi-system production proof blocker'ı korunuyor.
-- Flutter `--fatal-infos` baseline'ındaki 11/11 diagnostic kaynakta kapatıldı: invalid `const StateError`, redundant import/non-null assertion ve deprecated Dropdown form-field kullanımları temizlendi.
-- Analyzer kapısı aşıldıktan sonra görünür olan entitlement/PDF UI contract driftleri giderildi: rewarded-ad cancellation/failure evidence ifadesi canonical validator sözleşmesiyle eşlendi; professional PDF typed record/section-order regresyon testi ve combined PDF English distinct-system guidance testi güçlendirildi.
-- Combined PDF widget/route testleri explicit TR/EN supported locale setine bağlandı; viewport dışı kontroller `scrollUntilVisible` ile deterministik hale getirildi. Bu, 2.0x text-scale testinde yanlış locale fallback kaynaklı UI test regresyonunu da hedefliyor.
-- Strict daily-message audit eşiği gevşetilmedi. Negatif `garanti etmez / does not guarantee` ifadelerinin yanlış pozitif sayılmaması için per-match negation semantics eklendi; gerçek pozitif guarantee/certainty örneklerinin hâlâ fail verdiğini kanıtlayan unit test eklendi.
+- Baseline exact HEAD `4d68d5ad007657aafecad79173469ca6e60ffb1f` yeniden okunarak 24 check içindeki gerçek kırmızı `validate-requirements` bulundu.
+- Requirements job logu RC sequence, classification, evidence integrity, semantic ownership, daily-message coverage ve PDF kontratlarının geçtiğini; kırmızının `tools/ui/validate_accessibility_interactions.py` içinde duplicate `ACTION-PDF-BUILDER-PREVIEW` olduğunu gösterdi.
+- `ACTION-PDF-BUILDER-PREVIEW` hem base `ui/action_registry.csv` hem `ui/action_registry_runtime_extensions.csv` içinde kayıtlıydı. Runtime extension'daki duplicate kaldırıldı; canonical base action ve runtime binding korundu.
+- Repair commit `d1fa6507df4a94b92b01fa0b804ce8c61e8d1e50` üzerinde `validate-requirements` SUCCESS ve `validate-ui-contracts` SUCCESS doğrulandı.
+- Aynı repair HEAD üzerinde Flutter `analyze-and-test` checkpoint anında hâlâ in-progress olduğundan SUCCESS iddiası verilmedi.
 - `requirements/requirement_state.csv` değiştirilmedi; bu turda kanıtsız DONE eklenmedi.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions kapılarının tamamlanmış SUCCESS olması
-- 8.036-record strict editorial audit'in yeni negation-aware validator ile exact-head SUCCESS kanıtı
+- RC-1424/1425/1426/1427/1433/1434 için strict audit ötesindeki packaging/runtime/provenance/rolling-horizon koşullarının requirement-by-requirement kapanması
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -63,13 +67,13 @@ Tam katalog derleme/audit zinciri exact 8.036 kayıt, `2026-01-01 → 2036-12-31
 
 ## Son checkpoint
 
-`automation_runs/2026-09-01_0054_ci_contract_editorial_audit_repair.md`
+`automation_runs/2026-09-01_0121_action_registry_strict_audit.md`
 
 ## Sıradaki çalışma
 
 1. En yeni exact SHA Actions sonucunu yeniden oku; kırmızı varsa newest decoded log üzerinden kök nedeni aynı çalıştırmada kapat.
-2. Daily Message Editorial Contract strict 8.036 audit sonucunu doğrula; gerçek unsafe-certainty bulgusu kalırsa yalnız ilgili canonical kayıtları editorial olarak düzelt, kalite eşiğini düşürme.
-3. CI yeşil olduğunda requirement ownership/evidence koşullarını tek tek yeniden değerlendir; yalnız bağlayıcı DONE koşulları gerçekten sağlanan maddeleri işaretle.
-4. Sonra bağımlılık sırasındaki fiziksel artifact/font/UI/device/release blockerlarına ilerle.
+2. Flutter/PDF/UI/Requirements source-level kapıları yeşil olduğunda RC-1424/1425/1426/1427/1433/1434 closure koşullarını packaging/runtime/provenance/horizon açısından tek tek değerlendir; yalnız gerçekten tamamlananları ilerlet.
+3. Sonra bağımlılık sırasındaki fiziksel artifact/font/UI/device/release blockerlarına devam et.
+4. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
