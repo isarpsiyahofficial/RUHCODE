@@ -25,6 +25,8 @@ Flutter Quality decoded log failed at `flutter analyze --fatal-infos` with 29 di
 5. Removed invalid `const` from the combined PDF adapter `StateError`.
 6. Repaired PDF asset-font test imports: removed unnecessary `dart:typed_data`, imported `FlutterError` from Flutter foundation.
 7. Removed stale unused `pdf_report_contract.dart` import from `persisted_calculation_pdf_router.dart`.
+8. Removed the stale `pdf_report_contract.dart` import from `persisted_calculation_pdf_router_test.dart`; the test now consumes `PdfReportOptions` from the canonical `pdf_service.dart` import.
+9. Removed stale `backup_schema.dart` and `backup_service.dart` imports from `backup_import_coordinator_test.dart`; `BackupImportMode` now comes through the coordinator public surface.
 
 These repairs target the confirmed analyzer/contract failures; they are not counted as a green CI result until the newest exact-head workflows complete successfully.
 
@@ -34,7 +36,6 @@ These repairs target the confirmed analyzer/contract failures; they are not coun
 - `pdf_output_inspector.dart` unnecessary non-null assertion
 - backup settings stale import
 - deprecated DropdownButtonFormField `value` usages
-- stale backup/PDF test imports not yet removed
 - remaining analyzer diagnostics must be taken from the newest exact-head decoded log rather than assumed from the baseline
 
 ## Editorial ledger
