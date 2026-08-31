@@ -74,7 +74,7 @@ try:
     assert storage['compiler'] == 'tools/content/build_daily_message_catalog.py'
     assert storage['release_audit_must_be_complete'] is True
 
-    for token in ('SHARD_FILE', 'date {row["date"]!r} does not match shard month', 'Duplicate exact daily message key across shards'):
+    for token in ('SHARD_FILE', 'date {row["date"]!r} does not match shard month', 'Duplicate exact daily-message key across shards'):
         assert token in builder, f'missing period-shard compiler token: {token}'
     for token in ('append_paired_batch', "f'{year:04d}-{month:02d}.csv'", 'batch overlaps committed dates'):
         assert token in appender, f'missing safe paired batch appender token: {token}'
