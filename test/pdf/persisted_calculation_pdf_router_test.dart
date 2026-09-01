@@ -50,13 +50,15 @@ void main() {
     );
 
     await expectLater(
-      router.buildReport(
-        snapshot: _snapshot('vedic.natal'),
-        options: const PdfReportOptions(
-          localeTag: 'tr',
-          sectionIds: <String>['chart'],
-        ),
-      ),
+      Future<void>.sync(() async {
+        await router.buildReport(
+          snapshot: _snapshot('vedic.natal'),
+          options: const PdfReportOptions(
+            localeTag: 'tr',
+            sectionIds: <String>['chart'],
+          ),
+        );
+      }),
       throwsA(isA<UnsupportedError>()),
     );
   });
