@@ -500,6 +500,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
           Semantics(
             label: 'PDF Önizle',
             button: true,
+            excludeSemantics: true,
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 48),
               child: OutlinedButton.icon(
@@ -539,6 +540,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
           Semantics(
             label: 'PDF Oluştur',
             button: true,
+            excludeSemantics: true,
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 48),
               child: FilledButton.icon(
@@ -577,6 +579,7 @@ class _ProfessionalPdfBuilderPageState extends State<ProfessionalPdfBuilderPage>
               Semantics(
                 label: 'PDF Paylaş',
                 button: true,
+                excludeSemantics: true,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 48),
                   child: OutlinedButton.icon(
