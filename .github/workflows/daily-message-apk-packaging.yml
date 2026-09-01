@@ -1,0 +1,43 @@
+name: Daily Message APK Packaging
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-apk-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Resolve dependencies
+        run: flutter pub get
+      - name: Build release APK
+        run: flutter build apk --release
+      - name: Validate packaged Daily Message assets in APK
+        run: |
+          python3 tools/content/validate_daily_message_apk_assets.py \
+            build/app/outputs/flutter-apk/app-release.apk \
+            --report build/reports/daily-message-apk-assets.json
+      - name: Record APK digest
+        shell: bash
+        run: |
+          sha256sum build/app/outputs/flutter-apk/app-release.apk | tee build/reports/app-release.sha256
+      - name: Upload packaging evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-message-apk-packaging-evidence
+          path: |
+            build/reports/daily-message-apk-assets.json
+            build/reports/app-release.sha256
+          if-no-files-found: error
+          retention-days: 14
