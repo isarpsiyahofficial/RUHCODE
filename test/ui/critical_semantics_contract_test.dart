@@ -23,7 +23,6 @@ Widget _app(Widget home) => MaterialApp(
 void main() {
   testWidgets('numerology result exposes localized metric semantics', (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
     const model = NumerologyPresentationModel(
       snapshotDigest: 'digest',
       birthDateIso: '1990-05-19',
@@ -44,11 +43,11 @@ void main() {
     expect(find.bySemanticsLabel('Yaşam Yolu: 7'), findsOneWidget);
     expect(find.text('Yaşam Yolu'), findsOneWidget);
     expect(find.text('7'), findsOneWidget);
+    semantics.dispose();
   });
 
   testWidgets('professional PDF create and share controls expose semantics and 48dp targets', (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
     await tester.pumpWidget(
       _app(
         ProfessionalPdfBuilderPage(
@@ -71,13 +70,24 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      create,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(create);
     await tester.pumpAndSettle();
 
     final share = find.byKey(const ValueKey(RuhActionIds.pdfShare));
+    await tester.scrollUntilVisible(
+      share,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(share, findsOneWidget);
     expect(find.bySemanticsLabel('PDF Paylaş'), findsOneWidget);
     expect(tester.getSize(share).height, greaterThanOrEqualTo(48));
+    semantics.dispose();
   });
 }
 
