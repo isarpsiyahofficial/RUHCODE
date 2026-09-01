@@ -1,39 +1,42 @@
 # Ruh Code — Latest Automation Checkpoint
 
-Latest source-level checkpoint:
+Latest checkpoint:
 
-`automation_runs/2026-09-01_1853_flutter_test_diagnostics.md`
+`automation_runs/2026-09-01_2056_flutter_failure_triage_and_apk_gate.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Newest Flutter Quality blocker re-verified**
-   - baseline exact HEAD: `0464cea682a59a001bf78c96f6ae5903f6c004f2`
-   - failed run/job: `33504997620 / 99846836906`
+1. **Flutter test blocker artık exact artifact ile açıldı**
+   - baseline exact HEAD: `27fff69fe715d6b75e45310fb906b661623238c1`
+   - run/job: `33529478301 / 99928648490`
    - `Analyze`: SUCCESS
    - `Test`: FAILURE
-   - check annotations were empty and connector log ZIP did not expose the failing test text reliably
+   - diagnostic artifact `9809184752` indirildi ve gerçek `flutter-test.log` okundu
+   - baseline test özeti: `+556 -31` (31 failure)
 
-2. **Flutter test diagnostics made durable without weakening gates**
-   - commit `ba9b3ed3b16356f55953b5e841a1a2afa988db3d`: captures expanded `flutter test` output to `flutter-test.log`, preserves failure via `set -o pipefail`, uploads a diagnostic artifact
-   - commit `6ad9066115af38aa74cede57bcf45f08ee937acb`: failure-only parser emits bounded GitHub `::error` annotations around exact failure markers
-   - no `continue-on-error`, no analyzer threshold change, no test expectation weakening
+2. **Gerçek kök nedenlerden ilk grup düzeltildi**
+   - production TR/EN Material/Widgets/Cupertino localization delegates bağlandı
+   - Today TR widget fixture production localization contractına hizalandı
+   - backup exporter testindeki stale 14 tablo expectationı canonical 15-table schema ile hizalandı
+   - persisted PDF router sync fail-closed throw testi Future boundary içinde güvenli yakalanır hale getirildi
 
-3. **Requirement discipline preserved**
-   - scope remains `RC-0001 → RC-1442`
-   - no evidence-free `requirements/requirement_state.csv` override was added
-   - diagnostic infrastructure alone does not produce DONE
+3. **Daily Message APK evidence gate eklendi**
+   - release APK build edilir
+   - APK ZIP içindeki TR/EN Daily Message assetleri exact date+locale seviyesinde doğrulanır
+   - 2026-01-01..2036-12-31 için locale başına 4.018 kayıt, missing/duplicate/path-locale mismatch denetlenir
+   - release APK SHA-256 ve JSON evidence artifact üretilir
+   - bu kapı real-device/offline proof yerine geçmez
 
-## Current state
+4. **Requirement disiplini korundu**
+   - kapsam `RC-0001 → RC-1442`
+   - `requirements/requirement_state.csv` değiştirilmedi
+   - CI/release/device kanıtı tamamlanmadan ilgili RC'ler DONE yapılmadı
 
-- newest diagnostic source SHA before checkpoint docs: `6ad9066115af38aa74cede57bcf45f08ee937acb`
-- immediate workflow lookup for the first diagnostic SHA returned no indexed runs yet; this is treated as transient Actions latency, not SUCCESS
-- underlying `flutter test` blocker remains OPEN until a new exact-SHA run exposes and passes the failing test
+## Açık kritik işler
 
-## Next safe work
-
-- read newest exact-SHA Flutter Quality run
-- if red, use the newly persisted artifact/check annotations to patch the exact failing test/root cause without weakening gates
-- repeat until Analyze + Test are green
-- then continue Daily Message APK asset inspection/offline proof and remaining physical artifact/font/UI/device/clean-checkout/release blockers
+- yeni exact HEAD üzerinde Flutter Quality ve APK Packaging workflow sonuçlarını okumak
+- kalan failure kümelerini exact logdan kapatmak: strict PDF fixtures, BaZi, historical timezone ve widget/accessibility
+- APK packaging gate yeşil olduktan sonra real offline/airplane-mode cihaz kanıtını eklemek
+- kalan master release blockerlarına dependency sırasıyla devam etmek
 
 **FINAL: NO.**
