@@ -21,6 +21,7 @@ final class _MemoryAssetBundle extends CachingAssetBundle {
 }
 
 const _header = 'date,locale,title,teaser,full_text,theme_tag\n';
+const _legacyHeader = 'date,title,teaser,message,theme\n';
 
 void main() {
   test('packaged shard loader resolves exact date and locale without fallback', () async {
@@ -49,6 +50,35 @@ void main() {
     expect(catalog.find(date: CivilDate(2026, 9, 2), localeTag: 'tr'), isNull);
   });
 
+  test('legacy shard is normalized with locale from its exact asset path', () async {
+    const path = 'assets/content/daily_messages/tr/2030-07.csv';
+    final bundle = _MemoryAssetBundle({
+      path:
+          '${_legacyHeader}"2030-07-01","Sessiz Öncelik","Bugün gerçekten gerekli olana dön.","Tam mesaj","focus"\n',
+    });
+
+    final catalog = await DailyMessageAssetLoader(bundle: bundle).loadFromAssetPaths(
+      const [path],
+    );
+    final entry = catalog.require(date: CivilDate(2030, 7, 1), localeTag: 'tr');
+    expect(entry.title, 'Sessiz Öncelik');
+    expect(entry.fullText, 'Tam mesaj');
+    expect(entry.themeTag, 'focus');
+    expect(catalog.find(date: CivilDate(2030, 7, 1), localeTag: 'en'), isNull);
+  });
+
+  test('legacy shard still rejects empty required message content', () async {
+    const path = 'assets/content/daily_messages/en/2030-07.csv';
+    final bundle = _MemoryAssetBundle({
+      path: '${_legacyHeader}"2030-07-01","Title","Teaser","","focus"\n',
+    });
+
+    await expectLater(
+      DailyMessageAssetLoader(bundle: bundle).loadFromAssetPaths(const [path]),
+      throwsArgumentError,
+    );
+  });
+
   test('CSV parser preserves quoted commas and escaped quotes', () async {
     const path = 'assets/content/daily_messages/en/2026-09.csv';
     final bundle = _MemoryAssetBundle({
@@ -65,12 +95,23 @@ void main() {
     expect(entry.fullText, 'Line one, line two');
   });
 
-  test('locale mismatch between path and row is rejected', () async {
+  test('locale mismatch between path and canonical row is rejected', () async {
     const path = 'assets/content/daily_messages/tr/2026-09.csv';
     final bundle = _MemoryAssetBundle({
       path: '${_header}"2026-09-01","en","Title","Teaser","Text","theme"\n',
     });
 
+    await expectLater(
+      DailyMessageAssetLoader(bundle: bundle).loadFromAssetPaths(const [path]),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('unknown shard schema is rejected instead of guessed', () async {
+    const path = 'assets/content/daily_messages/tr/2030-07.csv';
+    final bundle = _MemoryAssetBundle({
+      path: 'date,title,text\n2030-07-01,A,B\n',
+    });
     await expectLater(
       DailyMessageAssetLoader(bundle: bundle).loadFromAssetPaths(const [path]),
       throwsA(isA<FormatException>()),
