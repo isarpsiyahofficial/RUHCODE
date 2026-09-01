@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/content/daily_messages/daily_message_catalog.dart';
 import 'package:ruh_code/src/domain/models/core_models.dart';
@@ -35,6 +36,11 @@ Widget _app(EntitlementService entitlements) {
   return MaterialApp(
     locale: const Locale('tr'),
     supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     routes: <String, WidgetBuilder>{
       '/pdf/combined': (_) => const CombinedProfessionalPdfBuilderPage(),
     },
