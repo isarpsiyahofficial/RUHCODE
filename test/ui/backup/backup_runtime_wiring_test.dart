@@ -5,6 +5,7 @@ import '../../../lib/src/backup/backup_application_service.dart';
 import '../../../lib/src/backup/backup_import_coordinator.dart';
 import '../../../lib/src/backup/backup_package_codec.dart';
 import '../../../lib/src/backup/backup_package_manifest.dart';
+import '../../../lib/src/content/daily_messages/daily_message_catalog.dart';
 import '../../../lib/src/domain/models/core_models.dart';
 import '../../../lib/src/entitlements/entitlement_service.dart';
 import '../../../lib/src/entitlements/feature_access_guard.dart';
@@ -119,6 +120,7 @@ Widget _app(_FakeBackupActions backup, {Locale locale = const Locale('tr')}) {
     locale: locale,
     home: MainNavigationShell(
       featureAccess: guard,
+      dailyMessages: DailyMessageCatalog(<DailyMessageEntry>[]),
       backupActions: backup,
     ),
   );
