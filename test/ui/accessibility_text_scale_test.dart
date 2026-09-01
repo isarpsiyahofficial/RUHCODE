@@ -57,7 +57,13 @@ void main() {
       await tester.tap(find.text('Araçlar'));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      expect(find.text('Kişisel Gelişim'), findsOneWidget);
+      final personalGrowth = find.text('Kişisel Gelişim');
+      await tester.scrollUntilVisible(
+        personalGrowth,
+        180,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(personalGrowth, findsOneWidget);
 
       await tester.tap(find.text('Kayıtlar'));
       await tester.pumpAndSettle();
