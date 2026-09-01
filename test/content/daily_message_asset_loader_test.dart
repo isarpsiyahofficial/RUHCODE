@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +14,7 @@ final class _MemoryAssetBundle extends CachingAssetBundle {
   Future<ByteData> load(String key) async {
     final value = assets[key];
     if (value == null) {
-      throw FlutterError('Missing test asset: $key');
+      throw StateError('Missing test asset: $key');
     }
     return ByteData.sublistView(Uint8List.fromList(utf8.encode(value)));
   }
