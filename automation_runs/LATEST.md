@@ -2,42 +2,41 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-01_2316_flutter_apk_runtime_failure_cluster_repair.md`
+`automation_runs/2026-09-02_0056_flutter_17_failure_cluster_repair.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Flutter failure listesi yeniden exact artifact ile açıldı**
-   - baseline exact HEAD: `f18493949d0229a41e47d2dc05338e2167f599ac`
-   - run/job: `33541602606 / 99968946166`
-   - `Analyze`: SUCCESS
-   - `Test`: FAILURE
-   - diagnostic artifact `9814027794` indirildi
-   - exact test özeti: `+559 -28` — 28 failure
+1. **Flutter Quality exact baseline yeniden açıldı**
+   - baseline exact HEAD: `bf9b954f454f8c8685469010e4519c22073b7773`
+   - run/job: `33554498838 / 100011879752`
+   - Analyze: SUCCESS
+   - Test: FAILURE
+   - exact diagnostic summary: **`+573 -17`**
+   - artifact: `9819339077`
 
-2. **Ortak kök neden kümeleri gerçekten düzeltildi**
-   - BaZi Hidden Stems stale expectation canonical tabloyla hizalandı
-   - Pacific/Apia skipped-day testi explicit first-valid-wall-time politikasıyla hizalandı
-   - strict PDF inspector gevşetilmeden sahte PDF fixture'ları gerçek `pdf` çıktısına çevrildi
-   - persisted Western snapshot tamper/aspect fixture'ları gerçek sözleşmeyi test edecek hale getirildi
-   - navigation/backup/professional PDF/combined PDF/text-scale/semantics widget fixture'ları production TR/EN localization delegate setine getirildi
-   - production PDF preview/create/share accessibility ağacındaki duplicate semantics node'ları giderildi
+2. **17 failure içindeki ortak kökler gerçekten düzeltildi**
+   - production PDF inspector classic xref trailer içindeki nested dictionary durumunu artık `/Root` doğrulamasını kaybetmeden destekliyor
+   - Professional PDF create/share widget testleri lazy ListView kontrolünü görünür alana getirerek gerçek production key üzerinden çalışıyor
+   - Numerology metrik Semantics node'u tek canonical localized label üretiyor
+   - backup restore/semantics testleri lazy restore kontrollerini görünür alana getiriyor ve SemanticsHandle lifecycle'ını kapatıyor
+   - 2.0x text-scale Tools testi lazy `Kişisel Gelişim` hedefini gerçek scroll yoluyla doğruluyor
+   - navigation testi gerçek route context üzerinden pop ediyor ve semantics lifecycle'ını kapatıyor
+   - Combined PDF EN gate `Calculation Details` lazy child'ını görünür alana getirip bağımsız İngilizce metni doğruluyor
 
-3. **APK build artık gerçekten çalışıyor ve gerçek runtime açığı yakaladı**
-   - exact `5fb94606b7c4c9445f2675fb3ebf42b36b142ba6` üzerinde Android host materialization SUCCESS
-   - release APK build SUCCESS, 53.2 MB
-   - validator 2030-07 sonrası legacy 5-column Daily Message shardlarını yakaladı
-   - production loader artık yalnız açıkça bilinen canonical 6-column + legacy 5-column şemaları sıkı normalize ediyor
-   - legacy locale yalnız asset path'ten alınır; AI/network/random/date/language fallback yok
-   - APK validator aynı şema sözleşmesini uygular ve hâlâ 4.018 TR + 4.018 EN, non-empty, missing=0, duplicate=0 ister
-
-4. **Requirement disiplini korundu**
+3. **Requirement disiplini korundu**
    - kapsam `RC-0001 → RC-1442`
    - `requirements/requirement_state.csv` değiştirilmedi
-   - CI/APK/device kanıtı tamamlanmadan ilgili RC'ler DONE yapılmadı
+   - source/test düzeltmeleri nedeniyle kanıtsız DONE eklenmedi
+
+## Current source lineage
+
+Son source/test commit: `593f74fbda30ba5b56473ca30a08c86f72f372ee`.
+
+Bu SHA için 26 workflow oluşturuldu; checkpoint gözleminde queued oldukları için SUCCESS kabul edilmedi.
 
 ## Açık kritik işler
 
-- newest exact HEAD Flutter Quality sonucunu okumak ve varsa yeni diagnostic artifact'teki kalan failure kümelerini kapatmak
+- newest exact HEAD Flutter Quality sonucunu tamamlanmış olarak okumak; kırmızıysa yeni diagnostic artifact'teki yalnız kalan failure'ları kapatmak
 - newest exact HEAD Daily Message APK Packaging validator sonucunu doğrulamak
 - APK packaging yeşil olduktan sonra real offline/airplane-mode device lookup kanıtı
 - tracked/signable Android release host + clean-checkout reproducible release proof
