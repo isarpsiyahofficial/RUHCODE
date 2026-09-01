@@ -2,41 +2,45 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-01_2056_flutter_failure_triage_and_apk_gate.md`
+`automation_runs/2026-09-01_2316_flutter_apk_runtime_failure_cluster_repair.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Flutter test blocker artık exact artifact ile açıldı**
-   - baseline exact HEAD: `27fff69fe715d6b75e45310fb906b661623238c1`
-   - run/job: `33529478301 / 99928648490`
+1. **Flutter failure listesi yeniden exact artifact ile açıldı**
+   - baseline exact HEAD: `f18493949d0229a41e47d2dc05338e2167f599ac`
+   - run/job: `33541602606 / 99968946166`
    - `Analyze`: SUCCESS
    - `Test`: FAILURE
-   - diagnostic artifact `9809184752` indirildi ve gerçek `flutter-test.log` okundu
-   - baseline test özeti: `+556 -31` (31 failure)
+   - diagnostic artifact `9814027794` indirildi
+   - exact test özeti: `+559 -28` — 28 failure
 
-2. **Gerçek kök nedenlerden ilk grup düzeltildi**
-   - production TR/EN Material/Widgets/Cupertino localization delegates bağlandı
-   - Today TR widget fixture production localization contractına hizalandı
-   - backup exporter testindeki stale 14 tablo expectationı canonical 15-table schema ile hizalandı
-   - persisted PDF router sync fail-closed throw testi Future boundary içinde güvenli yakalanır hale getirildi
+2. **Ortak kök neden kümeleri gerçekten düzeltildi**
+   - BaZi Hidden Stems stale expectation canonical tabloyla hizalandı
+   - Pacific/Apia skipped-day testi explicit first-valid-wall-time politikasıyla hizalandı
+   - strict PDF inspector gevşetilmeden sahte PDF fixture'ları gerçek `pdf` çıktısına çevrildi
+   - persisted Western snapshot tamper/aspect fixture'ları gerçek sözleşmeyi test edecek hale getirildi
+   - navigation/backup/professional PDF/combined PDF/text-scale/semantics widget fixture'ları production TR/EN localization delegate setine getirildi
+   - production PDF preview/create/share accessibility ağacındaki duplicate semantics node'ları giderildi
 
-3. **Daily Message APK evidence gate eklendi**
-   - release APK build edilir
-   - APK ZIP içindeki TR/EN Daily Message assetleri exact date+locale seviyesinde doğrulanır
-   - 2026-01-01..2036-12-31 için locale başına 4.018 kayıt, missing/duplicate/path-locale mismatch denetlenir
-   - release APK SHA-256 ve JSON evidence artifact üretilir
-   - bu kapı real-device/offline proof yerine geçmez
+3. **APK build artık gerçekten çalışıyor ve gerçek runtime açığı yakaladı**
+   - exact `5fb94606b7c4c9445f2675fb3ebf42b36b142ba6` üzerinde Android host materialization SUCCESS
+   - release APK build SUCCESS, 53.2 MB
+   - validator 2030-07 sonrası legacy 5-column Daily Message shardlarını yakaladı
+   - production loader artık yalnız açıkça bilinen canonical 6-column + legacy 5-column şemaları sıkı normalize ediyor
+   - legacy locale yalnız asset path'ten alınır; AI/network/random/date/language fallback yok
+   - APK validator aynı şema sözleşmesini uygular ve hâlâ 4.018 TR + 4.018 EN, non-empty, missing=0, duplicate=0 ister
 
 4. **Requirement disiplini korundu**
    - kapsam `RC-0001 → RC-1442`
    - `requirements/requirement_state.csv` değiştirilmedi
-   - CI/release/device kanıtı tamamlanmadan ilgili RC'ler DONE yapılmadı
+   - CI/APK/device kanıtı tamamlanmadan ilgili RC'ler DONE yapılmadı
 
 ## Açık kritik işler
 
-- yeni exact HEAD üzerinde Flutter Quality ve APK Packaging workflow sonuçlarını okumak
-- kalan failure kümelerini exact logdan kapatmak: strict PDF fixtures, BaZi, historical timezone ve widget/accessibility
-- APK packaging gate yeşil olduktan sonra real offline/airplane-mode cihaz kanıtını eklemek
-- kalan master release blockerlarına dependency sırasıyla devam etmek
+- newest exact HEAD Flutter Quality sonucunu okumak ve varsa yeni diagnostic artifact'teki kalan failure kümelerini kapatmak
+- newest exact HEAD Daily Message APK Packaging validator sonucunu doğrulamak
+- APK packaging yeşil olduktan sonra real offline/airplane-mode device lookup kanıtı
+- tracked/signable Android release host + clean-checkout reproducible release proof
+- kalan master physical ephemeris/EOP/font/UI-reference/device/release blockerları
 
 **FINAL: NO.**
