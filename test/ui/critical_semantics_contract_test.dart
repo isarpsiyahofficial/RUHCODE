@@ -7,6 +7,13 @@ import 'package:ruh_code/src/ui/pdf/pdf_reports_pages.dart';
 import 'package:ruh_code/src/ui/pdf/professional_pdf_ui_actions.dart';
 import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
 
+Widget _app(Widget home) => MaterialApp(
+      locale: const Locale('tr'),
+      supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+      theme: RuhAppTheme.light(),
+      home: home,
+    );
+
 void main() {
   testWidgets('numerology result exposes localized metric semantics', (tester) async {
     final semantics = tester.ensureSemantics();
@@ -25,12 +32,7 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: RuhAppTheme.light(),
-        home: const NumerologyScreen(model: model),
-      ),
-    );
+    await tester.pumpWidget(_app(const NumerologyScreen(model: model)));
     await tester.pumpAndSettle();
 
     expect(find.bySemanticsLabel('Yaşam Yolu: 7'), findsOneWidget);
@@ -42,9 +44,8 @@ void main() {
     final semantics = tester.ensureSemantics();
     addTearDown(semantics.dispose);
     await tester.pumpWidget(
-      MaterialApp(
-        theme: RuhAppTheme.light(),
-        home: ProfessionalPdfBuilderPage(
+      _app(
+        ProfessionalPdfBuilderPage(
           actions: _BuildActions(),
           records: _RecordActions(),
           deliveryActions: _DeliveryActions(),
@@ -61,6 +62,8 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('professional-pdf-record-selector')));
     await tester.pumpAndSettle();
     await tester.tap(find.textContaining('numerology.pythagorean').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     await tester.tap(create);
     await tester.pumpAndSettle();
