@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/pdf/pdf_report_contract.dart';
 import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
@@ -8,6 +9,11 @@ import 'package:ruh_code/src/ui/pdf/professional_pdf_ui_actions.dart';
 Widget _app(Widget home, {Locale locale = const Locale('tr', 'TR')}) => MaterialApp(
       locale: locale,
       supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: home,
     );
 
