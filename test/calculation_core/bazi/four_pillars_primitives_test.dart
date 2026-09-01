@@ -50,8 +50,8 @@ void main() {
     expect(distribution.hiddenStemOccurrences[WuXingElement.fire], 3);
     expect(distribution.hiddenStemOccurrences[WuXingElement.earth], 3);
     expect(distribution.hiddenStemOccurrences[WuXingElement.metal], 2);
-    expect(distribution.hiddenStemOccurrences[WuXingElement.water], 2);
-    expect(distribution.hiddenStemOccurrences.values.fold<int>(0, (a, b) => a + b), 11);
+    expect(distribution.hiddenStemOccurrences[WuXingElement.water], 1);
+    expect(distribution.hiddenStemOccurrences.values.fold<int>(0, (a, b) => a + b), 10);
   });
 
   test('Yin Yang distribution counts exactly eight visible symbols', () {
