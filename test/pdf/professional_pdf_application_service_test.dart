@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:ruh_code/src/entitlements/entitlement_service.dart';
 import 'package:ruh_code/src/entitlements/feature_access_guard.dart';
 import 'package:ruh_code/src/pdf/guarded_pdf_service.dart';
@@ -142,13 +141,13 @@ final class _RecordingPdfService implements PdfService<String> {
     calls += 1;
     lastSnapshot = snapshot;
     lastOptions = options;
-    final padding = List<String>.filled(80, 'x').join();
-    final text = '%PDF-1.7\n'
-        '1 0 obj << /Type /Catalog >> endobj\n'
-        '2 0 obj << /Type /Pages /Count 1 >> endobj\n'
-        '3 0 obj << /Type /Page /Parent 2 0 R >> endobj\n'
-        '$padding\n%%EOF\n';
-    return latin1.encode(text);
+    final document = pw.Document();
+    document.addPage(
+      pw.Page(
+        build: (_) => pw.Text('Ruh Code test report'),
+      ),
+    );
+    return document.save();
   }
 }
 
