@@ -2,47 +2,46 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-09-01_0505_daily_message_today_ui_analyzer_repair.md`
+`automation_runs/2026-09-01_1057_daily_message_today_production_wiring.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Flutter Quality kırmızısının exact kök nedeni kapatıldı**
-   - baseline exact HEAD `046209e69e0028ddcce11f1b7f97b96bfbd7d0dc`
-   - failed workflow `Flutter Quality` run `33453093595`
-   - failed job `analyze-and-test` / `99687118728`
-   - decoded logdaki iki analyzer bulgusu: unnecessary `dart:typed_data` + undefined test-only `FlutterError`
-   - import kaldırıldı, test bundle hatası `StateError` ile fail-closed tutuldu; `--fatal-infos` gevşetilmedi
+1. **Flutter Quality teşhisi yeniden doğrulandı**
+   - baseline exact HEAD: `3cbf397cbd8d4b6523564f4d1dc08a3b22e77d81`
+   - failed run/job: `33460940052 / 99710705933`
+   - `flutter analyze --fatal-infos`: PASS
+   - kırılan aşama: `flutter test`
+   - exact annotation payloadı connector tarafından verilmediği için tahmini test düzeltmesi yapılmadı
 
-2. **Daily Message Today UI component gerçekten eklendi**
-   - `DailyMessageTodayPage` packaged/runtime catalog tüketiyor
-   - device-local tarih exact `CivilDate` anahtarına dönüştürülüyor
-   - TR locale bağımsız TR kaydı, diğer destekli yüzey EN kaydı kullanıyor
-   - missing exact date açık unavailable state veriyor; random/previous/next fallback yok
-   - semantics ve stabil widget key'leri mevcut
+2. **Daily Message production Today wiring tamamlandı (source-level)**
+   - `runtime.dailyMessages` → `RuhCodeApp`
+   - `RuhCodeApp` → `MainNavigationShell`
+   - `MainNavigationShell` → `DailyMessageTodayPage`
+   - `Bugün` placeholder kaldırıldı; gerçek packaged/runtime katalog production Today tab tarafından tüketiliyor
 
-3. **Widget testleri eklendi**
-   - Turkish exact-date rendering
-   - independent English rendering
-   - missing-date/no-fallback behavior
+3. **Navigation test fixture contract güncellendi**
+   - `MainNavigationShell` için explicit `DailyMessageCatalog` dependency sağlandı
+   - mevcut entitlement/navigation assertions korunuyor
 
 4. **Requirement disiplini korundu**
    - kapsam `RC-0001 → RC-1442`
-   - component henüz production navigation tab'ına bağlanmadığı için ilgili RC'ler DONE yapılmadı
-   - sparse requirement override ledger değiştirilmedi
+   - `requirements/requirement_state.csv` değiştirilmedi
+   - source wiring tek başına ilgili Daily Message requirementlarını DONE yapmadı
 
-## Current source state
+## Current state
 
-- UI-test source HEAD: `9552a70c5dc26f252e0ad83e2c9cb7640748e49e`
-- bu SHA için gözlem anında 24 workflow oluşmuştu ve queued idi
-- exact failure query o anda `0` dönüyordu; run'lar tamamlanmadığı için SUCCESS sayılmadı
-- progress/checkpoint documentation commits bunun ardından main'e işlendi
+- Production-wiring source HEAD: `d7ea9d1470b556e6d4fe614bdf4e6fb3c7712a70`
+- baseline→wiring compare: 4 commit ahead, 0 behind
+- wiring SHA push'u 51 workflow oluşturdu; gözlem anında queued idi
+- checkpoint/progress documentation commits bunun ardından main'e işlendi
+- exact latest documentation HEAD için CI tamamlanmadan SUCCESS iddiası yok
 
 ## Next safe work
 
-- newest exact HEAD workflow sonuçlarını tamamlanmış halde yeniden oku; Flutter Quality/Today UI test kırmızısı varsa decoded logdan kök nedeni kapat
-- `DailyMessageTodayPage` bileşenini bootstrapped `runtime.dailyMessages` ile production `MainNavigationShell` Today tab'ına bağla
-- production navigation testini ekle/doğrula
+- newest exact HEAD workflow sonuçlarını tamamlanmış halde yeniden oku
+- Flutter Quality/test kırmızısı varsa decoded logdan exact kök nedeni kapat
+- production Today tab'da injected exact date+locale record rendering assertionını ekle/doğrula
 - APK/offline-device asset-open kanıtını tamamla
-- sonra physical artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et
+- physical artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et
 
 **FINAL: NO.**
