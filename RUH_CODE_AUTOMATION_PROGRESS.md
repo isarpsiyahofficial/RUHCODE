@@ -22,7 +22,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Professional/combined PDF planning, persisted Western/Numerology projection, preview/build parity ve structural validation.
 - UI action/accessibility kontratları.
 - Daily-message deterministic shard + editorial ledger + strict release QA hattı.
-- Daily-message legacy source adapter: geçmiş 5-sütun shardlar canonical 6-sütun in-memory şemaya normalize edilir; yeni editorial batchler canonical yazılır.
+- Daily-message legacy source adapter: geçmiş shardlar canonical 6-sütun in-memory şemaya normalize edilir; yeni editorial batchler canonical yazılır.
+- Daily-message packaged runtime loader: TR/EN shard dizinleri Flutter asset olarak paketlenir, `AssetManifest` üzerinden offline yüklenir ve `RuhCodeRuntime` bootstrap sırasında fail-closed parse edilir.
 
 ## Günün Mesajı — doğrulanmış ledger ve strict audit
 
@@ -38,23 +39,28 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 - Audit artifact: `9777939183`, digest `sha256:4aefada627afeda0257a24395b52a5e18b5484fc64c8b6c7b2fda454528a86b5`
 - Compiled catalog SHA-256: `6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf`
 - Audit report: `allow_incomplete=false`, `complete=true`, `ok=true`, `record_count=8036`, `missing=0`, near-duplicate=0, repetitive-opening=0, unsafe-certainty=0.
-- Requirement DONE durumu: strict source audit tek başına release APK packaging, rolling future-stock maintenance, editorial provenance ve runtime/device kapılarını kanıtlamadığından ilgili RC'ler otomatik DONE yapılmadı.
+- İlk strict tam-katalog koşusunda görülen 24 `garanti/guarantee` false-positive bulgusu, açık negasyon bağlamını ayıran per-match semantics ile giderildi; gerçek pozitif certainty örnekleri hâlâ fail verir.
 
-İlk strict tam-katalog koşusunda görülen 24 `garanti/guarantee` false-positive bulgusu, açık negasyon (`garanti etmez` / `does not guarantee`) bağlamını ayıran per-match semantics ile giderildi; gerçek pozitif certainty örnekleri hâlâ fail verir. Yeni strict audit bu düzeltme ile SUCCESS oldu ve kalite eşiği düşürülmedi.
+## Son çalışma — rolling horizon + APK asset/runtime zinciri
 
-## Son çalışma — CI/contract onarımı
-
-- Baseline exact HEAD `4d68d5ad007657aafecad79173469ca6e60ffb1f` yeniden okunarak 24 check içindeki gerçek kırmızı `validate-requirements` bulundu.
-- Requirements job logu RC sequence, classification, evidence integrity, semantic ownership, daily-message coverage ve PDF kontratlarının geçtiğini; kırmızının `tools/ui/validate_accessibility_interactions.py` içinde duplicate `ACTION-PDF-BUILDER-PREVIEW` olduğunu gösterdi.
-- `ACTION-PDF-BUILDER-PREVIEW` hem base `ui/action_registry.csv` hem `ui/action_registry_runtime_extensions.csv` içinde kayıtlıydı. Runtime extension'daki duplicate kaldırıldı; canonical base action ve runtime binding korundu.
-- Repair commit `d1fa6507df4a94b92b01fa0b804ce8c61e8d1e50` üzerinde `validate-requirements` SUCCESS ve `validate-ui-contracts` SUCCESS doğrulandı.
-- Aynı repair HEAD üzerinde Flutter `analyze-and-test` checkpoint anında hâlâ in-progress olduğundan SUCCESS iddiası verilmedi.
-- `requirements/requirement_state.csv` değiştirilmedi; bu turda kanıtsız DONE eklenmedi.
+- Başlangıç exact HEAD `2ffb060aa80f60bc3f49245dc670f266470ed32e` yeniden okundu; 23 workflow tamamlanmıştı ve exact-head sonuç setinde failure/queued kayıt bulunmadı.
+- RC-1433 için yalnız manifestte `10` yazmak yerine release tarihine göre kayan gerçek kapı eklendi: `tools/content/validate_daily_message_release_horizon.py`.
+- Kapı release günü ile release+10 takvim yılı arasındaki **her tarih için TR ve EN exact key** arıyor; eksik tek locale/tarih veya duplicate release blocker.
+- Pozitif, tek eksik locale, bir gün kısa katalog ve leap-day release senaryolarını kapsayan unit testler eklendi.
+- `daily-message-editorial-contract.yml` derlenmiş tam katalog üzerinde UTC release tarihiyle bu kapıyı çalıştırıyor ve horizon raporunu audit artifact'ına ekliyor.
+- Manifest artık `rolling_ten_year_release_horizon` quality gate'ini ve validator yolunu açıkça taşıyor.
+- Release packaging denetiminde gerçek açık bulundu: `pubspec.yaml` daily-message assetlerini paketlemiyordu. TR ve EN katalog dizinleri Flutter assets'e eklendi.
+- `DailyMessageAssetLoader` eklendi: packaged `AssetManifest` keşfi, canonical CSV parse, exact `CivilDate + locale`, path/row locale doğrulama, duplicate rejection ve fail-closed missing shard davranışı.
+- Loader testleri quoted comma/escaped quote, exact lookup, locale mismatch ve duplicate shard senaryolarını kapsıyor.
+- `RuhCodeRuntime.create()` packaged offline kataloğu production bootstrap sırasında yükleyip `runtime.dailyMessages` olarak tutuyor. Network/random/AI üretim yolu eklenmedi.
+- `tools/content/validate_daily_message_contract.py` asset deklarasyonu + loader + loader testleri + rolling horizon kapısını structural contract'a bağladı.
+- `requirements/requirement_state.csv` değiştirilmedi; RC-1424/1425/1426/1427/1433/1434 bu source/runtime ilerlemesine rağmen release/device/UI kanıtları tamamlanmadan DONE yapılmadı.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions kapılarının tamamlanmış SUCCESS olması
-- RC-1424/1425/1426/1427/1433/1434 için strict audit ötesindeki packaging/runtime/provenance/rolling-horizon koşullarının requirement-by-requirement kapanması
+- Daily Message için final approved Today/UI exact-date tüketimi ve gerçek APK/offline-device asset-open kanıtı
+- RC-1433 için her actual release tarihinde rolling horizon CI kanıtı ve sürekli stok ileri taşıma
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
 - production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı
@@ -67,13 +73,14 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-01_0121_action_registry_strict_audit.md`
+`automation_runs/2026-09-01_0301_daily_message_packaged_runtime.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA Actions sonucunu yeniden oku; kırmızı varsa newest decoded log üzerinden kök nedeni aynı çalıştırmada kapat.
-2. Flutter/PDF/UI/Requirements source-level kapıları yeşil olduğunda RC-1424/1425/1426/1427/1433/1434 closure koşullarını packaging/runtime/provenance/horizon açısından tek tek değerlendir; yalnız gerçekten tamamlananları ilerlet.
-3. Sonra bağımlılık sırasındaki fiziksel artifact/font/UI/device/release blockerlarına devam et.
-4. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
+1. En yeni exact SHA Actions sonucunu yeniden oku; rolling-horizon/Flutter loader testi kırmızıysa decoded logdan kök nedeni kalite eşiğini düşürmeden kapat.
+2. Yeşil olduğunda exact run/job/artifact kanıtını evidence ledger'a işle.
+3. `runtime.dailyMessages` kataloğunu final approved Today/Daily Message UI state'lerine exact local date + locale ile bağla; eksik tarihte random fallback üretme.
+4. Ardından APK asset inspection/offline device proof ve bağımlılık sırasındaki fiziksel artifact/font/UI/device/release blockerlarına devam et.
+5. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
