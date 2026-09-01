@@ -2,40 +2,38 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-09-01_1452_flutter_quality_fixture_repair.md`
+`automation_runs/2026-09-01_1853_flutter_test_diagnostics.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Exact newest Flutter Quality failure decoded log ile teşhis edildi**
-   - baseline exact HEAD: `dc15bb831e152abc530d320eca988b86c63811d2`
-   - failed run/job: `33494927293 / 99814778526`
-   - `Analyze`: FAILURE
-   - `Test`: SKIPPED
-   - exact analyzer borcu yalnız iki stale `MainNavigationShell` test fixture'ıydı
+1. **Newest Flutter Quality blocker re-verified**
+   - baseline exact HEAD: `0464cea682a59a001bf78c96f6ae5903f6c004f2`
+   - failed run/job: `33504997620 / 99846836906`
+   - `Analyze`: SUCCESS
+   - `Test`: FAILURE
+   - check annotations were empty and connector log ZIP did not expose the failing test text reliably
 
-2. **İki stale fixture gerçekten düzeltildi**
-   - `test/ui/backup/backup_runtime_wiring_test.dart`
-   - `test/ui/pdf/combined_pdf_route_entitlement_test.dart`
-   - her ikisi canonical `DailyMessageCatalog(<DailyMessageEntry>[])` dependency'sini explicit inject ediyor
-   - production constructor optional yapılmadı; analyzer kalite eşiği düşürülmedi
-   - repair commits: `4c00a113165ffb56eeeb2ad359ecb3de03b18d87`, `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e`
+2. **Flutter test diagnostics made durable without weakening gates**
+   - commit `ba9b3ed3b16356f55953b5e841a1a2afa988db3d`: captures expanded `flutter test` output to `flutter-test.log`, preserves failure via `set -o pipefail`, uploads a diagnostic artifact
+   - commit `6ad9066115af38aa74cede57bcf45f08ee937acb`: failure-only parser emits bounded GitHub `::error` annotations around exact failure markers
+   - no `continue-on-error`, no analyzer threshold change, no test expectation weakening
 
-3. **Requirement disiplini korundu**
-   - kapsam `RC-0001 → RC-1442`
-   - `requirements/requirement_state.csv` değiştirilmedi
-   - source/test fixture repair tek başına DONE üretmedi
+3. **Requirement discipline preserved**
+   - scope remains `RC-0001 → RC-1442`
+   - no evidence-free `requirements/requirement_state.csv` override was added
+   - diagnostic infrastructure alone does not produce DONE
 
 ## Current state
 
-- latest source/test HEAD before checkpoint docs: `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e`
-- bu SHA 25 workflow run tetikledi; gözlem anında queued durumda oldukları için SUCCESS sayılmadı
-- checkpoint documentation bunun ardından main'e işlendi
+- newest diagnostic source SHA before checkpoint docs: `6ad9066115af38aa74cede57bcf45f08ee937acb`
+- immediate workflow lookup for the first diagnostic SHA returned no indexed runs yet; this is treated as transient Actions latency, not SUCCESS
+- underlying `flutter test` blocker remains OPEN until a new exact-SHA run exposes and passes the failing test
 
 ## Next safe work
 
-- newest exact HEAD Flutter Quality sonucunu tamamlanmış halde yeniden oku
-- analyzer/test kırmızısı varsa decoded logdaki exact kök nedeni kalite eşiğini düşürmeden kapat
-- green olduğunda Daily Message APK asset inspection ve offline/airplane-mode proof'una geç
-- physical artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et
+- read newest exact-SHA Flutter Quality run
+- if red, use the newly persisted artifact/check annotations to patch the exact failing test/root cause without weakening gates
+- repeat until Analyze + Test are green
+- then continue Daily Message APK asset inspection/offline proof and remaining physical artifact/font/UI/device/clean-checkout/release blockers
 
 **FINAL: NO.**
