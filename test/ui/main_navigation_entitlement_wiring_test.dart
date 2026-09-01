@@ -34,6 +34,8 @@ final class _FreeOnlyEntitlements implements EntitlementService {
 
 Widget _app(FeatureAccessGuard guard, {double textScale = 1}) {
   return MaterialApp(
+    locale: const Locale('tr'),
+    supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
     builder: (context, child) => MediaQuery(
       data: MediaQuery.of(context).copyWith(
         textScaler: TextScaler.linear(textScale),
