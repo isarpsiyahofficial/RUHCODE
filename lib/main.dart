@@ -30,6 +30,7 @@ Future<void> main() async {
     RuhCodeApp(
       featureAccess: runtime.featureAccess,
       backupActions: runtime.backupActions,
+      dailyMessages: runtime.dailyMessages,
     ),
   );
 }
