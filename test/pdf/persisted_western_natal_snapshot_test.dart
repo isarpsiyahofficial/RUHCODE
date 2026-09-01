@@ -70,11 +70,9 @@ void main() {
     final envelope = PersistedWesternNatalEnvelope.seal(_snapshot());
     final result = Map<String, dynamic>.from(envelope.toCalculationResult());
     final snapshot = Map<String, dynamic>.from(result['snapshot']! as Map);
-    final placements = List<dynamic>.from(snapshot['placements']! as List);
-    final first = Map<String, dynamic>.from(placements.first as Map);
-    first['longitudeDeg'] = 46.0;
-    placements[0] = first;
-    snapshot['placements'] = placements;
+    // Keep the payload structurally valid so this fixture specifically proves
+    // the sealed SHA-256 identity rejects a modified persisted snapshot.
+    snapshot['engineVersion'] = 'western-engine-tampered';
     result['snapshot'] = snapshot;
 
     expect(
@@ -206,9 +204,9 @@ void main() {
             bodyA: 'sun',
             bodyB: 'moon',
             type: 'square',
-            exactAngleDeg: 90,
+            exactAngleDeg: 120,
             separationDeg: 120,
-            deltaFromExactDeg: 30,
+            deltaFromExactDeg: 0,
             allowedOrbDeg: 30,
           ),
         ],
