@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../lib/src/content/daily_messages/daily_message_catalog.dart';
 import '../../lib/src/domain/models/core_models.dart';
 import '../../lib/src/entitlements/entitlement_service.dart';
 import '../../lib/src/entitlements/feature_access_guard.dart';
@@ -39,7 +40,10 @@ Widget _app(FeatureAccessGuard guard, {double textScale = 1}) {
       ),
       child: child!,
     ),
-    home: MainNavigationShell(featureAccess: guard),
+    home: MainNavigationShell(
+      featureAccess: guard,
+      dailyMessages: DailyMessageCatalog(<DailyMessageEntry>[]),
+    ),
   );
 }
 
