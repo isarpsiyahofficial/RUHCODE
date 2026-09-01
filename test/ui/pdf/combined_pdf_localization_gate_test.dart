@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/pdf/combined_professional_pdf_application_service.dart';
 import 'package:ruh_code/src/pdf/pdf_data_contract.dart';
@@ -6,13 +7,23 @@ import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
 import 'package:ruh_code/src/ui/pdf/combined_pdf_builder_page.dart';
 import 'package:ruh_code/src/ui/pdf/combined_professional_pdf_ui_actions.dart';
 
+Widget _app(Widget home, {required Locale locale}) => MaterialApp(
+      locale: locale,
+      supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: home,
+    );
+
 void main() {
   testWidgets('preview stays disabled for two records from only one system', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      _app(
+        CombinedProfessionalPdfBuilderPage(actions: _SameSystemUiActions()),
         locale: const Locale('en'),
-        supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
-        home: CombinedProfessionalPdfBuilderPage(actions: _SameSystemUiActions()),
       ),
     );
     await tester.pumpAndSettle();
@@ -35,10 +46,9 @@ void main() {
 
   testWidgets('English locale uses English combined section labels', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
+      _app(
+        CombinedProfessionalPdfBuilderPage(actions: _MixedSystemUiActions()),
         locale: const Locale('en'),
-        supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
-        home: CombinedProfessionalPdfBuilderPage(actions: _MixedSystemUiActions()),
       ),
     );
     await tester.pumpAndSettle();
