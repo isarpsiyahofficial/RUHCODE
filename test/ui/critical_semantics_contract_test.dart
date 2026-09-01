@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
 import 'package:ruh_code/src/ui/numerology/numerology_presentation.dart';
@@ -10,6 +11,11 @@ import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
 Widget _app(Widget home) => MaterialApp(
       locale: const Locale('tr'),
       supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: RuhAppTheme.light(),
       home: home,
     );
