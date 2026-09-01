@@ -18,7 +18,6 @@ const _delegates = <LocalizationsDelegate<dynamic>>[
 void main() {
   testWidgets('backup export share and import controls expose semantics and 48dp targets', (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
     final actions = _RecordingBackupActions();
 
     await tester.pumpWidget(
@@ -51,12 +50,12 @@ void main() {
     expect(actions.shareCalls, 1);
     expect(actions.lastShareFileName, endsWith('.ruhcode.zip'));
     expect(find.text('İşlem iptal edildi. Verilerinde değişiklik yapılmadı.'), findsOneWidget);
+    semantics.dispose();
   });
 
   testWidgets('valid restore preview exposes canonical merge replace semantics and deterministic focus order',
       (tester) async {
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
     final preview = const BackupPackageReader().preview(
       const BackupPackageWriter().write(
         rowsByTable: <String, List<List<String?>>>{},
@@ -85,6 +84,16 @@ void main() {
 
     final merge = find.byKey(const ValueKey(RuhActionIds.backupRestoreMerge));
     final replace = find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace));
+    await tester.scrollUntilVisible(
+      merge,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.scrollUntilVisible(
+      replace,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(merge, findsOneWidget);
     expect(replace, findsOneWidget);
     expect(find.bySemanticsLabel('Birleştir'), findsOneWidget);
@@ -105,14 +114,27 @@ void main() {
     await tester.pumpAndSettle();
     expect(actions.appliedModes, <BackupImportMode>[BackupImportMode.merge]);
 
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.backupImport)));
+    final importAgain = find.byKey(const ValueKey(RuhActionIds.backupImport));
+    await tester.scrollUntilVisible(
+      importAgain,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(importAgain);
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace)));
+    final replaceAgain = find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace));
+    await tester.scrollUntilVisible(
+      replaceAgain,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(replaceAgain);
     await tester.pumpAndSettle();
     expect(
       actions.appliedModes,
       <BackupImportMode>[BackupImportMode.merge, BackupImportMode.replace],
     );
+    semantics.dispose();
   });
 }
 
