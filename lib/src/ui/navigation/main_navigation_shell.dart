@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../backup/backup_application_service.dart';
+import '../../content/daily_messages/daily_message_catalog.dart';
 import '../../entitlements/feature_access_guard.dart';
 import '../../entitlements/feature_catalog.dart';
 import '../actions/ruh_action_ids.dart';
 import '../backup/backup_settings_page.dart';
+import '../daily_messages/daily_message_today_page.dart';
 import '../numerology/numerology_screen.dart';
 import '../pdf/pdf_reports_pages.dart';
 
@@ -12,10 +14,12 @@ class MainNavigationShell extends StatefulWidget {
   const MainNavigationShell({
     super.key,
     required this.featureAccess,
+    required this.dailyMessages,
     this.backupActions,
   });
 
   final FeatureAccessGuard featureAccess;
+  final DailyMessageCatalog dailyMessages;
   final BackupApplicationActions? backupActions;
 
   @override
@@ -63,7 +67,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   @override
   Widget build(BuildContext context) {
     final pages = <Widget>[
-      const _PlaceholderPage(title: 'Bugün'),
+      DailyMessageTodayPage(catalog: widget.dailyMessages),
       _ToolsPage(featureAccess: widget.featureAccess),
       _RecordsPage(featureAccess: widget.featureAccess),
       _ProfilePage(
@@ -227,7 +231,10 @@ class _ToolsPage extends StatelessWidget {
       children: [
         Text('Araçlar', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 8),
-        Text('Çalışmak istediğin alanı seç.', style: Theme.of(context).textTheme.bodyLarge),
+        Text(
+          'Çalışmak istediğin alanı seç.',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         const SizedBox(height: 20),
         for (final category in categories)
           Card(
@@ -237,7 +244,10 @@ class _ToolsPage extends StatelessWidget {
               icon: category.icon,
               onTap: () {
                 if (category.actionId == RuhActionIds.toolsAstrology) {
-                  _pushPage(context, _AstrologyHubPage(featureAccess: featureAccess));
+                  _pushPage(
+                    context,
+                    _AstrologyHubPage(featureAccess: featureAccess),
+                  );
                   return;
                 }
                 if (category.actionId == RuhActionIds.toolsNumerology) {
@@ -307,7 +317,10 @@ class _AstrologyHubPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Text('Astroloji araçları', style: Theme.of(context).textTheme.headlineSmall),
+          Text(
+            'Astroloji araçları',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
           const SizedBox(height: 16),
           for (final feature in features)
             Card(
@@ -355,7 +368,10 @@ class _RecordsPage extends StatelessWidget {
       children: [
         Text('Kayıtlar', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 8),
-        Text('Kendi kayıtların ve profesyonel çalışma alanın.', style: Theme.of(context).textTheme.bodyLarge),
+        Text(
+          'Kendi kayıtların ve profesyonel çalışma alanın.',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         const SizedBox(height: 20),
         Card(
           child: _ActionListTile(
@@ -435,11 +451,14 @@ class _SettingsPage extends StatelessWidget {
   final BackupApplicationActions? backupActions;
 
   Future<void> _openCombined(BuildContext context) async {
-    final decision = await featureAccess.forRoute(RuhFeatureIds.pdfProfessionalExport);
+    final decision =
+        await featureAccess.forRoute(RuhFeatureIds.pdfProfessionalExport);
     if (!context.mounted) return;
     if (!decision.allowed) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kombine PDF raporu PRO kullanıcılar içindir.')),
+        const SnackBar(
+          content: Text('Kombine PDF raporu PRO kullanıcılar içindir.'),
+        ),
       );
       return;
     }
@@ -458,7 +477,8 @@ class _SettingsPage extends StatelessWidget {
               child: _ActionListTile(
                 actionId: RuhActionIds.settingsBackup,
                 title: 'Yedekleme ve Aktarma',
-                subtitle: 'Tam yedek oluştur veya doğrulanmış yedekten geri yükle',
+                subtitle:
+                    'Tam yedek oluştur veya doğrulanmış yedekten geri yükle',
                 icon: Icons.backup_outlined,
                 onTap: () => _pushPage(
                   context,
@@ -482,7 +502,8 @@ class _SettingsPage extends StatelessWidget {
             child: _ActionListTile(
               actionId: RuhActionIds.pdfCombined,
               title: 'Kombine PDF Raporu',
-              subtitle: 'Aynı kişiye ait Batı Astrolojisi ve Numeroloji kayıtlarını tek raporda birleştir',
+              subtitle:
+                  'Aynı kişiye ait Batı Astrolojisi ve Numeroloji kayıtlarını tek raporda birleştir',
               icon: Icons.library_books_outlined,
               trailing: const Icon(Icons.lock_outline),
               onTap: () => _openCombined(context),
@@ -530,7 +551,9 @@ class _FeaturePlaceholderPage extends StatelessWidget {
       future: featureAccess.forUi(featureId),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
         final allowed = snapshot.hasData && snapshot.data!.allowed;
         if (!allowed) {
@@ -550,15 +573,5 @@ class _FeaturePlaceholderPage extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class _PlaceholderPage extends StatelessWidget {
-  const _PlaceholderPage({required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text(title, style: Theme.of(context).textTheme.headlineMedium));
   }
 }
