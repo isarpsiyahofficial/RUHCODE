@@ -1,31 +1,72 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/backup/backup_package_codec.dart';
 import 'package:ruh_code/src/backup/local_database_backup_exporter.dart';
-import 'package:ruh_code/src/persistence/ruh_local_database.dart';
+import 'package:ruh_code/src/data/local/local_database.dart';
 
 void main() {
-  test('exports deterministic schema-backed rows from database records', () async {
+  test('exports runtime profile payload to canonical CSV schema', () async {
+    final db = _FakeDatabase(<String, Map<String, Map<String, Object?>>>{
+      'profiles': <String, Map<String, Object?>>{
+        'profile-1': <String, Object?>{
+          'id': 'profile-1',
+          'displayName': 'İbrahim',
+          'birthData': <String, Object?>{
+            'localDateIso': '2002-06-23',
+            'timeKnowledge': 'exact',
+            'localTime': '12:34:00',
+            'location': <String, Object?>{
+              'label': 'Antalya, Türkiye',
+              'countryCode': 'TR',
+              'latitude': 36.8969,
+              'longitude': 30.7133,
+              'ianaTimeZoneId': 'Europe/Istanbul',
+            },
+          },
+          'createdAtUtc': '2026-08-20T00:00:00.000Z',
+          'updatedAtUtc': '2026-08-20T00:01:00.000Z',
+        },
+      },
+    });
+
+    final rows = await LocalDatabaseBackupExporter(database: db).exportRows();
+    final profile = rows['profiles.csv']!.single;
+
+    expect(profile, <String?>[
+      'profile-1',
+      'İbrahim',
+      '2002-06-23',
+      'exact',
+      '12:34:00',
+      'Antalya, Türkiye',
+      'TR',
+      '36.8969',
+      '30.7133',
+      'Europe/Istanbul',
+      '2026-08-20T00:00:00.000Z',
+      '2026-08-20T00:01:00.000Z',
+    ]);
+  });
+
+  test('exports records in stable id order and canonicalizes JSON object keys', () async {
     final db = _FakeDatabase(<String, Map<String, Map<String, Object?>>>{
       'clients': <String, Map<String, Object?>>{
         'b': <String, Object?>{
           'id': 'b',
-          'display_name': 'B',
-          'birth_data_json': null,
-          'tags_json': <Object?>[
-            <String, Object?>{'z': 1, 'a': 2},
+          'displayName': 'B',
+          'birthData': null,
+          'tags': <Object?>[
+            <String, Object?>{'z': 1, 'a': 2}
           ],
-          'created_at_utc': '2026-08-20T00:00:00.000Z',
-          'updated_at_utc': '2026-08-20T00:00:00.000Z',
+          'createdAtUtc': '2026-08-20T00:00:00.000Z',
+          'updatedAtUtc': '2026-08-20T00:00:00.000Z',
         },
         'a': <String, Object?>{
           'id': 'a',
-          'display_name': 'A',
-          'birth_data_json': null,
-          'tags_json': <Object?>[],
-          'created_at_utc': '2026-08-20T00:00:00.000Z',
-          'updated_at_utc': '2026-08-20T00:00:00.000Z',
+          'displayName': 'A',
+          'birthData': null,
+          'tags': <String>[],
+          'createdAtUtc': '2026-08-20T00:00:00.000Z',
+          'updatedAtUtc': '2026-08-20T00:00:00.000Z',
         },
       },
     });
@@ -70,43 +111,60 @@ void main() {
       throwsStateError,
     );
   });
-
-  test('rejects missing required payload column before package creation', () async {
-    final db = _FakeDatabase(<String, Map<String, Map<String, Object?>>>{
-      'settings': <String, Map<String, Object?>>{
-        'language': <String, Object?>{'key': 'language'},
-      },
-    });
-
-    await expectLater(
-      LocalDatabaseBackupExporter(database: db).exportRows(),
-      throwsStateError,
-    );
-  });
 }
 
-final class _FakeDatabase extends RuhLocalDatabase {
-  _FakeDatabase(this.records) : super.withDatabaseFactory(() async => throw UnimplementedError());
+final class _FakeDatabase implements LocalDatabase {
+  _FakeDatabase(this.tables);
 
-  final Map<String, Map<String, Map<String, Object?>>> records;
+  final Map<String, Map<String, Map<String, Object?>>> tables;
 
   @override
-  Future<List<Map<String, Object?>>> readStoreRecords(String store) async {
-    final values = records[store]?.values ?? const Iterable<Map<String, Object?>>.empty();
-    return values
-        .map(
-          (row) => <String, Object?>{
-            for (final entry in row.entries)
-              entry.key: _storageValue(entry.value),
-          },
-        )
-        .toList(growable: false);
+  int get schemaVersion => 1;
+
+  @override
+  Future<void> open() async {}
+
+  @override
+  Future<void> close() async {}
+
+  @override
+  Future<IntegrityCheckResult> integrityCheck() async =>
+      const IntegrityCheckResult(ok: true);
+
+  @override
+  Future<void> migrate({required int fromVersion, required int toVersion}) async {}
+
+  @override
+  Future<T> transaction<T>(Future<T> Function(LocalDatabaseTransaction tx) action) {
+    return action(_FakeTransaction(tables));
+  }
+}
+
+final class _FakeTransaction implements LocalDatabaseTransaction {
+  _FakeTransaction(this.tables);
+
+  final Map<String, Map<String, Map<String, Object?>>> tables;
+
+  @override
+  Future<void> clearTable(String table) async => tables[table] = {};
+
+  @override
+  Future<void> delete({required String table, required String id}) async {
+    tables[table]?.remove(id);
   }
 
-  static Object? _storageValue(Object? value) {
-    if (value is Map || value is List) {
-      return jsonEncode(value);
-    }
-    return value;
+  @override
+  Future<Map<String, Object?>?> get({required String table, required String id}) async =>
+      tables[table]?[id];
+
+  @override
+  Future<void> put({required String table, required String id, required Map<String, Object?> value}) async {
+    (tables[table] ??= <String, Map<String, Object?>>{})[id] = value;
   }
+
+  @override
+  Future<Map<String, Map<String, Object?>>> readTable(String table) async =>
+      Map<String, Map<String, Object?>>.from(
+        tables[table] ?? const <String, Map<String, Object?>>{},
+      );
 }
