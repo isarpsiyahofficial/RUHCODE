@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ruh_code/src/content/daily_messages/daily_message_catalog.dart';
 import 'package:ruh_code/src/domain/models/core_models.dart';
 import 'package:ruh_code/src/entitlements/entitlement_service.dart';
 import 'package:ruh_code/src/entitlements/feature_access_guard.dart';
@@ -27,7 +28,10 @@ Widget _scaledApp() {
       ),
       child: child!,
     ),
-    home: const MainNavigationShell(featureAccess: guard),
+    home: MainNavigationShell(
+      featureAccess: guard,
+      dailyMessages: DailyMessageCatalog(<DailyMessageEntry>[]),
+    ),
   );
 }
 
