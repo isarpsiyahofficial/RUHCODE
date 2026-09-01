@@ -124,7 +124,10 @@ void main() {
       nonexistentPolicy: NonexistentLocalTimePolicy.shiftForward,
     );
     expect(shifted.kind, LocalTimeResolutionKind.shiftedForward);
-    expect(shifted.shiftedBy, const Duration(hours: 24));
+    // shiftForward means the first valid wall-clock instant after the requested
+    // local time. Because Apia skipped all of 2011-12-30, noon reaches the
+    // first valid instant at 2011-12-31 00:00 after twelve wall-clock hours.
+    expect(shifted.shiftedBy, const Duration(hours: 12));
   });
 
   test('timezone conversion requires an actual UTC instant', () {
