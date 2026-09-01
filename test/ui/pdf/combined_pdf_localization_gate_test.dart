@@ -66,7 +66,10 @@ void main() {
     expect(find.text('Houses'), findsOneWidget);
     expect(find.text('Aspects'), findsOneWidget);
     expect(find.text('Numerology'), findsWidgets);
-    expect(find.text('Calculation Details'), findsOneWidget);
+
+    final calculationDetails = find.text('Calculation Details');
+    await tester.scrollUntilVisible(calculationDetails, 120);
+    expect(calculationDetails, findsOneWidget);
     expect(find.text('Yerleşimler'), findsNothing);
     expect(find.text('Hesaplama Bilgileri'), findsNothing);
   });
