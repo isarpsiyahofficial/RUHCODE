@@ -121,9 +121,10 @@ void main() {
     await _openAstrologyHub(tester);
     await tester.tap(find.text('Çin Astrolojisi'));
     await tester.pumpAndSettle();
-    expect(find.text('Çin Astrolojisi ekranı'), findsOneWidget);
+    final chineseScreen = find.text('Çin Astrolojisi ekranı');
+    expect(chineseScreen, findsOneWidget);
 
-    await tester.pageBack();
+    Navigator.of(tester.element(chineseScreen)).pop();
     await tester.pumpAndSettle();
     await tester.tap(find.text('BaZi'));
     await tester.pumpAndSettle();
@@ -218,7 +219,6 @@ void main() {
   testWidgets('implemented action tiles expose semantics and 48dp minimum target', (tester) async {
     const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
     final semantics = tester.ensureSemantics();
-    addTearDown(semantics.dispose);
 
     await tester.pumpWidget(_app(guard));
     await tester.tap(find.text('Araçlar'));
@@ -234,6 +234,7 @@ void main() {
     await tester.tap(find.text('Ayarlar'));
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('PDF Raporları'), findsOneWidget);
+    semantics.dispose();
   });
 
   testWidgets('critical navigation remains usable at 2.0x text scale', (tester) async {
