@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/pdf/combined_professional_pdf_application_service.dart';
 import 'package:ruh_code/src/pdf/pdf_data_contract.dart';
 import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
 import 'package:ruh_code/src/ui/pdf/combined_pdf_builder_page.dart';
 import 'package:ruh_code/src/ui/pdf/combined_professional_pdf_ui_actions.dart';
+
+const _delegates = <LocalizationsDelegate<dynamic>>[
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+];
 
 void main() {
   testWidgets('multi-record preview uses accessible 48dp actions and sealed delivery token',
@@ -16,6 +23,7 @@ void main() {
       MaterialApp(
         locale: const Locale('tr'),
         supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+        localizationsDelegates: _delegates,
         home: CombinedProfessionalPdfBuilderPage(
           actions: actions,
           deliveryActions: delivery,
@@ -82,6 +90,7 @@ void main() {
       MaterialApp(
         locale: const Locale('tr'),
         supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+        localizationsDelegates: _delegates,
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(2.0)),
           child: child!,
