@@ -21,6 +21,13 @@ final class DailyMessageAssetLoader {
     'full_text',
     'theme_tag',
   ];
+  static const List<String> _legacyHeader = <String>[
+    'date',
+    'title',
+    'teaser',
+    'message',
+    'theme',
+  ];
 
   final AssetBundle? _bundle;
 
@@ -51,9 +58,14 @@ final class DailyMessageAssetLoader {
       final localeFromPath = _localeFromPath(path);
       final csv = await effectiveBundle.loadString(path, cache: false);
       final rows = _parseCsv(csv);
-      if (rows.isEmpty || !_sameRow(rows.first, _canonicalHeader)) {
+      if (rows.isEmpty) {
+        throw FormatException('Daily-message shard has no header: $path');
+      }
+      final canonical = _sameRow(rows.first, _canonicalHeader);
+      final legacy = _sameRow(rows.first, _legacyHeader);
+      if (!canonical && !legacy) {
         throw FormatException(
-          'Daily-message shard must use canonical header: $path',
+          'Daily-message shard must use a supported canonical or legacy header: $path',
         );
       }
       for (var index = 1; index < rows.length; index++) {
@@ -61,25 +73,32 @@ final class DailyMessageAssetLoader {
         if (row.length == 1 && row.first.trim().isEmpty) {
           continue;
         }
-        if (row.length != _canonicalHeader.length) {
+        final expectedColumns = canonical ? _canonicalHeader.length : _legacyHeader.length;
+        if (row.length != expectedColumns) {
           throw FormatException(
-            'Daily-message shard row ${index + 1} has ${row.length} columns, expected ${_canonicalHeader.length}: $path',
+            'Daily-message shard row ${index + 1} has ${row.length} columns, expected $expectedColumns: $path',
           );
         }
-        final locale = row[1].trim();
+
+        final locale = canonical ? row[1].trim().toLowerCase() : localeFromPath;
         if (locale != localeFromPath) {
           throw FormatException(
             'Daily-message locale $locale does not match asset path locale $localeFromPath: $path row ${index + 1}',
           );
         }
+
+        final titleIndex = canonical ? 2 : 1;
+        final teaserIndex = canonical ? 3 : 2;
+        final fullTextIndex = canonical ? 4 : 3;
+        final themeIndex = canonical ? 5 : 4;
         entries.add(
           DailyMessageEntry(
             date: CivilDate.parseIso(row[0].trim()),
             localeTag: locale,
-            title: row[2],
-            teaser: row[3],
-            fullText: row[4],
-            themeTag: row[5],
+            title: row[titleIndex],
+            teaser: row[teaserIndex],
+            fullText: row[fullTextIndex],
+            themeTag: row[themeIndex],
           ),
         );
       }
@@ -110,12 +129,12 @@ final class DailyMessageAssetLoader {
   static bool _sameRow(List<String> left, List<String> right) {
     if (left.length != right.length) return false;
     for (var i = 0; i < left.length; i++) {
-      if (left[i].trim() != right[i]) return false;
+      if (left[i].trim().toLowerCase() != right[i]) return false;
     }
     return true;
   }
 
-  /// RFC 4180-style parser sufficient for the canonical six-column shards.
+  /// RFC 4180-style parser for the supported Daily Message shard schemas.
   /// Supports commas/newlines inside quoted fields and doubled quote escapes.
   static List<List<String>> _parseCsv(String source) {
     final rows = <List<String>>[];
