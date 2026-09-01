@@ -140,6 +140,7 @@ class _NumerologyMetricRow extends StatelessWidget {
         const SizedBox(width: 16),
         Semantics(
           label: '$label: ${row.value}',
+          excludeSemantics: true,
           child: Text(
             row.value,
             key: Key('numerology-metric-${row.metricId}'),
