@@ -225,7 +225,13 @@ void main() {
     await _openBackupPage(tester);
     await tester.tap(find.text('Yedek Dosyası Seç'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Mevcut Verileri Değiştir'));
+    final replace = find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace));
+    await tester.scrollUntilVisible(
+      replace,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(replace);
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Veri bütünlüğü kontrol edilmeli'), findsOneWidget);
