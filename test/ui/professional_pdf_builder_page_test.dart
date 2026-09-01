@@ -5,14 +5,17 @@ import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
 import 'package:ruh_code/src/ui/pdf/pdf_reports_pages.dart';
 import 'package:ruh_code/src/ui/pdf/professional_pdf_ui_actions.dart';
 
+Widget _app(Widget home, {Locale locale = const Locale('tr', 'TR')}) => MaterialApp(
+      locale: locale,
+      supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+      home: home,
+    );
+
 void main() {
   testWidgets('builder requires current preview before PDF generation', (tester) async {
     final actions = _RecordingActions();
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('tr', 'TR'),
-        home: ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions()),
-      ),
+      _app(ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions())),
     );
     await tester.pumpAndSettle();
 
@@ -29,10 +32,7 @@ void main() {
   testWidgets('builder invokes application actions with typed selected record and section order', (tester) async {
     final actions = _RecordingActions();
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('tr', 'TR'),
-        home: ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions()),
-      ),
+      _app(ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions())),
     );
     await tester.pumpAndSettle();
 
@@ -73,8 +73,8 @@ void main() {
 
   testWidgets('western record exposes only persisted western handler sections', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: ProfessionalPdfBuilderPage(
+      _app(
+        ProfessionalPdfBuilderPage(
           actions: _RecordingActions(),
           records: _RecordActions(),
         ),
@@ -97,10 +97,7 @@ void main() {
   testWidgets('changing a section invalidates preview and blocks stale-plan build', (tester) async {
     final actions = _RecordingActions();
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('tr', 'TR'),
-        home: ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions()),
-      ),
+      _app(ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions())),
     );
     await tester.pumpAndSettle();
     await _selectRecord(tester, 'numerology.pythagorean');
@@ -122,9 +119,8 @@ void main() {
   testWidgets('verified PDF exposes canonical share action when delivery is bound', (tester) async {
     final delivery = _RecordingDeliveryActions();
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('tr', 'TR'),
-        home: ProfessionalPdfBuilderPage(
+      _app(
+        ProfessionalPdfBuilderPage(
           actions: _RecordingActions(),
           records: _RecordActions(),
           deliveryActions: delivery,
@@ -158,8 +154,8 @@ void main() {
       shareOutcome: ProfessionalPdfUiDeliveryOutcome.cancelled,
     );
     await tester.pumpWidget(
-      MaterialApp(
-        home: ProfessionalPdfBuilderPage(
+      _app(
+        ProfessionalPdfBuilderPage(
           actions: _RecordingActions(),
           records: _RecordActions(),
           deliveryActions: delivery,
@@ -182,9 +178,7 @@ void main() {
 
   testWidgets('builder never fakes output when production build actions are absent', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: ProfessionalPdfBuilderPage(records: _RecordActions()),
-      ),
+      _app(ProfessionalPdfBuilderPage(records: _RecordActions())),
     );
     await tester.pumpAndSettle();
 
@@ -200,9 +194,7 @@ void main() {
 
   testWidgets('unsupported calculation records are not advertised as buildable', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: ProfessionalPdfBuilderPage(records: _UnsupportedRecordActions()),
-      ),
+      _app(ProfessionalPdfBuilderPage(records: _UnsupportedRecordActions())),
     );
     await tester.pumpAndSettle();
 
@@ -212,8 +204,8 @@ void main() {
 
   testWidgets('builder does not expose raw record ID field', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: ProfessionalPdfBuilderPage(
+      _app(
+        ProfessionalPdfBuilderPage(
           actions: _RecordingActions(),
           records: _RecordActions(),
         ),
