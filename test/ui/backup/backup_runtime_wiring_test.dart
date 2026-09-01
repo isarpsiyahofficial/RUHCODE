@@ -118,6 +118,7 @@ Widget _app(_FakeBackupActions backup, {Locale locale = const Locale('tr')}) {
   const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
   return MaterialApp(
     locale: locale,
+    supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
     home: MainNavigationShell(
       featureAccess: guard,
       dailyMessages: DailyMessageCatalog(<DailyMessageEntry>[]),
