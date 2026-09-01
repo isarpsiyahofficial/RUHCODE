@@ -26,6 +26,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Daily-message packaged runtime loader: TR/EN shard dizinleri Flutter asset olarak paketlenir, `AssetManifest` üzerinden offline yüklenir ve `RuhCodeRuntime` bootstrap sırasında fail-closed parse edilir.
 - Daily-message Today UI: exact device-local civil date + locale lookup, fail-closed missing-date state, deterministic widget tests ve production runtime→app→navigation wiring.
 - Production Today navigation assertion: injected exact local-date EN record is rendered through `MainNavigationShell` and missing-state is absent.
+- Production `RuhCodeApp`: TR/EN için Material/Widgets/Cupertino localization delegates explicit bağlı.
+- Daily-message APK packaging evidence gate: release APK ZIP içindeki gerçek packaged assetleri exact date+locale seviyesinde denetler ve APK SHA-256 evidence üretir.
 
 ## Günün Mesajı — doğrulanmış ledger ve strict audit
 
@@ -42,24 +44,26 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 - Compiled catalog SHA-256: `6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf`
 - Audit report: `allow_incomplete=false`, `complete=true`, `ok=true`, `record_count=8036`, `missing=0`, near-duplicate=0, repetitive-opening=0, unsafe-certainty=0.
 
-## Son çalışma — Flutter test diagnostics hardening
+## Son çalışma — Flutter failure triage + APK gate
 
-- `RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md`, mevcut progress ledger ve repository state yeniden okundu.
-- Baseline exact HEAD `0464cea682a59a001bf78c96f6ae5903f6c004f2` üzerinde Flutter Quality run/job `33504997620 / 99846836906` yeniden doğrulandı.
-- Exact step state: `Analyze` SUCCESS, `Test` FAILURE. Dolayısıyla aktif blocker analyzer değil `flutter test`.
-- GitHub check annotations boştu ve connector Actions log ZIP cevabı failing test metnini güvenilir biçimde açmadı.
-- Commit `ba9b3ed3b16356f55953b5e841a1a2afa988db3d` ile `flutter test --reporter expanded` çıktısı `flutter-test.log` dosyasına `set -o pipefail` ile kaydedilip her koşulda kısa-retention artifact olarak yüklenir hale getirildi.
-- Commit `6ad9066115af38aa74cede57bcf45f08ee937acb` ile failure-only parser logdaki hata işaretçilerinin çevresini GitHub `::error` annotation olarak yayınlayacak şekilde eklendi.
-- `continue-on-error` eklenmedi, `flutter analyze --fatal-infos` gevşetilmedi, test expectation veya pass/fail semantics değiştirilmedi.
-- İlk diagnostic SHA için push sonrası anlık `fetch_commit_workflow_runs` boş liste döndürdü; bu SUCCESS sayılmadı ve transient Actions indexing/trigger latency olarak kaydedildi.
-- `requirements/requirement_state.csv` değiştirilmedi; diagnostic altyapı tek başına hiçbir RC'yi DONE yapmadı.
+- Baseline exact HEAD `27fff69fe715d6b75e45310fb906b661623238c1` yeniden doğrulandı: 23 check-run'ın 22'si SUCCESS, yalnız `analyze-and-test` FAILURE.
+- Actions run/job `33529478301 / 99928648490`: `Analyze` SUCCESS, `Test` FAILURE.
+- Önceki diagnostic artifact gerçekten indirildi: artifact `9809184752`, `flutter-test-diagnostics`, 29.832 byte.
+- Artifact içindeki gerçek Flutter test özeti `+556 -31`; toplam 31 failing test var. Böylece eski log erişim blocker'ı kapandı.
+- Failure kümeleri exact logdan ayrıştırıldı: backup schema drift, TR localization delegates/fixtures, strict PDF fixture yapısı, sync PDF router guard testi, BaZi primitive, historical timezone ve ek widget/accessibility failures.
+- `RuhCodeApp` TR/EN için GlobalMaterial/GlobalWidgets/GlobalCupertino localization delegates ile düzeltildi.
+- `daily_message_today_page_test.dart` production localization delegate sözleşmesine hizalandı.
+- Backup exporter testindeki stale `recordCounts.length == 14`, canonical `BackupSchemaRegistry` artık 15 tablo yazdığı için 15'e düzeltildi. Ara yanlış test düzenlemesi aynı turda canonical önceki dosya içeriği geri yüklenerek tamamen supersede edildi.
+- Persisted PDF router unknown-type testi `Future.sync` boundary ile sync throw'u da güvenli yakalar hale getirildi; production fail-closed davranışı değiştirilmedi.
+- `tools/content/validate_daily_message_apk_assets.py` ve `.github/workflows/daily-message-apk-packaging.yml` eklendi: release APK build, APK ZIP asset inspection, 4.018 TR + 4.018 EN exact range, missing/duplicate/path-locale mismatch, APK SHA-256 ve JSON evidence.
+- `requirements/requirement_state.csv` değiştirilmedi; bu source/test ilerlemeleri tek başına hiçbir RC'yi DONE yapmadı.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions kapılarının tamamlanmış SUCCESS olması
-- mevcut `flutter test` FAILURE'ın yeni artifact/check annotation çıktısıyla exact kök nedeninin bulunup düzeltilmesi
-- yeni production Today navigation testinin exact Flutter Quality SUCCESS ile doğrulanması
-- Daily Message için gerçek APK/offline-device asset-open kanıtı
+- baseline 31 Flutter failure'ın kalan kümelerinin exact root-cause ile kapatılması; özellikle strict PDF synthetic fixtures, BaZi, historical timezone ve widget/accessibility
+- yeni Daily Message APK Packaging gate'in exact SHA üzerinde SUCCESS kanıtı
+- Daily Message için gerçek offline/airplane-mode device asset-open kanıtı
 - RC-1433 için her actual release tarihinde rolling horizon CI kanıtı ve sürekli stok ileri taşıma
 - versioned fiziksel IERS EOP + checksum/provenance
 - yeniden dağıtıma uygun offline ephemeris + independent golden accuracy
@@ -73,13 +77,13 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-01_1853_flutter_test_diagnostics.md`
+`automation_runs/2026-09-01_2056_flutter_failure_triage_and_apk_gate.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA Flutter Quality run'ını oku; kırmızıysa yeni check annotation/artifact üzerinden exact failing test ve call-site'ı çıkar.
-2. Kök nedeni kalite eşiğini düşürmeden düzelt ve Analyze + Test ikisi de green olana kadar exact-SHA doğrulamasını tekrarla.
-3. Flutter Quality green olduğunda Daily Message APK asset inspection ve offline/airplane-mode device proof'u tamamla.
+1. En yeni exact SHA Flutter Quality ve Daily Message APK Packaging runlarını oku; queued/indexing durumunu SUCCESS sayma.
+2. Flutter Quality kırmızıysa yeni artifact üzerinden kalan failure kümelerini exact root-cause ile kapat; kalite eşiğini gevşetme.
+3. APK Packaging yeşilse JSON evidence + APK digest'i kaydet, ardından real offline/airplane-mode device proof'a ilerle.
 4. Sonra fiziksel artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et.
 5. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
