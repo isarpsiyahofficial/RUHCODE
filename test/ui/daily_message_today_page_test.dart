@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 import 'package:ruh_code/src/content/daily_messages/daily_message_catalog.dart';
@@ -29,6 +30,11 @@ Widget _app({required Locale locale, required DateTime now}) {
   return MaterialApp(
     locale: locale,
     supportedLocales: const [Locale('tr'), Locale('en')],
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     home: Scaffold(
       body: DailyMessageTodayPage(
         catalog: _catalog(),
