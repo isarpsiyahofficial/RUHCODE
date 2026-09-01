@@ -42,20 +42,22 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 - Compiled catalog SHA-256: `6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf`
 - Audit report: `allow_incomplete=false`, `complete=true`, `ok=true`, `record_count=8036`, `missing=0`, near-duplicate=0, repetitive-opening=0, unsafe-certainty=0.
 
-## Son çalışma — Flutter Quality stale navigation fixture repair
+## Son çalışma — Flutter test diagnostics hardening
 
-- `RUH_CODE_MASTER_TODO.md`, mevcut progress ledger ve exact main durumu yeniden okundu.
-- Baseline exact main HEAD `dc15bb831e152abc530d320eca988b86c63811d2` için 23 workflow tamamlandı; exactly one failure Flutter Quality idi.
-- Flutter Quality run/job `33494927293 / 99814778526`: `Analyze` FAILURE, `Test` SKIPPED.
-- Decoded job log exact iki `missing_required_argument` gösterdi: `test/ui/backup/backup_runtime_wiring_test.dart:120` ve `test/ui/pdf/combined_pdf_route_entitlement_test.dart:40`.
-- Her iki stale `MainNavigationShell` fixture'ına canonical `DailyMessageCatalog(<DailyMessageEntry>[])` dependency'si explicit eklendi; production constructor optional yapılmadı ve `--fatal-infos` gevşetilmedi.
-- Repair commits: `4c00a113165ffb56eeeb2ad359ecb3de03b18d87`, `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e`.
-- Source/test repair SHA `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e` 25 workflow tetikledi; gözlem anında queued olduğu için SUCCESS sayılmadı.
-- `requirements/requirement_state.csv` değiştirilmedi; Daily Message veya diğer RC'lere kanıtsız DONE verilmedi.
+- `RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md`, mevcut progress ledger ve repository state yeniden okundu.
+- Baseline exact HEAD `0464cea682a59a001bf78c96f6ae5903f6c004f2` üzerinde Flutter Quality run/job `33504997620 / 99846836906` yeniden doğrulandı.
+- Exact step state: `Analyze` SUCCESS, `Test` FAILURE. Dolayısıyla aktif blocker analyzer değil `flutter test`.
+- GitHub check annotations boştu ve connector Actions log ZIP cevabı failing test metnini güvenilir biçimde açmadı.
+- Commit `ba9b3ed3b16356f55953b5e841a1a2afa988db3d` ile `flutter test --reporter expanded` çıktısı `flutter-test.log` dosyasına `set -o pipefail` ile kaydedilip her koşulda kısa-retention artifact olarak yüklenir hale getirildi.
+- Commit `6ad9066115af38aa74cede57bcf45f08ee937acb` ile failure-only parser logdaki hata işaretçilerinin çevresini GitHub `::error` annotation olarak yayınlayacak şekilde eklendi.
+- `continue-on-error` eklenmedi, `flutter analyze --fatal-infos` gevşetilmedi, test expectation veya pass/fail semantics değiştirilmedi.
+- İlk diagnostic SHA için push sonrası anlık `fetch_commit_workflow_runs` boş liste döndürdü; bu SUCCESS sayılmadı ve transient Actions indexing/trigger latency olarak kaydedildi.
+- `requirements/requirement_state.csv` değiştirilmedi; diagnostic altyapı tek başına hiçbir RC'yi DONE yapmadı.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions kapılarının tamamlanmış SUCCESS olması
+- mevcut `flutter test` FAILURE'ın yeni artifact/check annotation çıktısıyla exact kök nedeninin bulunup düzeltilmesi
 - yeni production Today navigation testinin exact Flutter Quality SUCCESS ile doğrulanması
 - Daily Message için gerçek APK/offline-device asset-open kanıtı
 - RC-1433 için her actual release tarihinde rolling horizon CI kanıtı ve sürekli stok ileri taşıma
@@ -71,13 +73,14 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-01_1452_flutter_quality_fixture_repair.md`
+`automation_runs/2026-09-01_1853_flutter_test_diagnostics.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA Actions sonucunu yeniden oku; Flutter Quality kırmızıysa decoded analyzer/test kök nedenini kalite eşiğini düşürmeden kapat.
-2. Flutter Quality exact-SHA green olduğunda Daily Message APK asset inspection ve offline/airplane-mode device proof'u tamamla.
-3. Sonra fiziksel artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et.
-4. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
+1. En yeni exact SHA Flutter Quality run'ını oku; kırmızıysa yeni check annotation/artifact üzerinden exact failing test ve call-site'ı çıkar.
+2. Kök nedeni kalite eşiğini düşürmeden düzelt ve Analyze + Test ikisi de green olana kadar exact-SHA doğrulamasını tekrarla.
+3. Flutter Quality green olduğunda Daily Message APK asset inspection ve offline/airplane-mode device proof'u tamamla.
+4. Sonra fiziksel artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et.
+5. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
