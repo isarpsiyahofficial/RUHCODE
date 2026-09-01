@@ -21,6 +21,8 @@ final class _AllowAllEntitlements implements EntitlementService {
 Widget _scaledApp() {
   const guard = FeatureAccessGuard(entitlements: _AllowAllEntitlements());
   return MaterialApp(
+    locale: const Locale('tr'),
+    supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
     theme: RuhAppTheme.light(),
     builder: (context, child) => MediaQuery(
       data: MediaQuery.of(context).copyWith(
