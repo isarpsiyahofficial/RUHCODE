@@ -209,10 +209,26 @@ final class PdfOutputInspector {
     final tail = text.substring(offset);
     final Match? match;
     if (RegExp(r'^xref\b').hasMatch(tail)) {
-      match = RegExp(
-        r'^xref\b(?:(?!startxref).)*?trailer\s*<<(?:(?!>>).)*?/Root\s+(\d+)\s+(\d+)\s+R\b',
+      // A classic trailer may legally contain nested dictionaries (for
+      // example /Info metadata). Stopping at the first `>>` therefore rejects
+      // otherwise valid PDFs emitted by the production `pdf` package. Bound
+      // the search to the trailer section up to startxref instead, then require
+      // an explicit indirect /Root reference inside that section.
+      final trailerMatch = RegExp(
+        r'^xref\b(?:(?!startxref).)*?trailer\b',
         dotAll: true,
       ).firstMatch(tail);
+      if (trailerMatch == null) {
+        return null;
+      }
+      final startXrefIndex = tail.indexOf('startxref', trailerMatch.end);
+      if (startXrefIndex < 0) {
+        return null;
+      }
+      final trailerSection = tail.substring(trailerMatch.end, startXrefIndex);
+      match = RegExp(
+        r'/Root\s+(\d+)\s+(\d+)\s+R\b',
+      ).firstMatch(trailerSection);
     } else {
       match = RegExp(
         r'^\d+\s+\d+\s+obj\b(?:(?!endobj).)*?/Type\s*/XRef\b(?:(?!endobj).)*?/Root\s+(\d+)\s+(\d+)\s+R\b',
