@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../lib/src/content/daily_messages/daily_message_catalog.dart';
@@ -36,6 +37,11 @@ Widget _app(FeatureAccessGuard guard, {double textScale = 1}) {
   return MaterialApp(
     locale: const Locale('tr'),
     supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     builder: (context, child) => MediaQuery(
       data: MediaQuery.of(context).copyWith(
         textScaler: TextScaler.linear(textScale),
