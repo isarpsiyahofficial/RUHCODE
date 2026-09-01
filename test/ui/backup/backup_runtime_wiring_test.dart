@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../lib/src/backup/backup_application_service.dart';
@@ -119,6 +120,11 @@ Widget _app(_FakeBackupActions backup, {Locale locale = const Locale('tr')}) {
   return MaterialApp(
     locale: locale,
     supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     home: MainNavigationShell(
       featureAccess: guard,
       dailyMessages: DailyMessageCatalog(<DailyMessageEntry>[]),
