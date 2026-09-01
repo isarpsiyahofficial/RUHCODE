@@ -3,6 +3,8 @@
 
 This is a release-evidence gate for RC-1424/1425/1426/1427/1433/1434. It
 inspects the APK ZIP itself rather than trusting pubspec/source declarations.
+Both repository shard schemas are normalized explicitly; no guessed schema,
+runtime generation, locale fallback, or random date fallback is accepted.
 """
 from __future__ import annotations
 
@@ -21,6 +23,8 @@ LOCALES = ("tr", "en")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 EXPECTED_START = date(2026, 1, 1)
 EXPECTED_END = date(2036, 12, 31)
+CANONICAL = ("date", "locale", "title", "teaser", "full_text", "theme_tag")
+LEGACY = ("date", "title", "teaser", "message", "theme")
 
 
 def iter_days(start: date, end: date):
@@ -30,22 +34,53 @@ def iter_days(start: date, end: date):
         current += timedelta(days=1)
 
 
-def parse_rows(raw: bytes, asset_name: str):
+def parse_rows(raw: bytes, asset_name: str, path_locale: str):
     text = raw.decode("utf-8-sig")
     reader = csv.DictReader(io.StringIO(text))
     if reader.fieldnames is None:
         raise ValueError(f"{asset_name}: missing CSV header")
-    normalized = {name.strip().lower(): name for name in reader.fieldnames}
-    required = ("date", "locale")
-    for key in required:
-        if key not in normalized:
-            raise ValueError(f"{asset_name}: missing required column {key!r}")
+    header = tuple(name.strip().lower() for name in reader.fieldnames)
+    if header == CANONICAL:
+        schema = "canonical"
+    elif header == LEGACY:
+        schema = "legacy"
+    else:
+        raise ValueError(f"{asset_name}: unsupported Daily Message CSV header {header!r}")
+
     for line_number, row in enumerate(reader, start=2):
-        day = (row.get(normalized["date"]) or "").strip()
-        locale = (row.get(normalized["locale"]) or "").strip().lower()
-        if not day and not locale:
+        day = (row.get("date") or "").strip()
+        if not day and all(not (value or "").strip() for value in row.values()):
             continue
-        yield line_number, day, locale, row
+        if schema == "canonical":
+            row_locale = (row.get("locale") or "").strip().lower()
+            title = (row.get("title") or "").strip()
+            teaser = (row.get("teaser") or "").strip()
+            full_text = (row.get("full_text") or "").strip()
+            theme = (row.get("theme_tag") or "").strip()
+        else:
+            row_locale = path_locale
+            title = (row.get("title") or "").strip()
+            teaser = (row.get("teaser") or "").strip()
+            full_text = (row.get("message") or "").strip()
+            theme = (row.get("theme") or "").strip()
+
+        empty_fields = [
+            name
+            for name, value in (
+                ("date", day),
+                ("locale", row_locale),
+                ("title", title),
+                ("teaser", teaser),
+                ("full_text", full_text),
+                ("theme_tag", theme),
+            )
+            if not value
+        ]
+        if empty_fields:
+            raise ValueError(
+                f"{asset_name}:{line_number}: empty required Daily Message fields {empty_fields}"
+            )
+        yield line_number, day, row_locale, schema
 
 
 def validate(apk: Path) -> dict:
@@ -55,6 +90,7 @@ def validate(apk: Path) -> dict:
     expected_days = set(iter_days(EXPECTED_START, EXPECTED_END))
     seen = Counter()
     shard_counts = Counter()
+    schema_counts = Counter()
     errors: list[str] = []
 
     with zipfile.ZipFile(apk) as archive:
@@ -81,7 +117,8 @@ def validate(apk: Path) -> dict:
             shard_counts[path_locale] += 1
             try:
                 raw = archive.read(name)
-                for line_number, day, row_locale, _row in parse_rows(raw, name):
+                for line_number, day, row_locale, schema in parse_rows(raw, name, path_locale):
+                    schema_counts[f"{path_locale}:{schema}"] += 1
                     if not DATE_RE.match(day):
                         errors.append(f"{name}:{line_number}: invalid date key {day!r}")
                         continue
@@ -126,6 +163,7 @@ def validate(apk: Path) -> dict:
         "expected_per_locale": 4018,
         "counts": counts,
         "shards": dict(shard_counts),
+        "schema_row_counts": dict(schema_counts),
         "missing_count": len(missing),
         "duplicate_count": len(duplicates),
         "errors": errors,
