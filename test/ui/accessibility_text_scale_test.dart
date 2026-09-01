@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/content/daily_messages/daily_message_catalog.dart';
 import 'package:ruh_code/src/domain/models/core_models.dart';
@@ -23,6 +24,11 @@ Widget _scaledApp() {
   return MaterialApp(
     locale: const Locale('tr'),
     supportedLocales: const <Locale>[Locale('tr'), Locale('en')],
+    localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     theme: RuhAppTheme.light(),
     builder: (context, child) => MediaQuery(
       data: MediaQuery.of(context).copyWith(
