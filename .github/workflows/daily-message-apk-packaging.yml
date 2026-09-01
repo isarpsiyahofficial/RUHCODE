@@ -21,6 +21,30 @@ jobs:
           cache: true
       - name: Resolve dependencies
         run: flutter pub get
+      - name: Materialize deterministic Android host
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f android/app/build.gradle && ! -f android/app/build.gradle.kts ]]; then
+            rm -rf /tmp/ruh_code_android_host
+            flutter create \
+              --platforms=android \
+              --org com.ruhcode \
+              --project-name ruh_code \
+              --no-pub \
+              /tmp/ruh_code_android_host
+            cp -R /tmp/ruh_code_android_host/android ./android
+          fi
+          mkdir -p build/reports
+          {
+            echo "source_sha=${GITHUB_SHA}"
+            echo "flutter_version=$(flutter --version --machine | python3 -c 'import json,sys; print(json.load(sys.stdin)["frameworkVersion"])')"
+            if [[ -f android/app/build.gradle.kts ]]; then
+              echo "android_host=generated-build.gradle.kts"
+            else
+              echo "android_host=tracked-build.gradle"
+            fi
+          } | tee build/reports/android-host-provenance.txt
       - name: Build release APK
         run: flutter build apk --release
       - name: Validate packaged Daily Message assets in APK
@@ -37,6 +61,8 @@ jobs:
         with:
           name: daily-message-apk-packaging-evidence
           path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/reports/android-host-provenance.txt
             build/reports/daily-message-apk-assets.json
             build/reports/app-release.sha256
           if-no-files-found: error
