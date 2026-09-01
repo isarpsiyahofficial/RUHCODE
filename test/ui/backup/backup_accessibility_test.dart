@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/backup/backup_application_service.dart';
 import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
@@ -8,6 +9,11 @@ import 'package:ruh_code/src/ui/backup/backup_settings_page.dart';
 import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
 
 const _supportedLocales = <Locale>[Locale('tr'), Locale('en')];
+const _delegates = <LocalizationsDelegate<dynamic>>[
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+];
 
 void main() {
   testWidgets('backup export share and import controls expose semantics and 48dp targets', (tester) async {
@@ -19,6 +25,7 @@ void main() {
       MaterialApp(
         locale: const Locale('tr', 'TR'),
         supportedLocales: _supportedLocales,
+        localizationsDelegates: _delegates,
         theme: RuhAppTheme.light(),
         home: BackupSettingsPage(backupActions: actions),
       ),
@@ -66,6 +73,7 @@ void main() {
       MaterialApp(
         locale: const Locale('tr', 'TR'),
         supportedLocales: _supportedLocales,
+        localizationsDelegates: _delegates,
         theme: RuhAppTheme.light(),
         home: BackupSettingsPage(backupActions: actions),
       ),
