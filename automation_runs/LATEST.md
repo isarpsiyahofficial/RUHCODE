@@ -2,46 +2,40 @@
 
 Latest source-level checkpoint:
 
-`automation_runs/2026-09-01_1253_today_navigation_analyzer_fixture_repair.md`
+`automation_runs/2026-09-01_1452_flutter_quality_fixture_repair.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Newest exact Flutter Quality failure yeniden teşhis edildi**
-   - baseline exact HEAD: `4d4817cad2ec28845cc339b700e3a96c1769218f`
-   - failed run/job: `33485691848 / 99785106942`
+1. **Exact newest Flutter Quality failure decoded log ile teşhis edildi**
+   - baseline exact HEAD: `dc15bb831e152abc530d320eca988b86c63811d2`
+   - failed run/job: `33494927293 / 99814778526`
    - `Analyze`: FAILURE
    - `Test`: SKIPPED
-   - böylece önceki checkpoint'teki “newest blocker test aşaması” bilgisi güncellendi
+   - exact analyzer borcu yalnız iki stale `MainNavigationShell` test fixture'ıydı
 
-2. **Analyzer/compile root cause gerçekten düzeltildi**
-   - `test/ui/accessibility_text_scale_test.dart` eski `MainNavigationShell` constructor sözleşmesini kullanıyordu
-   - zorunlu `dailyMessages` dependency'si canonical `DailyMessageCatalog` fixture ile eklendi
-   - repair commit: `373800b15138b09a0ea36aa51525372d63755429`
-   - analyzer kalite eşiği veya `--fatal-infos` gevşetilmedi
+2. **İki stale fixture gerçekten düzeltildi**
+   - `test/ui/backup/backup_runtime_wiring_test.dart`
+   - `test/ui/pdf/combined_pdf_route_entitlement_test.dart`
+   - her ikisi canonical `DailyMessageCatalog(<DailyMessageEntry>[])` dependency'sini explicit inject ediyor
+   - production constructor optional yapılmadı; analyzer kalite eşiği düşürülmedi
+   - repair commits: `4c00a113165ffb56eeeb2ad359ecb3de03b18d87`, `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e`
 
-3. **Production Today navigation rendering kanıtı eklendi**
-   - yeni `test/ui/daily_message_navigation_wiring_test.dart`
-   - exact local-date EN kayıt `MainNavigationShell` üzerinden production Today tab'a enjekte ediliyor
-   - heading, ISO date, title, teaser, full text ve missing-state absence assert ediliyor
-   - test commit: `4201ce82f65733ed2d299fe7ef2cabbc2c9b9ce0`
-
-4. **Requirement disiplini korundu**
+3. **Requirement disiplini korundu**
    - kapsam `RC-0001 → RC-1442`
    - `requirements/requirement_state.csv` değiştirilmedi
-   - source/test implementation tek başına DONE üretmedi
+   - source/test fixture repair tek başına DONE üretmedi
 
 ## Current state
 
-- latest source/test HEAD before checkpoint docs: `4201ce82f65733ed2d299fe7ef2cabbc2c9b9ce0`
-- bu SHA için 24 workflow oluştu; gözlem anında queued/in-progress idi
-- gözlem anında exact-SHA failure query `0` döndü; tamamlanmamış run'lar nedeniyle SUCCESS sayılmadı
+- latest source/test HEAD before checkpoint docs: `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e`
+- bu SHA 25 workflow run tetikledi; gözlem anında queued durumda oldukları için SUCCESS sayılmadı
 - checkpoint documentation bunun ardından main'e işlendi
 
 ## Next safe work
 
 - newest exact HEAD Flutter Quality sonucunu tamamlanmış halde yeniden oku
-- analyzer/test kırmızısı varsa exact kök nedeni kalite eşiğini düşürmeden kapat
-- APK asset inspection ve offline/airplane-mode Daily Message device proof'unu tamamla
+- analyzer/test kırmızısı varsa decoded logdaki exact kök nedeni kalite eşiğini düşürmeden kapat
+- green olduğunda Daily Message APK asset inspection ve offline/airplane-mode proof'una geç
 - physical artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et
 
 **FINAL: NO.**
