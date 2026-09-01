@@ -42,16 +42,15 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 - Compiled catalog SHA-256: `6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf`
 - Audit report: `allow_incomplete=false`, `complete=true`, `ok=true`, `record_count=8036`, `missing=0`, near-duplicate=0, repetitive-opening=0, unsafe-certainty=0.
 
-## Son çalışma — Today navigation analyzer fixture repair
+## Son çalışma — Flutter Quality stale navigation fixture repair
 
-- `RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md` ve mevcut progress ledger yeniden okundu.
-- Baseline exact main HEAD `4d4817cad2ec28845cc339b700e3a96c1769218f` için 23 workflow tamamlandı; tek kırmızı workflow Flutter Quality idi.
-- Flutter Quality run/job `33485691848 / 99785106942`: `Analyze` FAILURE, `Test` SKIPPED. Bu sonuç önceki checkpoint'teki newest-blocker test teşhisini supersede eder.
-- Root cause olarak `test/ui/accessibility_text_scale_test.dart` içinde eski `MainNavigationShell(featureAccess: ...)` constructor kullanımı bulundu. Zorunlu `dailyMessages` dependency'si explicit `DailyMessageCatalog` fixture ile eklendi.
-- Analyzer repair commit: `373800b15138b09a0ea36aa51525372d63755429`.
-- Yeni `test/ui/daily_message_navigation_wiring_test.dart` ile exact local-date EN kaydın production `MainNavigationShell` Today tab üzerinden title/teaser/full-text/date olarak render edildiği ve fail-closed missing state'in görünmediği assert edildi.
-- Navigation proof test commit: `4201ce82f65733ed2d299fe7ef2cabbc2c9b9ce0`.
-- Bu source/test SHA için 24 workflow oluştu; gözlem anında queued/in-progress idi ve failure query `0` dönüyordu. Tamamlanmadan SUCCESS sayılmadı.
+- `RUH_CODE_MASTER_TODO.md`, mevcut progress ledger ve exact main durumu yeniden okundu.
+- Baseline exact main HEAD `dc15bb831e152abc530d320eca988b86c63811d2` için 23 workflow tamamlandı; exactly one failure Flutter Quality idi.
+- Flutter Quality run/job `33494927293 / 99814778526`: `Analyze` FAILURE, `Test` SKIPPED.
+- Decoded job log exact iki `missing_required_argument` gösterdi: `test/ui/backup/backup_runtime_wiring_test.dart:120` ve `test/ui/pdf/combined_pdf_route_entitlement_test.dart:40`.
+- Her iki stale `MainNavigationShell` fixture'ına canonical `DailyMessageCatalog(<DailyMessageEntry>[])` dependency'si explicit eklendi; production constructor optional yapılmadı ve `--fatal-infos` gevşetilmedi.
+- Repair commits: `4c00a113165ffb56eeeb2ad359ecb3de03b18d87`, `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e`.
+- Source/test repair SHA `3d8c69f1d194090e77dadf8d79f9b1a2f6c74b8e` 25 workflow tetikledi; gözlem anında queued olduğu için SUCCESS sayılmadı.
 - `requirements/requirement_state.csv` değiştirilmedi; Daily Message veya diğer RC'lere kanıtsız DONE verilmedi.
 
 ## Açık ana blocker'lar
@@ -72,12 +71,12 @@ Başlangıç hedefi: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-01_1253_today_navigation_analyzer_fixture_repair.md`
+`automation_runs/2026-09-01_1452_flutter_quality_fixture_repair.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA Actions sonucunu yeniden oku; Flutter Quality kırmızıysa exact analyzer/test kök nedenini kalite eşiğini düşürmeden kapat.
-2. Daily Message APK asset inspection ve offline/airplane-mode device proof'u tamamla.
+1. En yeni exact SHA Actions sonucunu yeniden oku; Flutter Quality kırmızıysa decoded analyzer/test kök nedenini kalite eşiğini düşürmeden kapat.
+2. Flutter Quality exact-SHA green olduğunda Daily Message APK asset inspection ve offline/airplane-mode device proof'u tamamla.
 3. Sonra fiziksel artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et.
 4. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
