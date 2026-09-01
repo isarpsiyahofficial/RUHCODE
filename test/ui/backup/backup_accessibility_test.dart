@@ -7,6 +7,8 @@ import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
 import 'package:ruh_code/src/ui/backup/backup_settings_page.dart';
 import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
 
+const _supportedLocales = <Locale>[Locale('tr'), Locale('en')];
+
 void main() {
   testWidgets('backup export share and import controls expose semantics and 48dp targets', (tester) async {
     final semantics = tester.ensureSemantics();
@@ -16,6 +18,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('tr', 'TR'),
+        supportedLocales: _supportedLocales,
         theme: RuhAppTheme.light(),
         home: BackupSettingsPage(backupActions: actions),
       ),
@@ -62,6 +65,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('tr', 'TR'),
+        supportedLocales: _supportedLocales,
         theme: RuhAppTheme.light(),
         home: BackupSettingsPage(backupActions: actions),
       ),
