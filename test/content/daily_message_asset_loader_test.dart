@@ -95,7 +95,7 @@ void main() {
     expect(entry.fullText, 'Line one, line two');
   });
 
-  test('locale mismatch between path and canonical row is rejected', () async {
+  test('locale mismatch between path and row is rejected', () async {
     const path = 'assets/content/daily_messages/tr/2026-09.csv';
     final bundle = _MemoryAssetBundle({
       path: '${_header}"2026-09-01","en","Title","Teaser","Text","theme"\n',
