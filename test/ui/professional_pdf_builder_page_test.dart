@@ -63,8 +63,7 @@ void main() {
     expect(find.text('• Numeroloji'), findsOneWidget);
     expect(find.text('• Hesaplama Bilgileri'), findsOneWidget);
 
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
-    await tester.pumpAndSettle();
+    await _tapCreate(tester);
 
     expect(actions.calls, 1);
     expect(actions.recordId, 'calc-42');
@@ -138,8 +137,7 @@ void main() {
     await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
-    await tester.pumpAndSettle();
+    await _tapCreate(tester);
 
     expect(find.byKey(const ValueKey(RuhActionIds.pdfShare)), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfShare)));
@@ -173,8 +171,7 @@ void main() {
     await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
-    await tester.pumpAndSettle();
+    await _tapCreate(tester);
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfShare)));
     await tester.pumpAndSettle();
 
@@ -191,8 +188,7 @@ void main() {
     await _selectRecord(tester, 'numerology.pythagorean');
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfCreate)));
-    await tester.pump();
+    await _tapCreate(tester, settle: false);
 
     expect(find.textContaining('production runtime'), findsOneWidget);
     expect(find.text('PDF doğrulandı'), findsNothing);
@@ -230,6 +226,21 @@ Future<void> _selectRecord(WidgetTester tester, String calculationType) async {
   await tester.pumpAndSettle();
   await tester.tap(find.textContaining(calculationType).last);
   await tester.pumpAndSettle();
+}
+
+Future<void> _tapCreate(WidgetTester tester, {bool settle = true}) async {
+  final create = find.byKey(const ValueKey(RuhActionIds.pdfCreate));
+  await tester.scrollUntilVisible(
+    create,
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.tap(create);
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+  }
 }
 
 final class _RecordingActions implements ProfessionalPdfBuildActions {
