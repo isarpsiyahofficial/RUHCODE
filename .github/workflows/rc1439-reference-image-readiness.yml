@@ -1,0 +1,36 @@
+name: RC-1439 Reference Image Readiness
+
+on:
+  push:
+    paths:
+      - 'requirements/reference_manifests/rc1439_reference_images.json'
+      - 'requirements/reference_images/**'
+      - 'tools/requirements/validate_rc1439_reference_images.py'
+      - '.github/workflows/rc1439-reference-image-readiness.yml'
+  pull_request:
+    paths:
+      - 'requirements/reference_manifests/rc1439_reference_images.json'
+      - 'requirements/reference_images/**'
+      - 'tools/requirements/validate_rc1439_reference_images.py'
+      - '.github/workflows/rc1439-reference-image-readiness.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit RC-1439 physical reference-image readiness
+        run: |
+          python3 tools/requirements/validate_rc1439_reference_images.py \
+            --allow-incomplete \
+            --json-output evidence/rc1439_reference_image_readiness.json
+      - name: Upload RC-1439 readiness evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1439-reference-image-readiness
+          path: evidence/rc1439_reference_image_readiness.json
+          if-no-files-found: error
