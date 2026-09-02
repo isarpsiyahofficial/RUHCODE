@@ -142,6 +142,16 @@ Future<void> _openBackupPage(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _pumpUntilVisible(
+  WidgetTester tester,
+  Finder finder, {
+  int attempts = 20,
+}) async {
+  for (var attempt = 0; attempt < attempts && finder.evaluate().isEmpty; attempt++) {
+    await tester.pump(const Duration(milliseconds: 50));
+  }
+}
+
 void main() {
   testWidgets('Settings exposes the real backup runtime actions', (tester) async {
     final backup = _FakeBackupActions();
@@ -229,10 +239,11 @@ void main() {
     await tester.ensureVisible(replace);
     await tester.pumpAndSettle();
     await tester.tap(replace);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.textContaining('Veri bütünlüğü kontrol edilmeli'), findsOneWidget);
+    final critical = find.textContaining('Veri bütünlüğü kontrol edilmeli');
+    await _pumpUntilVisible(tester, critical);
+
+    expect(critical, findsOneWidget);
     expect(find.textContaining('Veriler korundu'), findsNothing);
   });
 
