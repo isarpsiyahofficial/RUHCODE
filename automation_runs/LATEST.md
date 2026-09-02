@@ -2,40 +2,42 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-02_1457_rc1442_release_source_gate.md`
+`automation_runs/2026-09-02_1652_tracked_android_host_progress.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Exact CI yeniden doğrulandı**
-   - Exact `5bb271ef3376d179f5246a6de48a8637926b623f` için GitHub Actions sonucu: **24 success / 0 failure / 0 in-progress**.
-   - Önceki pending source/CI repairleri artık queued kabul edilmiyor.
-   - Bu başarı tek başına 1.442 requirement'ın tamamını DONE yapmaz.
+1. **Exact CI baseline yeniden doğrulandı**
+   - `c432c0e96406fa5020ffea0a9036973d6dfe68fb` üzerinde 24 workflow tamamlanmış green baseline olarak yeniden okundu.
+   - Bu başarı 1.442 requirement'ın tamamını DONE yapmaz.
 
-2. **RC-1442 clean-checkout source gate eklendi**
-   - `tools/requirements/validate_rc1442_release_source_readiness.py` eklendi.
-   - Tracked Android Gradle hostu, manifest/MainActivity, Gradle wrapper JAR dahil wrapper, canonical non-example `namespace` + `applicationId`, locked Flutter source/assets ve strict RC-1437/RC-1439 pass zorunlu.
-   - Kotlin DSL ve Groovy Android host düzenleri destekleniyor.
-   - Source-readiness başarı kapsamı signing/device/reproducibility kanıtlarından açıkça ayrılıyor.
-   - commits: `6855d64ae1629a61deb2fc95ce42ed979751e568`, `7454525fd008d288be252248d561ff7a86ae4db2`.
+2. **Canonical Android identity artık repository build hattından kanıtlı**
+   - APK workflow'u zaten `flutter create --org com.ruhcode --project-name ruh_code` kullanıyordu.
+   - Buna göre tracked host identity `com.ruhcode.ruh_code` olarak sabitlendi; yeni/rastgele package ID üretilmedi.
+   - Flutter 3.44.7 upstream template sürümleri doğrulandı: Gradle 9.1.0, AGP 9.0.1, Kotlin 2.3.20.
 
-3. **RC-1442 release-tag/manual workflow kapısı eklendi**
-   - `.github/workflows/rc1442-release-source-readiness.yml`.
-   - `v*` tag ve manual dispatch'te clean checkout üzerinde fail-closed çalışıyor.
-   - JSON evidence artifact'i failure halinde de yükleniyor.
-   - commit: `e8f3166ae2e5d5f231d8371787b155d5d7e2e67b`.
+3. **Tracked Android host eklendi**
+   - commit: `12d79b57d10f63c7a0cae527b637745965031599`.
+   - settings/root/app Gradle, gradle.properties, manifest, MainActivity, light/dark styles, wrapper properties ve launcher scripts repository'de tracked.
+   - `namespace == applicationId == com.ruhcode.ruh_code`.
+
+4. **APK packaging migration guard eklendi**
+   - commit: `60fb4b5068be1190515453890c3e6ef0612ecc56`.
+   - Tracked host bulunduğunda artık tüm Android host yeniden üretilmiyor.
+   - Fiziksel wrapper JAR henüz tracked olmadığı için CI exact Flutter 3.44.7 hostundan yalnız JAR'ı geçici materialize ediyor ve provenance `tracked-host-generated-wrapper-jar` olarak kaydediliyor.
+   - Bu bridge RC-1442 release PASS sayılmaz.
 
 ## Doğrulanmış açık blocker
 
-- Repository'de tracked `android/` hâlâ yok; contents lookup 404 verdi. Bu nedenle RC-1442 source gate bugün PASS olamaz.
-- Canonical application identity uydurulmadı.
-- RC-1437 physical/versioned/checksummed city + ephemeris + EOP kanıtları eksik.
-- RC-1439 canonical physical reference images + screen IDs + SHA-256 kanıtı eksik.
-- Signed reproducible clean-checkout APK ve real-device airplane-mode/accessibility/release kanıtları açık.
+- `android/gradle/wrapper/gradle-wrapper.jar` fiziksel tracked değil.
+- Production release signing ve signed reproducible clean-checkout APK kanıtı yok.
+- RC-1437 physical/versioned/checksummed city + ephemeris + EOP eksik.
+- RC-1439 canonical physical reference images + screen IDs + SHA-256 eksik.
+- Real-device airplane-mode/accessibility/Play/rewarded kanıtları açık.
 
 ## Requirement disiplini
 
 - Exact scope `RC-0001 → RC-1442` / 1.442 requirement.
 - `requirements/requirement_state.csv` değiştirilmedi.
-- Validator/workflow eklenmesi tek başına hiçbir RC'yi DONE yapmadı.
+- Tracked host ilerlemesi tek başına RC-1442'yi DONE yapmadı.
 
 **FINAL: NO.**
