@@ -1,0 +1,94 @@
+name: RC-1437 City Catalog Materialization
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/data/materialize_geonames_city_catalog.py'
+      - 'requirements/data_manifests/cities.json'
+      - '.github/workflows/materialize-rc1437-city-catalog.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rc1437-city-catalog-main
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Materialize deterministic GeoNames catalog
+        run: python tools/data/materialize_geonames_city_catalog.py --snapshot-date "$(date -u +%F)"
+
+      - name: Declare generated catalog as Flutter asset
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('pubspec.yaml')
+          text = path.read_text(encoding='utf-8')
+          entry = '    - assets/data/cities/\n'
+          if entry not in text:
+              anchor = '    - assets/content/daily_messages/en/\n'
+              if anchor not in text:
+                  raise SystemExit('Flutter assets anchor not found')
+              text = text.replace(anchor, anchor + entry)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate generated evidence and physical files
+        run: |
+          python - <<'PY'
+          import gzip, hashlib, json
+          from pathlib import Path
+          root = Path('.')
+          evidence = json.loads((root/'requirements/evidence/rc1437_city_snapshot.json').read_text(encoding='utf-8'))
+          catalog = root/evidence['generated_catalog']['path']
+          attribution = root/evidence['attribution']['path']
+          assert catalog.is_file() and catalog.stat().st_size > 0
+          assert attribution.is_file() and attribution.stat().st_size > 0
+          assert hashlib.sha256(catalog.read_bytes()).hexdigest() == evidence['generated_catalog']['sha256']
+          assert hashlib.sha256(attribution.read_bytes()).hexdigest() == evidence['attribution']['sha256']
+          count = 0
+          with gzip.open(catalog, 'rt', encoding='utf-8') as handle:
+              for line in handle:
+                  row = json.loads(line)
+                  assert row['stable_id']
+                  assert row['canonical_name']
+                  assert row['country_code']
+                  assert -90 <= row['latitude'] <= 90
+                  assert -180 <= row['longitude'] <= 180
+                  assert row['iana_timezone_id']
+                  count += 1
+          assert count == evidence['generated_catalog']['record_count'] and count > 0
+          print(f'validated {count} physical offline city records')
+          PY
+
+      - name: Commit physical RC-1437 city snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            assets/data/cities/cities500.catalog.jsonl.gz \
+            assets/data/cities/ATTRIBUTION.txt \
+            requirements/evidence/rc1437_city_snapshot.json \
+            requirements/data_manifests/cities.json \
+            pubspec.yaml
+          if git diff --cached --quiet; then
+            echo 'No city snapshot changes to commit.'
+            exit 0
+          fi
+          git commit -m 'data(rc1437): bundle verified GeoNames city snapshot'
+          git push origin HEAD:main
