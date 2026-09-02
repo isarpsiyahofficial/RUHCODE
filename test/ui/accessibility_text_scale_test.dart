@@ -5,6 +5,7 @@ import 'package:ruh_code/src/content/daily_messages/daily_message_catalog.dart';
 import 'package:ruh_code/src/domain/models/core_models.dart';
 import 'package:ruh_code/src/entitlements/entitlement_service.dart';
 import 'package:ruh_code/src/entitlements/feature_access_guard.dart';
+import 'package:ruh_code/src/ui/actions/ruh_action_ids.dart';
 import 'package:ruh_code/src/ui/navigation/main_navigation_shell.dart';
 import 'package:ruh_code/src/ui/theme/ruh_design_tokens.dart';
 
@@ -54,35 +55,53 @@ void main() {
 
       expect(tester.takeException(), isNull);
 
-      await tester.tap(find.text('Araçlar'));
+      await tester.tap(find.byKey(const ValueKey(RuhActionIds.navigationTools)));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
-      final personalGrowth = find.text('Kişisel Gelişim');
+      final personalGrowth = find.byKey(const ValueKey(RuhActionIds.toolsGrowth));
+      final toolsScroll = find.ancestor(
+        of: find.byKey(const ValueKey(RuhActionIds.toolsAstrology)),
+        matching: find.byType(Scrollable),
+      );
       await tester.scrollUntilVisible(
         personalGrowth,
         180,
-        scrollable: find.byType(Scrollable).first,
+        scrollable: toolsScroll.first,
       );
-      expect(personalGrowth, findsOneWidget);
+      expect(find.text('Kişisel Gelişim'), findsOneWidget);
 
-      await tester.tap(find.text('Kayıtlar'));
+      await tester.tap(find.byKey(const ValueKey(RuhActionIds.navigationRecords)));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      final profiles = find.byKey(const ValueKey(RuhActionIds.recordsProfiles));
+      final clients = find.byKey(const ValueKey(RuhActionIds.recordsClients));
+      expect(profiles, findsOneWidget);
+      final recordsScroll = find.ancestor(
+        of: profiles,
+        matching: find.byType(Scrollable),
+      );
+      await tester.scrollUntilVisible(
+        clients,
+        180,
+        scrollable: recordsScroll.first,
+      );
       expect(find.text('Profillerim'), findsOneWidget);
       expect(find.text('Danışanlarım'), findsOneWidget);
 
-      await tester.tap(find.text('Profil'));
+      await tester.tap(find.byKey(const ValueKey(RuhActionIds.navigationProfile)));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(find.text('Ayarlar'), findsOneWidget);
 
-      await tester.tap(find.text('Ayarlar'));
+      await tester.tap(find.byKey(const ValueKey(RuhActionIds.profileSettings)));
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      final pdfReports = find.byKey(const ValueKey(RuhActionIds.settingsPdf));
+      await tester.ensureVisible(pdfReports);
+      await tester.pumpAndSettle();
       expect(find.text('PDF Raporları'), findsOneWidget);
 
-      await tester.ensureVisible(find.text('PDF Raporları'));
-      await tester.tap(find.text('PDF Raporları'));
+      await tester.tap(pdfReports);
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
       expect(find.text('Örnek PDF Önizle'), findsOneWidget);
