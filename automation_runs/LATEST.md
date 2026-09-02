@@ -2,7 +2,7 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-02_0312_flutter_11_failure_root_cause_repair.md`
+`automation_runs/2026-09-02_0500_flutter_3_failure_repair_apk_packaging_green.md`
 
 ## Bu turda ilerleyen ana bloklar
 
@@ -11,37 +11,41 @@ Latest checkpoint:
    - master TODO/index, progress ve sparse requirement override ledger yeniden okundu
    - `requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE eklenmedi
 
-2. **Flutter Quality gerçek baseline 11 failure'a düştü**
-   - exact completed HEAD: `b726b3196d9dfa0a15c740bc79a8c41f32379aff`
-   - run/job: `33564911120 / 100045753949`
-   - Analyze: **SUCCESS**
+2. **Flutter Quality gerçek baseline 3 failure'a düştü**
+   - exact completed HEAD: `5283cc2381fbf850f86c85cb458f96a6b8250f45`
+   - run/job: `33574223425 / 100074533697`
+   - Analyze: **SUCCESS — No issues found**
    - Test: **FAILURE**
-   - exact summary: **`+582 -11`**
+   - exact summary: **`+590 -3`**
+   - diagnostics artifact: `9826177189`
 
-3. **Beş production PDF failure'ının ortak kök nedeni kapatıldı**
-   - `pdf 3.13.0` PDF 1.5 xref stream sözlüğünde `/Root`, `/Type /XRef` öncesinde serialize edilebiliyor
-   - inspector artık dictionary key order'a bağlı değil
-   - bounded xref object, `/Type /XRef`, strict indirect Root ve `/Root → Catalog → Pages` zinciri yine zorunlu/fail-closed
-   - repair commit: `715d348bb48b1368d93bdc16daa0385ab828ccba`
+3. **Kalan üç failure exact kök nedenle işlendi**
+   - backup restore semantics stale kısa label yerine production canonical full label ile doğrulanıyor
+   - rollback-failed Snackbar testi auto-dismiss sonrasını beklemiyor
+   - 2.0x text-scale PDF hub testi canonical `RuhActionIds.pdfBuild` action'ını gerçek ListView içinde scroll ediyor
+   - repair commits: `c2b0464...`, `fe19eb7...`, `c466306...`
+   - source repair HEAD: `c466306bc9f33010ee4f15c5355eee6ace434216`
 
-4. **Kalan altı UI/accessibility failure kök nedenlerine göre işlendi**
-   - Professional PDF lazy share action viewport-aware test edildi
-   - backup merge/replace semantics ve failed-rollback interaction görünür control üzerinden sürülüyor
-   - 2.0x text-scale navigation ambiguous `IndexedStack` text finder yerine canonical action IDs kullanıyor
-   - numerology metric production semantics tek localized row node üretiyor (`Yaşam Yolu: 7`)
-   - source/test repair HEAD: `78dbb9056d3881d0ebc9fe1d8c9482dd27e8a7bd`
-   - red baseline'a göre **6 commits ahead / 0 behind**
+4. **Daily Message gerçek APK packaging kapısı SUCCESS**
+   - exact source HEAD: `5283cc2381fbf850f86c85cb458f96a6b8250f45`
+   - run/job: `33574223584 / 100074534089`
+   - release APK: **SUCCESS**, 53.2 MB
+   - packaged TR: **4018/4018**
+   - packaged EN: **4018/4018**
+   - missing: **0**, duplicate: **0**, errors: **0**
+   - APK SHA-256: `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`
+   - evidence artifact: `9826254630`
+   - artifact ZIP SHA-256: `9f8587e256efc3ce30d158cbd1081d16b21233e29e1551fe039f208fdc018fe9`
+   - Android host bu kanıtta generated olduğundan signed-production host/device gate hâlâ açık
 
 5. **Verification disiplini korundu**
-   - yeni exact source SHA için Actions runları checkpoint sırasında queued/indexing durumundaydı
-   - kaynak düzeltmeleri CI-green kabul edilmedi
+   - `c466306...` için 25 check oluştu; checkpoint sırasında Flutter Quality queued olduğundan repairler CI-green sayılmadı
    - hiçbir RC yalnız kodlandığı için DONE işaretlenmedi
 
 ## Açık kritik işler
 
-- newest exact HEAD Flutter Quality sonucunu completed olarak okumak; kırmızıysa yeni diagnostics artifact'inden yalnız kalan root-cause'ları kapatmak
-- Flutter Quality yeşil olduktan sonra newest exact Daily Message APK Packaging validator sonucunu doğrulamak
-- APK packaging yeşil olduktan sonra real offline/airplane-mode device lookup kanıtı
+- newest exact HEAD Flutter Quality sonucunu completed olarak okumak; kırmızıysa yalnız gerçekten kalan root-cause'ları kapatmak
+- Daily Message real offline/airplane-mode device lookup kanıtı
 - tracked/signable Android release host + clean-checkout reproducible signed release proof
 - physical ephemeris/EOP/font/UI-reference/device kanıtları
 - final 1.442-RC lifecycle audit
