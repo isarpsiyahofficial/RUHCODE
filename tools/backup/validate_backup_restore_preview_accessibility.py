@@ -80,8 +80,8 @@ def main():
     require_text(TEST, [
         "backupRestoreMerge",
         "backupRestoreReplace",
-        "bySemanticsLabel('Birleştir')",
-        "bySemanticsLabel('Değiştir')",
+        "bySemanticsLabel('Mevcut Verilerle Birleştir')",
+        "bySemanticsLabel('Mevcut Verileri Değiştir')",
         "greaterThanOrEqualTo(48)",
         "NumericFocusOrder",
         "BackupImportMode.merge",
