@@ -8,138 +8,129 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 - Exact kapsam: `RC-0001 → RC-1442` / **1.442 requirement**.
 - Repository-wide evidence integrity, semantic ownership ve matrix provenance kapıları aktif.
-- Calculation, UI, backup, PDF, entitlement ve content kanıtları eksik final doğrulamalarını atlayarak DONE üretemez.
-- `requirements/requirement_state.csv` sparse explicit-override ledger'dır; full 1.442 satırlık matrix CI'da üretilir.
-- Bu turda `requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE/status override eklenmedi.
+- `requirements/requirement_state.csv` sparse explicit-override ledger'dır; full matrix CI'da üretilir.
+- Bu checkpointte `requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE/status override eklenmedi.
 
-## Source-level ilerlemiş ana bloklar
+## Doğrulanmış ana ilerleme
 
-- Gregorian calendar, leap-year, exact-date identity, timezone/UTC-TT-UT1 sınırları.
-- Astronomi provider sözleşmeleri, solar events, Gezegen Saatleri, DailySnapshot faktörleri.
-- Western temel motorları ve persisted natal snapshot/manifest.
-- Numeroloji, BaZi primitives ve basic Çin Astrolojisi çekirdekleri.
-- Entitlement Free/PRO guard ve offline state.
-- 15 tablolu backup/restore, `.ruhcode.zip`, transaction/rollback ve native save/pick/share.
-- Professional/combined PDF planning, persisted Western/Numerology projection, preview/build parity ve structural validation.
-- UI action/accessibility kontratları.
-- Daily-message deterministic shard + editorial ledger + strict release QA hattı.
-- Daily-message legacy source adapter: geçmiş shardlar canonical 6-sütun in-memory şemaya normalize edilir; yeni editorial batchler canonical yazılır.
-- Daily-message packaged runtime loader: TR/EN shard dizinleri Flutter asset olarak paketlenir, `AssetManifest` üzerinden offline yüklenir ve `RuhCodeRuntime` bootstrap sırasında fail-closed parse edilir.
-- Daily-message packaged loader canonical `date,locale,title,teaser,full_text,theme_tag` ve legacy `date,title,teaser,message,theme` şemalarını explicit destekler; legacy locale yalnız asset path'ten türetilir.
-- Daily-message Today UI: exact device-local civil date + locale lookup, fail-closed missing-date state ve production runtime→app→navigation wiring.
-- Production `RuhCodeApp`: TR/EN Material/Widgets/Cupertino localization delegates explicit bağlı.
-- Daily-message APK packaging gate release APK ZIP içindeki gerçek packaged assetleri exact date+locale seviyesinde denetler ve APK SHA-256 evidence üretir.
-- Professional PDF preview/create/share Semantics wrappers tek canonical screen-reader action node üretir.
-- Numerology metric rows tek explicit localized screen-reader semantics container üretir.
-- PDF structural inspector classic xref ve PDF 1.5 xref-stream Root→Catalog→Pages zincirini serialization-order bağımsız ve fail-closed doğrular.
-- Backup catastrophic rollback UI: `rollbackFailed` artık yalnız transient Snackbar değildir; persistent accessible live-region kritik bütünlük uyarısı gösterilir ve aynı page lifecycle içinde sonraki backup/restore aksiyonları bloklanır.
+- Calculation, timezone/date, astronomy provider, Western, numerology, BaZi ve Çin astrolojisi çekirdeklerinde source/test altyapısı mevcut.
+- Free/PRO guard ve offline entitlement state mevcut.
+- 15 tablolu backup/restore, transaction/rollback ve platform file-store katmanları mevcut.
+- Professional/combined PDF planning, preview/build parity ve structural validation mevcut.
+- UI action/accessibility contracts mevcut; catastrophic restore rollback artık persistent accessible integrity alarmıdır.
+- Daily Message runtime packaged loader ve production Today wiring mevcut.
+- TR/EN localization delegates production app'te explicit bağlı.
 
-## Günün Mesajı — doğrulanmış source ve APK asset kanıtı
+## Günün Mesajı — doğrulanmış source ve APK packaging kanıtı
 
-Hedef: **4.018 tarih × 2 bağımsız dil = 8.036 kayıt**.
-
-- TR ledger: `2026-01-01 → 2036-12-31` = **4018 / 4018**
-- EN ledger: `2026-01-01 → 2036-12-31` = **4018 / 4018**
-- Toplam: **8036 / 8036**
-- Eksik exact tarih/locale: **0**
-- Strict release source audit: **SUCCESS** on `4d68d5ad007657aafecad79173469ca6e60ffb1f`
-- Audit artifact: `9777939183`, digest `sha256:4aefada627afeda0257a24395b52a5e18b5484fc64c8b6c7b2fda454528a86b5`
-- Compiled catalog SHA-256: `6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf`
-- Exact APK packaging proof on `5283cc2381fbf850f86c85cb458f96a6b8250f45`: release APK **53.2 MB**, TR **4018**, EN **4018**, missing **0**, duplicate **0**.
-- APK SHA-256: `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`
+- Tarih aralığı: `2026-01-01 → 2036-12-31`.
+- TR: **4018 / 4018**.
+- EN: **4018 / 4018**.
+- Toplam: **8036 / 8036**.
+- Eksik exact tarih/locale: **0**.
+- Exact APK packaging proof (`5283cc2381fbf850f86c85cb458f96a6b8250f45`): release APK yaklaşık **53.2 MB**, packaged TR 4018, EN 4018, missing 0, duplicate 0.
+- APK SHA-256: `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`.
 - APK evidence artifact: `9826254630`.
-- More recent exact `4d3462a8dc35731473b89370840b78e840962d92` üzerinde `verify-apk-assets` job `100120467578` de **SUCCESS**.
-
-Bu APK kanıtı generated Android host provenance taşıyor; tracked/signable production host veya real-device airplane-mode proof yerine sayılmıyor.
+- Bu APK generated Android host ile üretildi; tracked/signable production host veya real-device airplane-mode kanıtı değildir.
+- RC-1433 rolling-horizon validator/workflow source seviyesinde eklenmiştir; final release tarihine göre strict kapı yeşil olmadan DONE verilemez.
 
 ## Flutter Quality progression
 
-Historical convergence:
+Son güvenilir decoded baselinelar:
 
 - `f18493949d0229a41e47d2dc05338e2167f599ac`: Analyze SUCCESS, Test `+559 -28`.
 - `bf9b954f454f8c8685469010e4519c22073b7773`: Analyze SUCCESS, Test `+573 -17`.
 - `b726b3196d9dfa0a15c740bc79a8c41f32379aff`: Analyze SUCCESS, Test `+582 -11`.
 - `5283cc2381fbf850f86c85cb458f96a6b8250f45`: Analyze SUCCESS, Test `+590 -3`.
-- `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test **`+592 -1`**.
+- `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test `+592 -1`.
+- Exact `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`; sole failure catastrophic replace rollback integrity UI visibility idi.
 
-### Exact post-timing baseline
+Sonraki production/source repairleri persistent rollback state, viewport dışı kritik alarm ve stale backup validators üzerinde ilerledi. Bu repairlerin exact completed Flutter toplamı ayrıca doğrulanmadan green/DONE kabul edilmeyecek.
 
-Exact completed HEAD `4d3462a8dc35731473b89370840b78e840962d92`, Flutter job `100120467749`:
+## Requirement validation
 
-- `flutter analyze --fatal-infos`: **SUCCESS — No issues found**
-- `flutter test --reporter expanded`: **FAILURE — `+592 -1`**
-- sole failure: `test/ui/backup/backup_runtime_wiring_test.dart: failed replace rollback surfaces critical integrity state`
-- bounded wait sonunda kritik `Veri bütünlüğü kontrol edilmeli` metni için **0 widget** bulundu.
+- Exact `4d3462a8dc35731473b89370840b78e840962d92` üzerinde `validate-requirements` SUCCESS olmuştu.
+- Bu başarı tek başına hiçbir RC'yi DONE yapmaz.
 
-Bu, önceki timing-only repair'in root cause olmadığını kanıtladı. Exception→`rollbackFailed` mapping ve localized copy zaten doğruydu; gerçek problem catastrophic rollback failure'ın yalnız transient Snackbar feedback olarak sunulmasıydı.
+## RC-1437 — offline/versioned calculation data readiness
 
-Production repair lineage:
+Bağlayıcı şart: ephemeris, IANA timezone ve city-coordinate verileri uygulamayla versioned, checksum doğrulanmış, offline olmalı; calculations network gerektirmemeli.
 
-- `5d2003a48c8bb25272def1ba7ce951538e078672`: persistent critical rollback state + `liveRegion` warning card + sonraki backup/restore aksiyonlarını bloklama.
-- `299fbcec0c2bdba34d56e4b042a9220fab1a5f61`: duplicate critical Snackbar kaldırıldı; catastrophic rollback için tek canonical persistent accessible warning bırakıldı.
+Mevcut gerçek durum:
 
-Kritik copy, `rollbackFailed` ayrımı ve yanlış generic `Veriler korundu` reddi gevşetilmedi.
+- `requirements/data_manifests/timezone.json`: offline IANA runtime ve `timezone` `0.10.1` sözleşmesi var.
+- `requirements/data_manifests/cities.json`: status **`SOURCE_SELECTED_NOT_BUNDLED`**; `generated_catalog_sha256` yok.
+- `requirements/reference_manifests/offline_ephemeris_runtime.json`: planetary ephemeris ve Earth-orientation verileri **bundled=false / proven=false**, SHA-256 kanıtları yok.
+- `pubspec.yaml`: fiziksel city/ephemeris runtime asset declaration yok.
 
-### Fresh CI static-validator follow-up
+Bu checkpointte eklenen gerçek ilerleme:
 
-Exact `299fbcec...` üzerinde yeni `csv-contract` job `100142815473` kırmızı çıktı. Decoded log:
+- `c3f27eb155b343b708800815c1db6988af979b78` — `tools/requirements/validate_rc1437_offline_data.py`.
+  - default/strict mod fail-closed.
+  - physical bundling, version pinning, valid SHA-256, byte-size/provenance ve offline/fail-closed runtime policy denetlenir.
+  - source-selection manifestleri bundling proof sayılmaz.
+- `a619cc2ca81ec1f8b9c8adbc564ad1ae29b96957` — `.github/workflows/rc1437-offline-data-readiness.yml`.
+  - `--allow-incomplete` yalnız audit JSON artifact üretmek içindir; release pass değildir.
+  - fiziksel data tamamlandığında strict release/clean-checkout hattı validatorı `--allow-incomplete` olmadan çalıştırmalıdır.
 
-- CSV backup source contract: SUCCESS
-- backup schema/package/ZIP/file-store/platform/application-service contracts: SUCCESS
-- tek kırmızı: `tools/backup/validate_backup_ui_contract.py`
-- exact hata: validator lowercase `veri bütünlüğü kontrol edilmeli` tokenını arıyordu; canonical production copy `Veri bütünlüğü kontrol edilmeli`.
+**RC-1437: DONE değil.**
 
-Repair:
+## RC-1439 — physical UI reference-image readiness
 
-- `a9cb76493a6d8e56d8728a147a1f597d1e7f0fd1`: static validator tokenı canonical capitalization ile hizalandı.
-- Evidence policy, `done=false`, locale contract, restore-state ayrımı veya kritik uyarı şartı gevşetilmedi.
+Bağlayıcı şart: release fiziksel reference image listesi, filenames, checksums ve screen IDs içermeli; validator fiziksel varlığı doğrulamalı.
 
-Exact `a9cb764...` 25 check tetikledi. Bu checkpoint anında `analyze-and-test` queued, `csv-contract` in-progress, `validate-requirements` queued ve `verify-apk-assets` queued idi; queued/in-progress sonuçlar SUCCESS sayılmadı.
+Repository taramasında canonical fiziksel reference-image + screenId + SHA-256 seti bulunmadı. Uydurma screen ID/checksum veya placeholder üretilmedi.
 
-## Requirement validation progression
+Bu checkpointte eklenen gerçek ilerleme:
 
-- `30b29b...` baseline: RC-0001→RC-1442 exact presence/order, classification, evidence integrity, semantic evidence ownership ve Daily Message coverage SUCCESS; yalnız stale backup accessibility token validator kırmızıydı.
-- Repair `dfe0bcf94a6ea99f5f190192ddf827e315a9b516` canonical full semantics labels ile hizaladı; ownership / `done=false` / action-ID / 48dp / focus order / runtime-binding şartları korunarak.
-- Exact `4d3462a8dc35731473b89370840b78e840962d92` üzerinde `validate-requirements` job `100120467983`: **SUCCESS**.
-- Bu başarı tek başına herhangi bir RC'yi DONE yapmaz.
+- `52168528de7526e95c401ceff115891200607606` — `requirements/reference_manifests/rc1439_reference_images.json`, explicit `NOT_PROVEN`.
+- `a24cb866cd490b4ad1f2fda5717cf5af8e36091d` — `tools/requirements/validate_rc1439_reference_images.py`.
+  - non-empty physical image entries,
+  - unique screen IDs/paths,
+  - repository-contained files,
+  - basename/fileName agreement,
+  - valid exact SHA-256,
+  - `BUNDLED_VERIFIED` status,
+  - missing/checksum mismatch için fail-closed behavior.
+- `68e4265a1bd23f76e9c7d13183391bc976b948ff` — `.github/workflows/rc1439-reference-image-readiness.yml` audit evidence workflow.
+
+`generatedPlaceholderAccepted=false`; sahte reference evidence release kanıtı sayılamaz.
+
+**RC-1439: DONE değil.**
 
 ## Release-host durumu
 
-`.github/workflows/daily-message-apk-packaging.yml` `android/` yoksa `flutter create` ile geçici Android host materialize ediyor. Exact source repair lineage üzerinde repository `android/` path'i hâlâ yok.
+APK packaging workflow tracked `android/` yoksa `flutter create` ile geçici host materialize ediyor. Canonical production `applicationId`/namespace için güvenilir tracked kanıt bulunmadan package identity uydurulmayacak.
 
 Dolayısıyla açık:
 
-- tracked/signable Android production host,
-- signed reproducible clean-checkout APK,
+- canonical tracked/signable Android production host + application identity,
 - exact production signing/release configuration,
+- signed reproducible clean-checkout APK,
 - real-device airplane-mode lookup proof.
 
 ## Açık ana blocker'lar
 
-- exact engineering SHA `a9cb76493a6d8e56d8728a147a1f597d1e7f0fd1` için Flutter Quality + csv-contract + validate-requirements + verify-apk-assets completed sonuçları,
-- Daily Message gerçek offline/airplane-mode device asset-open kanıtı,
-- RC-1433 rolling horizon release kanıtı ve stok ileri taşıma,
-- tracked/signable Android release host,
-- versioned fiziksel IERS EOP + checksum/provenance,
-- yeniden dağıtıma uygun offline ephemeris + independent golden accuracy,
-- production Lahiri/Chitrapaksha ve GeoNames artifact kanıtı,
-- APPROVED UI reference/hash seti ve real-device accessibility/visual regression,
-- production Unicode PDF font + license/hash, full parser/open, rendered 5/25/50+ ve device delivery proof,
-- Play/rewarded gerçek cihaz kanıtı,
-- `pubspec.lock` gerçek dependency resolution sonrası,
-- clean-checkout/reproducible signed release APK,
-- airplane-mode + Golden Lifecycle + final 1.442 RC audit.
+- latest exact engineering SHA için completed Flutter Quality / requirement / release gate sonuçlarını kanıtlamak,
+- RC-1437 physical/versioned/checksummed city + planetary ephemeris + EOP datasets ve independent golden accuracy,
+- RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
+- Daily Message real offline/airplane-mode device lookup proof,
+- tracked/signable Android host ve signed reproducible clean-checkout artifact,
+- production Unicode PDF font + license/hash + parser/render/device delivery proof,
+- Play/rewarded real-device evidence,
+- visual/accessibility real-device regression,
+- final exact 1.442-RC lifecycle audit.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_0915_backup_persistent_warning_and_csv_validator.md`
+`automation_runs/2026-09-02_0952_rc1437_rc1439_release_readiness.md`
 
 ## Sıradaki çalışma
 
-1. Exact `a9cb76493a6d8e56d8728a147a1f597d1e7f0fd1` için Flutter Quality, csv-contract, validate-requirements ve verify-apk-assets sonuçlarını completed durumda oku; queued/in-progress sonucu SUCCESS sayma.
-2. Kırmızı kalırsa yalnız decoded exact root-cause'u kapat; kalite/evidence eşiklerini veya kritik integrity warning'i gevşetme.
-3. Yeşile dönerse Daily Message real offline/airplane-mode device lookup proof'a ilerle.
-4. Paralelde tracked/signable Android host, physical artifact/font/UI/device ve clean-checkout/release blockerlarını dependency sırasıyla kapat.
-5. Clean-checkout exact signed release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
+1. Latest exact SHA için RC-1437/RC-1439 audit workflow artifacts ve diğer mandatory CI sonuçlarını completed durumda oku; queued/in-progress sonuçları SUCCESS sayma.
+2. RC-1437 için gerçek redistributable city/ephemeris/EOP artifacts + checksum/provenance eklemeden strict pass verme.
+3. RC-1439 için canonical fiziksel UI references gelmeden BUNDLED_VERIFIED yapma.
+4. Bağımsız ilerleyebilen tracked Android release host/application identity, PDF/font, device/offline ve clean-checkout bloklarını dependency sırasıyla kapat.
+5. Exact signed release + final 1.442 RC lifecycle audit bitmeden FINAL deme.
 
 **FINAL: NO.**
