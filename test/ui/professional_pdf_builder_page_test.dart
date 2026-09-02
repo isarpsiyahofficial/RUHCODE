@@ -138,10 +138,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     await _tapCreate(tester);
-
-    expect(find.byKey(const ValueKey(RuhActionIds.pdfShare)), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfShare)));
-    await tester.pumpAndSettle();
+    await _tapShare(tester);
 
     expect(delivery.shareCalls, 1);
     expect(delivery.recordId, 'calc-42');
@@ -172,8 +169,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfPreflight)));
     await tester.pumpAndSettle();
     await _tapCreate(tester);
-    await tester.tap(find.byKey(const ValueKey(RuhActionIds.pdfShare)));
-    await tester.pumpAndSettle();
+    await _tapShare(tester);
 
     expect(find.text('Paylaşım iptal edildi.'), findsOneWidget);
     expect(find.textContaining('PDF paylaşılamadı'), findsNothing);
@@ -235,12 +231,26 @@ Future<void> _tapCreate(WidgetTester tester, {bool settle = true}) async {
     200,
     scrollable: find.byType(Scrollable).first,
   );
+  await tester.ensureVisible(create);
   await tester.tap(create);
   if (settle) {
     await tester.pumpAndSettle();
   } else {
     await tester.pump();
   }
+}
+
+Future<void> _tapShare(WidgetTester tester) async {
+  final share = find.byKey(const ValueKey(RuhActionIds.pdfShare));
+  await tester.scrollUntilVisible(
+    share,
+    200,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.ensureVisible(share);
+  expect(share, findsOneWidget);
+  await tester.tap(share);
+  await tester.pumpAndSettle();
 }
 
 final class _RecordingActions implements ProfessionalPdfBuildActions {
