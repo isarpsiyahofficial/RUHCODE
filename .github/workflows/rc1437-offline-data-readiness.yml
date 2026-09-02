@@ -1,0 +1,40 @@
+name: RC-1437 Offline Data Readiness
+
+on:
+  push:
+    paths:
+      - 'requirements/data_manifests/**'
+      - 'requirements/reference_manifests/offline_ephemeris_runtime.json'
+      - 'tools/requirements/validate_rc1437_offline_data.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/rc1437-offline-data-readiness.yml'
+  pull_request:
+    paths:
+      - 'requirements/data_manifests/**'
+      - 'requirements/reference_manifests/offline_ephemeris_runtime.json'
+      - 'tools/requirements/validate_rc1437_offline_data.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/rc1437-offline-data-readiness.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  readiness-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit RC-1437 offline data readiness
+        run: |
+          python3 tools/requirements/validate_rc1437_offline_data.py \
+            --allow-incomplete \
+            --json-output evidence/rc1437_offline_data_readiness.json
+      - name: Upload RC-1437 readiness evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1437-offline-data-readiness
+          path: evidence/rc1437_offline_data_readiness.json
+          if-no-files-found: error
