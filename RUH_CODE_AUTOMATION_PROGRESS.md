@@ -31,6 +31,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Professional PDF preview/create/share Semantics wrappers tek canonical screen-reader action node üretir.
 - Numerology metric rows tek explicit localized screen-reader semantics container üretir.
 - PDF structural inspector classic xref ve PDF 1.5 xref-stream Root→Catalog→Pages zincirini serialization-order bağımsız ve fail-closed doğrular.
+- Backup catastrophic rollback UI: `rollbackFailed` artık yalnız transient Snackbar değildir; sayfada kalıcı live-region kritik bütünlük uyarısı gösterilir ve aynı page lifecycle içinde sonraki backup/restore aksiyonları bloklanır.
 
 ## Günün Mesajı — doğrulanmış ledger ve strict audit
 
@@ -71,6 +72,24 @@ Production `BackupRestoreException(rollbackRestored:false)` zaten `BackupUiPhase
 
 Repair commit `0aa21e30f25819223e506da449a055a4086ecdea` fixed-duration timing varsayımını bounded pump-until-visible ile değiştirdi. Kritik warning hâlâ zorunlu; yanlış `Veriler korundu` mesajı hâlâ reddediliyor.
 
+### Exact post-timing baseline ve production root-cause repair
+
+Exact completed HEAD `4d3462a8dc35731473b89370840b78e840962d92` üzerinde requirement ve APK asset kapıları yeşile dönerken Flutter `analyze-and-test` job `100120467749` hâlâ kırmızı kaldı. Decoded log:
+
+- Analyze: **SUCCESS — No issues found**
+- Test: **`+592 -1`**
+- sole failure yine `failed replace rollback surfaces critical integrity state`
+- bounded wait sonunda kritik `Veri bütünlüğü kontrol edilmeli` metni için **0 widget** bulundu
+
+Bu, timing-only repair'in root cause olmadığını kanıtladı. `phaseForRestoreError` mapping'i doğruydu; gerçek problem catastrophic rollback failure'ın yalnız transient Snackbar feedback olarak sunulmasıydı.
+
+Production repair lineage:
+
+- `5d2003a48c8bb25272def1ba7ce951538e078672`: persistent `rollbackFailed` state, accessible `liveRegion` kritik card ve sonraki backup/restore aksiyonlarını page lifecycle içinde bloke etme.
+- `299fbcec0c2bdba34d56e4b042a9220fab1a5f61`: persistent card ile aynı metni ikinci kez Snackbar'da yayınlama kaldırıldı; kritik durumda tek canonical accessible warning bırakıldı.
+
+Kritik copy, `rollbackFailed` ayrımı ve yanlış generic `Veriler korundu` reddi gevşetilmedi. Exact `299fbcec...` Flutter Quality bu checkpoint anında henüz completed olmadığı için CI-green/DONE sayılmadı.
+
 ## Requirement validation progression
 
 Exact HEAD `30b29b...`, run/job `33581506181 / 100096595116` üzerinde:
@@ -84,6 +103,8 @@ Exact HEAD `30b29b...`, run/job `33581506181 / 100096595116` üzerinde:
 - tek validator kırmızısı: `validate_backup_restore_preview_accessibility.py` stale kısa semantics label tokenları arıyordu.
 
 Production/widget test canonical labels `Mevcut Verilerle Birleştir` ve `Mevcut Verileri Değiştir` kullanıyor. Repair commit `dfe0bcf94a6ea99f5f190192ddf827e315a9b516` validator tokenlarını canonical label'larla hizaladı. RC ownership, `done=false` guard, action IDs, 48dp, focus order, merge/replace modes ve runtime binding kontrolleri aynen korunuyor.
+
+Exact `4d3462a8dc35731473b89370840b78e840962d92` üzerinde `validate-requirements` job `100120467983` **SUCCESS** olarak tamamlandı. Dolayısıyla stale semantics-token validator borcu kapanmış durumda; bu başarı tek başına herhangi bir RC'yi DONE yapmaz.
 
 ## APK packaging doğrulaması
 
@@ -105,11 +126,13 @@ Exact source HEAD `5283cc2381fbf850f86c85cb458f96a6b8250f45`, run/job `335742235
 - evidence artifact: `9826254630`
 - evidence artifact ZIP SHA-256: `9f8587e256efc3ce30d158cbd1081d16b21233e29e1551fe039f208fdc018fe9`
 
-Bu packaged-asset kanıtı APK ZIP içindeki gerçek Flutter assets üzerinde yapıldı. Ancak provenance generated Android host taşıyor. Repository root yeniden kontrol edildi ve tracked production `android/` host hâlâ yok; bu nedenle tracked/signable host, signed reproducible release ve real-device offline proof açık kalıyor.
+Exact `4d3462a8dc35731473b89370840b78e840962d92` üzerinde `verify-apk-assets` job `100120467578` de **SUCCESS** tamamlandı; packaged-asset gate böylece daha yeni source lineage üzerinde de yeşil doğrulandı.
+
+Bu packaged-asset kanıtı APK ZIP içindeki gerçek Flutter assets üzerinde yapıldı. Ancak `.github/workflows/daily-message-apk-packaging.yml` `android/` bulunmadığında `flutter create` ile geçici host materialize ediyor. Repository `android/` path'i exact source repair lineage üzerinde hâlâ yok; bu nedenle tracked/signable host, signed reproducible release ve real-device offline proof açık kalıyor.
 
 ## Açık ana blocker'lar
 
-- newest exact HEAD üzerinde zorunlu GitHub Actions kapılarının completed SUCCESS olması,
+- newest exact source repair SHA `299fbcec...` üzerinde Flutter Quality'nin completed SUCCESS olması,
 - Daily Message gerçek offline/airplane-mode device asset-open kanıtı,
 - RC-1433 rolling horizon release kanıtı ve stok ileri taşıma,
 - tracked/signable Android release host ve final clean-checkout release configuration,
@@ -125,13 +148,13 @@ Bu packaged-asset kanıtı APK ZIP içindeki gerçek Flutter assets üzerinde ya
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_0710_flutter_last_failure_and_requirement_validator_repair.md`
+`automation_runs/2026-09-02_0905_backup_catastrophic_rollback_persistence.md`
 
 ## Sıradaki çalışma
 
-1. Exact repair lineage için Flutter Quality ve validate-requirements sonuçlarını completed durumda oku; queued/indexing durumunu SUCCESS sayma.
-2. Kırmızı kalırsa yalnız exact yeni diagnostic root-cause'u kapat; kalite eşiğini veya RC kanıt kurallarını gevşetme.
-3. Her iki kapı yeşile döndüğünde Daily Message real offline/airplane-mode device lookup proof'a ilerle.
+1. Exact source repair SHA `299fbcec0c2bdba34d56e4b042a9220fab1a5f61` için Flutter Quality sonucunu completed durumda oku; queued/in-progress sonucu SUCCESS sayma.
+2. Kırmızı kalırsa yalnız decoded exact yeni root-cause'u kapat; kalite eşiğini veya kritik integrity warning'i gevşetme.
+3. Yeşile dönerse Daily Message real offline/airplane-mode device lookup proof'a ilerle.
 4. Paralelde tracked/signable Android host, physical artifact/font/UI/device ve clean-checkout/release blockerlarını dependency sırasıyla kapat.
 5. Clean-checkout exact signed release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
