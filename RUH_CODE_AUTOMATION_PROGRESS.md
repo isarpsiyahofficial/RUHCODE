@@ -32,7 +32,6 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 ## Flutter / CI durumu
 
 Historical decoded baselines:
-
 - `f18493949d0229a41e47d2dc05338e2167f599ac`: Analyze SUCCESS, Test `+559 -28`.
 - `bf9b954f454f8c8685469010e4519c22073b7773`: Analyze SUCCESS, Test `+573 -17`.
 - `b726b3196d9dfa0a15c740bc79a8c41f32379aff`: Analyze SUCCESS, Test `+582 -11`.
@@ -40,9 +39,8 @@ Historical decoded baselines:
 - `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test `+592 -1`.
 - `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`.
 
-Latest completed green baseline before this migration:
-
-- `c432c0e96406fa5020ffea0a9036973d6dfe68fb`: **24 workflow completed green baseline**.
+Latest verified tracked-host baseline:
+- `3b8d60c37cccba856ceb641630adc62fef865f7b`: **24 workflow completed SUCCESS**.
 - Bu workflow toplamı bütün RC'lerin DONE olduğu anlamına gelmez.
 
 ## RC-1437 — offline/versioned calculation data
@@ -64,34 +62,23 @@ Latest completed green baseline before this migration:
 
 ## RC-1442 — clean-checkout release source readiness
 
-Bu checkpointte gerçek ilerleme:
+- Tracked Android host ve canonical identity `com.ruhcode.ruh_code` mevcut.
+- Gradle 9.1.0 / AGP 9.0.1 / Kotlin 2.3.20 host sözleşmesi mevcut.
+- `5510d995722405c91503681d2e77d9f92516b7a9`: production release artık debug keystore ile imzalanmıyor. Signing yalnız `RUH_RELEASE_STORE_FILE`, `RUH_RELEASE_STORE_PASSWORD`, `RUH_RELEASE_KEY_ALIAS`, `RUH_RELEASE_KEY_PASSWORD` Gradle property/environment değerleriyle etkinleşiyor. Credentials yoksa source/asset packaging unsigned olabilir; signed release claim değildir.
+- `ed7f889c1e9647adf53db838dba068dfb9a2f1ac`: RC-1442 source validator bu dört production signing inputunu source'ta zorunlu tutuyor ve `signingConfigs.getByName("debug")` kullanımını açıkça reddediyor.
 
-- Existing APK workflow uzun süredir `flutter create --org com.ruhcode --project-name ruh_code` kullanıyordu. Bu nedenle repository build hattının canonical Android identity'si `com.ruhcode.ruh_code` olarak kanıtlandı; yeni/rastgele package ID üretilmedi.
-- Flutter `3.44.7` upstream template kaynaklarından Gradle `9.1.0`, AGP `9.0.1`, Kotlin `2.3.20` doğrulandı.
-- `12d79b57d10f63c7a0cae527b637745965031599` — tracked Android host eklendi:
-  - `android/settings.gradle.kts`
-  - `android/build.gradle.kts`
-  - `android/app/build.gradle.kts`
-  - `android/gradle.properties`
-  - manifest + MainActivity
-  - light/dark styles
-  - Gradle wrapper properties + launcher scripts
-- `namespace == applicationId == com.ruhcode.ruh_code`.
-- `60fb4b5068be1190515453890c3e6ef0612ecc56` — APK packaging workflow tracked host migration state'ini tanıyacak şekilde düzeltildi. Host tracked ise tüm Android ağacı tekrar üretilmiyor; yalnız fiziksel wrapper JAR yoksa exact Flutter 3.44.7 generated hostundan JAR geçici materialize ediliyor ve provenance `tracked-host-generated-wrapper-jar` olarak yazılıyor.
-
-Açık kalan RC-1442 source blocker:
-
-- `android/gradle/wrapper/gradle-wrapper.jar` fiziksel tracked değil.
-- production release signing mevcut değil; app Gradle release build şu an CI/package doğrulaması için debug signing kullanıyor.
+Açık kalan RC-1442 blocker:
+- `android/gradle/wrapper/gradle-wrapper.jar` fiziksel tracked değil; exact Gradle 9.1.0 provenance/hash ile eklenmeli.
 - strict RC-1437 ve strict RC-1439 henüz PASS değil.
-- signed reproducible clean-checkout APK ve real-device verification ayrıca eksik.
+- secret-backed signed reproducible clean-checkout APK ve exact artifact verification yok.
+- real-device verification ayrıca eksik.
 
 **RC-1442 DONE değil.**
 
 ## Açık ana blocker'lar
 
 - exact Gradle wrapper JAR'ını tracked ve hash/provenance doğrulanmış hale getirmek,
-- production signing configuration ve signed reproducible clean-checkout APK,
+- secret-backed production signing + signed reproducible clean-checkout APK,
 - RC-1437 physical/versioned/checksummed city + planetary ephemeris + EOP datasets ve independent golden accuracy,
 - RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
 - Daily Message real airplane-mode device lookup proof,
@@ -102,13 +89,13 @@ Açık kalan RC-1442 source blocker:
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_1652_tracked_android_host_progress.md`
+`automation_runs/2026-09-02_1853_release_signing_source_hardening.md`
 
 ## Sıradaki çalışma
 
-1. Yeni engineering HEAD'in completed CI sonuçlarını oku; tracked host kaynaklı regresyon varsa düzelt.
-2. Exact Gradle 9.1.0 wrapper JAR'ını physical tracked artifact olarak ekle ve hash/provenance doğrula.
-3. Production signing'i debug signing'den ayır; secret-dependent signed release gate ekle.
+1. Yeni engineering HEAD'in CI sonuçlarını tamamlanmış durumda oku; Android Kotlin DSL/signing regresyonu varsa aynı turda düzelt.
+2. Exact Gradle 9.1.0 wrapper JAR'ını physical tracked artifact + SHA-256 provenance olarak ekle.
+3. Secret-backed signed release workflow/evidence kapısını tamamla.
 4. RC-1437 ve RC-1439 fiziksel blockerlarını bağımsız ilerlet.
 5. Exact signed release + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
