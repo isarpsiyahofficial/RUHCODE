@@ -2,42 +2,15 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-02_1652_tracked_android_host_progress.md`
+`automation_runs/2026-09-02_1853_release_signing_source_hardening.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. **Exact CI baseline yeniden doğrulandı**
-   - `c432c0e96406fa5020ffea0a9036973d6dfe68fb` üzerinde 24 workflow tamamlanmış green baseline olarak yeniden okundu.
-   - Bu başarı 1.442 requirement'ın tamamını DONE yapmaz.
+1. Exact tracked-host HEAD `3b8d60c37cccba856ceb641630adc62fef865f7b` için 24 workflow tamamlanmış SUCCESS baseline olarak yeniden doğrulandı.
+2. `5510d995722405c91503681d2e77d9f92516b7a9` ile production release debug signing kaldırıldı. Signed production release yalnız explicit RUH_RELEASE_* keystore değerleriyle mümkün.
+3. `ed7f889c1e9647adf53db838dba068dfb9a2f1ac` ile RC-1442 validator production signing source contractını zorunlu tutuyor ve debug signing'i reddediyor.
+4. Physical Gradle wrapper JAR, strict RC-1437/1439, secret-backed signed reproducible clean checkout ve real-device evidence hâlâ açık.
 
-2. **Canonical Android identity artık repository build hattından kanıtlı**
-   - APK workflow'u zaten `flutter create --org com.ruhcode --project-name ruh_code` kullanıyordu.
-   - Buna göre tracked host identity `com.ruhcode.ruh_code` olarak sabitlendi; yeni/rastgele package ID üretilmedi.
-   - Flutter 3.44.7 upstream template sürümleri doğrulandı: Gradle 9.1.0, AGP 9.0.1, Kotlin 2.3.20.
-
-3. **Tracked Android host eklendi**
-   - commit: `12d79b57d10f63c7a0cae527b637745965031599`.
-   - settings/root/app Gradle, gradle.properties, manifest, MainActivity, light/dark styles, wrapper properties ve launcher scripts repository'de tracked.
-   - `namespace == applicationId == com.ruhcode.ruh_code`.
-
-4. **APK packaging migration guard eklendi**
-   - commit: `60fb4b5068be1190515453890c3e6ef0612ecc56`.
-   - Tracked host bulunduğunda artık tüm Android host yeniden üretilmiyor.
-   - Fiziksel wrapper JAR henüz tracked olmadığı için CI exact Flutter 3.44.7 hostundan yalnız JAR'ı geçici materialize ediyor ve provenance `tracked-host-generated-wrapper-jar` olarak kaydediliyor.
-   - Bu bridge RC-1442 release PASS sayılmaz.
-
-## Doğrulanmış açık blocker
-
-- `android/gradle/wrapper/gradle-wrapper.jar` fiziksel tracked değil.
-- Production release signing ve signed reproducible clean-checkout APK kanıtı yok.
-- RC-1437 physical/versioned/checksummed city + ephemeris + EOP eksik.
-- RC-1439 canonical physical reference images + screen IDs + SHA-256 eksik.
-- Real-device airplane-mode/accessibility/Play/rewarded kanıtları açık.
-
-## Requirement disiplini
-
-- Exact scope `RC-0001 → RC-1442` / 1.442 requirement.
-- `requirements/requirement_state.csv` değiştirilmedi.
-- Tracked host ilerlemesi tek başına RC-1442'yi DONE yapmadı.
+`requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE eklenmedi.
 
 **FINAL: NO.**
