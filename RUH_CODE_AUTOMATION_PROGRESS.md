@@ -65,7 +65,7 @@ Mevcut gerçek durum:
 
 Bu checkpointte eklenen gerçek ilerleme:
 
-- `c3f27eb155b343b708800815c1db6988af979b78` — `tools/requirements/validate_rc1437_offline_data.py`.
+- `c56a36e7fe4bef209c9d9d7b7859c2592c6bdf7e` — `tools/requirements/validate_rc1437_offline_data.py`.
   - default/strict mod fail-closed.
   - physical bundling, version pinning, valid SHA-256, byte-size/provenance ve offline/fail-closed runtime policy denetlenir.
   - source-selection manifestleri bundling proof sayılmaz.
