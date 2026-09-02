@@ -1,0 +1,57 @@
+name: Materialize Verified Gradle Wrapper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/materialize-gradle-wrapper.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize-wrapper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download and verify official Gradle 9.1.0 wrapper
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected_wrapper_sha=76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3
+          expected_distribution_sha=a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806
+          wrapper_path=android/gradle/wrapper/gradle-wrapper.jar
+          properties_path=android/gradle/wrapper/gradle-wrapper.properties
+
+          test -f "$properties_path"
+          grep -Fqx 'distributionUrl=https\://services.gradle.org/distributions/gradle-9.1.0-bin.zip' "$properties_path"
+          grep -Fqx "distributionSha256Sum=${expected_distribution_sha}" "$properties_path"
+
+          mkdir -p "$(dirname "$wrapper_path")"
+          if [[ ! -f "$wrapper_path" ]]; then
+            curl --fail --location --silent --show-error \
+              https://services.gradle.org/distributions/gradle-9.1.0-wrapper.jar \
+              --output "$wrapper_path"
+          fi
+          echo "${expected_wrapper_sha}  ${wrapper_path}" | sha256sum --check --strict
+          java -jar "$wrapper_path" --version >/tmp/ruhcode-gradle-wrapper-version.txt
+          cat /tmp/ruhcode-gradle-wrapper-version.txt
+
+      - name: Commit verified wrapper when absent from repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          wrapper_path=android/gradle/wrapper/gradle-wrapper.jar
+          if git ls-files --error-unmatch "$wrapper_path" >/dev/null 2>&1; then
+            echo 'Verified Gradle wrapper is already tracked.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "$wrapper_path"
+          git commit -m 'Track verified Gradle 9.1.0 wrapper jar'
+          git push origin HEAD:main
