@@ -230,10 +230,24 @@ final class PdfOutputInspector {
         r'/Root\s+(\d+)\s+(\d+)\s+R\b',
       ).firstMatch(trailerSection);
     } else {
+      // PDF 1.5 xref streams are dictionaries and dictionary key order is not
+      // semantically significant. The production `pdf` package currently
+      // inserts /Root before /Type /XRef. Do not make structural validation
+      // depend on serialization order: first bound the xref object to the
+      // section before its trailing startxref, independently prove it is an
+      // XRef dictionary, then resolve /Root from that same bounded object.
+      final startXrefIndex = tail.indexOf('startxref');
+      if (startXrefIndex < 0) {
+        return null;
+      }
+      final xrefObjectSection = tail.substring(0, startXrefIndex);
+      if (!RegExp(r'^\d+\s+\d+\s+obj\b').hasMatch(xrefObjectSection) ||
+          !RegExp(r'/Type\s*/XRef\b').hasMatch(xrefObjectSection)) {
+        return null;
+      }
       match = RegExp(
-        r'^\d+\s+\d+\s+obj\b(?:(?!endobj).)*?/Type\s*/XRef\b(?:(?!endobj).)*?/Root\s+(\d+)\s+(\d+)\s+R\b',
-        dotAll: true,
-      ).firstMatch(tail);
+        r'/Root\s+(\d+)\s+(\d+)\s+R\b',
+      ).firstMatch(xrefObjectSection);
     }
     if (match == null) {
       return null;
