@@ -134,11 +134,11 @@ Widget _app(_FakeBackupActions backup, {Locale locale = const Locale('tr')}) {
 }
 
 Future<void> _openBackupPage(WidgetTester tester) async {
-  await tester.tap(find.text('Profil'));
+  await tester.tap(find.byKey(const ValueKey(RuhActionIds.navigationProfile)));
   await tester.pumpAndSettle();
-  await tester.tap(find.text('Ayarlar'));
+  await tester.tap(find.byKey(const ValueKey(RuhActionIds.profileSettings)));
   await tester.pumpAndSettle();
-  await tester.tap(find.text('Yedekleme ve Aktarma'));
+  await tester.tap(find.byKey(const ValueKey(RuhActionIds.settingsBackup)));
   await tester.pumpAndSettle();
 }
 
@@ -226,11 +226,8 @@ void main() {
     await tester.tap(find.text('Yedek Dosyası Seç'));
     await tester.pumpAndSettle();
     final replace = find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace));
-    await tester.scrollUntilVisible(
-      replace,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.ensureVisible(replace);
+    await tester.pumpAndSettle();
     await tester.tap(replace);
     await tester.pumpAndSettle();
 
