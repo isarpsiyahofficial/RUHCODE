@@ -27,7 +27,6 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - missing exact date/locale: **0**.
 - Exact APK packaging proof (`5283cc2381fbf850f86c85cb458f96a6b8250f45`): yaklaşık 53.2 MB release APK, packaged TR 4018, EN 4018, missing 0, duplicate 0.
 - APK SHA-256: `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`.
-- Bu APK generated Android host ile üretildi; tracked/signable production release veya real-device airplane-mode kanıtı değildir.
 - RC-1433 rolling-horizon release gate kaynak seviyesinde mevcut; final release tarihine göre strict pass gerekir.
 
 ## Flutter / CI durumu
@@ -39,68 +38,62 @@ Historical decoded baselines:
 - `b726b3196d9dfa0a15c740bc79a8c41f32379aff`: Analyze SUCCESS, Test `+582 -11`.
 - `5283cc2381fbf850f86c85cb458f96a6b8250f45`: Analyze SUCCESS, Test `+590 -3`.
 - `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test `+592 -1`.
-- `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`; sole failure catastrophic rollback integrity visibility idi.
+- `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`.
 
-Latest exact completed workflow verification:
+Latest completed green baseline before this migration:
 
-- `5bb271ef3376d179f5246a6de48a8637926b623f`: **24 workflow success / 0 failure / 0 in-progress**.
-- Böylece önceki source/validator/UI repair zinciri artık queued olarak tutulmuyor.
-- Bu workflow toplamı bütün RC'lerin DONE olduğu anlamına gelmez; fiziksel release/device kanıtları ayrı kapılardır.
+- `c432c0e96406fa5020ffea0a9036973d6dfe68fb`: **24 workflow completed green baseline**.
+- Bu workflow toplamı bütün RC'lerin DONE olduğu anlamına gelmez.
 
 ## RC-1437 — offline/versioned calculation data
-
-Bağlayıcı şart: ephemeris, IANA timezone, city-coordinate ve gerekli lokal data application ile versioned/checksummed/offline olmalı.
-
-Mevcut gerçek durum:
 
 - timezone manifesti offline IANA runtime sözleşmesine sahip.
 - city manifest status: `SOURCE_SELECTED_NOT_BUNDLED`; generated catalog checksum yok.
 - planetary ephemeris + Earth-orientation manifestleri fiziksel bundling/provenance SHA-256 açısından tamamlanmış değil.
-- `tools/requirements/validate_rc1437_offline_data.py` strict/default fail-closed validator mevcut.
-- `.github/workflows/rc1437-offline-data-readiness.yml` audit evidence üretir; `--allow-incomplete` release pass değildir.
+- strict/default fail-closed validator ve audit workflow mevcut.
 
 **RC-1437 DONE değil.**
 
 ## RC-1439 — physical UI reference images
 
-- `requirements/reference_manifests/rc1439_reference_images.json` explicit `NOT_PROVEN`.
-- `tools/requirements/validate_rc1439_reference_images.py` fiziksel dosya, unique screen ID/path, filename ve exact SHA-256 doğrular.
-- generated placeholder reference evidence reddedilir.
-- `.github/workflows/rc1439-reference-image-readiness.yml` audit evidence üretir.
+- reference manifest explicit `NOT_PROVEN`.
+- validator fiziksel dosya, unique screen ID/path, filename ve exact SHA-256 doğruluyor.
+- generated placeholder reference evidence reddediliyor.
 
 **RC-1439 DONE değil.**
 
 ## RC-1442 — clean-checkout release source readiness
 
-Bu checkpointte gerçek yeni ilerleme:
+Bu checkpointte gerçek ilerleme:
 
-- `6855d64ae1629a61deb2fc95ce42ed979751e568` — `tools/requirements/validate_rc1442_release_source_readiness.py` ilk sürüm.
-- `7454525fd008d288be252248d561ff7a86ae4db2` — validator Kotlin DSL/Groovy Android host ve root/app Gradle düzenleri için hardened edildi.
-- `e8f3166ae2e5d5f231d8371787b155d5d7e2e67b` — `.github/workflows/rc1442-release-source-readiness.yml`.
+- Existing APK workflow uzun süredir `flutter create --org com.ruhcode --project-name ruh_code` kullanıyordu. Bu nedenle repository build hattının canonical Android identity'si `com.ruhcode.ruh_code` olarak kanıtlandı; yeni/rastgele package ID üretilmedi.
+- Flutter `3.44.7` upstream template kaynaklarından Gradle `9.1.0`, AGP `9.0.1`, Kotlin `2.3.20` doğrulandı.
+- `12d79b57d10f63c7a0cae527b637745965031599` — tracked Android host eklendi:
+  - `android/settings.gradle.kts`
+  - `android/build.gradle.kts`
+  - `android/app/build.gradle.kts`
+  - `android/gradle.properties`
+  - manifest + MainActivity
+  - light/dark styles
+  - Gradle wrapper properties + launcher scripts
+- `namespace == applicationId == com.ruhcode.ruh_code`.
+- `60fb4b5068be1190515453890c3e6ef0612ecc56` — APK packaging workflow tracked host migration state'ini tanıyacak şekilde düzeltildi. Host tracked ise tüm Android ağacı tekrar üretilmiyor; yalnız fiziksel wrapper JAR yoksa exact Flutter 3.44.7 generated hostundan JAR geçici materialize ediliyor ve provenance `tracked-host-generated-wrapper-jar` olarak yazılıyor.
 
-RC-1442 source gate şunları fail-closed zorunlu kılar:
+Açık kalan RC-1442 source blocker:
 
-- tracked Android settings/root/app Gradle host,
-- tracked `gradle.properties`, manifest ve MainActivity,
-- Gradle wrapper + wrapper JAR,
-- explicit eşleşen ve `com.example*` olmayan `namespace` / `applicationId`,
-- tracked `pubspec.yaml` + `pubspec.lock`,
-- TR/EN Daily Message asset declarations,
-- strict RC-1437 PASS,
-- strict RC-1439 PASS.
+- `android/gradle/wrapper/gradle-wrapper.jar` fiziksel tracked değil.
+- production release signing mevcut değil; app Gradle release build şu an CI/package doğrulaması için debug signing kullanıyor.
+- strict RC-1437 ve strict RC-1439 henüz PASS değil.
+- signed reproducible clean-checkout APK ve real-device verification ayrıca eksik.
 
-Workflow yalnız manual dispatch ve `v*` release tag üzerinde clean checkout source gate olarak çalışır; bilinen release blocker'ları nedeniyle ordinary development push'larını gereksiz kırmızıya çevirmez. JSON evidence failure halinde de upload edilir.
-
-Repository `android/` contents lookup halen **404** verdi. Yani tracked canonical Android host bugün fiziksel olarak yok. Application identity uydurulmadı.
-
-**RC-1442 DONE değil.** Source readiness başarılsa bile signing, exact artifact reproducibility ve real-device verification ayrıca kanıtlanmalıdır.
+**RC-1442 DONE değil.**
 
 ## Açık ana blocker'lar
 
+- exact Gradle wrapper JAR'ını tracked ve hash/provenance doğrulanmış hale getirmek,
+- production signing configuration ve signed reproducible clean-checkout APK,
 - RC-1437 physical/versioned/checksummed city + planetary ephemeris + EOP datasets ve independent golden accuracy,
 - RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
-- canonical tracked/signable Android production host + stable application identity,
-- production signing configuration ve signed reproducible clean-checkout APK,
 - Daily Message real airplane-mode device lookup proof,
 - production Unicode PDF font + license/hash + parser/render/device delivery proof,
 - Play/rewarded real-device evidence,
@@ -109,14 +102,14 @@ Repository `android/` contents lookup halen **404** verdi. Yani tracked canonica
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_1457_rc1442_release_source_gate.md`
+`automation_runs/2026-09-02_1652_tracked_android_host_progress.md`
 
 ## Sıradaki çalışma
 
-1. Yeni engineering HEAD'in tamamlanmış CI sonuçlarını oku; kırmızı regresyon varsa aynı turda düzelt.
-2. Stable application identity kanıtlanmadan package ID uydurma; ancak canonical identity belirlendiğinde tracked Android hostu repository'ye taşı.
-3. RC-1437 physical city/ephemeris/EOP ve RC-1439 physical UI reference assetlerini bağımsız olarak ilerlet.
-4. RC-1442 source readiness strict PASS olduktan sonra signed clean-checkout reproducibility ve real-device offline/accessibility kanıtına geç.
+1. Yeni engineering HEAD'in completed CI sonuçlarını oku; tracked host kaynaklı regresyon varsa düzelt.
+2. Exact Gradle 9.1.0 wrapper JAR'ını physical tracked artifact olarak ekle ve hash/provenance doğrula.
+3. Production signing'i debug signing'den ayır; secret-dependent signed release gate ekle.
+4. RC-1437 ve RC-1439 fiziksel blockerlarını bağımsız ilerlet.
 5. Exact signed release + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
