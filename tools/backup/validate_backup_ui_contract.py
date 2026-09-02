@@ -25,7 +25,7 @@ required_source_tokens = [
     'selection.preview.valid',
     'BackupShareStatus.unavailable',
     'Data integrity must be checked',
-    'veri bütünlüğü kontrol edilmeli',
+    'Veri bütünlüğü kontrol edilmeli',
 ]
 
 required_test_tokens = [
