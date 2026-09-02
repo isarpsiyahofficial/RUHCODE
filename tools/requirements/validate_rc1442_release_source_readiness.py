@@ -26,6 +26,13 @@ def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
 
 
+def any_file(paths: list[str]) -> tuple[bool, str | None]:
+    for path in paths:
+        if exists(path):
+            return True, path
+    return False, None
+
+
 def run_strict_validator(path: str) -> tuple[bool, str]:
     target = ROOT / path
     if not target.is_file():
@@ -61,24 +68,22 @@ def main() -> int:
     parser.add_argument("--json-output")
     args = parser.parse_args()
 
-    required_files = [
-        "android/settings.gradle.kts",
-        "android/gradle.properties",
-        "android/app/src/main/AndroidManifest.xml",
-        "android/app/src/main/kotlin",
-        "pubspec.yaml",
-        "pubspec.lock",
-    ]
-
     checks: list[dict[str, object]] = []
 
-    # Files that must be tracked in a reproducible Flutter Android host. The Kotlin
-    # source path is a directory, so it is checked separately below.
-    for path in required_files[:-3]:
-        checks.append({"id": f"tracked:{path}", "ok": exists(path)})
-    checks.append({"id": "tracked:android/app/src/main/AndroidManifest.xml", "ok": exists("android/app/src/main/AndroidManifest.xml")})
-    checks.append({"id": "tracked:pubspec.yaml", "ok": exists("pubspec.yaml")})
-    checks.append({"id": "tracked:pubspec.lock", "ok": exists("pubspec.lock")})
+    settings_ok, settings_path = any_file(["android/settings.gradle.kts", "android/settings.gradle"])
+    root_gradle_ok, root_gradle_path = any_file(["android/build.gradle.kts", "android/build.gradle"])
+    app_gradle_ok, app_gradle_path = any_file(["android/app/build.gradle.kts", "android/app/build.gradle"])
+    checks.extend(
+        [
+            {"id": "tracked:android/settings.gradle", "ok": settings_ok, "path": settings_path},
+            {"id": "tracked:android/build.gradle", "ok": root_gradle_ok, "path": root_gradle_path},
+            {"id": "tracked:android/app/build.gradle", "ok": app_gradle_ok, "path": app_gradle_path},
+            {"id": "tracked:android/gradle.properties", "ok": exists("android/gradle.properties")},
+            {"id": "tracked:AndroidManifest", "ok": exists("android/app/src/main/AndroidManifest.xml")},
+            {"id": "tracked:pubspec.yaml", "ok": exists("pubspec.yaml")},
+            {"id": "tracked:pubspec.lock", "ok": exists("pubspec.lock")},
+        ]
+    )
 
     kotlin_dir = ROOT / "android/app/src/main/kotlin"
     java_dir = ROOT / "android/app/src/main/java"
@@ -86,7 +91,13 @@ def main() -> int:
     for base in (kotlin_dir, java_dir):
         if base.is_dir():
             activity_files.extend(base.rglob("MainActivity.*"))
-    checks.append({"id": "tracked:MainActivity", "ok": bool(activity_files), "files": [str(p.relative_to(ROOT)) for p in activity_files]})
+    checks.append(
+        {
+            "id": "tracked:MainActivity",
+            "ok": bool(activity_files),
+            "files": [str(p.relative_to(ROOT)) for p in activity_files],
+        }
+    )
 
     gradle_path, namespace, application_id = find_android_identity()
     identity_ok = bool(
