@@ -38,3 +38,4 @@ flutter:
     - assets/content/daily_messages/en/
     - assets/data/cities/
     - assets/data/eop/
+    - assets/data/ephemeris/

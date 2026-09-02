@@ -1,0 +1,18 @@
+{
+  "byte_size": 32726016,
+  "daf_spk_magic_verified": true,
+  "dataset": "planetaryEphemeris",
+  "independent_golden_vectors_proven": false,
+  "path": "assets/data/ephemeris/de440s.bsp",
+  "pds_label_byte_size": 6460,
+  "pds_label_sha256": "6d535b2afc09c1d5c4772d3fdc053649da9437b19e3585749b0fc61d45ff66bb",
+  "pds_label_url": "https://naif.jpl.nasa.gov/pub/naif/pds/pds4/lucy/lucy_spice/spice_kernels/spk/de440s.xml",
+  "provider": "JPL/NASA NAIF SPK",
+  "rc": "RC-1437",
+  "runtime_integration_proven": false,
+  "runtime_network_required": false,
+  "sha256": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+  "snapshot_date_utc": "2026-09-02",
+  "solution": "DE440s",
+  "source_url": "https://naif.jpl.nasa.gov/pub/naif/pds/pds4/lucy/lucy_spice/spice_kernels/spk/de440s.bsp"
+}
