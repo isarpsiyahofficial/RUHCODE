@@ -1,0 +1,81 @@
+name: RC-1437 IERS EOP Materialization
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/data/materialize_iers_eop.py'
+      - '.github/workflows/materialize-rc1437-eop.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rc1437-eop-main
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Materialize official IERS finals2000A snapshot
+        run: python tools/data/materialize_iers_eop.py --snapshot-date "$(date -u +%F)"
+
+      - name: Declare EOP data as Flutter asset
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('pubspec.yaml')
+          text = path.read_text(encoding='utf-8')
+          entry = '    - assets/data/eop/\n'
+          if entry not in text:
+              anchor = '    - assets/data/cities/\n'
+              if anchor not in text:
+                  raise SystemExit('city asset anchor not found')
+              text = text.replace(anchor, anchor + entry)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate physical EOP evidence
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('.')
+          evidence = json.loads((root/'requirements/evidence/rc1437_iers_eop_snapshot.json').read_text(encoding='utf-8'))
+          path = root/evidence['path']
+          assert path.is_file() and path.stat().st_size == evidence['byte_size']
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == evidence['sha256']
+          assert evidence['line_count'] > 10000
+          assert evidence['strictly_increasing_mjd'] is True
+          assert evidence['mjd_end'] > evidence['mjd_start']
+          print(f"validated {evidence['line_count']} IERS EOP rows; sha256={evidence['sha256']}")
+          PY
+
+      - name: Commit physical RC-1437 EOP snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            assets/data/eop/finals2000A.all \
+            requirements/evidence/rc1437_iers_eop_snapshot.json \
+            requirements/reference_manifests/offline_ephemeris_runtime.json \
+            pubspec.yaml
+          if git diff --cached --quiet; then
+            echo 'No EOP snapshot changes to commit.'
+            exit 0
+          fi
+          git commit -m 'data(rc1437): bundle verified IERS EOP snapshot'
+          git pull --rebase origin main
+          git push origin HEAD:main
