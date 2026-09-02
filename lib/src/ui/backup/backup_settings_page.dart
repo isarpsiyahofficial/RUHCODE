@@ -127,6 +127,28 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
     }
   }
 
+  Widget _criticalWarning(BackupUiCopy copy, BackupUiPhase phase) {
+    final message = copy.status(phase);
+    return Semantics(
+      liveRegion: true,
+      label: message,
+      excludeSemantics: true,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.error_outline),
+              const SizedBox(width: 12),
+              Expanded(child: Text(message)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final selection = _selection;
@@ -135,77 +157,67 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
     final actionsEnabled = !_busy && !_integrityBlocked;
     return Scaffold(
       appBar: AppBar(title: Text(copy.title)),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      body: Column(
         children: [
-          Text(copy.description),
-          if (criticalRestorePhase != null) ...[
-            const SizedBox(height: 16),
-            Semantics(
-              liveRegion: true,
-              label: copy.status(criticalRestorePhase),
-              excludeSemantics: true,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.error_outline),
-                      const SizedBox(width: 12),
-                      Expanded(child: Text(copy.status(criticalRestorePhase))),
-                    ],
-                  ),
+          if (criticalRestorePhase != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: _criticalWarning(copy, criticalRestorePhase),
+            ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                Text(copy.description),
+                const SizedBox(height: 16),
+                _BackupActionTile(
+                  actionId: RuhActionIds.backupExport,
+                  title: copy.saveLabel,
+                  subtitle: _ruhLocale == RuhLocale.tr
+                      ? 'Tüm desteklenen kayıtları tek taşınabilir yedek paketine aktar'
+                      : 'Export all supported records into one portable backup package',
+                  icon: Icons.save_alt_outlined,
+                  enabled: actionsEnabled,
+                  onTap: _export,
                 ),
-              ),
+                _BackupActionTile(
+                  actionId: RuhActionIds.backupShare,
+                  title: copy.shareLabel,
+                  subtitle: _ruhLocale == RuhLocale.tr
+                      ? 'Tam yedek paketini cihazın yerel paylaşım menüsüyle gönder'
+                      : 'Send the full backup package with the device share sheet',
+                  icon: Icons.share_outlined,
+                  enabled: actionsEnabled,
+                  onTap: _share,
+                ),
+                _BackupActionTile(
+                  actionId: RuhActionIds.backupImport,
+                  title: copy.chooseLabel,
+                  subtitle: _ruhLocale == RuhLocale.tr
+                      ? 'Dosyayı önce doğrula; onay vermeden mevcut verileri değiştirme'
+                      : 'Verify the file first; do not change existing data before confirmation',
+                  icon: Icons.settings_backup_restore_outlined,
+                  enabled: actionsEnabled,
+                  onTap: _pickRestore,
+                ),
+                if (_busy) ...[
+                  const SizedBox(height: 12),
+                  const LinearProgressIndicator(),
+                ],
+                if (selection != null) ...[
+                  const SizedBox(height: 20),
+                  _RestorePreviewCard(
+                    selection: selection,
+                    busy: _busy || _integrityBlocked,
+                    copy: copy,
+                    locale: _ruhLocale,
+                    onMerge: () => _apply(BackupImportMode.merge),
+                    onReplace: () => _apply(BackupImportMode.replace),
+                  ),
+                ],
+              ],
             ),
-          ],
-          const SizedBox(height: 16),
-          _BackupActionTile(
-            actionId: RuhActionIds.backupExport,
-            title: copy.saveLabel,
-            subtitle: _ruhLocale == RuhLocale.tr
-                ? 'Tüm desteklenen kayıtları tek taşınabilir yedek paketine aktar'
-                : 'Export all supported records into one portable backup package',
-            icon: Icons.save_alt_outlined,
-            enabled: actionsEnabled,
-            onTap: _export,
           ),
-          _BackupActionTile(
-            actionId: RuhActionIds.backupShare,
-            title: copy.shareLabel,
-            subtitle: _ruhLocale == RuhLocale.tr
-                ? 'Tam yedek paketini cihazın yerel paylaşım menüsüyle gönder'
-                : 'Send the full backup package with the device share sheet',
-            icon: Icons.share_outlined,
-            enabled: actionsEnabled,
-            onTap: _share,
-          ),
-          _BackupActionTile(
-            actionId: RuhActionIds.backupImport,
-            title: copy.chooseLabel,
-            subtitle: _ruhLocale == RuhLocale.tr
-                ? 'Dosyayı önce doğrula; onay vermeden mevcut verileri değiştirme'
-                : 'Verify the file first; do not change existing data before confirmation',
-            icon: Icons.settings_backup_restore_outlined,
-            enabled: actionsEnabled,
-            onTap: _pickRestore,
-          ),
-          if (_busy) ...[
-            const SizedBox(height: 12),
-            const LinearProgressIndicator(),
-          ],
-          if (selection != null) ...[
-            const SizedBox(height: 20),
-            _RestorePreviewCard(
-              selection: selection,
-              busy: _busy || _integrityBlocked,
-              copy: copy,
-              locale: _ruhLocale,
-              onMerge: () => _apply(BackupImportMode.merge),
-              onReplace: () => _apply(BackupImportMode.replace),
-            ),
-          ],
         ],
       ),
     );
@@ -341,7 +353,7 @@ class _RestorePreviewCard extends StatelessWidget {
               ),
             ],
           ],
-        ),
+        ],
       ),
     );
   }
