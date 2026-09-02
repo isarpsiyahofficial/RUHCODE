@@ -26,6 +26,7 @@ jobs:
         run: |
           set -euo pipefail
           host_mode=tracked
+          wrapper_sha256=76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3
           if [[ ! -f android/app/build.gradle && ! -f android/app/build.gradle.kts ]]; then
             host_mode=generated
             rm -rf /tmp/ruh_code_android_host
@@ -36,23 +37,24 @@ jobs:
               --no-pub \
               /tmp/ruh_code_android_host
             cp -R /tmp/ruh_code_android_host/android ./android
-          elif [[ ! -f android/gradle/wrapper/gradle-wrapper.jar ]]; then
-            host_mode=tracked-host-generated-wrapper-jar
-            rm -rf /tmp/ruh_code_android_wrapper
-            flutter create \
-              --platforms=android \
-              --org com.ruhcode \
-              --project-name ruh_code \
-              --no-pub \
-              /tmp/ruh_code_android_wrapper
-            cp /tmp/ruh_code_android_wrapper/android/gradle/wrapper/gradle-wrapper.jar \
-              android/gradle/wrapper/gradle-wrapper.jar
+          fi
+          if [[ ! -f android/gradle/wrapper/gradle-wrapper.jar ]]; then
+            host_mode=${host_mode}-official-gradle-9.1.0-wrapper
+            mkdir -p android/gradle/wrapper
+            curl --fail --location --silent --show-error \
+              https://services.gradle.org/distributions/gradle-9.1.0-wrapper.jar \
+              --output android/gradle/wrapper/gradle-wrapper.jar
+            echo "${wrapper_sha256}  android/gradle/wrapper/gradle-wrapper.jar" | sha256sum --check --strict
+          else
+            echo "${wrapper_sha256}  android/gradle/wrapper/gradle-wrapper.jar" | sha256sum --check --strict
           fi
           mkdir -p build/reports
           {
             echo "source_sha=${GITHUB_SHA}"
             echo "flutter_version=$(flutter --version --machine | python3 -c 'import json,sys; print(json.load(sys.stdin)["frameworkVersion"])')"
             echo "android_host=${host_mode}"
+            echo "gradle_wrapper_sha256=${wrapper_sha256}"
+            echo "gradle_wrapper_source=https://services.gradle.org/distributions/gradle-9.1.0-wrapper.jar"
           } | tee build/reports/android-host-provenance.txt
       - name: Build release APK
         run: flutter build apk --release
