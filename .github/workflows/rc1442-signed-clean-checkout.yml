@@ -1,0 +1,107 @@
+name: RC-1442 Signed Clean Checkout Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  signed-release-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 1
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+
+      - name: Validate clean-checkout source readiness
+        run: |
+          set -euo pipefail
+          python3 tools/requirements/validate_rc1442_release_source_readiness.py \
+            --json-output evidence/rc1442_release_source_readiness.json
+
+      - name: Validate production signing secrets
+        shell: bash
+        env:
+          RUH_RELEASE_KEYSTORE_B64: ${{ secrets.RUH_RELEASE_KEYSTORE_B64 }}
+          RUH_RELEASE_STORE_PASSWORD: ${{ secrets.RUH_RELEASE_STORE_PASSWORD }}
+          RUH_RELEASE_KEY_ALIAS: ${{ secrets.RUH_RELEASE_KEY_ALIAS }}
+          RUH_RELEASE_KEY_PASSWORD: ${{ secrets.RUH_RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in RUH_RELEASE_KEYSTORE_B64 RUH_RELEASE_STORE_PASSWORD RUH_RELEASE_KEY_ALIAS RUH_RELEASE_KEY_PASSWORD; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "::error::missing required production signing secret: ${name}"
+              missing=1
+            fi
+          done
+          [[ "$missing" -eq 0 ]]
+
+      - name: Materialize ephemeral production keystore
+        id: signing
+        shell: bash
+        env:
+          RUH_RELEASE_KEYSTORE_B64: ${{ secrets.RUH_RELEASE_KEYSTORE_B64 }}
+        run: |
+          set -euo pipefail
+          store="$RUNNER_TEMP/ruh-code-release.jks"
+          printf '%s' "$RUH_RELEASE_KEYSTORE_B64" | base64 --decode > "$store"
+          test -s "$store"
+          chmod 600 "$store"
+          echo "store=$store" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve locked dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Build signed release APK from clean checkout
+        shell: bash
+        env:
+          RUH_RELEASE_STORE_FILE: ${{ steps.signing.outputs.store }}
+          RUH_RELEASE_STORE_PASSWORD: ${{ secrets.RUH_RELEASE_STORE_PASSWORD }}
+          RUH_RELEASE_KEY_ALIAS: ${{ secrets.RUH_RELEASE_KEY_ALIAS }}
+          RUH_RELEASE_KEY_PASSWORD: ${{ secrets.RUH_RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          flutter build apk --release
+
+      - name: Verify APK signature and packaged Daily Message assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=build/app/outputs/flutter-apk/app-release.apk
+          test -s "$apk"
+          mkdir -p evidence
+          apksigner_path="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner -print | sort -V | tail -n 1)"
+          test -x "$apksigner_path"
+          "$apksigner_path" verify --verbose --print-certs "$apk" | tee evidence/apksigner-verify.txt
+          grep -Eq 'Verified using v[234] scheme.*true|Verifies' evidence/apksigner-verify.txt
+          python3 tools/content/validate_daily_message_apk_assets.py \
+            "$apk" \
+            --report evidence/daily-message-apk-assets.json
+          sha256sum "$apk" | tee evidence/app-release.sha256
+          git rev-parse HEAD | tee evidence/source-sha.txt
+          flutter --version --machine > evidence/flutter-version.json
+          bash android/gradlew --version > evidence/gradle-wrapper-version.txt
+
+      - name: Upload signed release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1442-signed-clean-checkout-evidence
+          path: |
+            evidence/
+            build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: warn
+          retention-days: 14
