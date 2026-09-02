@@ -79,7 +79,7 @@ Ek olarak commit `454f4bd849c6683b86b913bd8494e80cfe90bbc1` ile `test/pdf/pdf_ou
 2. nested trailer dictionary sonrasında `/Root → Catalog → Pages` çözümünü doğrular,
 3. `/Root` gerçekten yoksa fail-closed davranışı doğrular.
 
-### 11-failure baseline ve current repair
+### 11-failure baseline
 
 Exact completed HEAD `b726b3196d9dfa0a15c740bc79a8c41f32379aff`, run/job `33564911120 / 100045753949`: Analyze **SUCCESS**, Test **FAILURE**, exact summary **`+582 -11`**.
 
@@ -97,33 +97,60 @@ Repair lineage:
 - `07eca6e98b01ad975c8f78f83ca329270c17c290` — 2.0x text-scale test ambiguous `IndexedStack` text finder yerine canonical nav/action IDs kullanır ve actual Records list'i scroll eder.
 - `78dbb9056d3881d0ebc9fe1d8c9482dd27e8a7bd` — production numerology metric semantics tek localized row node haline getirildi.
 
-`b726... → 78dbb905...` compare sonucu **6 commits ahead / 0 behind**. Yeni source SHA için Actions runları queued/indexing durumunda olduğundan bu repair **henüz CI-green sayılmaz**.
+### 3-failure baseline ve current repair
+
+Exact completed HEAD `5283cc2381fbf850f86c85cb458f96a6b8250f45`, run/job `33574223425 / 100074533697`, diagnostic artifact `9826177189`:
+
+- `flutter analyze --fatal-infos`: **SUCCESS — No issues found**
+- `flutter test --reporter expanded`: **FAILURE**
+- exact summary: **`+590 -3`**
+
+Kalan exact üç failure:
+
+1. Backup accessibility test production'ın canonical full semantics label'ı (`Mevcut Verilerle Birleştir` / `Mevcut Verileri Değiştir`) yerine stale kısa label (`Birleştir` / `Değiştir`) bekliyordu.
+2. Failed-replace rollback testinde production `BackupRestoreException(rollbackRestored:false)` doğru `rollbackFailed` mesajına map ediliyor; test `pumpAndSettle()` ile Snackbar auto-dismiss süresini de tüketip mesaj kaybolduktan sonra arıyordu.
+3. 2.0x text-scale PDF hub testinde `RuhActionIds.pdfBuild` action'ı viewport dışında kalmasına rağmen test scrolling yapmadan `Profesyonel PDF Oluştur` text'ini görünür kabul ediyordu.
+
+Bu tur repair commitleri:
+
+- `c2b0464a55804a7ffbfeaf2310518d5326fa46cd` — backup restore semantics expectations canonical full labels ile hizalandı; 48dp/focus-order kontrolleri korunuyor.
+- `fe19eb70383420ca4fd0e989254f50d150142f9c` — rollback-failed Snackbar auto-dismiss sonrası değil, görünür animasyon aralığında doğrulanıyor.
+- `c466306bc9f33010ee4f15c5355eee6ace434216` — 2.0x PDF hub testi canonical `RuhActionIds.pdfBuild` target'ını gerçek Scrollable içinde scroll edip doğruluyor.
+
+Source repair HEAD `c466306...` için 25 check oluşturuldu; current checkpoint sırasında `analyze-and-test` queued olduğundan bu üç repair **henüz CI-green sayılmaz**.
 
 ## APK packaging doğrulaması
 
-Exact SHA `5fb94606b7c4c9445f2675fb3ebf42b36b142ba6`, run/job `33552722873 / 100005891069` üzerinde:
+### Historical failure
+
+Exact SHA `5fb94606b7c4c9445f2675fb3ebf42b36b142ba6`, run/job `33552722873 / 100005891069` üzerinde release APK build SUCCESS olmuş, ancak historical Daily Message legacy 5-column shardları nedeniyle validator FAILURE vermişti. Loader ve validator explicit canonical+legacy normalization ile düzeltildi; unknown schema/duplicate/missing/empty content fail-closed kaldı.
+
+### Exact APK packaging SUCCESS
+
+Exact source HEAD `5283cc2381fbf850f86c85cb458f96a6b8250f45`, run/job `33574223584 / 100074534089`:
 
 - Android host materialization: **SUCCESS**
 - release APK build: **SUCCESS**
 - APK size: **53.2 MB**
-- packaged Daily Message validator: **FAILURE**
+- packaged Daily Message validator: **SUCCESS**
+- packaged TR: **4018 / 4018**
+- packaged EN: **4018 / 4018**
+- missing exact date+locale: **0**
+- duplicate exact date+locale: **0**
+- validator errors: **0**
+- range: `2026-01-01 → 2036-12-31`
+- schema rows per locale: canonical `2495`, legacy-normalized `1523`
+- shards per locale: `131`
+- APK SHA-256: `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`
+- evidence artifact: `9826254630`
+- evidence artifact ZIP SHA-256: `9f8587e256efc3ce30d158cbd1081d16b21233e29e1551fe039f208fdc018fe9`
 
-Bu failure, `2030-07` sonrası historical Daily Message shardlarının legacy 5-column schema kullanması ve production loader'ın yalnız canonical 6-column schema kabul etmesi kaynaklı gerçek runtime uyumsuzluğunu açığa çıkardı.
-
-Aynı repair lineage'ında:
-
-- production loader explicit canonical+legacy normalization ile düzeltildi,
-- legacy locale yalnız asset path'ten alınır; language/date/random fallback yok,
-- unknown schema, empty required content, canonical path/row locale mismatch ve exact duplicate key fail-closed kalır,
-- APK ZIP validator aynı açık schema sözleşmesine getirildi ve locale başına exact **4.018**, missing=0, duplicate=0 ve non-empty content şartını korur.
-
-Yeni exact-SHA APK Packaging run tamamlanmadan SUCCESS/DONE iddiası yapılmaz.
+Bu exact packaged-asset kanıtı APK ZIP içindeki gerçek Flutter assets üzerinde yapıldı. Ancak provenance `android_host=generated-build.gradle.kts`; bu nedenle tracked/signable production Android host, signed reproducible release ve real-device offline proof hâlâ açık.
 
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions kapılarının tamamlanmış SUCCESS olması,
 - newest Flutter Quality artifact'inde repair sonrası kalan failure varsa exact root-cause ile kapatılması,
-- yeni canonical+legacy Daily Message APK Packaging validator'ın exact SHA üzerinde SUCCESS kanıtı,
 - Daily Message için gerçek offline/airplane-mode device asset-open kanıtı,
 - RC-1433 için her actual release tarihinde rolling horizon CI kanıtı ve sürekli stok ileri taşıma,
 - tracked/signable Android release host ve final clean-checkout release configuration,
@@ -139,15 +166,15 @@ Yeni exact-SHA APK Packaging run tamamlanmadan SUCCESS/DONE iddiası yapılmaz.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_0312_flutter_11_failure_root_cause_repair.md`
+`automation_runs/2026-09-02_0500_flutter_3_failure_repair_apk_packaging_green.md`
 
 ## Sıradaki çalışma
 
 1. En yeni exact SHA Flutter Quality runını completed durumda oku; queued/indexing durumunu SUCCESS sayma.
 2. Flutter Quality kırmızıysa diagnostic artifact üzerinden yalnız gerçekten kalan failure'ları exact root-cause ile kapat; kalite eşiğini gevşetme.
-3. Flutter Quality yeşilse exact run/job/artifact evidence'ı kaydet ve canonical+legacy Daily Message APK Packaging sonucuna geç.
-4. APK Packaging yeşilse JSON evidence + APK digest'i kaydet; kırmızıysa exact packaged-data/runtime uyumsuzluğunu düzelt.
-5. Sonra real offline/airplane-mode Daily Message proof ve fiziksel artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et.
-6. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
+3. Flutter Quality yeşilse exact run/job/artifact evidence'ı kaydet. Daily Message APK Packaging exact SUCCESS artık kanıtlıdır.
+4. Daily Message için sonraki bağımlı kapı real offline/airplane-mode device lookup proof'tur.
+5. Paralelde tracked/signable Android host, fiziksel artifact/font/UI/device ve clean-checkout/release blockerlarına dependency sırasıyla devam et.
+6. Clean-checkout exact signed release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
