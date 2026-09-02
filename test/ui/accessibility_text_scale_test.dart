@@ -104,8 +104,22 @@ void main() {
       await tester.tap(pdfReports);
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
+      final preview = find.byKey(const ValueKey(RuhActionIds.pdfPreview));
+      final professional = find.byKey(const ValueKey(RuhActionIds.pdfBuild));
+      expect(preview, findsOneWidget);
+      final pdfScroll = find.ancestor(
+        of: preview,
+        matching: find.byType(Scrollable),
+      );
+      await tester.scrollUntilVisible(
+        professional,
+        180,
+        scrollable: pdfScroll.first,
+      );
       expect(find.text('Örnek PDF Önizle'), findsOneWidget);
+      expect(professional, findsOneWidget);
       expect(find.text('Profesyonel PDF Oluştur'), findsOneWidget);
+      expect(tester.takeException(), isNull);
     },
   );
 }
