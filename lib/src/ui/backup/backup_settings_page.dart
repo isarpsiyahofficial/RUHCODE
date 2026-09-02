@@ -119,8 +119,9 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
       if (mounted) setState(() => _selection = null);
     } catch (error) {
       final phase = phaseForRestoreError(error);
-      if (phase == BackupUiPhase.rollbackFailed && mounted) {
-        setState(() => _criticalRestorePhase = phase);
+      if (phase == BackupUiPhase.rollbackFailed) {
+        if (mounted) setState(() => _criticalRestorePhase = phase);
+        return;
       }
       _messagePhase(phase);
     }
