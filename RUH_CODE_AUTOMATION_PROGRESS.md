@@ -30,7 +30,9 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Production `RuhCodeApp`: TR/EN için Material/Widgets/Cupertino localization delegates explicit bağlı.
 - Daily-message APK packaging evidence gate: clean checkout'ta Android host yoksa Flutter 3.44.7 ile deterministic host materialize eder, release APK üretir, APK ZIP içindeki gerçek packaged assetleri exact date+locale seviyesinde denetler ve APK SHA-256 evidence üretir.
 - Professional PDF preview/create/share Semantics wrappers child semantics'i dışlayarak tek canonical screen-reader action node üretir.
+- Numerology metric rows visible label/value içeriğini korurken tek explicit screen-reader semantics container (`Yaşam Yolu: 7` / localized equivalent) üretir.
 - PDF structural inspector classic-xref trailer içindeki nested dictionary sonrası `/Root` indirect reference'ını `startxref` sınırına kadar arar; `/Root → Catalog → Pages` zinciri korunur ve missing Root fail-closed kalır.
+- PDF 1.5 xref-stream inspection dictionary key serialization order'ına bağlı değildir: bounded xref object içinde indirect object, `/Type /XRef` ve strict `/Root n g R` ayrı ayrı kanıtlanır; Root→Catalog→Pages zinciri yine zorunludur.
 
 ## Günün Mesajı — doğrulanmış ledger ve strict audit
 
@@ -67,7 +69,7 @@ Exact HEAD `bf9b954f454f8c8685469010e4519c22073b7773`, run/job `33554498838 / 10
 - 2 main-navigation route/Semantics lifecycle failure,
 - 2 critical semantics failure,
 - 1 Combined PDF EN lazy-label failure,
-- 4 production-generated PDF classic-xref `/Root` structural-inspection failure.
+- 4 production-generated PDF structural-inspection failure.
 
 Bu 17 failure için `bf9b954... → a2152f4...` lineage'ında 11 source/test repair commit'i uygulandı. Quality threshold, fail-closed guards veya test contract'ları gevşetilmedi.
 
@@ -77,7 +79,25 @@ Ek olarak commit `454f4bd849c6683b86b913bd8494e80cfe90bbc1` ile `test/pdf/pdf_ou
 2. nested trailer dictionary sonrasında `/Root → Catalog → Pages` çözümünü doğrular,
 3. `/Root` gerçekten yoksa fail-closed davranışı doğrular.
 
-`454f4bd...` exact SHA 25 workflow tetikledi; son gözlemde queued oldukları için repair lineage henüz CI-green sayılmadı.
+### 11-failure baseline ve current repair
+
+Exact completed HEAD `b726b3196d9dfa0a15c740bc79a8c41f32379aff`, run/job `33564911120 / 100045753949`: Analyze **SUCCESS**, Test **FAILURE**, exact summary **`+582 -11`**.
+
+Bu 11 failure iki kök neden ailesine indirildi:
+
+- 5 production-generated PDF failure: `pdf 3.13.0` PDF 1.5 xref-stream dictionary'sinde `/Root`, `/Type /XRef`'ten önce serialize edilebildiği halde inspector ters anahtar sırasını zorunlu tutuyordu.
+- 6 UI/accessibility failure: lazy/off-screen actionlara stale finder ile erişim ve numerology metric semantics grouping eksikliği.
+
+Repair lineage:
+
+- `715d348bb48b1368d93bdc16daa0385ab828ccba` — xref-stream Root extraction dictionary key order'dan bağımsızlaştırıldı; bounded xref object, `/Type /XRef`, strict indirect Root ve Root→Catalog→Pages hâlâ fail-closed doğrulanır.
+- `8ee645fa5d33b20b83290d2f60bdd961b1b28f61` — Professional PDF share flow viewport-aware hale getirildi.
+- `cb5243fec9bfad26c122f41b8d235d625678b365` — backup merge/replace semantics/48dp/focus-order her kontrol görünürken doğrulanır.
+- `7cbab2c0e2c8f602467bef032ad1f6f1c0470ce7` — backup route ve failed-replace rollback canonical action IDs + visible action ile sürülür.
+- `07eca6e98b01ad975c8f78f83ca329270c17c290` — 2.0x text-scale test ambiguous `IndexedStack` text finder yerine canonical nav/action IDs kullanır ve actual Records list'i scroll eder.
+- `78dbb9056d3881d0ebc9fe1d8c9482dd27e8a7bd` — production numerology metric semantics tek localized row node haline getirildi.
+
+`b726... → 78dbb905...` compare sonucu **6 commits ahead / 0 behind**. Yeni source SHA için Actions runları queued/indexing durumunda olduğundan bu repair **henüz CI-green sayılmaz**.
 
 ## APK packaging doğrulaması
 
@@ -102,7 +122,7 @@ Yeni exact-SHA APK Packaging run tamamlanmadan SUCCESS/DONE iddiası yapılmaz.
 ## Açık ana blocker'lar
 
 - newest exact HEAD üzerinde bütün zorunlu GitHub Actions kapılarının tamamlanmış SUCCESS olması,
-- newest Flutter Quality artifact'inde kalan failure kümelerinin exact root-cause ile kapatılması,
+- newest Flutter Quality artifact'inde repair sonrası kalan failure varsa exact root-cause ile kapatılması,
 - yeni canonical+legacy Daily Message APK Packaging validator'ın exact SHA üzerinde SUCCESS kanıtı,
 - Daily Message için gerçek offline/airplane-mode device asset-open kanıtı,
 - RC-1433 için her actual release tarihinde rolling horizon CI kanıtı ve sürekli stok ileri taşıma,
@@ -119,13 +139,13 @@ Yeni exact-SHA APK Packaging run tamamlanmadan SUCCESS/DONE iddiası yapılmaz.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_0107_pdf_inspector_regression_and_ci_continuation.md`
+`automation_runs/2026-09-02_0312_flutter_11_failure_root_cause_repair.md`
 
 ## Sıradaki çalışma
 
-1. En yeni exact SHA Flutter Quality ve Daily Message APK Packaging runlarını completed durumda oku; queued/indexing durumunu SUCCESS sayma.
-2. Flutter Quality kırmızıysa yeni artifact üzerinden yalnız kalan failure kümelerini exact root-cause ile kapat; kalite eşiğini gevşetme.
-3. Flutter Quality yeşilse exact run/job/artifact evidence'ı kaydet ve APK Packaging sonucuna geç.
+1. En yeni exact SHA Flutter Quality runını completed durumda oku; queued/indexing durumunu SUCCESS sayma.
+2. Flutter Quality kırmızıysa diagnostic artifact üzerinden yalnız gerçekten kalan failure'ları exact root-cause ile kapat; kalite eşiğini gevşetme.
+3. Flutter Quality yeşilse exact run/job/artifact evidence'ı kaydet ve canonical+legacy Daily Message APK Packaging sonucuna geç.
 4. APK Packaging yeşilse JSON evidence + APK digest'i kaydet; kırmızıysa exact packaged-data/runtime uyumsuzluğunu düzelt.
 5. Sonra real offline/airplane-mode Daily Message proof ve fiziksel artifact/font/UI/device/clean-checkout/release blockerlarına dependency sırasıyla devam et.
 6. Clean-checkout exact release artifact ve final 1.442-RC lifecycle audit tamamlanmadan FINAL deme.
