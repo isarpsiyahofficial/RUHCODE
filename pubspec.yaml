@@ -36,3 +36,4 @@ flutter:
   assets:
     - assets/content/daily_messages/tr/
     - assets/content/daily_messages/en/
+    - assets/data/cities/

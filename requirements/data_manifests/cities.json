@@ -43,5 +43,37 @@
   },
   "attribution_text": "Geographical data © GeoNames, licensed under CC BY 4.0.",
   "integrity_policy": "The exact downloaded source artifacts and generated catalog must receive SHA-256 values before a release can mark the city dataset requirement DONE. A web listing observation alone is not physical artifact evidence.",
-  "status": "SOURCE_SELECTED_NOT_BUNDLED"
+  "status": "BUNDLED_VERIFIED",
+  "source_snapshot_date": "2026-09-02",
+  "source_artifacts": {
+    "cities500.zip": {
+      "sha256": "46b39f9267c41b0c41c02d0026ae0b95daa0fb3f45750eea39f339744bef4915",
+      "byte_size": 13569494
+    },
+    "admin1CodesASCII.txt": {
+      "sha256": "590651498043f674accda2b7f46d21286cda0e290b02f8561c5005eee9a5448c",
+      "byte_size": 151536
+    },
+    "countryInfo.txt": {
+      "sha256": "93bafc525813f22e4711ff9ed6d626343094ce48c26388dc7c49189b3d7d5512",
+      "byte_size": 31678
+    },
+    "readme.txt": {
+      "sha256": "b1957379b6c1242c700c98ac9a8aa0a09f56c3c0a50ee72175527005f48ef2c5",
+      "byte_size": 8843
+    }
+  },
+  "generated_catalog": {
+    "path": "assets/data/cities/cities500.catalog.jsonl.gz",
+    "sha256": "25d9697946e8af2619324dcf46bbae10c84560bf70f1a63823b5308cbbd26ef7",
+    "byte_size": 12298532,
+    "record_count": 235640,
+    "unique_stable_ids": true,
+    "valid_iana_timezone_ids": true
+  },
+  "attribution_asset": {
+    "path": "assets/data/cities/ATTRIBUTION.txt",
+    "sha256": "28de53cccd27c756a05adc78b497f7f5ca73d202608b8a72579e3b3023eb2f86",
+    "license": "CC-BY-4.0"
+  }
 }
