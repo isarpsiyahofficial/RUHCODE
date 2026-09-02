@@ -16,3 +16,20 @@ jobs:
         run: python tools/content/validate_daily_message_contract.py
       - name: Test daily message catalog auditor
         run: python tools/content/test_validate_daily_message_catalog.py
+      - name: Test RC-1433 rolling release horizon validator
+        run: python -m unittest tools.content.test_validate_daily_message_release_horizon
+      - name: Build canonical daily message catalog for release-horizon gate
+        run: python tools/content/build_daily_message_catalog.py --output build/daily_messages_release.csv
+      - name: Enforce RC-1433 rolling ten-full-year stock at CI release date
+        run: |
+          python tools/content/validate_daily_message_release_horizon.py \
+            --catalog build/daily_messages_release.csv \
+            --manifest requirements/content_manifests/daily_messages.json \
+            --release-date "$(date -u +%F)" \
+            --report build/daily_message_release_horizon.json
+      - name: Upload rolling-horizon evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-message-release-horizon-${{ github.sha }}
+          path: build/daily_message_release_horizon.json
+          if-no-files-found: error
