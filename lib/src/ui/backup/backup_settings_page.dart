@@ -21,7 +21,11 @@ class BackupSettingsPage extends StatefulWidget {
 
 class _BackupSettingsPageState extends State<BackupSettingsPage> {
   BackupRestoreSelection? _selection;
+  BackupUiPhase? _criticalRestorePhase;
   bool _busy = false;
+
+  bool get _integrityBlocked =>
+      _criticalRestorePhase == BackupUiPhase.rollbackFailed;
 
   RuhLocale get _ruhLocale =>
       Localizations.localeOf(context).languageCode.toLowerCase() == 'en'
@@ -36,7 +40,7 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
   }
 
   Future<T?> _run<T>(Future<T> Function() action) async {
-    if (_busy) return null;
+    if (_busy || _integrityBlocked) return null;
     setState(() => _busy = true);
     try {
       return await action();
@@ -105,7 +109,7 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
 
   Future<void> _apply(BackupImportMode mode) async {
     final selection = _selection;
-    if (selection == null || !selection.preview.valid) return;
+    if (selection == null || !selection.preview.valid || _integrityBlocked) return;
     try {
       final result = await _run(
         () => widget.backupActions.applyRestore(selection: selection, mode: mode),
@@ -114,7 +118,11 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
       _messagePhase(phaseForImportResult(result));
       if (mounted) setState(() => _selection = null);
     } catch (error) {
-      _messagePhase(phaseForRestoreError(error));
+      final phase = phaseForRestoreError(error);
+      if (phase == BackupUiPhase.rollbackFailed && mounted) {
+        setState(() => _criticalRestorePhase = phase);
+      }
+      _messagePhase(phase);
     }
   }
 
@@ -122,12 +130,35 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
   Widget build(BuildContext context) {
     final selection = _selection;
     final copy = _copy;
+    final criticalRestorePhase = _criticalRestorePhase;
+    final actionsEnabled = !_busy && !_integrityBlocked;
     return Scaffold(
       appBar: AppBar(title: Text(copy.title)),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           Text(copy.description),
+          if (criticalRestorePhase != null) ...[
+            const SizedBox(height: 16),
+            Semantics(
+              liveRegion: true,
+              label: copy.status(criticalRestorePhase),
+              excludeSemantics: true,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.error_outline),
+                      const SizedBox(width: 12),
+                      Expanded(child: Text(copy.status(criticalRestorePhase))),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           _BackupActionTile(
             actionId: RuhActionIds.backupExport,
@@ -136,7 +167,7 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
                 ? 'Tüm desteklenen kayıtları tek taşınabilir yedek paketine aktar'
                 : 'Export all supported records into one portable backup package',
             icon: Icons.save_alt_outlined,
-            enabled: !_busy,
+            enabled: actionsEnabled,
             onTap: _export,
           ),
           _BackupActionTile(
@@ -146,7 +177,7 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
                 ? 'Tam yedek paketini cihazın yerel paylaşım menüsüyle gönder'
                 : 'Send the full backup package with the device share sheet',
             icon: Icons.share_outlined,
-            enabled: !_busy,
+            enabled: actionsEnabled,
             onTap: _share,
           ),
           _BackupActionTile(
@@ -156,7 +187,7 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
                 ? 'Dosyayı önce doğrula; onay vermeden mevcut verileri değiştirme'
                 : 'Verify the file first; do not change existing data before confirmation',
             icon: Icons.settings_backup_restore_outlined,
-            enabled: !_busy,
+            enabled: actionsEnabled,
             onTap: _pickRestore,
           ),
           if (_busy) ...[
@@ -167,7 +198,7 @@ class _BackupSettingsPageState extends State<BackupSettingsPage> {
             const SizedBox(height: 20),
             _RestorePreviewCard(
               selection: selection,
-              busy: _busy,
+              busy: _busy || _integrityBlocked,
               copy: copy,
               locale: _ruhLocale,
               onMerge: () => _apply(BackupImportMode.merge),
