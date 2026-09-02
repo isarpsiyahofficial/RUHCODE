@@ -1,0 +1,17 @@
+{
+  "requirement": "RC-1439",
+  "status": "NOT_PROVEN",
+  "policy": {
+    "physicalAssetsRequired": true,
+    "screenIdRequired": true,
+    "sha256Required": true,
+    "fileNameRequired": true,
+    "generatedPlaceholderAccepted": false,
+    "missingAssetBlocksRelease": true,
+    "checksumMismatchBlocksRelease": true
+  },
+  "images": [],
+  "blockers": [
+    "No canonical physical reference-image assets with screen IDs and SHA-256 evidence are currently tracked."
+  ]
+}
