@@ -27,6 +27,8 @@ jobs:
           set -euo pipefail
           host_mode=tracked
           wrapper_sha256=76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3
+          distribution_sha256=a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806
+          distribution_url=https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
           if [[ ! -f android/app/build.gradle && ! -f android/app/build.gradle.kts ]]; then
             host_mode=generated
             rm -rf /tmp/ruh_code_android_host
@@ -39,22 +41,37 @@ jobs:
             cp -R /tmp/ruh_code_android_host/android ./android
           fi
           if [[ ! -f android/gradle/wrapper/gradle-wrapper.jar ]]; then
-            host_mode=${host_mode}-official-gradle-9.1.0-wrapper
+            host_mode=${host_mode}-wrapper-from-verified-gradle-9.1.0-distribution
+            work_dir="$(mktemp -d)"
+            trap 'rm -rf "$work_dir"' EXIT
+            curl --fail --location --silent --show-error "$distribution_url" --output "$work_dir/gradle-9.1.0-bin.zip"
+            echo "${distribution_sha256}  ${work_dir}/gradle-9.1.0-bin.zip" | sha256sum --check --strict
+            unzip -q "$work_dir/gradle-9.1.0-bin.zip" -d "$work_dir/dist"
+            mkdir -p "$work_dir/wrapper-project"
+            printf 'rootProject.name = "ruhcode-ci-wrapper"\n' > "$work_dir/wrapper-project/settings.gradle.kts"
+            : > "$work_dir/wrapper-project/build.gradle.kts"
+            "$work_dir/dist/gradle-9.1.0/bin/gradle" \
+              -p "$work_dir/wrapper-project" \
+              wrapper \
+              --gradle-version 9.1.0 \
+              --distribution-type bin \
+              --gradle-distribution-sha256-sum "$distribution_sha256" \
+              --no-daemon
             mkdir -p android/gradle/wrapper
-            curl --fail --location --silent --show-error \
-              https://services.gradle.org/distributions/gradle-9.1.0-wrapper.jar \
-              --output android/gradle/wrapper/gradle-wrapper.jar
-            echo "${wrapper_sha256}  android/gradle/wrapper/gradle-wrapper.jar" | sha256sum --check --strict
-          else
-            echo "${wrapper_sha256}  android/gradle/wrapper/gradle-wrapper.jar" | sha256sum --check --strict
+            cp "$work_dir/wrapper-project/gradle/wrapper/gradle-wrapper.jar" android/gradle/wrapper/gradle-wrapper.jar
           fi
+          echo "${wrapper_sha256}  android/gradle/wrapper/gradle-wrapper.jar" | sha256sum --check --strict
+          chmod +x android/gradlew
+          bash android/gradlew --version | tee /tmp/ruhcode-gradle-wrapper-version.txt
+          grep -F 'Gradle 9.1.0' /tmp/ruhcode-gradle-wrapper-version.txt
           mkdir -p build/reports
           {
             echo "source_sha=${GITHUB_SHA}"
             echo "flutter_version=$(flutter --version --machine | python3 -c 'import json,sys; print(json.load(sys.stdin)["frameworkVersion"])')"
             echo "android_host=${host_mode}"
             echo "gradle_wrapper_sha256=${wrapper_sha256}"
-            echo "gradle_wrapper_source=https://services.gradle.org/distributions/gradle-9.1.0-wrapper.jar"
+            echo "gradle_distribution_sha256=${distribution_sha256}"
+            echo "gradle_distribution_source=${distribution_url}"
           } | tee build/reports/android-host-provenance.txt
       - name: Build release APK
         run: flutter build apk --release

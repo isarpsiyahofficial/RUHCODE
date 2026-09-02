@@ -18,40 +18,71 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download and verify official Gradle 9.1.0 wrapper
+      - name: Generate wrapper from checksum-verified Gradle 9.1.0 distribution
         shell: bash
         run: |
           set -euo pipefail
           expected_wrapper_sha=76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3
           expected_distribution_sha=a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806
+          distribution_url=https://services.gradle.org/distributions/gradle-9.1.0-bin.zip
           wrapper_path=android/gradle/wrapper/gradle-wrapper.jar
           properties_path=android/gradle/wrapper/gradle-wrapper.properties
+          checksum_path=android/gradle/wrapper/gradle-wrapper.jar.sha256
+          provenance_path=android/gradle/wrapper/gradle-wrapper.provenance.json
 
           test -f "$properties_path"
           grep -Fqx 'distributionUrl=https\://services.gradle.org/distributions/gradle-9.1.0-bin.zip' "$properties_path"
           grep -Fqx "distributionSha256Sum=${expected_distribution_sha}" "$properties_path"
 
-          mkdir -p "$(dirname "$wrapper_path")"
           if [[ ! -f "$wrapper_path" ]]; then
-            curl --fail --location --silent --show-error \
-              https://services.gradle.org/distributions/gradle-9.1.0-wrapper.jar \
-              --output "$wrapper_path"
+            work_dir="$(mktemp -d)"
+            trap 'rm -rf "$work_dir"' EXIT
+            curl --fail --location --silent --show-error "$distribution_url" --output "$work_dir/gradle-9.1.0-bin.zip"
+            echo "${expected_distribution_sha}  ${work_dir}/gradle-9.1.0-bin.zip" | sha256sum --check --strict
+            unzip -q "$work_dir/gradle-9.1.0-bin.zip" -d "$work_dir/dist"
+            mkdir -p "$work_dir/wrapper-project"
+            printf 'rootProject.name = "ruhcode-wrapper-materializer"\n' > "$work_dir/wrapper-project/settings.gradle.kts"
+            : > "$work_dir/wrapper-project/build.gradle.kts"
+            "$work_dir/dist/gradle-9.1.0/bin/gradle" \
+              -p "$work_dir/wrapper-project" \
+              wrapper \
+              --gradle-version 9.1.0 \
+              --distribution-type bin \
+              --gradle-distribution-sha256-sum "$expected_distribution_sha" \
+              --no-daemon
+            mkdir -p "$(dirname "$wrapper_path")"
+            cp "$work_dir/wrapper-project/gradle/wrapper/gradle-wrapper.jar" "$wrapper_path"
           fi
-          echo "${expected_wrapper_sha}  ${wrapper_path}" | sha256sum --check --strict
-          java -jar "$wrapper_path" --version >/tmp/ruhcode-gradle-wrapper-version.txt
-          cat /tmp/ruhcode-gradle-wrapper-version.txt
 
-      - name: Commit verified wrapper when absent from repository
+          echo "${expected_wrapper_sha}  ${wrapper_path}" | sha256sum --check --strict
+          printf '%s  gradle-wrapper.jar\n' "$expected_wrapper_sha" > "$checksum_path"
+          cat > "$provenance_path" <<JSON
+          {
+            "gradleVersion": "9.1.0",
+            "distributionUrl": "${distribution_url}",
+            "distributionSha256": "${expected_distribution_sha}",
+            "wrapperJarSha256": "${expected_wrapper_sha}",
+            "generation": "wrapper task from checksum-verified official Gradle binary distribution"
+          }
+          JSON
+
+          chmod +x android/gradlew
+          bash android/gradlew --version | tee /tmp/ruhcode-gradle-wrapper-version.txt
+          grep -F 'Gradle 9.1.0' /tmp/ruhcode-gradle-wrapper-version.txt
+
+      - name: Commit verified wrapper and provenance when needed
         shell: bash
         run: |
           set -euo pipefail
-          wrapper_path=android/gradle/wrapper/gradle-wrapper.jar
-          if git ls-files --error-unmatch "$wrapper_path" >/dev/null 2>&1; then
-            echo 'Verified Gradle wrapper is already tracked.'
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f "$wrapper_path"
-          git commit -m 'Track verified Gradle 9.1.0 wrapper jar'
+          git add -f \
+            android/gradle/wrapper/gradle-wrapper.jar \
+            android/gradle/wrapper/gradle-wrapper.jar.sha256 \
+            android/gradle/wrapper/gradle-wrapper.provenance.json
+          if git diff --cached --quiet; then
+            echo 'Verified Gradle wrapper and provenance are already tracked.'
+            exit 0
+          fi
+          git commit -m 'Track verified Gradle 9.1.0 wrapper and provenance'
           git push origin HEAD:main

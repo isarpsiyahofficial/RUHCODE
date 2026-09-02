@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -10,6 +11,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+EXPECTED_GRADLE_VERSION = "9.1.0"
+EXPECTED_GRADLE_DISTRIBUTION_SHA256 = "a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806"
+EXPECTED_GRADLE_WRAPPER_SHA256 = "76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3"
+EXPECTED_GRADLE_DISTRIBUTION_URL = "https\\://services.gradle.org/distributions/gradle-9.1.0-bin.zip"
 
 
 def exists(path: str) -> bool:
@@ -18,6 +23,17 @@ def exists(path: str) -> bool:
 
 def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
+
+
+def sha256(path: str) -> str | None:
+    target = ROOT / path
+    if not target.is_file():
+        return None
+    digest = hashlib.sha256()
+    with target.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def any_file(paths: list[str]) -> tuple[bool, str | None]:
@@ -45,6 +61,48 @@ def find_android_identity() -> tuple[str | None, str | None, str | None]:
         app = re.search(r"\bapplicationId\s*(?:=\s*)?[\"']([^\"']+)[\"']", text)
         return path, ns.group(1) if ns else None, app.group(1) if app else None
     return None, None, None
+
+
+def validate_gradle_wrapper() -> list[dict[str, object]]:
+    wrapper_path = "android/gradle/wrapper/gradle-wrapper.jar"
+    properties_path = "android/gradle/wrapper/gradle-wrapper.properties"
+    checksum_path = "android/gradle/wrapper/gradle-wrapper.jar.sha256"
+    provenance_path = "android/gradle/wrapper/gradle-wrapper.provenance.json"
+    actual_wrapper_sha = sha256(wrapper_path)
+    properties = read(properties_path) if exists(properties_path) else ""
+    checksum_text = read(checksum_path).strip() if exists(checksum_path) else ""
+    provenance: dict[str, object] = {}
+    provenance_parse_ok = False
+    if exists(provenance_path):
+        try:
+            parsed = json.loads(read(provenance_path))
+            if isinstance(parsed, dict):
+                provenance = parsed
+                provenance_parse_ok = True
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    expected_checksum_line = f"{EXPECTED_GRADLE_WRAPPER_SHA256}  gradle-wrapper.jar"
+    properties_ok = (
+        f"distributionUrl={EXPECTED_GRADLE_DISTRIBUTION_URL}" in properties
+        and f"distributionSha256Sum={EXPECTED_GRADLE_DISTRIBUTION_SHA256}" in properties
+        and "validateDistributionUrl=true" in properties
+    )
+    provenance_ok = provenance_parse_ok and (
+        provenance.get("gradleVersion") == EXPECTED_GRADLE_VERSION
+        and provenance.get("distributionUrl") == "https://services.gradle.org/distributions/gradle-9.1.0-bin.zip"
+        and provenance.get("distributionSha256") == EXPECTED_GRADLE_DISTRIBUTION_SHA256
+        and provenance.get("wrapperJarSha256") == EXPECTED_GRADLE_WRAPPER_SHA256
+    )
+    return [
+        {"id":"gradle:wrapper-jar-official-sha256","ok":actual_wrapper_sha == EXPECTED_GRADLE_WRAPPER_SHA256,
+         "expected":EXPECTED_GRADLE_WRAPPER_SHA256,"actual":actual_wrapper_sha},
+        {"id":"gradle:wrapper-properties-locked","ok":properties_ok,
+         "expectedVersion":EXPECTED_GRADLE_VERSION,"distributionSha256":EXPECTED_GRADLE_DISTRIBUTION_SHA256},
+        {"id":"gradle:wrapper-sha256-provenance","ok":checksum_text == expected_checksum_line,
+         "expected":expected_checksum_line,"actual":checksum_text or None},
+        {"id":"gradle:wrapper-json-provenance","ok":provenance_ok,"provenance":provenance if provenance_parse_ok else None},
+    ]
 
 
 def main() -> int:
@@ -84,6 +142,7 @@ def main() -> int:
 
     for path in ["android/gradlew","android/gradlew.bat","android/gradle/wrapper/gradle-wrapper.properties","android/gradle/wrapper/gradle-wrapper.jar"]:
         checks.append({"id":f"tracked:{path}","ok":exists(path)})
+    checks.extend(validate_gradle_wrapper())
 
     pubspec=read("pubspec.yaml") if exists("pubspec.yaml") else ""
     checks.append({"id":"assets:daily-message-tr","ok":"assets/content/daily_messages/tr/" in pubspec})
