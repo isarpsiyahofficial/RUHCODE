@@ -84,50 +84,41 @@ void main() {
 
     final merge = find.byKey(const ValueKey(RuhActionIds.backupRestoreMerge));
     final replace = find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace));
-    await tester.scrollUntilVisible(
-      merge,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.scrollUntilVisible(
-      replace,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(merge, findsOneWidget);
-    expect(replace, findsOneWidget);
-    expect(find.bySemanticsLabel('Birleştir'), findsOneWidget);
-    expect(find.bySemanticsLabel('Değiştir'), findsOneWidget);
-    expect(tester.getSize(merge).height, greaterThanOrEqualTo(48));
-    expect(tester.getSize(replace).height, greaterThanOrEqualTo(48));
 
+    await tester.ensureVisible(merge);
+    await tester.pumpAndSettle();
+    expect(merge, findsOneWidget);
+    expect(find.bySemanticsLabel('Birleştir'), findsOneWidget);
+    expect(tester.getSize(merge).height, greaterThanOrEqualTo(48));
     final mergeOrder = tester.widget<FocusTraversalOrder>(
       find.ancestor(of: merge, matching: find.byType(FocusTraversalOrder)).first,
     );
+    expect((mergeOrder.order as NumericFocusOrder).order, 1);
+
+    await tester.ensureVisible(replace);
+    await tester.pumpAndSettle();
+    expect(replace, findsOneWidget);
+    expect(find.bySemanticsLabel('Değiştir'), findsOneWidget);
+    expect(tester.getSize(replace).height, greaterThanOrEqualTo(48));
     final replaceOrder = tester.widget<FocusTraversalOrder>(
       find.ancestor(of: replace, matching: find.byType(FocusTraversalOrder)).first,
     );
-    expect((mergeOrder.order as NumericFocusOrder).order, 1);
     expect((replaceOrder.order as NumericFocusOrder).order, 2);
 
+    await tester.ensureVisible(merge);
+    await tester.pumpAndSettle();
     await tester.tap(merge);
     await tester.pumpAndSettle();
     expect(actions.appliedModes, <BackupImportMode>[BackupImportMode.merge]);
 
     final importAgain = find.byKey(const ValueKey(RuhActionIds.backupImport));
-    await tester.scrollUntilVisible(
-      importAgain,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.ensureVisible(importAgain);
+    await tester.pumpAndSettle();
     await tester.tap(importAgain);
     await tester.pumpAndSettle();
     final replaceAgain = find.byKey(const ValueKey(RuhActionIds.backupRestoreReplace));
-    await tester.scrollUntilVisible(
-      replaceAgain,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.ensureVisible(replaceAgain);
+    await tester.pumpAndSettle();
     await tester.tap(replaceAgain);
     await tester.pumpAndSettle();
     expect(
