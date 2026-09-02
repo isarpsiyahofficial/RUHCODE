@@ -1,0 +1,76 @@
+name: RC-1437 JPL DE440s Materialization
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/data/materialize_jpl_de440s.py'
+      - '.github/workflows/materialize-rc1437-de440s.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rc1437-de440s-main
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Materialize official JPL/NAIF DE440s SPK
+        run: python tools/data/materialize_jpl_de440s.py --snapshot-date "$(date -u +%F)"
+      - name: Declare ephemeris kernel as Flutter asset
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('pubspec.yaml')
+          text = p.read_text(encoding='utf-8')
+          entry = '    - assets/data/ephemeris/\n'
+          if entry not in text:
+              anchor = '    - assets/data/eop/\n'
+              if anchor not in text:
+                  raise SystemExit('EOP asset anchor not found')
+              text = text.replace(anchor, anchor + entry)
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Validate physical SPK evidence
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('.')
+          ev = json.loads((root/'requirements/evidence/rc1437_de440s_snapshot.json').read_text(encoding='utf-8'))
+          path = root/ev['path']
+          assert path.is_file() and path.stat().st_size == ev['byte_size']
+          assert path.read_bytes()[:8] == b'DAF/SPK '
+          assert hashlib.sha256(path.read_bytes()).hexdigest() == ev['sha256']
+          assert ev['runtime_integration_proven'] is False
+          assert ev['independent_golden_vectors_proven'] is False
+          print(f"physical DE440s verified; sha256={ev['sha256']}; runtime proof remains open")
+          PY
+      - name: Commit physical RC-1437 DE440s snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            assets/data/ephemeris/de440s.bsp \
+            requirements/evidence/rc1437_de440s_snapshot.json \
+            requirements/reference_manifests/offline_ephemeris_runtime.json \
+            pubspec.yaml
+          if git diff --cached --quiet; then
+            echo 'No DE440s snapshot changes to commit.'
+            exit 0
+          fi
+          git commit -m 'data(rc1437): bundle physical JPL DE440s kernel'
+          git pull --rebase origin main
+          git push origin HEAD:main
