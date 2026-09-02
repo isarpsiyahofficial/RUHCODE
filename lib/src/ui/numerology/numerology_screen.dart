@@ -133,22 +133,27 @@ class _NumerologyMetricRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(child: Text(label)),
-        const SizedBox(width: 16),
-        Semantics(
-          label: '$label: ${row.value}',
-          excludeSemantics: true,
-          child: Text(
+    // Treat one metric as one screen-reader unit. Keeping the label and value
+    // inside the same explicit semantics container avoids the visible label
+    // becoming a separate unlabeled stop while preserving the exact rendered
+    // text for sighted users and large-text layouts.
+    return Semantics(
+      container: true,
+      label: '$label: ${row.value}',
+      excludeSemantics: true,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(child: Text(label)),
+          const SizedBox(width: 16),
+          Text(
             row.value,
             key: Key('numerology-metric-${row.metricId}'),
             textAlign: TextAlign.end,
             style: Theme.of(context).textTheme.titleMedium,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
