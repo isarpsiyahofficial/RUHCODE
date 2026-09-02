@@ -353,7 +353,7 @@ class _RestorePreviewCard extends StatelessWidget {
               ),
             ],
           ],
-        ],
+        ),
       ),
     );
   }
