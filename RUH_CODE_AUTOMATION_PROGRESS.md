@@ -39,9 +39,14 @@ Historical decoded baselines:
 - `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test `+592 -1`.
 - `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`.
 
-Latest verified tracked-host baseline:
+Latest previously verified tracked-host baseline:
 - `3b8d60c37cccba856ceb641630adc62fef865f7b`: **24 workflow completed SUCCESS**.
 - Bu workflow toplamı bütün RC'lerin DONE olduğu anlamına gelmez.
+
+Wrapper repair/source commit:
+- `00e1198176117e09d50ac796e69acf06d7368862`.
+- Materializer result commit: `469a797d5502539e42a0d83d7ffe83496775a884`.
+- Bot push normal full workflow zincirini tetiklemedi; yeni continuation commit'i exact CI baseline üretmek için kullanılacak.
 
 ## RC-1437 — offline/versioned calculation data
 
@@ -64,11 +69,14 @@ Latest verified tracked-host baseline:
 
 - Tracked Android host ve canonical identity `com.ruhcode.ruh_code` mevcut.
 - Gradle 9.1.0 / AGP 9.0.1 / Kotlin 2.3.20 host sözleşmesi mevcut.
-- `5510d995722405c91503681d2e77d9f92516b7a9`: production release artık debug keystore ile imzalanmıyor. Signing yalnız `RUH_RELEASE_STORE_FILE`, `RUH_RELEASE_STORE_PASSWORD`, `RUH_RELEASE_KEY_ALIAS`, `RUH_RELEASE_KEY_PASSWORD` Gradle property/environment değerleriyle etkinleşiyor. Credentials yoksa source/asset packaging unsigned olabilir; signed release claim değildir.
-- `ed7f889c1e9647adf53db838dba068dfb9a2f1ac`: RC-1442 source validator bu dört production signing inputunu source'ta zorunlu tutuyor ve `signingConfigs.getByName("debug")` kullanımını açıkça reddediyor.
+- Production release debug keystore ile imzalanmıyor; signing yalnız `RUH_RELEASE_STORE_FILE`, `RUH_RELEASE_STORE_PASSWORD`, `RUH_RELEASE_KEY_ALIAS`, `RUH_RELEASE_KEY_PASSWORD` değerleriyle etkinleşiyor.
+- RC-1442 source validator bu signing contractını zorunlu tutuyor ve debug signing'i reddediyor.
+- `00e1198176117e09d50ac796e69acf06d7368862`: wrapper materializer, APK packaging fallback ve RC-1442 wrapper provenance/hash doğrulaması düzeltildi.
+- `469a797d5502539e42a0d83d7ffe83496775a884`: physical verified Gradle 9.1.0 wrapper JAR + `.sha256` + provenance JSON tracked hale geldi.
+- Wrapper recorded SHA-256: `76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3`.
+- Gradle 9.1.0 distribution recorded SHA-256: `a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806`.
 
 Açık kalan RC-1442 blocker:
-- `android/gradle/wrapper/gradle-wrapper.jar` fiziksel tracked değil; exact Gradle 9.1.0 provenance/hash ile eklenmeli.
 - strict RC-1437 ve strict RC-1439 henüz PASS değil.
 - secret-backed signed reproducible clean-checkout APK ve exact artifact verification yok.
 - real-device verification ayrıca eksik.
@@ -77,7 +85,6 @@ Açık kalan RC-1442 blocker:
 
 ## Açık ana blocker'lar
 
-- exact Gradle wrapper JAR'ını tracked ve hash/provenance doğrulanmış hale getirmek,
 - secret-backed production signing + signed reproducible clean-checkout APK,
 - RC-1437 physical/versioned/checksummed city + planetary ephemeris + EOP datasets ve independent golden accuracy,
 - RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
@@ -89,14 +96,13 @@ Açık kalan RC-1442 blocker:
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_1853_release_signing_source_hardening.md`
+`automation_runs/2026-09-02_2252_gradle_wrapper_physical_materialization.md`
 
 ## Sıradaki çalışma
 
-1. Yeni engineering HEAD'in CI sonuçlarını tamamlanmış durumda oku; Android Kotlin DSL/signing regresyonu varsa aynı turda düzelt.
-2. Exact Gradle 9.1.0 wrapper JAR'ını physical tracked artifact + SHA-256 provenance olarak ekle.
+1. Wrapper materialization sonrası exact HEAD'in full CI sonuçlarını tamamlanmış durumda oku; kırmızı varsa aynı turda düzelt.
+2. Strict RC-1437 physical data blockerlarını ve strict RC-1439 canonical reference blockerlarını bağımsız ilerlet.
 3. Secret-backed signed release workflow/evidence kapısını tamamla.
-4. RC-1437 ve RC-1439 fiziksel blockerlarını bağımsız ilerlet.
-5. Exact signed release + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
+4. Exact signed release + real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
