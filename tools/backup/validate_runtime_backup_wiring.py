@@ -69,7 +69,10 @@ def main() -> None:
             "backupUiCopy[_ruhLocale]!",
             "phaseForSaveResult(result)",
             "stateForPickResult(result)",
-            "if (selection == null || !selection.preview.valid) return;",
+            "if (selection == null || !selection.preview.valid || _integrityBlocked) return;",
+            "_criticalRestorePhase == BackupUiPhase.rollbackFailed",
+            "setState(() => _criticalRestorePhase = phase)",
+            "liveRegion: true",
             "phaseForRestoreError(error)",
             "RuhCodeBuildMetadata.appVersion",
             "RuhCodeBuildMetadata.engineVersion",
@@ -80,7 +83,7 @@ def main() -> None:
         (
             "BackupUiPhase.rollbackRestored",
             "BackupUiPhase.rollbackFailed",
-            "veri bütünlüğü kontrol edilmeli",
+            "Veri bütünlüğü kontrol edilmeli",
             "Data integrity must be checked",
             "? BackupUiPhase.rollbackRestored\n        : BackupUiPhase.rollbackFailed",
         ),
@@ -103,7 +106,7 @@ def main() -> None:
 
     print(
         "Runtime backup wiring OK: SQLite export/import, durable snapshot, native gateway, "
-        "TR/EN state contract and Settings actions are connected."
+        "TR/EN state contract and catastrophic rollback integrity block are connected."
     )
 
 
