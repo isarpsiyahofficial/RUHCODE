@@ -1,0 +1,29 @@
+name: RC-1442 Release Source Readiness
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  clean-checkout-source-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate fail-closed RC-1442 source readiness
+        run: |
+          python3 tools/requirements/validate_rc1442_release_source_readiness.py \
+            --json-output evidence/rc1442_release_source_readiness.json
+
+      - name: Upload RC-1442 source-readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1442-release-source-readiness
+          path: evidence/rc1442_release_source_readiness.json
+          if-no-files-found: error
