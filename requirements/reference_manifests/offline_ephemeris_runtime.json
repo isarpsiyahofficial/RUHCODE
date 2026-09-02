@@ -28,9 +28,17 @@
     "coversProductDateRange": false,
     "fabricatedFutureEopForbidden": true,
     "outsideCoveragePolicy": "separate_versioned_time_scale_model_or_unavailable",
-    "bundled": false,
-    "sha256": null,
-    "proven": false
+    "bundled": true,
+    "sha256": "e3905ff7a74b791744704aa3e900a2161e96db97a30095d8fc442b04e4cfe058",
+    "proven": true,
+    "sourceUrl": "https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all",
+    "byteSize": 3763572,
+    "retrievedAtUtc": "2026-09-02T00:00:00Z",
+    "bundledPath": "assets/data/eop/finals2000A.all",
+    "evidencePath": "requirements/evidence/rc1437_iers_eop_snapshot.json",
+    "mjdStart": 41684.0,
+    "mjdEnd": 61702.0,
+    "lineCount": 20019
   },
   "runtimeRules": {
     "networkFallback": false,

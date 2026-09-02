@@ -1,0 +1,17 @@
+{
+  "authority": "IERS",
+  "byte_size": 3763572,
+  "dataset": "earthOrientation",
+  "fabricated_future_eop": false,
+  "line_count": 20019,
+  "mjd_end": 61702.0,
+  "mjd_start": 41684.0,
+  "path": "assets/data/eop/finals2000A.all",
+  "product": "finals2000A.all",
+  "rc": "RC-1437",
+  "runtime_network_required": false,
+  "sha256": "e3905ff7a74b791744704aa3e900a2161e96db97a30095d8fc442b04e4cfe058",
+  "snapshot_date_utc": "2026-09-02",
+  "source_url": "https://datacenter.iers.org/products/eop/rapid/standard/finals2000A.all",
+  "strictly_increasing_mjd": true
+}
