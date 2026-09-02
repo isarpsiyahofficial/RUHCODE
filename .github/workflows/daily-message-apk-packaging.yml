@@ -21,11 +21,13 @@ jobs:
           cache: true
       - name: Resolve dependencies
         run: flutter pub get
-      - name: Materialize deterministic Android host
+      - name: Materialize deterministic Android host prerequisites
         shell: bash
         run: |
           set -euo pipefail
+          host_mode=tracked
           if [[ ! -f android/app/build.gradle && ! -f android/app/build.gradle.kts ]]; then
+            host_mode=generated
             rm -rf /tmp/ruh_code_android_host
             flutter create \
               --platforms=android \
@@ -34,16 +36,23 @@ jobs:
               --no-pub \
               /tmp/ruh_code_android_host
             cp -R /tmp/ruh_code_android_host/android ./android
+          elif [[ ! -f android/gradle/wrapper/gradle-wrapper.jar ]]; then
+            host_mode=tracked-host-generated-wrapper-jar
+            rm -rf /tmp/ruh_code_android_wrapper
+            flutter create \
+              --platforms=android \
+              --org com.ruhcode \
+              --project-name ruh_code \
+              --no-pub \
+              /tmp/ruh_code_android_wrapper
+            cp /tmp/ruh_code_android_wrapper/android/gradle/wrapper/gradle-wrapper.jar \
+              android/gradle/wrapper/gradle-wrapper.jar
           fi
           mkdir -p build/reports
           {
             echo "source_sha=${GITHUB_SHA}"
             echo "flutter_version=$(flutter --version --machine | python3 -c 'import json,sys; print(json.load(sys.stdin)["frameworkVersion"])')"
-            if [[ -f android/app/build.gradle.kts ]]; then
-              echo "android_host=generated-build.gradle.kts"
-            else
-              echo "android_host=tracked-build.gradle"
-            fi
+            echo "android_host=${host_mode}"
           } | tee build/reports/android-host-provenance.txt
       - name: Build release APK
         run: flutter build apk --release
