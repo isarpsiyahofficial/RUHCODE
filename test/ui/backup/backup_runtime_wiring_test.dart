@@ -229,7 +229,8 @@ void main() {
     await tester.ensureVisible(replace);
     await tester.pumpAndSettle();
     await tester.tap(replace);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.textContaining('Veri bütünlüğü kontrol edilmeli'), findsOneWidget);
     expect(find.textContaining('Veriler korundu'), findsNothing);
