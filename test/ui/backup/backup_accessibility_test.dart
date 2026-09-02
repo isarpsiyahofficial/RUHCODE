@@ -88,7 +88,7 @@ void main() {
     await tester.ensureVisible(merge);
     await tester.pumpAndSettle();
     expect(merge, findsOneWidget);
-    expect(find.bySemanticsLabel('Birleştir'), findsOneWidget);
+    expect(find.bySemanticsLabel('Mevcut Verilerle Birleştir'), findsOneWidget);
     expect(tester.getSize(merge).height, greaterThanOrEqualTo(48));
     final mergeOrder = tester.widget<FocusTraversalOrder>(
       find.ancestor(of: merge, matching: find.byType(FocusTraversalOrder)).first,
@@ -98,7 +98,7 @@ void main() {
     await tester.ensureVisible(replace);
     await tester.pumpAndSettle();
     expect(replace, findsOneWidget);
-    expect(find.bySemanticsLabel('Değiştir'), findsOneWidget);
+    expect(find.bySemanticsLabel('Mevcut Verileri Değiştir'), findsOneWidget);
     expect(tester.getSize(replace).height, greaterThanOrEqualTo(48));
     final replaceOrder = tester.widget<FocusTraversalOrder>(
       find.ancestor(of: replace, matching: find.byType(FocusTraversalOrder)).first,
