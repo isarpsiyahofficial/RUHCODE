@@ -2,7 +2,7 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-02_0710_flutter_last_failure_and_requirement_validator_repair.md`
+`automation_runs/2026-09-02_0905_backup_catastrophic_rollback_persistence.md`
 
 ## Bu turda ilerleyen ana bloklar
 
@@ -11,40 +11,36 @@ Latest checkpoint:
    - master TODO/index, progress ve sparse requirement state yeniden okundu
    - `requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE eklenmedi
 
-2. **Flutter Quality 3 failure'dan exact 1 failure'a düştü**
-   - completed baseline HEAD: `30b29b5b552b497a573acb7b370e3ab4c7bca78f`
-   - run/job: `33581506203 / 100096594953`
+2. **Requirement ve APK asset kapıları exact baseline'da yeşil doğrulandı**
+   - baseline HEAD: `4d3462a8dc35731473b89370840b78e840962d92`
+   - `validate-requirements`: **SUCCESS** (`100120467983`)
+   - `verify-apk-assets`: **SUCCESS** (`100120467578`)
+   - bu başarılar tracked/signable Android host veya real-device offline proof yerine sayılmadı
+
+3. **Flutter Quality'nin gerçek son kırmızısı decoded logdan çıkarıldı**
+   - `analyze-and-test`: **FAILURE** (`100120467749`)
    - Analyze: **SUCCESS — No issues found**
-   - Test: **FAILURE**, exact summary **`+592 -1`**
-   - sole failure: backup failed-replace rollback critical integrity-state UI assertion
-   - diagnostic artifact: `9828662609`
-   - repair commit: `0aa21e30f25819223e506da449a055a4086ecdea`
-   - fixed-duration Snackbar timing assumption kaldırıldı; kritik warning beklentisi korunarak bounded pump-until-visible kullanıldı
+   - Test: **`+592 -1`**
+   - sole failure: `failed replace rollback surfaces critical integrity state`
+   - bounded bekleme repair'i yetersizdi; kritik mesaj hiç render edilmiyordu
 
-3. **Requirement validator'ın gerçek kırmızısı giderildi**
-   - run/job: `33581506181 / 100096595116`
-   - RC-0001→RC-1442 exact presence/order, classification, evidence integrity ve semantic traceability adımları SUCCESS idi
-   - kırmızı yalnız backup accessibility validator'ın stale kısa semantics label tokenlarından geliyordu
-   - validator canonical full labels `Mevcut Verilerle Birleştir` / `Mevcut Verileri Değiştir` ile hizalandı
-   - repair commit: `dfe0bcf94a6ea99f5f190192ddf827e315a9b516`
-   - RC ownership, `done=false` guard, 48dp, focus-order, action IDs ve runtime bindings gevşetilmedi
+4. **Catastrophic rollback production UX/safety root-cause'u kapatıldı**
+   - exception→`rollbackFailed` mapping zaten doğruydu
+   - sorun kritik bütünlük uyarısının yalnız transient Snackbar olmasıydı
+   - `5d2003a48c8bb25272def1ba7ce951538e078672`: persistent critical state + accessible live-region card + sonraki backup/restore aksiyonlarını bloklama
+   - `299fbcec0c2bdba34d56e4b042a9220fab1a5f61`: duplicate Snackbar kaldırıldı; kritik durumda tek canonical persistent accessible warning bırakıldı
+   - kritik copy ve yanlış `Veriler korundu` reddi gevşetilmedi
 
-4. **Release blocker tekrar doğrulandı**
-   - repository root'ta tracked production `android/` host hâlâ yok
-   - APK packaged-asset proof önceki exact SHA'da yeşil olsa da generated host provenance taşıyor
-   - tracked/signable Android host, signed reproducible clean-checkout release ve real-device airplane-mode proof açık kalıyor
-
-5. **Verification disiplini korundu**
-   - source repair HEAD `dfe0bcf...` için 25 check tetiklendi
-   - checkpoint sırasında `analyze-and-test` queued olduğundan yeni repairler CI-green sayılmadı
-   - hiçbir RC yalnız kodlandığı için DONE işaretlenmedi
+5. **Release-host blocker exact olarak tekrar doğrulandı**
+   - APK workflow `android/` yoksa `flutter create` ile geçici host üretiyor
+   - repository'de tracked `android/` hâlâ yok
+   - generated-host APK, signed reproducible clean-checkout production release kanıtı değildir
 
 ## Açık kritik işler
 
-- exact repair SHA için Flutter Quality + validate-requirements sonuçlarını completed durumda okumak
-- kırmızı kalırsa yalnız exact yeni root-cause'u kapatmak
-- Daily Message real offline/airplane-mode device lookup kanıtı
-- tracked/signable Android release host + clean-checkout reproducible signed release proof
+- exact source repair SHA `299fbcec...` için Flutter Quality sonucunu completed durumda okumak
+- yeşilse Daily Message real offline/airplane-mode device lookup kanıtına ilerlemek
+- tracked/signable Android release host + signed reproducible clean-checkout release proof
 - physical ephemeris/EOP/font/UI-reference/device kanıtları
 - final 1.442-RC lifecycle audit
 
