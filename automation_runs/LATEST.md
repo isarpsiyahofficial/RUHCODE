@@ -16,7 +16,7 @@ Latest checkpoint:
    - planetary ephemeris + Earth-orientation verileri manifestte `bundled:false`, `proven:false`, SHA-256 kanıtı yok.
    - `tools/requirements/validate_rc1437_offline_data.py` eklendi; strict/default mod fiziksel/versioned/checksummed offline veri kanıtı olmadan fail-closed.
    - `.github/workflows/rc1437-offline-data-readiness.yml` audit evidence üretir; `--allow-incomplete` yalnız blocker görünürlüğü içindir, release pass değildir.
-   - commits: `c3f27eb155b343b708800815c1db6988af979b78`, `a619cc2ca81ec1f8b9c8adbc564ad1ae29b96957`.
+   - commits: `c56a36e7fe4bef209c9d9d7b7859c2592c6bdf7e`, `a619cc2ca81ec1f8b9c8adbc564ad1ae29b96957`.
 
 3. **RC-1439 için fiziksel UI-reference kanıt zinciri kuruldu**
    - tracked canonical physical reference-image listesi bulunamadı; sahte screen ID/checksum üretilmedi.
