@@ -18,5 +18,10 @@ jobs:
       - run: flutter pub get
       - name: Validate UT1 earth orientation contract
         run: python tools/time/validate_earth_orientation_contract.py
-      - name: Test EOP contracts
-        run: flutter test test/calculation_core/earth_orientation_test.dart test/calculation_core/bundled_earth_orientation_test.dart
+      - name: Test EOP contracts and fail-closed capability policy
+        run: >-
+          flutter test
+          test/calculation_core/earth_orientation_test.dart
+          test/calculation_core/bundled_earth_orientation_test.dart
+          test/calculation_core/earth_orientation_capability_policy_test.dart
+          test/calculation_core/iers_finals2000a_asset_loader_test.dart
