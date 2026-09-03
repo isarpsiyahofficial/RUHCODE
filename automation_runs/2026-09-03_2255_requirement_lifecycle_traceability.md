@@ -22,16 +22,18 @@
 - `.github/workflows/requirement-matrix-contract.yml` canonical materializer + validator zincirine geçirildi.
   - Push'ta canonical matrix üretilir, doğrulanır ve yalnız gerçekten değişmişse bot commit edilir.
   - Pull request'te committed matrix'in canonical olmaması doğrudan failure'dır.
+  - Runner kuyruğu sırasında main ilerleyebildiği için stale-parent/non-fast-forward riski ayrıca kapatıldı: persistence aşaması güncel `origin/main` üzerine geçiyor, matrix'i yeniden materialize+validate ediyor ve ancak ondan sonra commit/push yapıyor.
 
 ## Commit zinciri
 
 - `9a1bd8f4d9fbece519a862145128d56e4b9f4c4e` — canonical requirement matrix materializer.
 - `c3be12f9e57c3769468b1fc408209d7c2462a3c7` — lifecycle/source/evidence validator.
 - `88680dba8023349e4e3d4e8840f745c2bda55537` — canonicalize+validate CI workflow.
+- `c07ba33e11b739a2e26800e1ceb74e333f148dda` — delayed-run/stale-push race-safe persistence.
 
 ## Doğrulama durumu
 
-`Requirement Matrix Contract` run `33799695465` exact `88680dba...` için tetiklendi. Son gözlemde runner bekliyordu (`queued`); sonuç uydurulmadı. Canonical bot matrix commit'i henüz fiziksel olarak görülmeden FAZ 0 tam PASS sayılmıyor.
+İlk `Requirement Matrix Contract` run `33799695465` exact `88680dba...` için tetiklendi ve son gözlemde runner bekliyordu (`queued`). Bu sırada stale-run push riski fark edilip yeni workflow commit'iyle kapatıldı. Canonical bot matrix commit'i henüz fiziksel olarak görülmeden FAZ 0 tam PASS sayılmıyor; sonuç uydurulmadı.
 
 ## Requirement state güvenliği
 
@@ -39,7 +41,7 @@ Bu turda hiçbir RC kanıtsız DONE yapılmadı. Önceki matrix'teki 1.442 `OPEN
 
 ## Açık bağımlılık
 
-1. Exact Requirement Matrix Contract çalışmasını tamamlanmış olarak doğrula; kırmızıysa failing step'i düzelt.
+1. En güncel Requirement Matrix Contract çalışmasını tamamlanmış olarak doğrula; kırmızıysa failing step'i düzelt.
 2. Canonical 1.442-row matrix bot commit'inin fiziksel olarak main'de bulunduğunu doğrula.
 3. Ardından mevcut gerçek kanıtları RC bazında reconcile ederek `IMPLEMENTED → TESTED → VERIFIED → DONE` yükseltmelerini yalnız evidence ile yap.
 4. RC-1436/1437 multi-vector official JPL coverage, RC-1439 physical UI refs, signed reproducible release ve real-device gates paralel açık kalır.
