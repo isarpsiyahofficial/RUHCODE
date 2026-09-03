@@ -18,6 +18,22 @@ class RuhCodeApp extends StatelessWidget {
 
   static const combinedPdfRoute = '/pdf/combined';
 
+  /// Binding RC-0002 production language contract.
+  ///
+  /// Keep this list explicit and compile-time constant so both the runtime
+  /// MaterialApp and CI can verify that Ruh Code exposes Turkish and English
+  /// only. Content completeness/independence is covered by separate RC items.
+  static const supportedLocales = <Locale>[
+    Locale('tr'),
+    Locale('en'),
+  ];
+
+  static const localizationDelegates = <LocalizationsDelegate<dynamic>>[
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
+
   final FeatureAccessGuard featureAccess;
   final BackupApplicationActions backupActions;
   final DailyMessageCatalog dailyMessages;
@@ -28,15 +44,8 @@ class RuhCodeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Ruh Code',
       theme: RuhAppTheme.light(),
-      supportedLocales: const <Locale>[
-        Locale('tr'),
-        Locale('en'),
-      ],
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      supportedLocales: supportedLocales,
+      localizationsDelegates: localizationDelegates,
       routes: <String, WidgetBuilder>{
         combinedPdfRoute: (_) => const CombinedProfessionalPdfBuilderPage(),
       },
