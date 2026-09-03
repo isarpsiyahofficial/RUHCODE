@@ -29,5 +29,9 @@ jobs:
         run: flutter pub get
       - name: Verify SPK Type-2 evaluator contract
         run: flutter test test/calculation_core/spk_type2_evaluator_test.dart --reporter expanded
+      - name: Verify SPK body-center graph contract
+        run: flutter test test/calculation_core/spk_body_graph_evaluator_test.dart --reporter expanded
       - name: Evaluate real packaged DE440s Type-2 segment
         run: flutter test test/calculation_core/de440s_type2_runtime_test.dart --reporter expanded
+      - name: Resolve real packaged DE440s body graph
+        run: flutter test test/calculation_core/de440s_body_graph_runtime_test.dart --reporter expanded
