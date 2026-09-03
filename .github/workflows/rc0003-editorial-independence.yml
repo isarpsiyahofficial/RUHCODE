@@ -1,0 +1,101 @@
+name: RC-0003 Editorial Independence
+
+on:
+  push:
+    paths:
+      - "assets/content/daily_messages/**"
+      - "tools/requirements/validate_rc0003_editorial_independence.py"
+      - ".github/workflows/rc0003-editorial-independence.yml"
+  pull_request:
+    paths:
+      - "assets/content/daily_messages/**"
+      - "tools/requirements/validate_rc0003_editorial_independence.py"
+      - ".github/workflows/rc0003-editorial-independence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  contract:
+    name: Verify independent Turkish and English content catalogs
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate independent physical catalogs and no translation pipeline
+        run: python tools/requirements/validate_rc0003_editorial_independence.py
+
+      - name: Persist TESTED evidence against latest main
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+
+          python tools/requirements/validate_rc0003_editorial_independence.py
+          python tools/requirements/materialize_requirement_matrix.py
+
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('requirements/requirement_state.csv')
+          with path.open('r', encoding='utf-8', newline='') as handle:
+              reader = csv.DictReader(handle)
+              fieldnames = reader.fieldnames
+              rows = list(reader)
+          if not fieldnames:
+              raise SystemExit('RC0003_PROMOTION_FAIL: matrix header missing')
+
+          found = False
+          for row in rows:
+              if row['rc_id'] != 'RC-0003':
+                  continue
+              found = True
+              if row['source_text_sha256'] != '261339b9c0ca48749a9c9c53daba8df8851f6648c052a86b4da2a4a1a904b250':
+                  raise SystemExit('RC0003_PROMOTION_FAIL: binding requirement hash drifted')
+              if row['status'] == 'DONE':
+                  continue
+              row['status'] = 'TESTED'
+              row['evidence_links'] = '|'.join([
+                  'assets/content/daily_messages/tr/',
+                  'assets/content/daily_messages/en/',
+                  'tools/requirements/validate_rc0003_editorial_independence.py',
+                  '.github/workflows/rc0003-editorial-independence.yml',
+              ])
+              row['blocked'] = 'NO'
+              row['blocker'] = ''
+              row['notes'] = (
+                  'Repository contract proves separate complete TR/EN physical catalogs, '
+                  'non-identical paired native copy, distinct catalog digests, and no known '
+                  'automatic TR->EN translation dependency/pipeline. TESTED only: independent '
+                  'editorial provenance/review is still required before VERIFIED/DONE.'
+              )
+          if not found:
+              raise SystemExit('RC0003_PROMOTION_FAIL: RC-0003 row missing')
+
+          with path.open('w', encoding='utf-8', newline='') as handle:
+              writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator='\n')
+              writer.writeheader()
+              writer.writerows(rows)
+          PY
+
+          python tools/requirements/validate_requirement_matrix.py
+
+          if git diff --quiet -- requirements/requirement_state.csv; then
+            echo "RC-0003 TESTED evidence already persisted."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add requirements/requirement_state.csv
+          git commit -m "requirements(rc0003): record editorial independence TESTED"
+          git push origin main
