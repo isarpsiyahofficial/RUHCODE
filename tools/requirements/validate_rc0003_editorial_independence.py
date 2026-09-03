@@ -6,14 +6,19 @@ than by an automatic TR -> EN translation pipeline. This validator proves the
 repository-level invariants that can be mechanically verified:
 
 * both language catalogs exist independently and cover the same daily dates;
-* every row declares its own locale and contains non-empty native copy;
-* paired TR/EN title, teaser and full_text are never identical after normalization;
+* every row belongs to its language path and contains non-empty native copy;
+* paired TR/EN title, teaser and body are never identical after normalization;
 * the two physical catalogs have distinct content digests;
 * repository automation does not contain a known machine-translation dependency
   or a script that reads the Turkish daily-message catalog and writes the English
   catalog.
 
-Human editorial quality/naturalness remains a separate review concern (RC-0004).
+The catalog has two supported historical schemas:
+  v1: date,title,teaser,message,theme
+  v2: date,locale,title,teaser,full_text,theme_tag
+Both are normalized into one internal representation before comparison.
+
+Human editorial provenance/quality remains a separate verification concern.
 """
 from __future__ import annotations
 
@@ -31,9 +36,6 @@ EXPECTED_START = "2026-01-01"
 EXPECTED_END = "2036-12-31"
 EXPECTED_COUNT = 4018
 
-# Dependencies/APIs whose presence in repo automation would be direct evidence of
-# an automatic translation pipeline. Generic UI words such as `translate` are
-# intentionally not banned.
 FORBIDDEN_AUTOMATION_TOKENS = (
     "googletrans",
     "deep_translator",
@@ -63,6 +65,40 @@ def monthly_files(lang: str) -> list[Path]:
     return files
 
 
+def normalize_row(row: dict[str, str], lang: str, path: Path) -> dict[str, str]:
+    fieldnames = set(row)
+    v2 = {"date", "locale", "title", "teaser", "full_text", "theme_tag"}
+    v1 = {"date", "title", "teaser", "message", "theme"}
+    if v2.issubset(fieldnames):
+        locale = (row.get("locale") or "").strip()
+        if locale != lang:
+            fail(f"wrong locale in {path.relative_to(ROOT)}: expected {lang}, got {locale!r}")
+        full_text = row.get("full_text") or ""
+        theme_tag = row.get("theme_tag") or ""
+    elif v1.issubset(fieldnames):
+        full_text = row.get("message") or ""
+        theme_tag = row.get("theme") or ""
+    else:
+        fail(f"invalid CSV schema: {path.relative_to(ROOT)}")
+
+    normalized = {
+        "date": (row.get("date") or "").strip(),
+        "locale": lang,
+        "title": row.get("title") or "",
+        "teaser": row.get("teaser") or "",
+        "full_text": full_text,
+        "theme_tag": theme_tag,
+    }
+    if not normalized["date"]:
+        fail(f"blank date in {path.relative_to(ROOT)}")
+    for field in FIELDS:
+        if not normalize(normalized[field]):
+            fail(f"blank {field} for {lang} {normalized['date']}")
+    if not normalize(normalized["theme_tag"]):
+        fail(f"blank theme for {lang} {normalized['date']}")
+    return normalized
+
+
 def load(lang: str) -> tuple[dict[str, dict[str, str]], str]:
     rows: dict[str, dict[str, str]] = {}
     digest = hashlib.sha256()
@@ -73,20 +109,13 @@ def load(lang: str) -> tuple[dict[str, dict[str, str]], str]:
         digest.update(raw)
         with path.open("r", encoding="utf-8", newline="") as handle:
             reader = csv.DictReader(handle)
-            required = {"date", "locale", "title", "teaser", "full_text", "theme_tag"}
-            if reader.fieldnames is None or not required.issubset(reader.fieldnames):
-                fail(f"invalid CSV schema: {path.relative_to(ROOT)}")
-            for row in reader:
-                date = (row.get("date") or "").strip()
-                if not date:
-                    fail(f"blank date in {path.relative_to(ROOT)}")
+            if reader.fieldnames is None:
+                fail(f"missing CSV header: {path.relative_to(ROOT)}")
+            for raw_row in reader:
+                row = normalize_row(raw_row, lang, path)
+                date = row["date"]
                 if date in rows:
                     fail(f"duplicate {lang} date across monthly catalog: {date}")
-                if (row.get("locale") or "").strip() != lang:
-                    fail(f"wrong locale for {date}: expected {lang}")
-                for field in FIELDS:
-                    if not normalize(row.get(field) or ""):
-                        fail(f"blank {field} for {lang} {date}")
                 rows[date] = row
     return rows, digest.hexdigest()
 
@@ -100,20 +129,17 @@ def validate_automation() -> None:
         for path in base.rglob("*"):
             if not path.is_file() or path.suffix.lower() not in text_suffixes:
                 continue
-            text = path.read_text(encoding="utf-8", errors="ignore").casefold()
-            # This validator itself names forbidden tokens; skip self-reference.
             if path.resolve() == Path(__file__).resolve():
                 continue
+            text = path.read_text(encoding="utf-8", errors="ignore").casefold()
             for token in FORBIDDEN_AUTOMATION_TOKENS:
                 if token in text:
                     fail(f"machine-translation dependency/API token '{token}' in {path.relative_to(ROOT)}")
-            # Reject an explicit TR-source -> EN-destination daily-message pipeline.
             compact = re.sub(r"\s+", "", text)
             tr_markers = ("daily_messages/tr", "daily_messages\\tr")
             en_markers = ("daily_messages/en", "daily_messages\\en")
             if any(marker in compact for marker in tr_markers) and any(marker in compact for marker in en_markers):
-                translation_words = ("translat", "çevir", "cevir")
-                if any(word in compact for word in translation_words):
+                if any(word in compact for word in ("translat", "çevir", "cevir")):
                     fail(f"possible automatic TR->EN daily-message translation pipeline: {path.relative_to(ROOT)}")
 
 
@@ -155,7 +181,7 @@ def main() -> int:
         "RC-0003 PASS: independent physical TR/EN catalogs; "
         f"dates={len(tr_dates)} each; bounds={min(tr_dates)}..{max(tr_dates)}; "
         f"tr_sha256={digests['tr']}; en_sha256={digests['en']}; "
-        "no known automatic TR->EN translation pipeline detected"
+        "legacy+current schemas normalized; no known automatic TR->EN translation pipeline detected"
     )
     return 0
 
