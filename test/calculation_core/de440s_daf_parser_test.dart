@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/ephemeris/de440s_asset_loader.dart';
 import 'package:ruh_code/src/calculation_core/ephemeris/de440s_daf_parser.dart';
