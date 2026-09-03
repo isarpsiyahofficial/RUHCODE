@@ -19,3 +19,15 @@ jobs:
           python-version: '3.12'
       - name: Validate physical runtime astronomy assets
         run: python tools/requirements/validate_rc1437_runtime_assets.py
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Resolve locked dependencies
+        run: flutter pub get
+      - name: Verify SPK Type-2 evaluator contract
+        run: flutter test test/calculation_core/spk_type2_evaluator_test.dart --reporter expanded
+      - name: Evaluate real packaged DE440s Type-2 segment
+        run: flutter test test/calculation_core/de440s_type2_runtime_test.dart --reporter expanded
