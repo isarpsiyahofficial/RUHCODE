@@ -1,0 +1,85 @@
+name: RC-0002 Language Scope
+
+on:
+  push:
+    paths:
+      - "lib/src/app/ruh_code_app.dart"
+      - "tools/requirements/validate_rc0002_language_scope.py"
+      - ".github/workflows/rc0002-language-scope.yml"
+  pull_request:
+    paths:
+      - "lib/src/app/ruh_code_app.dart"
+      - "tools/requirements/validate_rc0002_language_scope.py"
+      - ".github/workflows/rc0002-language-scope.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  contract:
+    name: Verify RC-0002 Turkish and English only
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate production language scope
+        run: python tools/requirements/validate_rc0002_language_scope.py
+
+      - name: Persist TESTED evidence against latest main
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0002_language_scope.py
+          python tools/requirements/materialize_requirement_matrix.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('requirements/requirement_state.csv')
+          with path.open('r', encoding='utf-8', newline='') as handle:
+              reader = csv.DictReader(handle)
+              fieldnames = reader.fieldnames
+              rows = list(reader)
+          if not fieldnames:
+              raise SystemExit('RC0002_PROMOTION_FAIL: matrix header missing')
+
+          found = False
+          for row in rows:
+              if row['rc_id'] != 'RC-0002':
+                  continue
+              found = True
+              if row['source_text_sha256'] != '0c44cb0a147d49a9f5560e4bd0850839ad23baffbf0a7faab2f26d4575b4720b':
+                  raise SystemExit('RC0002_PROMOTION_FAIL: binding requirement hash drifted')
+              row['status'] = 'TESTED'
+              row['evidence_links'] = 'lib/src/app/ruh_code_app.dart|tools/requirements/validate_rc0002_language_scope.py|.github/workflows/rc0002-language-scope.yml'
+              row['blocked'] = 'NO'
+              row['blocker'] = ''
+              row['notes'] = 'Production MaterialApp language scope is contract-tested as exactly Turkish and English; not yet promoted to VERIFIED/DONE.'
+          if not found:
+              raise SystemExit('RC0002_PROMOTION_FAIL: RC-0002 row missing')
+
+          with path.open('w', encoding='utf-8', newline='') as handle:
+              writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator='\n')
+              writer.writeheader()
+              writer.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+
+          if git diff --quiet -- requirements/requirement_state.csv; then
+            echo "RC-0002 TESTED evidence already persisted."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add requirements/requirement_state.csv
+          git commit -m "requirements(rc0002): record language scope tested evidence"
+          git push origin main
