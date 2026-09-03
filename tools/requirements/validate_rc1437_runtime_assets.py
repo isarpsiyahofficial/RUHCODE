@@ -53,14 +53,18 @@ try:
     with DE440_ASSET.open('rb') as handle:
         assert handle.read(7) == b'DAF/SPK', 'physical DE440s DAF/SPK magic mismatch'
 
-    eop = manifest['earth_orientation']
-    planetary = manifest['planetary_ephemeris']
+    eop = manifest['earthOrientation']
+    planetary = manifest['planetaryEphemeris']
+    rules = manifest['runtimeRules']
     assert eop['bundled'] is True, 'IERS EOP manifest is not bundled'
-    assert eop['runtime_network_required'] is False, 'IERS EOP runtime network dependency detected'
     assert eop['sha256'] == eop_sha, 'IERS EOP manifest SHA-256 mismatch'
+    assert eop['byteSize'] == EOP_ASSET.stat().st_size, 'IERS EOP manifest byte-size mismatch'
+    assert eop['bundledPath'] == eop_evidence['path'], 'IERS EOP manifest path differs from evidence'
     assert planetary['bundled'] is True, 'DE440s manifest is not bundled'
-    assert planetary['runtime_network_required'] is False, 'DE440s runtime network dependency detected'
     assert planetary['sha256'] == de440_sha, 'DE440s manifest SHA-256 mismatch'
+    assert planetary['byteSize'] == DE440_ASSET.stat().st_size, 'DE440s manifest byte-size mismatch'
+    assert planetary['bundledPath'] == de440_evidence['path'], 'DE440s manifest path differs from evidence'
+    assert planetary['proven'] is False, 'DE440s computation was marked proven without independent golden-vector evidence'
 
     assert eop_evidence['runtime_network_required'] is False, 'IERS evidence permits network access'
     assert de440_evidence['runtime_network_required'] is False, 'DE440s evidence permits network access'
@@ -92,10 +96,13 @@ try:
     assert 'loadPackaged()' in de440_test, 'DE440s packaged-asset runtime test missing'
     assert 'DAF/SPK' in de440_test, 'DE440s kernel-header runtime test missing'
 
-    assert manifest['fallback_policy']['network_fallback'] is False, 'network fallback enabled'
-    assert manifest['fallback_policy']['nearest_date_fallback'] is False, 'nearest-date fallback enabled'
-    assert manifest['fallback_policy']['zero_state_fallback'] is False, 'zero-state fallback enabled'
-    assert manifest['fallback_policy']['out_of_range_behavior'] == 'fail_closed', 'out-of-range policy is not fail-closed'
+    assert rules['networkFallback'] is False, 'network fallback enabled'
+    assert rules['nearestDateFallback'] is False, 'nearest-date fallback enabled'
+    assert rules['zeroStateFallback'] is False, 'zero-state fallback enabled'
+    assert rules['corruptionFailsClosed'] is True, 'corruption fail-closed gate disabled'
+    assert rules['outOfCoverageFailsClosed'] is True, 'out-of-coverage fail-closed gate disabled'
+    assert rules['independentGoldenEvidenceRequired'] is True, 'independent golden evidence gate disabled'
+    assert rules['cleanCheckoutReproducibilityRequired'] is True, 'clean-checkout reproducibility gate disabled'
 
 except (AssertionError, KeyError, OSError, ValueError, json.JSONDecodeError) as exc:
     print(f'RC-1437 runtime asset gate FAILED: {exc}', file=sys.stderr)
