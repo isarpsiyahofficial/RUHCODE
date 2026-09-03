@@ -1,0 +1,61 @@
+name: Materialize RC-1436 JPL Golden
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: materialize-rc1436-jpl-golden
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Capture official NASA/JPL Horizons Earth/SSB J2000 vector
+        run: python tools/data/materialize_jpl_horizons_golden.py
+      - name: Validate evidence shape and provenance
+        run: |
+          python - <<'PY'
+          import hashlib, json, math
+          from pathlib import Path
+          p = Path('evidence/rc1436/jpl_horizons_earth_ssb_j2000.json')
+          d = json.loads(p.read_text(encoding='utf-8'))
+          assert d['status'] == 'OFFICIAL_GOLDEN_CAPTURED'
+          assert d['source']['provider'] == 'NASA/JPL Horizons API'
+          assert d['source']['endpoint'] == 'https://ssd.jpl.nasa.gov/api/horizons.api'
+          assert len(d['source']['rawResponseSha256']) == 64
+          q = d['source']['query']
+          assert q['COMMAND'] == "'399'"
+          assert q['CENTER'] == "'@0'"
+          assert q['TLIST'] == "'2451545.0'"
+          assert q['TIME_TYPE'] == "'TDB'"
+          assert q['REF_SYSTEM'] == "'ICRF'"
+          assert q['REF_PLANE'] == "'FRAME'"
+          assert q['VEC_CORR'] == "'NONE'"
+          assert q['OUT_UNITS'] == "'KM-S'"
+          v = d['vector']
+          values = [v[k] for k in ('xKm','yKm','zKm','vxKmPerSecond','vyKmPerSecond','vzKmPerSecond')]
+          assert all(math.isfinite(x) for x in values)
+          assert sum(abs(x) for x in values[:3]) > 0
+          print('evidence sha256=', hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Commit canonical golden evidence
+        run: |
+          if git diff --quiet -- evidence/rc1436/jpl_horizons_earth_ssb_j2000.json; then
+            echo 'Golden evidence is unchanged.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add evidence/rc1436/jpl_horizons_earth_ssb_j2000.json
+          git commit -m 'data(rc1436): capture official JPL Horizons Earth golden'
+          git push origin HEAD:main
