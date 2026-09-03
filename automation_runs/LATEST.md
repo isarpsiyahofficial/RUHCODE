@@ -2,19 +2,19 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-03_1652_rc1437_eop_capability_policy.md`
+`automation_runs/2026-09-03_2255_requirement_lifecycle_traceability.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. Exact baseline `9ee8540e731a8f4e6307655062477d91cf351076` yeniden kontrol edildi; failure-filtered Actions sorgusunda kırmızı run bulunmadı.
-2. 1890→2110 ürün tarih aralığı ile daha dar fiziksel IERS EOP kapsamı artık ayrı, versioned runtime capability olarak modelleniyor.
-3. Ürün aralığında olup published EOP coverage dışında kalan UT1-dependent hesaplar `EOP_OUTSIDE_PUBLISHED_COVERAGE` ile fail-closed; UTC=UT1 substitution, nearest-neighbour, extrapolation ve fabricated future EOP yok.
-4. `earth_orientation_capability_policy_test.dart` ürün sınırlarını, fiziksel coverage durumunu ve fail-closed davranışı doğruluyor.
-5. Stale Earth Orientation manifesti gerçek fiziksel IERS durumuna hizalandı: `BUNDLED_VERIFIED_SUBGATE`; `fullRc1437Done=false` korunuyor.
-6. Validator fiziksel `finals2000A.all` byte-size/SHA-256 değerlerini manifest ve runtime loader ile çapraz doğruluyor.
-7. Earth Orientation CI gate yeni capability testini ve gerçek packaged IERS loader testini çalıştıracak şekilde genişletildi.
-8. Requirement ledger değiştirilmedi; RC-1436/RC-1437 bütünüyle DONE sayılmadı.
+1. FAZ 0 yeniden doğrulandı ve requirement matrix'in bağlayıcı lifecycle modeliyle uyumsuz olduğu tespit edildi.
+2. Canonical materializer eklendi: RC-0001→RC-1442 exact parse, TASK mapping, impact tags, evidence type, blocker ayrımı ve source-text SHA-256 binding.
+3. Validator artık yalnız `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE` lifecycle'ını kabul ediyor.
+4. `TESTED / VERIFIED / DONE` evidence olmadan kabul edilmiyor; blocker lifecycle statüsünden ayrıldı.
+5. Şartname metni değişirse source SHA binding stale matrix'i fail-closed kırıyor.
+6. CI push'ta canonical matrix üretip validate ediyor ve değişmişse commit ediyor; PR'da canonical olmayan matrix failure.
+7. Exact CI run tetiklendi; son gözlemde queued olduğu için green sonucu varsayılmadı.
+8. Hiçbir RC kanıtsız DONE yapılmadı.
 
-Sonraki dependency: exact current CI → daha geniş independent official ephemeris golden/tolerance coverage → RC-1439 → signed reproducible release + real-device gates.
+Sonraki dependency: exact Requirement Matrix Contract sonucu + canonical 1.442-row bot commit → RC bazlı evidence reconciliation → RC-1436/1437 multi-vector coverage → RC-1439 → signed reproducible release + real-device gates.
 
 **FINAL: NO.**
