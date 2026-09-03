@@ -6,7 +6,9 @@ on:
     paths:
       - '.github/workflows/materialize-rc1436-jpl-golden.yml'
       - 'tools/data/materialize_jpl_horizons_golden.py'
+      - 'tools/data/materialize_jpl_horizons_coverage.py'
       - 'test/calculation_core/de440s_jpl_horizons_accuracy_test.dart'
+      - 'test/calculation_core/de440s_jpl_horizons_coverage_test.dart'
       - 'lib/src/calculation_core/ephemeris/**'
       - 'assets/data/ephemeris/**'
 
@@ -29,33 +31,61 @@ jobs:
           python-version: '3.12'
       - name: Capture official NASA/JPL Horizons Earth/SSB J2000 vector
         run: python tools/data/materialize_jpl_horizons_golden.py
+      - name: Capture official NASA/JPL multi-epoch and multi-body coverage
+        run: python tools/data/materialize_jpl_horizons_coverage.py
       - name: Validate evidence shape and provenance
         run: |
           python - <<'PY'
           import hashlib, json, math
           from pathlib import Path
-          p = Path('evidence/rc1436/jpl_horizons_earth_ssb_j2000.json')
-          d = json.loads(p.read_text(encoding='utf-8'))
+
+          single = Path('evidence/rc1436/jpl_horizons_earth_ssb_j2000.json')
+          d = json.loads(single.read_text(encoding='utf-8'))
           assert d['status'] == 'OFFICIAL_GOLDEN_CAPTURED'
           assert d['source']['provider'] == 'NASA/JPL Horizons API'
           assert d['source']['endpoint'] == 'https://ssd.jpl.nasa.gov/api/horizons.api'
           assert len(d['source']['rawResponseSha256']) == 64
           q = d['source']['query']
-          assert q['COMMAND'] == "'399'"
-          assert q['CENTER'] == "'@0'"
-          assert q['TLIST'] == "'2451545.0'"
-          assert q['TLIST_TYPE'] == "'JD'"
-          assert q['TIME_TYPE'] == "'TDB'"
-          assert q['REF_SYSTEM'] == "'ICRF'"
-          assert q['REF_PLANE'] == "'FRAME'"
-          assert q['VEC_TABLE'] == "'2'"
-          assert q['VEC_CORR'] == "'NONE'"
-          assert q['OUT_UNITS'] == "'KM-S'"
+          assert q['COMMAND'] == "'399'" and q['CENTER'] == "'@0'"
+          assert q['TLIST'] == "'2451545.0'" and q['TLIST_TYPE'] == "'JD'"
+          assert q['TIME_TYPE'] == "'TDB'" and q['REF_SYSTEM'] == "'ICRF'"
+          assert q['REF_PLANE'] == "'FRAME'" and q['VEC_TABLE'] == "'2'"
+          assert q['VEC_CORR'] == "'NONE'" and q['OUT_UNITS'] == "'KM-S'"
           v = d['vector']
           values = [v[k] for k in ('xKm','yKm','zKm','vxKmPerSecond','vyKmPerSecond','vzKmPerSecond')]
-          assert all(math.isfinite(x) for x in values)
-          assert sum(abs(x) for x in values[:3]) > 0
-          print('evidence sha256=', hashlib.sha256(p.read_bytes()).hexdigest())
+          assert all(math.isfinite(x) for x in values) and sum(abs(x) for x in values[:3]) > 0
+          print('single evidence sha256=', hashlib.sha256(single.read_bytes()).hexdigest())
+
+          coverage = Path('evidence/rc1436/jpl_horizons_de440s_coverage.json')
+          c = json.loads(coverage.read_text(encoding='utf-8'))
+          assert c['status'] == 'OFFICIAL_GOLDEN_COVERAGE_CAPTURED'
+          assert c['provider'] == 'NASA/JPL Horizons API'
+          assert c['endpoint'] == 'https://ssd.jpl.nasa.gov/api/horizons.api'
+          vectors = c['vectors']
+          assert len(vectors) >= 5
+          assert len({item['id'] for item in vectors}) == len(vectors)
+          assert {399, 10, 301}.issubset({item['targetNaifId'] for item in vectors})
+          assert {2415020.5, 2451545.0, 2488069.5}.issubset({item['epoch']['jdTdb'] for item in vectors})
+          for item in vectors:
+              assert item['centerNaifId'] == 0
+              assert item['referenceSystem'] == 'ICRF'
+              assert item['referencePlane'] == 'FRAME'
+              assert item['corrections'] == 'NONE'
+              assert item['units'] == 'KM-S'
+              src = item['source']
+              assert src['apiSignature']['source'] == 'NASA/JPL Horizons API'
+              assert len(src['rawResponseSha256']) == 64
+              qq = src['query']
+              assert qq['COMMAND'] == f"'{item['targetNaifId']}'"
+              assert qq['CENTER'] == "'@0'" and qq['TIME_TYPE'] == "'TDB'"
+              assert qq['REF_SYSTEM'] == "'ICRF'" and qq['REF_PLANE'] == "'FRAME'"
+              assert qq['VEC_TABLE'] == "'2'" and qq['VEC_CORR'] == "'NONE'"
+              assert qq['OUT_UNITS'] == "'KM-S'"
+              state = item['state']
+              values = [state[k] for k in ('xKm','yKm','zKm','vxKmPerSecond','vyKmPerSecond','vzKmPerSecond')]
+              assert all(math.isfinite(x) for x in values)
+              assert sum(abs(x) for x in values[:3]) > 0
+          print('coverage evidence sha256=', hashlib.sha256(coverage.read_bytes()).hexdigest())
           PY
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -65,22 +95,23 @@ jobs:
           cache: true
       - name: Resolve locked dependencies
         run: flutter pub get
-      - name: Compare packaged DE440s against official JPL golden
+      - name: Compare packaged DE440s against official JPL J2000 golden
         run: flutter test test/calculation_core/de440s_jpl_horizons_accuracy_test.dart --reporter expanded
+      - name: Compare packaged DE440s against official JPL coverage set
+        run: flutter test test/calculation_core/de440s_jpl_horizons_coverage_test.dart --reporter expanded
       - name: Commit canonical golden evidence
         run: |
-          evidence='evidence/rc1436/jpl_horizons_earth_ssb_j2000.json'
-          if git ls-files --error-unmatch "$evidence" >/dev/null 2>&1 && git diff --quiet -- "$evidence"; then
-            echo 'Golden evidence is tracked and unchanged.'
-            exit 0
-          fi
-          test -s "$evidence"
+          files=(
+            'evidence/rc1436/jpl_horizons_earth_ssb_j2000.json'
+            'evidence/rc1436/jpl_horizons_de440s_coverage.json'
+          )
+          for evidence in "${files[@]}"; do test -s "$evidence"; done
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- "$evidence"
-          if git diff --cached --quiet -- "$evidence"; then
-            echo 'No staged golden evidence change; refusing to claim materialization.' >&2
-            exit 1
+          git add -- "${files[@]}"
+          if git diff --cached --quiet -- "${files[@]}"; then
+            echo 'Canonical JPL evidence is tracked and unchanged.'
+            exit 0
           fi
-          git commit -m 'data(rc1436): capture verified JPL Horizons Earth golden'
+          git commit -m 'data(rc1436): capture verified multi-vector JPL coverage'
           git push origin HEAD:main
