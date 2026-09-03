@@ -16,7 +16,11 @@ repository-level invariants that can be mechanically verified:
 The catalog has two supported historical schemas:
   v1: date,title,teaser,message,theme
   v2: date,locale,title,teaser,full_text,theme_tag
-Both are normalized into one internal representation before comparison.
+and two shard styles:
+  monthly: YYYY-MM.csv
+  annual:  YYYY.csv
+Monthly shards are primary. Annual shards may fill dates absent from monthly
+shards; overlapping rows must normalize to exactly the same canonical record.
 
 Human editorial provenance/quality remains a separate verification concern.
 """
@@ -55,14 +59,15 @@ def normalize(value: str) -> str:
     return re.sub(r"\s+", " ", value.strip()).casefold()
 
 
-def monthly_files(lang: str) -> list[Path]:
+def shard_files(lang: str) -> tuple[list[Path], list[Path]]:
     directory = CATALOG_ROOT / lang
     if not directory.is_dir():
         fail(f"missing language catalog directory: {directory.relative_to(ROOT)}")
-    files = sorted(p for p in directory.glob("????-??.csv") if p.is_file())
-    if not files:
-        fail(f"no monthly CSV files for {lang}")
-    return files
+    monthly = sorted(p for p in directory.glob("????-??.csv") if p.is_file())
+    annual = sorted(p for p in directory.glob("????.csv") if p.is_file())
+    if not monthly and not annual:
+        fail(f"no CSV shards for {lang}")
+    return monthly, annual
 
 
 def normalize_row(row: dict[str, str], lang: str, path: Path) -> dict[str, str]:
@@ -99,25 +104,66 @@ def normalize_row(row: dict[str, str], lang: str, path: Path) -> dict[str, str]:
     return normalized
 
 
-def load(lang: str) -> tuple[dict[str, dict[str, str]], str]:
+def canonical_record(row: dict[str, str]) -> tuple[str, ...]:
+    return tuple(normalize(row[key]) for key in ("locale", "title", "teaser", "full_text", "theme_tag"))
+
+
+def load_shard(path: Path, lang: str) -> list[dict[str, str]]:
+    result: list[dict[str, str]] = []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames is None:
+            fail(f"missing CSV header: {path.relative_to(ROOT)}")
+        seen_here: set[str] = set()
+        for raw_row in reader:
+            row = normalize_row(raw_row, lang, path)
+            date = row["date"]
+            if date in seen_here:
+                fail(f"duplicate {lang} date inside {path.relative_to(ROOT)}: {date}")
+            seen_here.add(date)
+            result.append(row)
+    return result
+
+
+def load(lang: str) -> tuple[dict[str, dict[str, str]], str, int, int]:
     rows: dict[str, dict[str, str]] = {}
+    origins: dict[str, Path] = {}
     digest = hashlib.sha256()
-    for path in monthly_files(lang):
+    monthly, annual = shard_files(lang)
+
+    for path in [*monthly, *annual]:
         raw = path.read_bytes()
         digest.update(path.name.encode("utf-8"))
         digest.update(b"\0")
         digest.update(raw)
-        with path.open("r", encoding="utf-8", newline="") as handle:
-            reader = csv.DictReader(handle)
-            if reader.fieldnames is None:
-                fail(f"missing CSV header: {path.relative_to(ROOT)}")
-            for raw_row in reader:
-                row = normalize_row(raw_row, lang, path)
-                date = row["date"]
-                if date in rows:
-                    fail(f"duplicate {lang} date across monthly catalog: {date}")
+
+    # Monthly shards are authoritative when both shard styles contain a date.
+    for path in monthly:
+        for row in load_shard(path, lang):
+            date = row["date"]
+            if date in rows:
+                fail(f"duplicate {lang} date across monthly shards: {date}")
+            rows[date] = row
+            origins[date] = path
+
+    annual_fill_count = 0
+    annual_overlap_count = 0
+    for path in annual:
+        for row in load_shard(path, lang):
+            date = row["date"]
+            if date not in rows:
                 rows[date] = row
-    return rows, digest.hexdigest()
+                origins[date] = path
+                annual_fill_count += 1
+                continue
+            annual_overlap_count += 1
+            if canonical_record(rows[date]) != canonical_record(row):
+                fail(
+                    "conflicting monthly/annual duplicate for "
+                    f"{lang} {date}: {origins[date].relative_to(ROOT)} vs {path.relative_to(ROOT)}"
+                )
+
+    return rows, digest.hexdigest(), annual_fill_count, annual_overlap_count
 
 
 def validate_automation() -> None:
@@ -146,8 +192,10 @@ def validate_automation() -> None:
 def main() -> int:
     catalogs: dict[str, dict[str, dict[str, str]]] = {}
     digests: dict[str, str] = {}
+    fill_counts: dict[str, int] = {}
+    overlap_counts: dict[str, int] = {}
     for lang in LANGS:
-        catalogs[lang], digests[lang] = load(lang)
+        catalogs[lang], digests[lang], fill_counts[lang], overlap_counts[lang] = load(lang)
 
     tr_dates = set(catalogs["tr"])
     en_dates = set(catalogs["en"])
@@ -180,8 +228,11 @@ def main() -> int:
     print(
         "RC-0003 PASS: independent physical TR/EN catalogs; "
         f"dates={len(tr_dates)} each; bounds={min(tr_dates)}..{max(tr_dates)}; "
+        f"annual_fill_tr={fill_counts['tr']}; annual_fill_en={fill_counts['en']}; "
+        f"annual_overlap_tr={overlap_counts['tr']}; annual_overlap_en={overlap_counts['en']}; "
         f"tr_sha256={digests['tr']}; en_sha256={digests['en']}; "
-        "legacy+current schemas normalized; no known automatic TR->EN translation pipeline detected"
+        "legacy+current schemas and monthly+annual shards normalized; "
+        "no known automatic TR->EN translation pipeline detected"
     )
     return 0
 
