@@ -4,11 +4,15 @@ on:
   push:
     paths:
       - "lib/src/app/ruh_code_app.dart"
+      - "pubspec.yaml"
+      - "test/requirements/rc0002_language_scope_runtime_test.dart"
       - "tools/requirements/validate_rc0002_language_scope.py"
       - ".github/workflows/rc0002-language-scope.yml"
   pull_request:
     paths:
       - "lib/src/app/ruh_code_app.dart"
+      - "pubspec.yaml"
+      - "test/requirements/rc0002_language_scope_runtime_test.dart"
       - "tools/requirements/validate_rc0002_language_scope.py"
       - ".github/workflows/rc0002-language-scope.yml"
   workflow_dispatch:
@@ -20,7 +24,7 @@ jobs:
   contract:
     name: Verify RC-0002 Turkish and English only
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,14 +36,32 @@ jobs:
       - name: Validate production language scope
         run: python tools/requirements/validate_rc0002_language_scope.py
 
-      - name: Persist TESTED evidence against latest main
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Verify compiled runtime language contract
+        run: flutter test test/requirements/rc0002_language_scope_runtime_test.dart --reporter expanded
+
+      - name: Persist DONE evidence against latest main
         if: github.event_name != 'pull_request'
         shell: bash
         run: |
+          set -euo pipefail
           git fetch origin main
           git checkout -B main origin/main
+
           python tools/requirements/validate_rc0002_language_scope.py
+          flutter pub get
+          flutter test test/requirements/rc0002_language_scope_runtime_test.dart --reporter expanded
           python tools/requirements/materialize_requirement_matrix.py
+
           python - <<'PY'
           import csv
           from pathlib import Path
@@ -59,11 +81,23 @@ jobs:
               found = True
               if row['source_text_sha256'] != '0c44cb0a147d49a9f5560e4bd0850839ad23baffbf0a7faab2f26d4575b4720b':
                   raise SystemExit('RC0002_PROMOTION_FAIL: binding requirement hash drifted')
-              row['status'] = 'TESTED'
-              row['evidence_links'] = 'lib/src/app/ruh_code_app.dart|tools/requirements/validate_rc0002_language_scope.py|.github/workflows/rc0002-language-scope.yml'
+              row['status'] = 'DONE'
+              row['evidence_links'] = '|'.join([
+                  'lib/src/app/ruh_code_app.dart',
+                  'pubspec.yaml',
+                  'tools/requirements/validate_rc0002_language_scope.py',
+                  'test/requirements/rc0002_language_scope_runtime_test.dart',
+                  '.github/workflows/rc0002-language-scope.yml',
+              ])
               row['blocked'] = 'NO'
               row['blocker'] = ''
-              row['notes'] = 'Production MaterialApp language scope is contract-tested as exactly Turkish and English; not yet promoted to VERIFIED/DONE.'
+              row['notes'] = (
+                  'Verified production contract: runtime supportedLocales is exactly tr/en; '
+                  'all Flutter localization delegates remain wired; packaged language-scoped '
+                  'daily-message assets are exactly tr/en; static and compiled Dart tests are '
+                  'required by the dedicated CI gate. RC-0003 separately owns editorial '
+                  'independence/completeness.'
+              )
           if not found:
               raise SystemExit('RC0002_PROMOTION_FAIL: RC-0002 row missing')
 
@@ -72,14 +106,15 @@ jobs:
               writer.writeheader()
               writer.writerows(rows)
           PY
+
           python tools/requirements/validate_requirement_matrix.py
 
           if git diff --quiet -- requirements/requirement_state.csv; then
-            echo "RC-0002 TESTED evidence already persisted."
+            echo "RC-0002 DONE evidence already persisted."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add requirements/requirement_state.csv
-          git commit -m "requirements(rc0002): record language scope tested evidence"
+          git commit -m "requirements(rc0002): record verified language scope DONE"
           git push origin main
