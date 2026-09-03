@@ -1,13 +1,21 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "contract": "RUH-EARTH-ORIENTATION-001",
   "runtimePolicy": {
     "ut1MinusUtcRequired": true,
     "utcMustNotSilentlySubstituteForUt1": true,
     "offlineVersionedProviderRequired": true,
-    "outOfCoverageBehavior": "reject",
+    "outOfCoverageBehavior": "FAIL_CLOSED_OUTSIDE_PUBLISHED_EOP_COVERAGE",
     "absoluteUt1MinusUtcLimitSeconds": 0.9,
-    "provenanceRequired": ["sourceId", "dataVersion"]
+    "provenanceRequired": ["sourceId", "dataVersion", "checksumSha256"],
+    "extrapolationAllowed": false,
+    "nearestNeighbourFallbackAllowed": false,
+    "fabricatedFutureEopAllowed": false
+  },
+  "productDateRange": {
+    "startUtcInclusive": "1890-01-01T00:00:00Z",
+    "endUtcExclusive": "2111-01-01T00:00:00Z",
+    "policy": "A date may be supported by RUHCODE while UT1-dependent calculations remain unavailable outside published bundled EOP coverage."
   },
   "reference": {
     "authority": "IERS",
@@ -17,9 +25,22 @@
       "https://maia.usno.navy.mil/information/eo-values"
     ]
   },
-  "pendingRuntimeData": {
-    "status": "NOT_DONE",
-    "required": "Packaged versioned EOP/UT1-UTC dataset with coverage and checksum manifest",
-    "networkDependencyAllowedInCalculationCore": false
+  "runtimeData": {
+    "status": "BUNDLED_VERIFIED_SUBGATE",
+    "assetPath": "assets/data/eop/finals2000A.all",
+    "sourceId": "IERS finals2000A.all",
+    "dataVersion": "2026-09-02",
+    "sha256": "e3905ff7a74b791744704aa3e900a2161e96db97a30095d8fc442b04e4cfe058",
+    "byteSize": 3763572,
+    "networkDependencyAllowedInCalculationCore": false,
+    "fullRc1437Done": false
+  },
+  "capabilityPolicy": {
+    "source": "lib/src/calculation_core/time/earth_orientation_capability_policy.dart",
+    "test": "test/calculation_core/earth_orientation_capability_policy_test.dart",
+    "availableReasonCode": "EOP_AVAILABLE",
+    "unavailableReasonCode": "EOP_OUTSIDE_PUBLISHED_COVERAGE",
+    "outsideProductRangeReasonCode": "OUTSIDE_PRODUCT_DATE_RANGE",
+    "unavailableMessageKey": "calculation.earth_orientation.unavailable_outside_published_coverage"
   }
 }
