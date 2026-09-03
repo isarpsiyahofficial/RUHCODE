@@ -30,6 +30,20 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 
 
+def flutter_asset_declared(asset_path: str, pubspec_text: str) -> bool:
+    """Accept Flutter's supported exact-file or containing-directory declaration.
+
+    pubspec.yaml may declare an individual asset (`assets/data/eop/file`) or the
+    directory containing it (`assets/data/eop/`). The latter is the canonical
+    form used by this repository and packages files directly under that folder.
+    Packaged-asset widget tests remain the runtime proof that the file is
+    actually present in the Flutter asset bundle.
+    """
+    normalized = asset_path.replace('\\', '/')
+    parent = f"{Path(normalized).parent.as_posix()}/"
+    return normalized in pubspec_text or parent in pubspec_text
+
+
 try:
     manifest = json.loads(read(MANIFEST))
     eop_evidence = json.loads(read(EOP_EVIDENCE))
@@ -72,7 +86,9 @@ try:
     assert de440_evidence['independent_golden_vectors_proven'] is False, 'DE440s golden vectors were marked proven without evidence'
 
     for path in (eop_evidence['path'], de440_evidence['path']):
-        assert path in pubspec, f'physical runtime asset is not declared in pubspec.yaml: {path}'
+        assert flutter_asset_declared(path, pubspec), (
+            f'physical runtime asset is not declared in pubspec.yaml as a file or containing directory: {path}'
+        )
 
     for token in (
         eop_evidence['path'],
