@@ -6,6 +6,7 @@ on:
       - "RUH_CODE_MASTER_SARTNAME.md"
       - "RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md"
       - "requirements/requirement_state.csv"
+      - "tools/requirements/materialize_requirement_matrix.py"
       - "tools/requirements/validate_requirement_matrix.py"
       - ".github/workflows/requirement-matrix-contract.yml"
   pull_request:
@@ -13,12 +14,13 @@ on:
       - "RUH_CODE_MASTER_SARTNAME.md"
       - "RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md"
       - "requirements/requirement_state.csv"
+      - "tools/requirements/materialize_requirement_matrix.py"
       - "tools/requirements/validate_requirement_matrix.py"
       - ".github/workflows/requirement-matrix-contract.yml"
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
@@ -27,8 +29,34 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Materialize canonical matrix on protected push path
+        if: github.event_name != 'pull_request'
+        run: python tools/requirements/materialize_requirement_matrix.py
+
+      - name: Require canonical matrix on pull requests
+        if: github.event_name == 'pull_request'
+        run: python tools/requirements/materialize_requirement_matrix.py --check
+
       - name: Validate binding specification and requirement matrix
         run: python tools/requirements/validate_requirement_matrix.py
+
+      - name: Commit canonical matrix when materialization changed it
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if git diff --quiet -- requirements/requirement_state.csv; then
+            echo "Requirement matrix already canonical."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add requirements/requirement_state.csv
+          git diff --cached --quiet && { echo "Expected canonical matrix diff is empty." >&2; exit 1; }
+          git commit -m "requirements: materialize canonical RC lifecycle matrix"
+          git push
