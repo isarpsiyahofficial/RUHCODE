@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Materialize canonical matrix on protected push path
+      - name: Materialize canonical matrix for this exact checkout
         if: github.event_name != 'pull_request'
         run: python tools/requirements/materialize_requirement_matrix.py
 
@@ -46,17 +46,31 @@ jobs:
       - name: Validate binding specification and requirement matrix
         run: python tools/requirements/validate_requirement_matrix.py
 
-      - name: Commit canonical matrix when materialization changed it
+      - name: Persist canonical matrix against latest main without stale-push races
         if: github.event_name != 'pull_request'
         shell: bash
         run: |
           if git diff --quiet -- requirements/requirement_state.csv; then
-            echo "Requirement matrix already canonical."
+            echo "Requirement matrix already canonical for this checkout."
             exit 0
           fi
+
+          # A queued workflow may start after newer commits have landed. Never push
+          # a stale parent. Rebase the persistence step onto current origin/main,
+          # regenerate from that exact binding spec, validate again, then commit.
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/materialize_requirement_matrix.py
+          python tools/requirements/validate_requirement_matrix.py
+
+          if git diff --quiet -- requirements/requirement_state.csv; then
+            echo "Latest main already contains the canonical matrix."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add requirements/requirement_state.csv
           git diff --cached --quiet && { echo "Expected canonical matrix diff is empty." >&2; exit 1; }
           git commit -m "requirements: materialize canonical RC lifecycle matrix"
-          git push
+          git push origin main
