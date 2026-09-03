@@ -76,21 +76,41 @@ Commit: `f1bb924d8bd37c793a50c319aed22e082adc955a`.
 
 Commit: `dd2394de5097a008d49118de8445fc17fe4ae7f7`.
 
-The exact `dd2394de...` run set was indexed as 25 workflows and still queued when this checkpoint was written. Therefore these new changes are not claimed exact-SHA green yet.
+The exact `dd2394de...` run set is indexed as 25 workflows but remained queued when re-read in this automation run. Therefore these new changes are still not claimed exact-SHA green.
 
-## Independent golden-vector work
+## RC-1436 independent official golden-vector provenance
 
-Official JPL Horizons documentation was re-checked for the next dependency. The API supports VECTORS, explicit center selection, J2000/ICRF frame selection, KM-S output, geometric `VEC_CORR=NONE`, and discrete `TLIST` epochs. An exact golden dataset still must be captured from an official JPL/NAIF result and stored with source/query provenance before `planetaryEphemeris.proven` can change.
+Binding RC-1436 was re-read: every mathematical engine requires measurable tolerances; an unbounded “approximately correct” criterion is forbidden.
 
-No guessed or third-party vector was added.
+Added `tools/data/materialize_jpl_horizons_golden.py` in commit `9fabd5ff33071a1440f8d3ffca86bf290a0004a0`.
+
+The materializer is fail-closed and captures an official NASA/JPL Horizons Earth(399)/SSB(0) state at J2000 using an explicit query contract:
+
+- `EPHEM_TYPE=VECTORS`,
+- `VEC_TABLE=2` (x,y,z,vx,vy,vz),
+- `CENTER=@0`,
+- `TLIST=2451545.0`, `TLIST_TYPE=JD`, `TIME_TYPE=TDB`,
+- `REF_SYSTEM=ICRF`, `REF_PLANE=FRAME`,
+- `VEC_CORR=NONE`,
+- `OUT_UNITS=KM-S`,
+- CSV output.
+
+It requires the official `NASA/JPL Horizons API` signature, exactly one `$$SOE/$$EOE` vector row, finite non-zero state data, and records the exact request URL/query, API version/signature, raw response SHA-256, capture timestamp and parsed vector. Numeric vectors are explicitly non-editable provenance data.
+
+Added `.github/workflows/materialize-rc1436-jpl-golden.yml` in commit `f83417c7dcf4bbe0a0df1c367d1d7700427c277f`.
+
+That workflow is manual/fail-closed, validates the generated evidence shape/provenance and commits the canonical evidence file only after a successful live official JPL capture. The connected GitHub action surface available in this run exposes workflow reads/re-runs but no workflow-dispatch write action, so the live capture was not falsely claimed as executed here.
+
+No guessed, cached, search-snippet or third-party vector was committed. `planetaryEphemeris.proven` remains false until the canonical official evidence exists and the runtime comparator passes explicit tolerances.
 
 ## Status
 
 - Body/center graph source: IMPLEMENTED.
 - Synthetic graph fail-closed coverage: IMPLEMENTED, pending exact new-head CI completion.
 - Real packaged graph execution: IMPLEMENTED, pending exact new-head CI completion.
-- Independent JPL/NAIF golden accuracy: OPEN.
-- RC-1436 tolerance binding: OPEN.
+- Official JPL golden materializer/provenance gate: IMPLEMENTED.
+- Live official JPL canonical golden evidence: OPEN.
+- RC-1436 tolerance binding/comparator: OPEN.
 - 1890→2110 EOP/versioned range policy: OPEN.
 - RC-1437: NOT DONE.
 - RC-1439: NOT DONE.
@@ -99,10 +119,10 @@ No guessed or third-party vector was added.
 
 ## Next dependency
 
-1. Read exact current HEAD CI and repair any graph/runtime/analyzer failure in-place.
-2. Materialize official JPL Horizons/NAIF geometric J2000 KM-S golden vectors with exact query/source provenance.
-3. Compare packaged DE440s body-graph output to those independent vectors under explicit RC-1436 tolerances.
+1. Read exact current engineering CI completion and repair any graph/runtime/analyzer failure in-place.
+2. Execute the official Horizons materializer through the repository workflow when workflow-dispatch capability is available; require canonical evidence + raw-response hash.
+3. Add the packaged DE440s body-graph comparator and explicit RC-1436 tolerance evidence against that independent vector.
 4. Keep `planetaryEphemeris.proven=false` until independent accuracy evidence passes.
-5. Continue strict RC-1439 and release/device blockers independently.
+5. Continue 1890→2110 EOP policy, strict RC-1439 and release/device blockers independently.
 
 **FINAL: NO.**
