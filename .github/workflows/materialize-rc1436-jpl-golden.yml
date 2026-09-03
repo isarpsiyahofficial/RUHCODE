@@ -6,6 +6,9 @@ on:
     paths:
       - '.github/workflows/materialize-rc1436-jpl-golden.yml'
       - 'tools/data/materialize_jpl_horizons_golden.py'
+      - 'test/calculation_core/de440s_jpl_horizons_accuracy_test.dart'
+      - 'lib/src/calculation_core/ephemeris/**'
+      - 'assets/data/ephemeris/**'
 
 permissions:
   contents: write
@@ -41,9 +44,11 @@ jobs:
           assert q['COMMAND'] == "'399'"
           assert q['CENTER'] == "'@0'"
           assert q['TLIST'] == "'2451545.0'"
+          assert q['TLIST_TYPE'] == "'JD'"
           assert q['TIME_TYPE'] == "'TDB'"
           assert q['REF_SYSTEM'] == "'ICRF'"
           assert q['REF_PLANE'] == "'FRAME'"
+          assert q['VEC_TABLE'] == "'2'"
           assert q['VEC_CORR'] == "'NONE'"
           assert q['OUT_UNITS'] == "'KM-S'"
           v = d['vector']
@@ -52,6 +57,16 @@ jobs:
           assert sum(abs(x) for x in values[:3]) > 0
           print('evidence sha256=', hashlib.sha256(p.read_bytes()).hexdigest())
           PY
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Resolve locked dependencies
+        run: flutter pub get
+      - name: Compare packaged DE440s against official JPL golden
+        run: flutter test test/calculation_core/de440s_jpl_horizons_accuracy_test.dart --reporter expanded
       - name: Commit canonical golden evidence
         run: |
           if git diff --quiet -- evidence/rc1436/jpl_horizons_earth_ssb_j2000.json; then
@@ -61,5 +76,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add evidence/rc1436/jpl_horizons_earth_ssb_j2000.json
-          git commit -m 'data(rc1436): capture official JPL Horizons Earth golden'
+          git commit -m 'data(rc1436): capture verified JPL Horizons Earth golden'
           git push origin HEAD:main
