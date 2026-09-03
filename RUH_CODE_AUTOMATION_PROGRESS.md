@@ -7,14 +7,27 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 ## Requirement durumu / FAZ 0
 
 - Exact kapsam: `RC-0001 → RC-1442` / **1.442 requirement**.
-- Önceki matrix exact 1.442 ID içeriyordu fakat lifecycle enum'u bağlayıcı TODO ile uyumsuzdu (`OPEN / IN_PROGRESS / BLOCKED / DONE`).
-- Bağlayıcı lifecycle artık `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE` olarak enforce ediliyor.
-- Blocker lifecycle statüsünden ayrıldı: `blocked=YES/NO` ve açıklama ayrı alanlarda tutuluyor.
-- Canonical materializer her RC'yi binding specification filename/number + normalized requirement text SHA-256 ile bağlıyor; şartname drift'i stale matrix'i kırıyor.
-- Her RC en az bir `TASK-*` ID, impact tag ve zorunlu `evidence_type` taşıyor.
+- Bağlayıcı lifecycle `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE` olarak enforce ediliyor.
+- Blocker lifecycle statüsünden ayrıdır: `blocked=YES/NO` ve açıklama ayrı alanlarda tutulur.
+- Canonical materializer her RC'yi binding specification filename/number + normalized requirement text SHA-256 ile bağlar; şartname drift'i stale matrix'i fail-closed kırar.
+- Her RC en az bir `TASK-*` ID, impact tag ve zorunlu `evidence_type` taşır.
 - `TESTED`, `VERIFIED` veya `DONE` evidence link olmadan CI'dan geçemez; `DONE` blocked olamaz.
-- Push CI canonical matrix'i üretip validate eder ve değişmişse commit eder; PR'da canonical olmayan matrix fail olur.
-- Hiçbir RC kanıtsız DONE yapılmadı. Canonical migration legacy `OPEN` satırlarını `NOT_STARTED` yapar.
+- Canonical matrix fiziksel olarak 1.442 RC satırını tutuyor.
+- **RC-0002 fiziksel matrix üzerinde DONE**: production runtime language scope yalnız `tr/en`, Flutter localization delegate wiring ve packaged language scope dedicated static+compiled CI ile doğrulandı.
+- **RC-0003 çalışma altında**: TR/EN içeriklerin bağımsız hazırlanması / otomatik TR→EN çeviri pipeline yasağı için dedicated fail-closed validator + CI eklendi. Bu kapı editoryal provenance olmadan VERIFIED/DONE vermez; otomatik olarak en fazla TESTED seviyesine çıkar.
+
+## RC-0003 — editorial independence kanıt hattı
+
+- Physical Daily Message katalogları ayrı `assets/content/daily_messages/tr/` ve `.../en/` ağaçlarında tutuluyor.
+- Validator paired TR/EN title/teaser/body değerlerinin normalize edilmiş biçimde aynı olmamasını, physical catalog digestlerinin farklı olmasını, known machine-translation dependency/API bulunmamasını ve explicit TR-source→EN-destination translation automation bulunmamasını zorunlu tutuyor.
+- Production katalogda iki tarihsel CSV şeması bulunuyor ve validator bunları tek canonical modele normalize ediyor:
+  - legacy: `date,title,teaser,message,theme`
+  - current: `date,locale,title,teaser,full_text,theme_tag`
+- Katalog ayrıca hem `YYYY-MM.csv` aylık hem `YYYY.csv` yıllık shard kullanıyor. Monthly shard primary; annual shard yalnız aylıkta bulunmayan tarihi doldurabilir. Aynı tarih iki shard'da varsa canonical içerik birebir eşleşmezse fail-closed.
+- İlk CI failure legacy schema varsayımından kaynaklandı ve düzeltildi.
+- İkinci CI failure yalnız aylık shardların sayılmasından kaynaklandı: 3.959 günlük kayıt bulundu; eksik görünen 59 gün 2026 Ocak+Şubat kayıtlarının yıllık `2026.csv` shardında tutulmasından kaynaklanıyordu. Annual-shard reconciliation eklendi.
+- Son validator commit: `3c4c4e7d53d4ab2582f7af8a53b444fd1eb9a937`.
+- Bu exact SHA için yeni CI tetiklendi; son gözlemde tamamlanmış RC-0003 sonucu henüz yoktu, bu nedenle green veya TESTED varsayılmıyor.
 
 ## Doğrulanmış ana ilerleme
 
@@ -28,8 +41,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Günün Mesajı doğrulanmış kanıtı
 
-- `2026-01-01 → 2036-12-31`.
-- TR **4018/4018**, EN **4018/4018**, toplam **8036/8036**; missing/duplicate exact date-locale kaydı 0.
+- Ürün kataloğu hedef/kapsamı `2026-01-01 → 2036-12-31`.
+- Daha önceki catalog contract kanıtı TR **4018/4018**, EN **4018/4018**, toplam **8036/8036**; missing/duplicate exact date-locale kaydı 0 olarak kaydedildi.
 - Earlier exact APK packaging proof (`5283cc2381fbf850f86c85cb458f96a6b8250f45`) yaklaşık 53.2 MB release APK; APK SHA-256 `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`.
 - RC-1433 rolling-horizon release gate kaynak seviyesinde mevcut; final release tarihine göre strict pass gerekir.
 
@@ -72,7 +85,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Açık ana blocker'lar
 
-- Requirement Matrix Contract exact run + canonical materialized matrix commit fiziksel doğrulaması,
+- RC-0003 independent editorial provenance/review (repository contract TESTED olabilir ama provenance olmadan DONE değil),
+- RC-0001 ve RC-0004 sonrası requirement reconciliation / dependency sırası,
 - RC-1436 için daha geniş independent official ephemeris golden/tolerance coverage,
 - RC-1439 canonical physical reference screenshots/images + hashes,
 - secret-backed signed reproducible clean-checkout APK actual execution,
@@ -84,15 +98,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Son checkpoint
 
-`automation_runs/2026-09-03_2255_requirement_lifecycle_traceability.md`
+`automation_runs/2026-09-04_0252_rc0003_editorial_independence.md`
 
 ## Sıradaki çalışma
 
-1. Exact Requirement Matrix Contract run'ını tamamlanmış olarak doğrula; kırmızıysa aynı turda kök nedeni düzelt.
-2. Canonical 1.442-row matrix commit'ini doğrula ve ardından mevcut kanıtları RC bazında lifecycle'a reconcile et.
-3. Official ephemeris golden coverage'ı tek J2000 Earth→SSB örneğinin ötesinde fiziksel canonical evidence'a dönüştür.
-4. Strict RC-1439 ve diğer bağımsız release blockerlarını ilerlet.
-5. Strict prerequisites PASS olduktan sonra production-secret signed clean-checkout artifact'i üret/doğrula.
+1. `3c4c4e7d...` exact RC-0003 CI sonucunu doğrula; kırmızıysa decoded log kök nedenini aynı dependency üzerinde düzelt.
+2. Green ise bot-persisted RC-0003 `TESTED` matrix satırını fiziksel doğrula.
+3. Independent editorial provenance/review kanıtını oluşturmadan RC-0003 VERIFIED/DONE yapma.
+4. RC-0004 professional/natural terminology contract ve bağımsız uygulanabilir RC işlerine devam et.
+5. RC-1436/1437, RC-1439, signed reproducible release ve real-device kapılarını bağımsız işler olarak ilerlet.
 6. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
