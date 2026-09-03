@@ -38,34 +38,36 @@ Historical decoded baselines:
 - `5283cc2381fbf850f86c85cb458f96a6b8250f45`: Analyze SUCCESS, Test `+590 -3`.
 - `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test `+592 -1`.
 - `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`.
+- `3b8d60c37cccba856ceb641630adc62fef865f7b`: **24 workflow completed SUCCESS** tracked-host baseline.
 
-Previously verified tracked-host baseline:
-- `3b8d60c37cccba856ceb641630adc62fef865f7b`: **24 workflow completed SUCCESS**.
-
-Current release-chain commits:
-- `00e1198176117e09d50ac796e69acf06d7368862`: wrapper materialization/APK fallback/RC-1442 wrapper provenance repair.
-- `469a797d5502539e42a0d83d7ffe83496775a884`: physical verified Gradle wrapper JAR + checksum + provenance tracked.
-- `f9ef7a0555e12c42f2aac87d8b51d180c53cab03`: fail-closed signed clean-checkout release evidence gate.
-
-Observed CI before this checkpoint:
-- `4641ed79f31516f7819dc9dba3bff9fb49e4af5c`: 23 completed SUCCESS, failure 0, Daily Message APK Packaging in-progress.
-- `f9ef7a0555e12c42f2aac87d8b51d180c53cab03`: 24 triggered; 18 completed SUCCESS, 4 in-progress, failure 0 at observation time.
-- Pending runs are not counted as proven green.
+Current RC-1437 runtime work:
+- `0302a2deb236be2450f7a63a146f328b77b351d8`: IERS packaged runtime loader.
+- `bc3c735ae7c64152fc742410d52cae5293422721`: real packaged IERS runtime test. Exact CI exposed two failures: Flutter fatal-info redundant import and stale City Catalog status validator.
+- `1c5a9abf86f6a676721e8104d7c9899fb80ba083`: fatal analyzer import root-cause fix.
+- `970094301fcb50d61e98f4d2f730bdf7efa58776`: City Catalog validator now validates physical bundled catalog/hash/record/ID/coordinate/timezone/attribution/pubspec evidence.
+- `82cb7c9ca9e2e7764c66912cfed511a39701c50d`: DE440s packaged runtime integrity loader.
+- `7727857bac78d22dab96585782e72638794a2adf`: real packaged DE440s asset test.
+- `2a35c8fb866289aa7818a998f10384eae6b87a53`: RC-1437 physical runtime asset validator aligned to canonical manifest.
+- `d718bed68661ca42c8a5227764196f7d885df556`: dedicated RC-1437 Runtime Assets CI gate.
+- At checkpoint observation, exact `d718bed...` had 24 workflow runs triggered and no completed failure indexed yet; runs were not all complete, therefore not counted green.
 
 ## RC-1437 — offline/versioned calculation data
 
-- timezone manifesti offline IANA runtime sözleşmesine sahip.
-- city manifest status: `SOURCE_SELECTED_NOT_BUNDLED`; generated catalog checksum yok.
-- planetary ephemeris + Earth-orientation manifestleri fiziksel bundling/provenance SHA-256 açısından tamamlanmış değil.
-- strict/default fail-closed validator ve audit workflow mevcut.
+- Timezone manifesti offline IANA runtime sözleşmesine sahip.
+- GeoNames city catalog is now physically bundled and manifest state is `BUNDLED_VERIFIED`: 235,640 records, source/generated SHA evidence, attribution asset and Flutter asset binding.
+- IERS `finals2000A.all` is physically bundled with exact SHA/byte evidence and now has a Flutter runtime loader that parses published UT1-UTC rows and fails closed outside usable coverage.
+- JPL/NASA NAIF DE440s SPK is physically bundled with exact SHA/byte evidence and now has a Flutter runtime integrity loader checking file size, `DAF/SPK` header and exact SHA.
+- Dedicated runtime-asset gate cross-checks physical files, evidence, canonical manifest, pubspec, source loaders and packaged tests.
+- DE440s celestial SPK evaluator is **not yet proven** and independent golden-vector accuracy remains false/open. Kernel presence alone is not counted as calculation integration.
+- Product date range 1890→2110 is wider than published IERS EOP coverage. Future/unpublished EOP must not be fabricated; range handling/versioned model evidence remains a release requirement.
 
 **RC-1437 DONE değil.**
 
 ## RC-1439 — physical UI reference images
 
-- reference manifest explicit `NOT_PROVEN`.
-- validator fiziksel dosya, unique screen ID/path, filename ve exact SHA-256 doğruluyor.
-- generated placeholder reference evidence reddediliyor.
+- Reference manifest explicit `NOT_PROVEN`.
+- Validator fiziksel dosya, unique screen ID/path, filename ve exact SHA-256 doğruluyor.
+- Generated placeholder reference evidence reddediliyor.
 
 **RC-1439 DONE değil.**
 
@@ -75,13 +77,12 @@ Observed CI before this checkpoint:
 - Gradle 9.1.0 / AGP 9.0.1 / Kotlin 2.3.20 host sözleşmesi mevcut.
 - Production release debug keystore ile imzalanmıyor; signing yalnız `RUH_RELEASE_STORE_FILE`, `RUH_RELEASE_STORE_PASSWORD`, `RUH_RELEASE_KEY_ALIAS`, `RUH_RELEASE_KEY_PASSWORD` değerleriyle etkinleşiyor.
 - Physical verified Gradle 9.1.0 wrapper JAR tracked; wrapper checksum ve JSON provenance da tracked.
-- Wrapper recorded SHA-256: `76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3`.
-- Gradle 9.1.0 distribution recorded SHA-256: `a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806`.
-- Signed clean-checkout workflow mevcut ve fail-closed: strict RC-1442 readiness → real secrets → ephemeral keystore → locked dependency resolution → release APK → apksigner → Daily Message APK validator → SHA/provenance artifact.
-- Workflow manual dispatch / `v*` tag ile gerçek release kanıtı üretmek üzere tasarlandı; main push'ta bilinen fiziksel blockerları gereksiz kırmızıya çevirmez.
+- Wrapper SHA-256: `76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3`.
+- Gradle 9.1.0 distribution SHA-256: `a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806`.
+- Signed clean-checkout workflow fail-closed: strict RC-1442 readiness → real secrets → ephemeral keystore → locked dependency resolution → release APK → apksigner → Daily Message APK validation → SHA/provenance artifact.
 
 Açık kalan RC-1442 blocker:
-- strict RC-1437 ve strict RC-1439 henüz PASS değil,
+- strict RC-1437 ve strict RC-1439 henüz tam PASS değil,
 - production signing secrets ile signed workflow successful execution kanıtı yok,
 - exact signed reproducible clean-checkout APK verification yok,
 - real-device verification eksik.
@@ -90,7 +91,7 @@ Açık kalan RC-1442 blocker:
 
 ## Açık ana blocker'lar
 
-- RC-1437 physical/versioned/checksummed city + planetary ephemeris + EOP datasets ve independent golden accuracy,
+- RC-1437 DE440s celestial evaluator + independent golden accuracy ve date-range/EOP policy evidence,
 - RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
 - secret-backed signed reproducible clean-checkout APK actual execution,
 - Daily Message real airplane-mode device lookup proof,
@@ -101,13 +102,14 @@ Açık kalan RC-1442 blocker:
 
 ## Son checkpoint
 
-`automation_runs/2026-09-02_2300_signed_release_gate_progress.md`
+`automation_runs/2026-09-03_0310_rc1437_runtime_asset_binding.md`
 
 ## Sıradaki çalışma
 
 1. Current exact HEAD full CI sonuçlarını tamamlanmış durumda oku; kırmızı varsa aynı turda düzelt.
-2. Strict RC-1437 physical data blockerlarını ve strict RC-1439 canonical reference blockerlarını bağımsız ilerlet.
-3. Strict prerequisites PASS olduktan sonra signed clean-checkout workflow'u production secrets ile çalıştır ve exact artifact evidence'i bağla.
-4. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
+2. DE440s SPK evaluator + independent golden-vector accuracy hattını dependency sırasıyla ilerlet.
+3. Strict RC-1439 canonical reference ve diğer bağımsız release blockerlarını ilerlet.
+4. Strict prerequisites PASS olduktan sonra signed clean-checkout workflow'u production secrets ile çalıştır ve exact artifact evidence'i bağla.
+5. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
