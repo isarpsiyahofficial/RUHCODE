@@ -1,0 +1,34 @@
+name: Requirement Matrix Contract
+
+on:
+  push:
+    paths:
+      - "RUH_CODE_MASTER_SARTNAME.md"
+      - "RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md"
+      - "requirements/requirement_state.csv"
+      - "tools/requirements/validate_requirement_matrix.py"
+      - ".github/workflows/requirement-matrix-contract.yml"
+  pull_request:
+    paths:
+      - "RUH_CODE_MASTER_SARTNAME.md"
+      - "RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md"
+      - "requirements/requirement_state.csv"
+      - "tools/requirements/validate_requirement_matrix.py"
+      - ".github/workflows/requirement-matrix-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate exact RC-0001 to RC-1442 ledger
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate binding specification and requirement matrix
+        run: python tools/requirements/validate_requirement_matrix.py
