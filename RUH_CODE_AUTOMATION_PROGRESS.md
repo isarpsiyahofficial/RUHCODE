@@ -42,23 +42,29 @@ Historical decoded baselines:
 
 Current RC-1437 runtime work:
 - `0302a2deb236be2450f7a63a146f328b77b351d8`: IERS packaged runtime loader.
-- `bc3c735ae7c64152fc742410d52cae5293422721`: real packaged IERS runtime test. Exact CI exposed two failures: Flutter fatal-info redundant import and stale City Catalog status validator.
+- `bc3c735ae7c64152fc742410d52cae5293422721`: real packaged IERS runtime test; exact CI exposed fatal-info redundant import and stale City Catalog validator.
 - `1c5a9abf86f6a676721e8104d7c9899fb80ba083`: fatal analyzer import root-cause fix.
-- `970094301fcb50d61e98f4d2f730bdf7efa58776`: City Catalog validator now validates physical bundled catalog/hash/record/ID/coordinate/timezone/attribution/pubspec evidence.
+- `970094301fcb50d61e98f4d2f730bdf7efa58776`: City Catalog validator physical bundled evidence ile hizalandı.
 - `82cb7c9ca9e2e7764c66912cfed511a39701c50d`: DE440s packaged runtime integrity loader.
 - `7727857bac78d22dab96585782e72638794a2adf`: real packaged DE440s asset test.
-- `2a35c8fb866289aa7818a998f10384eae6b87a53`: RC-1437 physical runtime asset validator aligned to canonical manifest.
+- `2a35c8fb866289aa7818a998f10384eae6b87a53`: RC-1437 physical runtime asset validator.
 - `d718bed68661ca42c8a5227764196f7d885df556`: dedicated RC-1437 Runtime Assets CI gate.
-- At checkpoint observation, exact `d718bed...` had 24 workflow runs triggered and no completed failure indexed yet; runs were not all complete, therefore not counted green.
+- Exact `68b9b2900d3beb889b1a9ebc90c58f2d032ac42c` had 25 workflows and `RC-1437 Runtime Assets` failed at `Validate physical runtime astronomy assets`.
+- Root cause was validator semantics, not missing packaged data: Flutter directory declarations `assets/data/eop/` and `assets/data/ephemeris/` were incorrectly rejected because the validator searched only for literal file paths.
+- `7f2f1e77662aa93784b18fcab99c79f5cdf8351d`: validator now accepts exact-file or containing-directory Flutter asset declarations while preserving SHA/size/manifest/fail-closed checks.
+- `4be777af7b32658f2cec74ab3f5823034e3b1c77`: DE440s DAF/SPK structural segment-index parser.
+- `90fde158acce69ab15ed602cebacf55fb24ca5d6`: real packaged DE440s DAF index test.
+- `40da4cad02cb1e4c5fe2c16f6cc94de3e6a07045`: parser test import repair; its 25 workflows were queued/starting at checkpoint and are not counted green yet.
 
 ## RC-1437 — offline/versioned calculation data
 
 - Timezone manifesti offline IANA runtime sözleşmesine sahip.
-- GeoNames city catalog is now physically bundled and manifest state is `BUNDLED_VERIFIED`: 235,640 records, source/generated SHA evidence, attribution asset and Flutter asset binding.
-- IERS `finals2000A.all` is physically bundled with exact SHA/byte evidence and now has a Flutter runtime loader that parses published UT1-UTC rows and fails closed outside usable coverage.
-- JPL/NASA NAIF DE440s SPK is physically bundled with exact SHA/byte evidence and now has a Flutter runtime integrity loader checking file size, `DAF/SPK` header and exact SHA.
-- Dedicated runtime-asset gate cross-checks physical files, evidence, canonical manifest, pubspec, source loaders and packaged tests.
-- DE440s celestial SPK evaluator is **not yet proven** and independent golden-vector accuracy remains false/open. Kernel presence alone is not counted as calculation integration.
+- GeoNames city catalog physically bundled / `BUNDLED_VERIFIED`: 235,640 records, source/generated SHA evidence, attribution and Flutter asset binding.
+- IERS `finals2000A.all` physically bundled with exact SHA/byte evidence; Flutter runtime loader parses published UT1-UTC rows and fails closed outside usable coverage.
+- JPL/NASA NAIF DE440s SPK physically bundled with exact SHA/byte evidence and runtime integrity loader checking byte size, `DAF/SPK` header and SHA.
+- DE440s is now structurally indexed as a real DAF/SPK: file record, binary endianness, ND/NI, linked summary records, target/center/frame/type/address descriptors and name records are parsed fail-closed.
+- Packaged structural test requires valid segment bounds and at least one segment covering J2000; corrupt/non-SPK payload is rejected.
+- This structural parser **does not** mark celestial computation proven. SPK type numerical evaluation, body/center chaining and independent golden vectors remain open.
 - Product date range 1890→2110 is wider than published IERS EOP coverage. Future/unpublished EOP must not be fabricated; range handling/versioned model evidence remains a release requirement.
 
 **RC-1437 DONE değil.**
@@ -91,7 +97,7 @@ Açık kalan RC-1442 blocker:
 
 ## Açık ana blocker'lar
 
-- RC-1437 DE440s celestial evaluator + independent golden accuracy ve date-range/EOP policy evidence,
+- RC-1437 SPK type numerical evaluator + body/center chaining + independent golden accuracy + date-range/EOP policy evidence,
 - RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
 - secret-backed signed reproducible clean-checkout APK actual execution,
 - Daily Message real airplane-mode device lookup proof,
@@ -102,14 +108,15 @@ Açık kalan RC-1442 blocker:
 
 ## Son checkpoint
 
-`automation_runs/2026-09-03_0310_rc1437_runtime_asset_binding.md`
+`automation_runs/2026-09-03_0454_rc1437_daf_index_progress.md`
 
 ## Sıradaki çalışma
 
-1. Current exact HEAD full CI sonuçlarını tamamlanmış durumda oku; kırmızı varsa aynı turda düzelt.
-2. DE440s SPK evaluator + independent golden-vector accuracy hattını dependency sırasıyla ilerlet.
-3. Strict RC-1439 canonical reference ve diğer bağımsız release blockerlarını ilerlet.
-4. Strict prerequisites PASS olduktan sonra signed clean-checkout workflow'u production secrets ile çalıştır ve exact artifact evidence'i bağla.
-5. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
+1. Exact current HEAD full CI completion'ı oku; parser/analyzer/runtime gate kırmızısı varsa aynı turda düzelt.
+2. DE440s SPK type-2 numerical evaluator ve body/center chaining'i official NAIF formatına göre dependency sırasıyla ilerlet.
+3. RC-1436 toleranslarına bağlı bağımsız golden-vector evidence eklemeden `planetaryEphemeris.proven` veya RC-1437 DONE yapma.
+4. Strict RC-1439 ve diğer bağımsız release blockerlarını ilerlet.
+5. Strict prerequisites PASS olduktan sonra signed clean-checkout workflow'u production secrets ile çalıştır ve exact artifact evidence'i bağla.
+6. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
