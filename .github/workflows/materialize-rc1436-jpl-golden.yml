@@ -69,12 +69,18 @@ jobs:
         run: flutter test test/calculation_core/de440s_jpl_horizons_accuracy_test.dart --reporter expanded
       - name: Commit canonical golden evidence
         run: |
-          if git diff --quiet -- evidence/rc1436/jpl_horizons_earth_ssb_j2000.json; then
-            echo 'Golden evidence is unchanged.'
+          evidence='evidence/rc1436/jpl_horizons_earth_ssb_j2000.json'
+          if git ls-files --error-unmatch "$evidence" >/dev/null 2>&1 && git diff --quiet -- "$evidence"; then
+            echo 'Golden evidence is tracked and unchanged.'
             exit 0
           fi
+          test -s "$evidence"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add evidence/rc1436/jpl_horizons_earth_ssb_j2000.json
+          git add -- "$evidence"
+          if git diff --cached --quiet -- "$evidence"; then
+            echo 'No staged golden evidence change; refusing to claim materialization.' >&2
+            exit 1
+          fi
           git commit -m 'data(rc1436): capture verified JPL Horizons Earth golden'
           git push origin HEAD:main
