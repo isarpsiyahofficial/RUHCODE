@@ -2,6 +2,10 @@ name: Materialize RC-1436 JPL Golden
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/materialize-rc1436-jpl-golden.yml'
+      - 'tools/data/materialize_jpl_horizons_golden.py'
 
 permissions:
   contents: write
