@@ -39,6 +39,7 @@ Historical decoded baselines:
 - `30b29b5b552b497a573acb7b370e3ab4c7bca78f`: Analyze SUCCESS, Test `+592 -1`.
 - `4d3462a8dc35731473b89370840b78e840962d92`: Analyze SUCCESS, Test `+592 -1`.
 - `3b8d60c37cccba856ceb641630adc62fef865f7b`: **24 workflow completed SUCCESS** tracked-host baseline.
+- `889bb06a2b0a52d7ec04ea0c04a1809ddda4566a`: **25 workflow indexed**, dedicated `RC-1437 Runtime Assets` SUCCESS; no failure/in-progress conclusion bulunduğu baseline.
 
 RC-1437 runtime progression:
 - `0302a2deb236be2450f7a63a146f328b77b351d8`: IERS packaged runtime loader.
@@ -52,14 +53,18 @@ RC-1437 runtime progression:
 - `7f2f1e77662aa93784b18fcab99c79f5cdf8351d`: runtime validator exact-file veya containing-directory Flutter asset declaration kabul edecek şekilde düzeltildi.
 - `4be777af7b32658f2cec74ab3f5823034e3b1c77`: DE440s DAF/SPK structural segment-index parser.
 - `90fde158acce69ab15ed602cebacf55fb24ca5d6`: real packaged DE440s DAF index test.
-- `40da4cad02cb1e4c5fe2c16f6cc94de3e6a07045`: parser test import repair. Bu exact baseline'da 25 workflow vardı; City Catalog Contract RED kaldı. Decoded log gerçek kök nedenin `pubspec.yaml` içindeki geçerli `assets/data/cities/` directory asset declaration'ın validator tarafından literal generated-file declaration olmadığı için reddedilmesi olduğunu gösterdi.
-- `dda4106a1ff861e19491bb522baefced1e4d9dd8`: gerçek SPK Type-2 numerical evaluator eklendi.
+- `40da4cad02cb1e4c5fe2c16f6cc94de3e6a07045`: parser test import repair.
+- `dda4106a1ff861e19491bb522baefced1e4d9dd8`: gerçek SPK Type-2 numerical evaluator.
 - `91d54d07f437757106954bb5eb12decd868b908b`: deterministic synthetic Type-2 Chebyshev position/velocity, endpoint ve fail-closed testleri.
 - `89de69cf6aca929c1bca8a497ecde8d3052d0361`: real packaged DE440s üzerinde J2000 Type-2 numerical runtime evaluation testi.
-- `d6dfcb3f31b7b7a965f5f544d3a3162e429a81a6`: dedicated RC-1437 Runtime Assets workflow artık physical validator + synthetic evaluator + real packaged DE440s numerical test çalıştırıyor.
+- `d6dfcb3f31b7b7a965f5f544d3a3162e429a81a6`: dedicated RC-1437 Runtime Assets workflow physical validator + synthetic evaluator + real packaged DE440s numerical test çalıştırıyor.
 - `d9ac37b0a043d82f781fbd1596a3ae326a480f35`: City Catalog validator directory-asset declaration semantiğiyle düzeltildi; physical SHA/size/record-count/unique-ID/timezone/attribution kontrolleri korunuyor.
+- `25cceeec27d2386421b48badd4d45b88e165b781` + `15e6c583a3dae6a2ceaacb1c47b46fe1fece9e48`: fail-closed SPK body/center graph evaluator; SSB root, exact ET coverage, J2000 frame/type requirements, missing-center/cycle rejection.
+- `faa24c92bd4b0c097d11e28f90d08a688f4984e7`: deterministic body graph contract tests; target/observer subtraction, reverse relation, missing-center/cycle/frame/type hata yolları.
+- `f1bb924d8bd37c793a50c319aed22e082adc955a`: real packaged DE440s Earth(399)→EMB(3)→SSB(0) J2000 runtime graph test ve chaining identity.
+- `dd2394de5097a008d49118de8445fc17fe4ae7f7`: dedicated RC-1437 Runtime Assets workflow body graph contract + real packaged graph testlerini de çalıştırıyor.
 
-Current engineering HEAD CI bu checkpoint yazılırken henüz indexlenmiş/green kabul edilmedi. Yeni evaluator zinciri exact-SHA CI-green olmadan requirement DONE sayılmayacak.
+Current body-graph engineering CI bu checkpoint yazılırken exact latest docs HEAD için henüz tamamlanmış/green kabul edilmedi. Requirement DONE verilmedi.
 
 ## RC-1437 — offline/versioned calculation data
 
@@ -68,10 +73,11 @@ Current engineering HEAD CI bu checkpoint yazılırken henüz indexlenmiş/green
 - IERS `finals2000A.all` physically bundled with exact SHA/byte evidence; Flutter runtime loader parses published UT1-UTC rows and fails closed outside usable coverage.
 - JPL/NASA NAIF DE440s SPK physically bundled with exact SHA/byte evidence and runtime integrity loader checking byte size, `DAF/SPK` header and SHA.
 - DE440s structurally indexed as a real DAF/SPK: file record, binary endianness, ND/NI, linked summary records, target/center/frame/type/address descriptors and name records are parsed fail-closed.
-- SPK Type 2 numerical evaluation now exists: trailer directory (`INIT`, `INTLEN`, `RSIZE`, `N`), exact record selection, MID/RADIUS normalization, Chebyshev X/Y/Z evaluation and differentiated vx/vy/vz km/s are implemented fail-closed.
-- Deterministic synthetic contract tests verify numerical Chebyshev math and unsupported/out-of-range rejection.
-- A real packaged DE440s runtime test now executes a real Type-2 segment at J2000 and requires finite non-zero state components.
-- This numerical runtime evidence **still does not prove astronomical accuracy**. Body/center graph chaining, frame handling beyond the accepted direct segment assumptions and independent NAIF/JPL golden vectors tied to RC-1436 tolerances remain open.
+- SPK Type 2 numerical evaluation exists: trailer directory (`INIT`, `INTLEN`, `RSIZE`, `N`), exact record selection, MID/RADIUS normalization, Chebyshev X/Y/Z evaluation and differentiated vx/vy/vz km/s are implemented fail-closed.
+- Body/center graph chaining now exists: target and observer paths resolve independently to SSB and are differenced; missing center, cycles, unsupported frame and unsupported type fail closed.
+- Deterministic synthetic contract tests verify numerical Chebyshev math, graph arithmetic and explicit failure paths.
+- Real packaged DE440s runtime tests execute both a real Type-2 segment and Earth→EMB→SSB graph at J2000 and require finite non-default states.
+- This runtime evidence **still does not prove astronomical accuracy**. Independent official JPL/NAIF golden vectors tied to RC-1436 tolerances remain open.
 - Product date range 1890→2110 is wider than published IERS EOP coverage. Future/unpublished EOP must not be fabricated; range handling/versioned model evidence remains a release requirement.
 
 **RC-1437 DONE değil.**
@@ -104,7 +110,7 @@ Açık kalan RC-1442 blocker:
 
 ## Açık ana blocker'lar
 
-- RC-1437 body/center chaining + independent golden accuracy + date-range/EOP policy evidence,
+- RC-1437 independent official JPL/NAIF golden accuracy + RC-1436 tolerance + date-range/EOP policy evidence,
 - RC-1439 canonical physical reference screenshots/images + screen IDs + SHA-256 seti,
 - secret-backed signed reproducible clean-checkout APK actual execution,
 - Daily Message real airplane-mode device lookup proof,
@@ -115,15 +121,16 @@ Açık kalan RC-1442 blocker:
 
 ## Son checkpoint
 
-`automation_runs/2026-09-03_0654_rc1437_type2_evaluator_progress.md`
+`automation_runs/2026-09-03_0854_rc1437_body_graph_progress.md`
 
 ## Sıradaki çalışma
 
-1. Exact current HEAD full CI completion'ı oku; Type-2/runtime/City gate kırmızısı varsa aynı turda düzelt.
-2. DE440s SPK body/center graph chaining'i dependency sırasıyla ekle; missing center/cycle/unsupported frame durumlarını fail-closed ele al.
-3. RC-1436 toleranslarına bağlı bağımsız NAIF/JPL golden-vector evidence eklemeden `planetaryEphemeris.proven` veya RC-1437 DONE yapma.
-4. Strict RC-1439 ve diğer bağımsız release blockerlarını ilerlet.
-5. Strict prerequisites PASS olduktan sonra signed clean-checkout workflow'u production secrets ile çalıştır ve exact artifact evidence'i bağla.
-6. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
+1. Exact current HEAD full CI completion'ı oku; body-graph/runtime/analyzer kırmızısı varsa aynı turda düzelt.
+2. Official JPL Horizons/NAIF geometric J2000 KM-S golden vectors'i exact source/query provenance ile materialize et.
+3. Packaged DE440s graph outputunu RC-1436 explicit toleranslarına karşı bağımsız golden'larla doğrula; bu geçmeden `planetaryEphemeris.proven` veya RC-1437 DONE yapma.
+4. 1890→2110 EOP/versioned range politikasını fabrication olmadan kanıtla.
+5. Strict RC-1439 ve diğer bağımsız release blockerlarını ilerlet.
+6. Strict prerequisites PASS olduktan sonra signed clean-checkout workflow'u production secrets ile çalıştır ve exact artifact evidence'i bağla.
+7. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
