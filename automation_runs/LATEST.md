@@ -2,16 +2,18 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-02_2300_signed_release_gate_progress.md`
+`automation_runs/2026-09-03_0310_rc1437_runtime_asset_binding.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. Gradle 9.1.0 wrapper üretimi ve APK fallback'i resmi checksum'lı distribution + Gradle `wrapper` task zincirine geçirildi (`00e1198176117e09d50ac796e69acf06d7368862`).
-2. Fiziksel verified wrapper JAR + checksum + provenance main'e tracked olarak girdi (`469a797d5502539e42a0d83d7ffe83496775a884`).
-3. RC-1442 için fail-closed signed clean-checkout evidence workflow'u eklendi (`f9ef7a0555e12c42f2aac87d8b51d180c53cab03`).
-4. Signed gate strict RC-1442 readiness, real signing secrets, ephemeral keystore, `apksigner`, Daily Message APK validation ve artifact SHA evidence zorunluluklarını uygular.
-5. Son gözlemde `f9ef7a...` push zincirinde failure 0; full completion bekleniyordu.
+1. Fiziksel IERS `finals2000A.all` asseti gerçek Flutter runtime loader'a ve rootBundle packaged-asset testine bağlandı.
+2. İlk CI'daki fatal analyzer kırmızısı (`unnecessary_import`) aynı turda kök nedeninden düzeltildi.
+3. City Catalog Contract'ın stale `SOURCE_SELECTED_NOT_BUNDLED` beklentisi, fiziksel `BUNDLED_VERIFIED` katalog için SHA/size/235k+ kayıt/stable-id/coordinate/timezone/attribution/pubspec doğrulayan daha güçlü kapıyla değiştirildi.
+4. Fiziksel DE440s kernel için runtime byte-size + `DAF/SPK` + SHA-256 integrity loader ve packaged-asset test eklendi.
+5. IERS + DE440s physical evidence/manifest/pubspec/source/test zincirini fail-closed doğrulayan ayrı `RC-1437 Runtime Assets` CI kapısı eklendi.
+6. DE440s celestial evaluator ve independent golden-vector accuracy bilerek `proven=false` bırakıldı; yalnız kernelin bulunması/okunması RC-1437 DONE sayılmadı.
+7. `requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE eklenmedi.
 
-RC-1437, RC-1439, gerçek signed artifact execution ve real-device proof hâlâ açık. `requirements/requirement_state.csv` değiştirilmedi; kanıtsız DONE eklenmedi.
+Son source gate SHA `d718bed68661ca42c8a5227764196f7d885df556` için 24 workflow tetiklendi; checkpoint anında failure 0 fakat completion bekleniyordu. Sonraki çalışma exact CI completion'ı okuyacak ve kırmızı varsa düzeltip ardından DE440s evaluator/golden hattını ilerletecek.
 
 **FINAL: NO.**
