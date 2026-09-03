@@ -27,6 +27,20 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def flutter_asset_declared(pubspec: str, relative_path: str) -> bool:
+    normalized = relative_path.strip('/')
+    if not normalized:
+        return False
+    if f'- {normalized}' in pubspec or f'- {normalized}/' in pubspec:
+        return True
+    parts = normalized.split('/')
+    for end in range(len(parts) - 1, 0, -1):
+        directory = '/'.join(parts[:end]) + '/'
+        if f'- {directory}' in pubspec:
+            return True
+    return False
+
+
 try:
     core = read(CORE)
     tests = read(TEST)
@@ -161,8 +175,8 @@ try:
         attribution_text = read(attribution_path)
         assert 'GeoNames' in attribution_text and 'CC BY 4.0' in attribution_text, 'bundled attribution content incomplete'
 
-        assert relative_catalog in pubspec, 'generated city catalog is not declared as a Flutter asset'
-        assert attribution.get('path', '') in pubspec, 'GeoNames attribution is not declared as a Flutter asset'
+        assert flutter_asset_declared(pubspec, relative_catalog), 'generated city catalog is not declared as a Flutter asset'
+        assert flutter_asset_declared(pubspec, attribution.get('path', '')), 'GeoNames attribution is not declared as a Flutter asset'
 
 except (AssertionError, KeyError, ValueError, OSError, json.JSONDecodeError) as exc:
     print(f'city catalog contract FAILED: {exc}', file=sys.stderr)
