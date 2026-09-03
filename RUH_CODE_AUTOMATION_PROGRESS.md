@@ -30,32 +30,31 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 ## RC-1436 / RC-1437 astronomy evidence
 
 - GeoNames city catalog physically bundled / `BUNDLED_VERIFIED`: 235,640 records, source/generated SHA evidence, attribution ve Flutter asset binding.
-- IERS `finals2000A.all` physically bundled, checksum/version evidence mevcut; runtime loader published UT1-UTC satırlarını parse ediyor ve coverage dışına fail-closed davranıyor.
+- IERS `finals2000A.all` physically bundled; runtime loader exact SHA/version doğruluyor, published UT1-UTC satırlarını parse ediyor ve physical coverage dışına fail-closed davranıyor.
+- Earth-orientation manifestindeki eski `pendingRuntimeData: NOT_DONE` durumu fiziksel kanıtla hizalandı: `BUNDLED_VERIFIED_SUBGATE`; `fullRc1437Done=false` korunuyor.
+- Product date range artık explicit capability policy: `1890-01-01` inclusive → `2111-01-01` exclusive. Ürün aralığında fakat published IERS EOP coverage dışında kalan UT1-dependent hesaplar `EOP_OUTSIDE_PUBLISHED_COVERAGE` ile fail-closed; UTC-for-UT1 substitution, nearest-neighbour, extrapolation ve fabricated future EOP yasak.
+- EOP validator fiziksel `assets/data/eop/finals2000A.all` için 3,763,572 byte ve SHA-256 `e3905ff7a74b791744704aa3e900a2161e96db97a30095d8fc442b04e4cfe058` değerlerini manifest/runtime loader ile çapraz doğruluyor.
 - JPL/NASA NAIF DE440s SPK physically bundled; exact SHA/byte evidence ve runtime integrity loader mevcut.
-- DAF/SPK parser; Type-2 record/ Chebyshev position+velocity evaluator; target/center body graph chaining ve ilgili fail-closed contract testleri mevcut.
+- DAF/SPK parser; Type-2 record/Chebyshev position+velocity evaluator; target/center body graph chaining ve ilgili fail-closed contract testleri mevcut.
 - Real packaged DE440s J2000 Type-2 ve Earth(399)→EMB(3)→SSB(0) graph testleri mevcut.
 - Raw SPK state tolerance contract: position max `0.001 km` / axis, velocity max `1e-9 km/s` / axis. Bu yalnız raw ephemeris state alt-kapısıdır; RC-1436 kapsamındaki diğer motor toleranslarının yerine geçmez.
 
 ### Official independent JPL golden
 
-- `evidence/rc1436/jpl_horizons_earth_ssb_j2000.json` artık fiziksel canonical evidence olarak repository'de.
+- `evidence/rc1436/jpl_horizons_earth_ssb_j2000.json` fiziksel canonical evidence olarak repository'de.
 - Materializer exact NASA/JPL Horizons API query kullanıyor: Earth `399`, SSB `@0`, JD `2451545.0`, TDB, ICRF/FRAME, geometric `VEC_CORR=NONE`, KM-S, VEC_TABLE=2.
 - Evidence API signature, request URL, captured time, raw response SHA-256 ve x/y/z/vx/vy/vz state taşıyor.
-- Exact `6589c814e179c906f28ea5994c13c70f3dd86958` materializer job logunda official capture, provenance validation ve packaged DE440s comparator PASS doğrulandı.
-- İlk workflow commit adımında yeni/untracked evidence dosyasını `git diff --quiet` ile yanlışlıkla unchanged sayan root-cause bulundu.
-- `dc0fa9be9019bc16903976f9d1545b0dfb443f38` commit mantığını fail-closed düzeltti.
-- `a37b79423d91a964e483b70d569af34e644bdaf4` canonical JPL evidence'ı fiziksel olarak `main`e commit etti.
-- `c33a29adefbc04cd129a42eb2f194720a0d4233b` dedicated `RC-1437 Runtime Assets` workflow'una hem packaged IERS provenance/fail-closed testi hem canonical JPL Horizons accuracy testi ekledi. Böylece official golden karşılaştırması artık yalnız materializer'a özgü tek seferlik kontrol değil, kalıcı RC-1437 CI kapısıdır.
+- Packaged DE440s comparator mevcut raw-state tolerance contract altında PASS kanıtına sahip.
+- Dedicated `RC-1437 Runtime Assets` gate packaged IERS provenance/fail-closed ve canonical JPL accuracy testlerini kalıcı olarak çalıştırıyor.
 
 **RC-1436 ve RC-1437 bütünüyle DONE değil.** Tek J2000 Earth→SSB vektörü bütün astronomik motorların, tüm tarih aralığının veya tüm bağlayıcı toleransların kanıtı değildir.
 
-## RC-1435 / EOP date-range açığı
+## RC-1435 / EOP date-range politikası
 
-- Product hedef aralığı en az `1890 → 2110`.
-- Published IERS EOP coverage bu aralığın tamamını kapsamaz.
-- Future/unpublished veya historical missing EOP hiçbir şekilde fabricate edilmeyecek.
-- Narrower EOP-dependent capability açıkça belirtilmeli ve coverage dışında fake UTC=UT1/substitution yapılmadan fail-closed davranmalıdır.
-- 1890→2110 için versioned capability/range policy ve kullanıcıya açık limitation evidence hâlâ release requirement'tır.
+- Product hedef aralığı `1890 → 2110` versioned capability policy olarak kodlandı ve testlendi.
+- Published IERS EOP coverage bu aralığın tamamını kapsamadığı için product date validity ile UT1-dependent calculation availability birbirinden ayrıdır.
+- Coverage dışında fake UTC=UT1/substitution yok; explicit limitation reason code/message key ile fail-closed davranış vardır.
+- Bu alt-kapının kapanması RC-1436/1437'nin tamamını DONE yapmaz; daha geniş astronomy golden/tolerance coverage hâlâ gerekir.
 
 ## RC-1439 — physical UI reference images
 
@@ -77,7 +76,6 @@ Açık blockerlar: strict RC-1437 tam PASS değil; RC-1439 tam PASS değil; prod
 ## Açık ana blocker'lar
 
 - RC-1436 için daha geniş independent official ephemeris golden/tolerance coverage,
-- 1890→2110 EOP/versioned capability policy,
 - RC-1439 canonical physical reference screenshots/images + hashes,
 - secret-backed signed reproducible clean-checkout APK actual execution,
 - Daily Message real airplane-mode device lookup proof,
@@ -88,15 +86,14 @@ Açık blockerlar: strict RC-1437 tam PASS değil; RC-1439 tam PASS değil; prod
 
 ## Son checkpoint
 
-`automation_runs/2026-09-03_1452_rc1436_jpl_golden_committed.md`
+`automation_runs/2026-09-03_1652_rc1437_eop_capability_policy.md`
 
 ## Sıradaki çalışma
 
-1. Exact current HEAD full CI completion'ı oku; yeni permanent RC-1437 JPL/EOP gate kırmızıysa aynı turda kök nedeni düzelt.
+1. Exact current HEAD full CI completion'ı oku; yeni Earth Orientation capability gate kırmızıysa aynı turda kök nedeni düzelt.
 2. Official ephemeris golden coverage'ı tek J2000 Earth→SSB örneğinin ötesine genişlet ve RC-1436 explicit toleranslarına bağla.
-3. 1890→2110 EOP/date-range policy'yi fabrication olmadan uygula ve doğrula.
-4. Strict RC-1439 ve diğer bağımsız release blockerlarını ilerlet.
-5. Strict prerequisites PASS olduktan sonra production-secret signed clean-checkout artifact'i üret/doğrula.
-6. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
+3. Strict RC-1439 ve diğer bağımsız release blockerlarını ilerlet.
+4. Strict prerequisites PASS olduktan sonra production-secret signed clean-checkout artifact'i üret/doğrula.
+5. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
 
 **FINAL: NO.**
