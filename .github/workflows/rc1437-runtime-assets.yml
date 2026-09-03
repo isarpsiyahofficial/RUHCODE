@@ -1,0 +1,21 @@
+name: RC-1437 Runtime Assets
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-assets:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate physical runtime astronomy assets
+        run: python tools/requirements/validate_rc1437_runtime_assets.py
