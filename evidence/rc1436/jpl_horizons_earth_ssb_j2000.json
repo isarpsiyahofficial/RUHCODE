@@ -1,0 +1,52 @@
+{
+  "provenanceRule": "Do not edit numeric vector fields manually. Regenerate from the exact official query with this materializer and review the raw response SHA.",
+  "schemaVersion": 1,
+  "source": {
+    "apiSignature": {
+      "source": "NASA/JPL Horizons API",
+      "version": "1.2"
+    },
+    "capturedAtUtc": "2026-09-03T11:53:56.582579+00:00",
+    "endpoint": "https://ssd.jpl.nasa.gov/api/horizons.api",
+    "provider": "NASA/JPL Horizons API",
+    "query": {
+      "CENTER": "'@0'",
+      "COMMAND": "'399'",
+      "CSV_FORMAT": "'YES'",
+      "EPHEM_TYPE": "'VECTORS'",
+      "MAKE_EPHEM": "'YES'",
+      "OBJ_DATA": "'NO'",
+      "OUT_UNITS": "'KM-S'",
+      "REF_PLANE": "'FRAME'",
+      "REF_SYSTEM": "'ICRF'",
+      "TIME_TYPE": "'TDB'",
+      "TLIST": "'2451545.0'",
+      "TLIST_TYPE": "'JD'",
+      "VEC_CORR": "'NONE'",
+      "VEC_TABLE": "'2'",
+      "format": "json"
+    },
+    "rawResponseSha256": "e3be65334efb1d3cc1d4c0450dbeae7c2c40757b1909c49c564e014d59012678",
+    "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='399'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2451545.0'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
+  },
+  "status": "OFFICIAL_GOLDEN_CAPTURED",
+  "vector": {
+    "centerNaifId": 0,
+    "corrections": "NONE",
+    "epoch": {
+      "etSecondsFromJ2000": 0.0,
+      "jdTdb": 2451545.0
+    },
+    "rawCsvRow": "2451545.000000000, A.D. 2000-Jan-01 12:00:00.0000, -2.756674048281145E+07,  1.323613811535491E+08,  5.741865328625385E+07, -2.978494749851088E+01, -5.029753814928081E+00, -2.180645069035755E+00,",
+    "referencePlane": "FRAME",
+    "referenceSystem": "ICRF",
+    "targetNaifId": 399,
+    "units": "KM-S",
+    "vxKmPerSecond": -29.78494749851088,
+    "vyKmPerSecond": -5.029753814928081,
+    "vzKmPerSecond": -2.180645069035755,
+    "xKm": -27566740.48281145,
+    "yKm": 132361381.1535491,
+    "zKm": 57418653.28625385
+  }
+}
