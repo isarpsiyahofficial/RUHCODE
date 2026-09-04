@@ -16,6 +16,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
 jobs:
   contract:
     name: Verify independent Turkish and English content catalogs
@@ -62,7 +66,7 @@ jobs:
               found = True
               if row['source_text_sha256'] != '261339b9c0ca48749a9c9c53daba8df8851f6648c052a86b4da2a4a1a904b250':
                   raise SystemExit('RC0003_PROMOTION_FAIL: binding requirement hash drifted')
-              if row['status'] == 'DONE':
+              if row['status'] in {'VERIFIED', 'DONE'}:
                   continue
               row['status'] = 'TESTED'
               row['evidence_links'] = '|'.join([
@@ -71,8 +75,8 @@ jobs:
                   'tools/requirements/validate_rc0003_editorial_independence.py',
                   '.github/workflows/rc0003-editorial-independence.yml',
               ])
-              row['blocked'] = 'NO'
-              row['blocker'] = ''
+              row['blocked'] = 'YES'
+              row['blocker'] = 'Independent editorial provenance/review is required before VERIFIED/DONE.'
               row['notes'] = (
                   'Repository contract proves separate complete TR/EN physical catalogs, '
                   'non-identical paired native copy, distinct catalog digests, and no known '
