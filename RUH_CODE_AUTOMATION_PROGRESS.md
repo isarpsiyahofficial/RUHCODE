@@ -19,7 +19,10 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0008 = TESTED + blocked=YES**: calculation-core time/date çözümleme explicit UTC/wall-clock + IANA zone girdileriyle deterministik; end-to-end location→astronomy propagation kanıtı açık.
 - **RC-0009 = TESTED**: bundled IANA tzdb runtime sözleşmesi ve historical timezone regression gate'i geçti.
 - **RC-0010 = TESTED**: DST fold/gap ve tarihsel discontinuity politikaları dedicated runtime testlerle doğrulandı.
-- **RC-0011 / RC-0012**: requirement-specific location identity/disambiguation gate repository'de; exact bot promotion fiziksel matrix'te görülmeden TESTED sayılmıyor.
+- **RC-0011 = TESTED + blocked=YES**: city records coordinate ve IANA timezone'u ayrı doğrulanabilir alanlar olarak taşıyor; end-to-end doğum yeri seçimi propagasyonu açık.
+- **RC-0012 = TESTED + blocked=YES**: same-name city stable identity + admin/country disambiguation compiled regression ile doğrulandı; end-to-end seçim kanıtı açık.
+- **RC-0013 → RC-0016 = NOT_STARTED**: common astronomy core / physical positions / node selection / motion-state maddeleri interface veya kaynak kod varlığına bakılarak kanıtsız yükseltilmedi.
+- **RC-0017 = TESTED + blocked=YES**: merkezi Julian Day/MJD/J2000 dönüşüm çekirdeği USNO/J2000 reference regressions ile requirement-specific gate'te doğrulandı; daha geniş astronomical timescale/release evidence açık.
 
 ## RC-0003 — bağımsız TR/EN içerik
 
@@ -56,14 +59,23 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## RC-0011 / RC-0012 — konum kimliği, koordinat/timezone ve disambiguation
 
-- Existing `CityRecord` stable id, country/admin identity, latitude, longitude ve IANA timezone'u ayrı alanlar olarak taşır.
-- Existing regression suite aynı isimli Springfield kayıtlarını Illinois/Massachusetts olarak ayrı stable id + ayrı timezone ile korur; visible `disambiguationLabel` kullanılır.
-- Added `requirements/contracts/rc0011_rc0012_location_identity_contract.json`.
-- Added `tools/requirements/validate_rc0011_rc0012_location_identity.py`.
-- Added `.github/workflows/rc0011-rc0012-location-identity.yml`; physical city catalog validator + requirement validator + compiled Flutter city testini zincirler.
+- `CityRecord` stable id, country/admin identity, latitude, longitude ve IANA timezone'u ayrı alanlar olarak taşır.
+- Regression suite aynı isimli Springfield kayıtlarını Illinois/Massachusetts olarak ayrı stable id + ayrı timezone ile korur; visible `disambiguationLabel` kullanılır.
+- `requirements/contracts/rc0011_rc0012_location_identity_contract.json`, `tools/requirements/validate_rc0011_rc0012_location_identity.py`, `.github/workflows/rc0011-rc0012-location-identity.yml` eklendi.
+- Gate physical city catalog validator + requirement validator + compiled Flutter city testini zincirler.
 - Commits: `f38a5c96ec4272cf9d68a01ed9406e9439d1e4e0`, `6402aad9eb059e9d34b697c6ba9eac8cf7837969`, `2e69ecd906e16d4224350cfbe963837d3e872816`.
-- Promotion cap TESTED; end-to-end birth-place selection stable identity + coordinate + IANA timezone propagation kanıtı olmadan VERIFIED/DONE yok.
-- Bu checkpoint sırasında physical bot promotion henüz görülmedi; kanıtsız statü yükseltilmedi.
+- Physical matrix promotion artık görüldü: RC-0011/0012 = TESTED + blocked=YES.
+- End-to-end birth-place selection stable identity + coordinate + IANA timezone propagation kanıtı olmadan VERIFIED/DONE yok.
+
+## RC-0017 — merkezi Julian Day / astronomik zaman temeli
+
+- Existing `lib/src/calculation_core/time/julian_day.dart` merkezi `JulianDay` çekirdeği fromUtc/fromCivilDate/MJD/J2000 centuries dönüşümlerini içerir ve non-UTC DateTime girdisini reddeder.
+- Existing `requirements/reference_sources/julian_day.json` U.S. Naval Observatory reference değerlerini ve J2000 epoch'u kayıt altında tutar.
+- Added `requirements/contracts/rc0017_julian_time_core_contract.json`, `tools/requirements/validate_rc0017_julian_time_core.py`, `.github/workflows/rc0017-julian-time-core.yml`.
+- Dedicated gate existing USNO validator + compiled `test/calculation_core/julian_day_test.dart` regressions çalıştırır.
+- Workflow commit: `d4251b26efcfc7fdce499554d0b0d3d517aac9b9`.
+- Physical promotion commit: `4da48b2530b4c83de2645dc8dfee78a0c801f8bf` (`requirements(rc0017): record Julian time core TESTED`).
+- RC-0017 = TESTED + blocked=YES; daha geniş astronomical timescale accuracy/release evidence olmadan VERIFIED/DONE yok.
 
 ## Doğrulanmış ana teknik altyapı
 
@@ -97,20 +109,21 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0005: AKİLES exact latest source/version/hash provenance.
 - RC-0006/0007: RC-0005 provenance + method-level comparison/transfer evidence.
 - RC-0008: end-to-end astronomical calculation input propagation (validated location coordinates + explicit date/timezone).
-- RC-0011/0012: end-to-end birth-place selection/runtime propagation evidence after machine gate.
+- RC-0011/0012: end-to-end birth-place selection/runtime propagation evidence.
+- RC-0017: broader astronomical timescale accuracy/release evidence.
 - RC-1436/1437 geniş independent astronomy golden/tolerance coverage.
 - RC-1439 physical UI references.
 - Signed reproducible artifact ve real-device release kanıtları.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-04_0905_rc0008_rc0012_progress.md`
+`automation_runs/2026-09-04_0915_rc0008_rc0017_verified_promotions.md`
 
 ## Sıradaki çalışma
 
-1. RC-0011/0012 workflow/promotion zincirini exact sonuçla doğrula; kırmızıysa kök nedeni düzelt.
-2. RC-0007 AKİLES provenance blocker'ını korurken RC-0013+ common astronomy core requirement'larını dependency sırasıyla gerçekten uygula/test et.
-3. RC-0003 promotion zincirini tekrar fiziksel sonuçla doğrula; independent editorial blocker'ı zayıflatma.
+1. RC-0013→RC-0016 real packaged ephemeris/common-core evidence'ını tek tek incele; interface-only evidence ile promotion yapma.
+2. RC-0007 AKİLES provenance blocker'ını korurken bağımsız requirement'ları dependency sırasıyla ilerlet.
+3. RC-0003 promotion zincirini ve independent editorial blocker'ı tekrar ele al.
 4. RC-1436/1437, RC-1439, signed clean-checkout ve real-device kapılarını bağımsız ilerlet.
 5. 1.442 RC tamamı DONE ve final release artifact exact doğrulanmadan FINAL deme.
 
