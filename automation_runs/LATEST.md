@@ -2,17 +2,17 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-04_0500_rc0003_rc0004_progress.md`
+`automation_runs/2026-09-04_0654_rc0005_rc0006_progress.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. RC-0002 matrix üzerinde fiziksel `DONE` olarak korundu.
-2. RC-0003 matrix satırı kanıtsız biçimde ilerletilmedi; bu checkpoint anında hala `NOT_STARTED`.
-3. RC-0003 writer workflow'una shared matrix-writer concurrency ve bağımsız editorial provenance blocker'ı eklendi.
-4. RC-0004 için sürümlü TR/EN terminology acceptance contract, fail-closed content-quality validator ve dedicated CI gate eklendi.
-5. RC-0004 machine gate promotion'ı fiziksel olarak main'e yazıldı: `RC-0004=TESTED`, `blocked=YES`; bağımsız iki dilli editoryal inceleme olmadan VERIFIED/DONE yok.
-6. RC-0003 ve RC-0004 requirement-matrix yazıcıları aynı concurrency group altında serialize edildi; yarışan bot commit'lerinin non-fast-forward ile evidence kaybetmesi engellendi.
+1. RC-0005 exact AKİLES provenance blocker'ının fiziksel matrix'e işlendiği doğrulandı; kanıtsız lifecycle promotion yapılmadı.
+2. RC-0006 için modular Ruh Code core contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi.
+3. Implementation commit: `1081e5924be05f544cbf68629d1069cc6ce8baa3`.
+4. CI promotion commit: `faa13b47260a012a0181f9f0d02170e9133f8833`.
+5. RC-0006 artık fiziksel `TESTED + blocked=YES`; AKİLES exact source/version/hash ve method-level comparison/provenance olmadan VERIFIED/DONE yok.
+6. RC-0003 hâlâ `NOT_STARTED`; kanıtsız promotion yapılmadı. RC-0004 `TESTED + blocked=YES` olarak korunuyor.
 
-Sonraki dependency: RC-0003 exact workflow/promotion sonucu → bağımsız editorial provenance; paralelde RC-0005 AKİLES exact-reference provenance ve bağımsız release/astronomy/UI kapıları.
+Sonraki dependency: RC-0003 physical promotion/gate → RC-0005 provenance; blocker dışındaki RC-0007+ requirement'lar ve astronomy/UI/release kapıları paralel ilerletilecek.
 
 **FINAL: NO.**
