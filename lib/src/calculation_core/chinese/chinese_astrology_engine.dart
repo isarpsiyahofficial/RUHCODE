@@ -13,7 +13,9 @@ final class ChineseAstrologyInput {
   ///
   /// Civil-date to Chinese-year boundary resolution, including Chinese New Year
   /// and solar-term ownership, is deliberately outside this engine until a
-  /// versioned calendar/solar-term source is bound.
+  /// versioned calendar/solar-term source is bound. Callers must therefore pass
+  /// a cycleYear resolved by that authoritative boundary layer rather than
+  /// deriving a Chinese year from the Gregorian year inside this engine.
   final int cycleYear;
 }
 
