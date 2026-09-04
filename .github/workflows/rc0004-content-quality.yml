@@ -18,6 +18,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
 jobs:
   contract:
     name: Verify bilingual terminology and copy hygiene
@@ -41,62 +45,33 @@ jobs:
           set -euo pipefail
           git fetch origin main
           git checkout -B main origin/main
-
           python tools/requirements/validate_rc0004_content_quality.py
           python tools/requirements/materialize_requirement_matrix.py
-
           python - <<'PY'
           import csv
           from pathlib import Path
-
           path = Path('requirements/requirement_state.csv')
           with path.open('r', encoding='utf-8', newline='') as handle:
-              reader = csv.DictReader(handle)
-              fieldnames = reader.fieldnames
-              rows = list(reader)
-          if not fieldnames:
-              raise SystemExit('RC0004_PROMOTION_FAIL: matrix header missing')
-
+              reader = csv.DictReader(handle); fieldnames = reader.fieldnames; rows = list(reader)
+          if not fieldnames: raise SystemExit('RC0004_PROMOTION_FAIL: matrix header missing')
           expected_hash = '633945b9ddea55951ee63c0aa6f9be434730a5b55ef47d63bef52708c7556894'
           found = False
           for row in rows:
-              if row['rc_id'] != 'RC-0004':
-                  continue
+              if row['rc_id'] != 'RC-0004': continue
               found = True
-              if row['source_text_sha256'] != expected_hash:
-                  raise SystemExit('RC0004_PROMOTION_FAIL: binding requirement hash drifted')
-              if row['status'] in {'VERIFIED', 'DONE'}:
-                  continue
+              if row['source_text_sha256'] != expected_hash: raise SystemExit('RC0004_PROMOTION_FAIL: binding requirement hash drifted')
+              if row['status'] in {'VERIFIED', 'DONE'}: continue
               row['status'] = 'TESTED'
-              row['evidence_links'] = '|'.join([
-                  'requirements/contracts/rc0004_terminology_contract.json',
-                  'tools/requirements/validate_rc0004_content_quality.py',
-                  'assets/content/daily_messages/tr/',
-                  'assets/content/daily_messages/en/',
-                  '.github/workflows/rc0004-content-quality.yml',
-              ])
+              row['evidence_links'] = '|'.join(['requirements/contracts/rc0004_terminology_contract.json','tools/requirements/validate_rc0004_content_quality.py','assets/content/daily_messages/tr/','assets/content/daily_messages/en/','.github/workflows/rc0004-content-quality.yml'])
               row['blocked'] = 'YES'
               row['blocker'] = 'Independent bilingual editorial review is required to prove natural/professional terminology before VERIFIED/DONE.'
-              row['notes'] = (
-                  'Machine gate proves a canonical TR/EN terminology contract across astrology, numerology and spirituality, '
-                  'plus UTF-8/NFC/placeholder/mojibake/template-key copy hygiene. TESTED only: subjective naturalness and '
-                  'professional editorial quality require independent bilingual human review.'
-              )
-          if not found:
-              raise SystemExit('RC0004_PROMOTION_FAIL: RC-0004 row missing')
-
+              row['notes'] = 'Machine gate proves a canonical TR/EN terminology contract across astrology, numerology and spirituality, plus UTF-8/NFC/placeholder/mojibake/template-key copy hygiene. TESTED only: subjective naturalness and professional editorial quality require independent bilingual human review.'
+          if not found: raise SystemExit('RC0004_PROMOTION_FAIL: RC-0004 row missing')
           with path.open('w', encoding='utf-8', newline='') as handle:
-              writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator='\n')
-              writer.writeheader()
-              writer.writerows(rows)
+              writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator='\n'); writer.writeheader(); writer.writerows(rows)
           PY
-
           python tools/requirements/validate_requirement_matrix.py
-
-          if git diff --quiet -- requirements/requirement_state.csv; then
-            echo "RC-0004 TESTED evidence already persisted."
-            exit 0
-          fi
+          if git diff --quiet -- requirements/requirement_state.csv; then echo "RC-0004 TESTED evidence already persisted."; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add requirements/requirement_state.csv
