@@ -2,16 +2,16 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-04_1857_rc0015_rc0019_progress.md`
+`automation_runs/2026-09-04_2110_rc0019_rc0022_solar_lunar_boundary.md`
 
 ## Bu turda doğrulanmış ilerleme
 
-1. RC-0015'in kırmızı gate kök nedeni production lunar-node matematiği değil, `dartfmt` satır kırılımlarına duyarlı validator eşleşmesiydi. Validator production davranışı gevşetilmeden regex/whitespace-normalized doğrulamaya geçirildi.
-2. RC-0015 fiziksel matrixte artık `TESTED + blocked=YES`; bağımsız authoritative multi-epoch mean/true node goldens, frame/equinox review ve end-to-end node-consumer integration olmadan VERIFIED/DONE yok.
-3. RC-0018 için explicit UT1/TT + konum girdileri, central sidereal time, IAU 2006 mean obliquity, spherical ASC/MC geometry ve compiled regressions requirement-specific contract/validator/CI gate'e bağlandı. Fiziksel matrix artık `RC-0018=TESTED + blocked=YES`.
-4. RC-0019 için mevcut gerçek Placidus/Porphyry house-cusp motoru requirement-specific contract/validator/compiled CI gate'e bağlandı. On iki cusp, ASC/MC angular cusps, opposite invariants, iterative spherical geometry, ordered-cycle validation, fail-closed polar behavior ve yalnız explicit görünür Porphyry fallback zorunlu.
-5. Son fiziksel matrix okumasında RC-0019 hâlâ `NOT_STARTED`. Dedicated workflow SUCCESS ve `requirements(rc0019): record real house cusps TESTED` bot commit'i fiziksel görünmeden TESTED sayılmayacak.
+1. RC-0019 physical matrix promotion doğrulandı: `RC-0019 = TESTED`.
+2. RC-0020 real solar-event contract/validator/dedicated CI eklendi. İlk gate runtime değil broad validator kelime kontrolü nedeniyle kırıldı; root cause `adbb9c0f746b0d3612df54860645693f5bc5250d` commit'inde API-based guard ile düzeltildi. Fresh promotion bekleniyor.
+3. RC-0021 için packaged NASA/JPL DE440s Sun/Moon states kullanan compiled physical Moon-phase testi + binding validator + dedicated CI eklendi. Dedicated run `33903728252` son fiziksel okumada queued; promotion bekleniyor.
+4. RC-0022 için complete `calculation_core` ↔ `interpretation` import-boundary taraması ve ayrı calculation/snapshot-interpretation contract'larını zorunlu tutan fail-closed gate eklendi. CI commit: `a226d11c9af595e25fd4541812ef2f57dc3fb4bc`; promotion bekleniyor.
+5. RC-0020/21/22 için bot matrix commit'i fiziksel görülmeden TESTED/VERIFIED/DONE denmeyecek.
 
-Sonraki dependency: exact RC-0019 CI/matrix sonucu → kırmızıysa root cause aynı hatta düzeltme, yeşilse physical TESTED promotion doğrulaması → RC-0020+. RC-0003/0004 editorial, RC-0005/0006/0007 AKİLES provenance, RC-1436/1437 astronomy accuracy, RC-1439 physical UI references ve signed clean-checkout/real-device release blocker'ları açık kalıyor.
+Sonraki dependency: RC-0020/21/22 exact CI + physical matrix promotion doğrulaması → kırmızı gate varsa job log kök nedeni düzeltmesi → RC-0023+. RC-0003/0004 editorial, RC-0005/0006/0007 AKİLES provenance, RC-1436/1437 astronomy accuracy, RC-1439 physical UI references ve signed clean-checkout/real-device release blocker'ları açık.
 
 **FINAL: NO.**
