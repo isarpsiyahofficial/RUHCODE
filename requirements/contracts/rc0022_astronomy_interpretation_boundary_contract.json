@@ -1,0 +1,19 @@
+{
+  "rcId": "RC-0022",
+  "bindingRequirementSha256": "6914fcebc6e2f3dfc01893fb3ef8a05d468c77d8b7723c8d8a8b84c27f951051",
+  "requirement": "Ortak astronomik çekirdek ile astrolojik yorumlama sistemleri birbirinden ayrılacak.",
+  "promotionCeiling": "TESTED",
+  "calculationRoot": "lib/src/calculation_core",
+  "interpretationRoot": "lib/src/interpretation",
+  "requiredBoundaryFiles": [
+    "lib/src/calculation_core/calculation_engine.dart",
+    "lib/src/interpretation/interpretation_engine.dart"
+  ],
+  "mustProve": [
+    "calculation_core never imports interpretation",
+    "interpretation never imports calculation_core",
+    "calculation output is represented by CalculationResult with manifest/value",
+    "interpretation consumes a supplied snapshot and locale rather than invoking astronomy directly"
+  ],
+  "verificationBlocker": "End-to-end feature-level dependency graph and release integration review remain required before VERIFIED/DONE."
+}
