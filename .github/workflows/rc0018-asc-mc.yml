@@ -1,0 +1,70 @@
+name: RC-0018 Ascendant and MC
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/western/asc_mc.dart'
+      - 'lib/src/calculation_core/time/sidereal_time.dart'
+      - 'test/calculation_core/western/asc_mc_test.dart'
+      - 'test/calculation_core/sidereal_time_test.dart'
+      - 'requirements/contracts/rc0018_asc_mc_contract.json'
+      - 'tools/requirements/validate_rc0018_asc_mc.py'
+      - '.github/workflows/rc0018-asc-mc.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0018 binding and ASC/MC contract
+        run: python tools/requirements/validate_rc0018_asc_mc.py
+      - name: Execute ASC/MC and sidereal-time regressions
+        run: flutter test test/calculation_core/western/asc_mc_test.dart test/calculation_core/sidereal_time_test.dart
+      - name: Promote RC-0018 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0018_asc_mc.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          r=next(x for x in rows if x['rc_id']=='RC-0018')
+          if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+          r['evidence_links']='requirements/contracts/rc0018_asc_mc_contract.json|tools/requirements/validate_rc0018_asc_mc.py|lib/src/calculation_core/western/asc_mc.dart|lib/src/calculation_core/time/sidereal_time.dart|test/calculation_core/western/asc_mc_test.dart|test/calculation_core/sidereal_time_test.dart|.github/workflows/rc0018-asc-mc.yml'
+          r['notes']='Machine gate proves deterministic tropical ASC/MC geometry consumes explicit UT1/TT plus validated longitude/latitude inputs, central sidereal-time runtime, IAU 2006 mean obliquity, normalization and fail-closed geographic-pole/input behavior. TESTED only.'
+          r['blocked']='YES'
+          r['blocker']='Independent authoritative multi-epoch/multi-location ASC/MC golden vectors, end-to-end validated civil-time→UT1/TT/location propagation, and broader release astronomy accuracy gates remain required before VERIFIED/DONE.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0018): record ascendant and MC TESTED'
+          git push origin HEAD:main
