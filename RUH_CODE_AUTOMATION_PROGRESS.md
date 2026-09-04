@@ -15,6 +15,11 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0004 = TESTED + blocked=YES**: machine-checkable bilingual terminology/copy-quality gate geçti; independent bilingual editorial review olmadan VERIFIED/DONE yok.
 - **RC-0005 = NOT_STARTED + blocked=YES**: exact AKİLES latest source/artifact, immutable version/commit, integrity hash, capture date ve reference scope bulunmadan referans requirement'ı ilerletilmiyor.
 - **RC-0006 = TESTED + blocked=YES**: modular Ruh Code calculation core yapısı dedicated gate ile doğrulandı; AKİLES method-level provenance/comparison evidence olmadan VERIFIED/DONE yok.
+- **RC-0007 = NOT_STARTED**: AKİLES'te doğrulanmış hesaplama mantıklarının korunması şartı, RC-0005/0006 exact provenance/comparison blocker'ına bağlı; kanıtsız promotion yok.
+- **RC-0008 = TESTED + blocked=YES**: calculation-core time/date çözümleme explicit UTC/wall-clock + IANA zone girdileriyle deterministik; end-to-end location→astronomy propagation kanıtı açık.
+- **RC-0009 = TESTED**: bundled IANA tzdb runtime sözleşmesi ve historical timezone regression gate'i geçti.
+- **RC-0010 = TESTED**: DST fold/gap ve tarihsel discontinuity politikaları dedicated runtime testlerle doğrulandı.
+- **RC-0011 / RC-0012**: requirement-specific location identity/disambiguation gate repository'de; exact bot promotion fiziksel matrix'te görülmeden TESTED sayılmıyor.
 
 ## RC-0003 — bağımsız TR/EN içerik
 
@@ -31,14 +36,34 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Physical promotion commit: `a9823f7a022f553359405d9e772222e9b8e27e50`.
 - Independent bilingual review gerekir.
 
-## RC-0005 / RC-0006 — AKİLES referansı ve yeni modüler çekirdek
+## RC-0005 / RC-0006 / RC-0007 — AKİLES referansı ve yeni modüler çekirdek
 
 - RC-0005 blocker contract repository'de ve matrix'te fiziksel olarak kayıtlıdır; exact AKİLES provenance bulunmadan latest-reference iddiası yapılmaz.
 - RC-0006 için `requirements/contracts/rc0006_modular_core_contract.json`, `tools/requirements/validate_rc0006_modular_core.py` ve `.github/workflows/rc0006-modular-core.yml` eklendi.
 - Gate `lib/src/calculation_core/` domain modüllerini, `CalculationEngine` abstraction'ını, interpretation sınırını ve doğrudan AKİLES package/dependency marker'ı bulunmamasını doğrular.
 - Implementation commit: `1081e5924be05f544cbf68629d1069cc6ce8baa3`.
 - Physical CI promotion commit: `faa13b47260a012a0181f9f0d02170e9133f8833` (`requirements(rc0006): record modular core TESTED`).
-- RC-0006 full requirement proven değildir; RC-0005 exact source/version/hash + method-level transfer/comparison provenance required.
+- RC-0006/0007 full requirement proven değildir; RC-0005 exact source/version/hash + method-level transfer/comparison provenance required.
+
+## RC-0008 / RC-0009 / RC-0010 — deterministik zaman ve tarihsel timezone
+
+- `requirements/contracts/rc0008_rc0010_time_determinism_contract.json` explicit time/IANA/DST contract'tır.
+- `tools/requirements/validate_rc0008_rc0010_time_determinism.py` calculation-core time modülünde `DateTime.now()` kullanımını yasaklar; explicit UTC instant, IANA zone, cache partition, bundled tzdb ve DST/history marker'larını doğrular.
+- `.github/workflows/rc0008-rc0010-time-determinism.yml` Flutter 3.44.7 ile `time_zone_runtime_test.dart` + `daily_date_context_test.dart` çalıştırır.
+- Regression kapsamı New York DST fold/gap, Pacific/Apia 2011 skipped day, Kolkata/Kathmandu fractional offsets ve Kiritimati UTC+14 boundary içerir.
+- Workflow commit: `069b427e4d793c851e95e1f13d7c6718d02e68f1`.
+- Physical matrix promotion görüldü: RC-0008/0009/0010 = TESTED. RC-0008 yalnız end-to-end coordinate/location + timezone propagation nedeniyle blocked=YES.
+
+## RC-0011 / RC-0012 — konum kimliği, koordinat/timezone ve disambiguation
+
+- Existing `CityRecord` stable id, country/admin identity, latitude, longitude ve IANA timezone'u ayrı alanlar olarak taşır.
+- Existing regression suite aynı isimli Springfield kayıtlarını Illinois/Massachusetts olarak ayrı stable id + ayrı timezone ile korur; visible `disambiguationLabel` kullanılır.
+- Added `requirements/contracts/rc0011_rc0012_location_identity_contract.json`.
+- Added `tools/requirements/validate_rc0011_rc0012_location_identity.py`.
+- Added `.github/workflows/rc0011-rc0012-location-identity.yml`; physical city catalog validator + requirement validator + compiled Flutter city testini zincirler.
+- Commits: `f38a5c96ec4272cf9d68a01ed9406e9439d1e4e0`, `6402aad9eb059e9d34b697c6ba9eac8cf7837969`, `2e69ecd906e16d4224350cfbe963837d3e872816`.
+- Promotion cap TESTED; end-to-end birth-place selection stable identity + coordinate + IANA timezone propagation kanıtı olmadan VERIFIED/DONE yok.
+- Bu checkpoint sırasında physical bot promotion henüz görülmedi; kanıtsız statü yükseltilmedi.
 
 ## Doğrulanmış ana teknik altyapı
 
@@ -70,20 +95,22 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0003: independent editorial provenance/review + fiziksel TESTED promotion.
 - RC-0004: independent bilingual editorial review.
 - RC-0005: AKİLES exact latest source/version/hash provenance.
-- RC-0006: RC-0005 provenance + method-level comparison/transfer evidence.
+- RC-0006/0007: RC-0005 provenance + method-level comparison/transfer evidence.
+- RC-0008: end-to-end astronomical calculation input propagation (validated location coordinates + explicit date/timezone).
+- RC-0011/0012: end-to-end birth-place selection/runtime propagation evidence after machine gate.
 - RC-1436/1437 geniş independent astronomy golden/tolerance coverage.
 - RC-1439 physical UI references.
 - Signed reproducible artifact ve real-device release kanıtları.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-04_0654_rc0005_rc0006_progress.md`
+`automation_runs/2026-09-04_0905_rc0008_rc0012_progress.md`
 
 ## Sıradaki çalışma
 
-1. RC-0003 workflow/promotion zincirini fiziksel sonuçla yeniden doğrula; kırmızıysa kök nedeni düzelt.
-2. RC-0005 exact AKİLES provenance ara; yoksa blocker'ı koru.
-3. Blocker dışındaki RC-0007+ maddeleri dependency sırasıyla gerçekten uygula/test et.
+1. RC-0011/0012 workflow/promotion zincirini exact sonuçla doğrula; kırmızıysa kök nedeni düzelt.
+2. RC-0007 AKİLES provenance blocker'ını korurken RC-0013+ common astronomy core requirement'larını dependency sırasıyla gerçekten uygula/test et.
+3. RC-0003 promotion zincirini tekrar fiziksel sonuçla doğrula; independent editorial blocker'ı zayıflatma.
 4. RC-1436/1437, RC-1439, signed clean-checkout ve real-device kapılarını bağımsız ilerlet.
 5. 1.442 RC tamamı DONE ve final release artifact exact doğrulanmadan FINAL deme.
 
