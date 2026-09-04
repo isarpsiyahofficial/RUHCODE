@@ -1,0 +1,32 @@
+{
+  "rcId": "RC-0013",
+  "requirement": "Uygulamanın ortak bir astronomik hesaplama çekirdeği olacak.",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md#13",
+  "requiredCoreRoot": "lib/src/calculation_core/ephemeris",
+  "requiredInterface": "EphemerisProvider",
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/ephemeris/ephemeris.dart",
+    "lib/src/calculation_core/ephemeris/de440s_asset_loader.dart",
+    "lib/src/calculation_core/ephemeris/de440s_daf_parser.dart",
+    "lib/src/calculation_core/ephemeris/spk_type2_evaluator.dart",
+    "lib/src/calculation_core/ephemeris/spk_body_graph_evaluator.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/ephemeris_contract_test.dart",
+    "test/calculation_core/de440s_asset_loader_test.dart",
+    "test/calculation_core/de440s_daf_parser_test.dart",
+    "test/calculation_core/de440s_type2_runtime_test.dart",
+    "test/calculation_core/de440s_body_graph_runtime_test.dart",
+    "test/calculation_core/de440s_jpl_horizons_accuracy_test.dart"
+  ],
+  "policy": {
+    "sharedCoreRequired": true,
+    "offlinePackagedEphemerisRequired": true,
+    "versionedProvenanceRequired": true,
+    "coverageFailClosedRequired": true,
+    "networkFallbackForbidden": true,
+    "interfaceOnlyIsInsufficient": true
+  },
+  "promotionCeiling": "TESTED",
+  "verifiedBlocker": "RC-0014→RC-0016 and broader astronomy golden/tolerance coverage must prove the shared core across required bodies, nodes and motion-state outputs before VERIFIED/DONE."
+}
