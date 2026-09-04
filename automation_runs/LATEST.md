@@ -2,16 +2,16 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-04_2110_rc0019_rc0022_solar_lunar_boundary.md`
+`automation_runs/2026-09-05_0057_rc0020_rc0026_engine_progress.md`
 
 ## Bu turda doğrulanmış ilerleme
 
-1. RC-0019 physical matrix promotion doğrulandı: `RC-0019 = TESTED`.
-2. RC-0020 real solar-event contract/validator/dedicated CI eklendi. İlk gate runtime değil broad validator kelime kontrolü nedeniyle kırıldı; root cause `adbb9c0f746b0d3612df54860645693f5bc5250d` commit'inde API-based guard ile düzeltildi. Fresh promotion bekleniyor.
-3. RC-0021 için packaged NASA/JPL DE440s Sun/Moon states kullanan compiled physical Moon-phase testi + binding validator + dedicated CI eklendi. Dedicated run `33903728252` son fiziksel okumada queued; promotion bekleniyor.
-4. RC-0022 için complete `calculation_core` ↔ `interpretation` import-boundary taraması ve ayrı calculation/snapshot-interpretation contract'larını zorunlu tutan fail-closed gate eklendi. CI commit: `a226d11c9af595e25fd4541812ef2f57dc3fb4bc`; promotion bekleniyor.
-5. RC-0020/21/22 için bot matrix commit'i fiziksel görülmeden TESTED/VERIFIED/DONE denmeyecek.
+1. Physical matrix yeniden okundu: RC-0021, RC-0022 ve RC-0023 artık `TESTED + blocked=YES`; RC-0020 hâlâ physical promotion olmadan NOT_STARTED.
+2. RC-0024 ayrı Vedik hesaplama motoru production code + compiled test + binding validator + dedicated CI ile ilerletildi ve bot promotion `de09bc914ff6818c7687571a7ed96cf448e6ca1a` ile fiziksel olarak `TESTED + blocked=YES` oldu.
+3. RC-0025 için ayrı `ChineseAstrologyEngine`, compiled 60-year sexagenary-cycle regressions, binding contract, fail-closed validator ve dedicated CI/promotion gate eklendi. Chinese New Year/solar-term sınırları kanıtsız uydurulmuyor; physical bot promotion henüz görülmediği için statü yükseltilmedi.
+4. RC-0026 için ayrı `BaZiEngine`, dört bağımsız pillar input'u, stem/branch range doğrulaması, compiled tests, binding contract, fail-closed validator ve dedicated CI/promotion gate eklendi. Civil-time→pillar derivation kanıtsız uydurulmuyor; physical bot promotion henüz görülmediği için statü yükseltilmedi.
+5. RC-0020 corrected solar-events gate için hâlâ bot promotion yok; aynı requirement açık tutuluyor.
 
-Sonraki dependency: RC-0020/21/22 exact CI + physical matrix promotion doğrulaması → kırmızı gate varsa job log kök nedeni düzeltmesi → RC-0023+. RC-0003/0004 editorial, RC-0005/0006/0007 AKİLES provenance, RC-1436/1437 astronomy accuracy, RC-1439 physical UI references ve signed clean-checkout/real-device release blocker'ları açık.
+Sonraki dependency: RC-0025/26 exact CI + physical matrix promotion doğrulaması → RC-0020 corrected gate root-cause/retrigger doğrulaması → RC-0027/28 architecture independence. Global editorial/AKİLES/astronomy/UI/signed clean-checkout/real-device release blocker'ları açık.
 
 **FINAL: NO.**
