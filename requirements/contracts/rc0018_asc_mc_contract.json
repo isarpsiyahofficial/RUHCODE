@@ -1,0 +1,26 @@
+{
+  "rcId": "RC-0018",
+  "bindingRequirementSha256": "2a0af9a2981050a9c3f830f591bbd6c1df0fa41c7d03584beeedc94a8289417b",
+  "bindingRequirement": "Yükselen ve MC hesaplamaları desteklenilecek.",
+  "promotionCeiling": "TESTED",
+  "policy": {
+    "zodiacFrame": "mean tropical ecliptic",
+    "timeInputs": ["UT1 Julian Day", "TT Julian Day"],
+    "locationInputs": ["longitude degrees east", "latitude degrees north"],
+    "siderealTime": "local mean sidereal time derived from central SiderealTime runtime",
+    "obliquity": "IAU 2006 mean obliquity",
+    "requireFiniteInputs": true,
+    "forbidDeviceClockFallback": true,
+    "forbidUtcAsUt1Substitution": true,
+    "geographicPolePolicy": "fail closed at exact geographic poles"
+  },
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/western/asc_mc.dart",
+    "lib/src/calculation_core/time/sidereal_time.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/western/asc_mc_test.dart",
+    "test/calculation_core/sidereal_time_test.dart"
+  ],
+  "verificationBlocker": "Independent authoritative multi-epoch/multi-location ASC/MC golden vectors, end-to-end validated civil-time→UT1/TT/location propagation, and broader release astronomy accuracy gates remain required before VERIFIED/DONE."
+}
