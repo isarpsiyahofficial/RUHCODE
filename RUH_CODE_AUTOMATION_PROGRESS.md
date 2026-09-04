@@ -26,37 +26,40 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0022 = TESTED + blocked=YES** — calculation-core ↔ interpretation dependency boundary ve snapshot-temelli interpretation ayrımı physical matrixte TESTED.
 - **RC-0023 = TESTED + blocked=YES** — ayrı `western-astrology` CalculationEngine ve requirement-specific gate physical matrixte TESTED.
 - **RC-0024 = TESTED + blocked=YES** — ayrı `vedic-astrology` CalculationEngine; explicit sidereal/ayanamsha ve ephemeris provenance kontrolleri. Physical bot promotion `de09bc914ff6818c7687571a7ed96cf448e6ca1a`.
-- **RC-0025 = NOT_STARTED / implementation+gate pending physical promotion** — ayrı `ChineseAstrologyEngine` eklendi; pre-resolved traditional cycle year → deterministic 60-year sexagenary/stem/branch state. Versioned Chinese calendar/solar-term boundary çözümü VERIFIED/DONE blocker'ı. Bot promotion henüz fiziksel görülmedi.
-- **RC-0026 = NOT_STARTED / implementation+gate pending physical promotion** — ayrı `BaZiEngine` eklendi; year/month/day/hour pillar girdileri bağımsız validate ediliyor. Versioned civil-time/location→solar-term/calendar→four-pillar derivation VERIFIED/DONE blocker'ı. Bot promotion henüz fiziksel görülmedi.
+- **RC-0025 = NOT_STARTED / corrected gate pending physical rerun** — ayrı `ChineseAstrologyEngine` mevcut. İlk CI `33924063984`, source'ta calendar-boundary ownership açıklaması exact validator marker'ını karşılamadığı için kırıldı; `f5ee2924eb5c1112f38237a2a6e8b3f87df21d55` ile Chinese New Year + solar-term ownership versioned calendar layer'a açıkça bağlandı. Corrected run `33931165269` ortak matrix-writer concurrency kuyruğunda job başlamadan cancelled oldu; bot promotion olmadan statü yükseltilmedi.
+- **RC-0026 = TESTED + blocked=YES** — ayrı `BaZiEngine`; ilk CI testte var olmayan `CalculationValidity.invalid` enumu nedeniyle compile kırıldı, `0fd2332c753ae830793ed28bce1471aa76cb3e4c` ile canonical `.error` durumuna düzeltildi. Physical promotion `5b4083585337774d709f783bfb309bd6d5ed11a2`. Versioned civil-time/location→solar-term/calendar→four-pillar derivation ve authoritative goldens açık.
+- **RC-0027 = NOT_STARTED / implementation+gate pending physical promotion** — mevcut numerology production ağacı için astroloji sistemlerinden bağımsızlık contract/validator/CI eklendi; Pythagorean, Chaldean ve Lo Shu compiled golden vectors gate'e bağlı. Bot promotion henüz fiziksel görülmedi.
+- **RC-0028 = NOT_STARTED / implementation+gate pending physical promotion** — Western/Vedic/Chinese/BaZi/Numerology named calculation root'ları arasında cross-system calculation importlarını fail-closed yasaklayan architecture contract/validator/CI eklendi; neutral shared core izinli. Bot promotion henüz fiziksel görülmedi.
 
 ## Bu turdaki gerçek değişiklikler
 
-### RC-0024 — ayrı Vedik hesaplama motoru
+### RC-0025 — Chinese engine CI root-cause düzeltmesi
 
-- `lib/src/calculation_core/vedic/vedic_astrology_engine.dart`
-- `test/calculation_core/vedic/vedic_astrology_engine_test.dart`
-- `requirements/contracts/rc0024_vedic_engine_contract.json`
-- `tools/requirements/validate_rc0024_vedic_engine.py`
-- `.github/workflows/rc0024-vedic-engine.yml`
-- Separate engine id, explicit sidereal/ayanamsha identity/value, same-instant/source/data-version ephemeris provenance, duplicate-body guard ve deterministic tropical→sidereal placement dönüşümü fail-closed kapıda doğrulandı.
+- İlk run `33924063984`: validator failure `RC-0025 source must explicitly document calendar-boundary ownership`.
+- `f5ee2924eb5c1112f38237a2a6e8b3f87df21d55`: Chinese New Year ve solar-term boundary ownership production source içinde explicit hale getirildi.
+- Corrected run `33931165269` job başlamadan concurrency nedeniyle cancelled; physical promotion tekrar tetiklenecek.
 
-### RC-0025 — ayrı Çin astrolojisi motoru
+### RC-0026 — BaZi compiled test düzeltmesi ve TESTED promotion
 
-- `lib/src/calculation_core/chinese/chinese_astrology_engine.dart`
-- `test/calculation_core/chinese/chinese_astrology_engine_test.dart`
-- `requirements/contracts/rc0025_chinese_engine_contract.json`
-- `tools/requirements/validate_rc0025_chinese_engine.py`
-- `.github/workflows/rc0025-chinese-engine.yml`
-- Jia-Zi reference year 1984 üzerinden deterministic sexagenary cycle, stem/branch indeksleri ve pre-reference floor-mod regressions eklendi. Chinese New Year/solar-term sınırları versioned kaynak olmadan tahmin edilmiyor.
+- İlk run `33924214176`: validator PASS, Flutter compile failure `CalculationValidity.invalid` member yok.
+- Canonical enum `valid / partial / unavailable / error`; test `CalculationValidity.error` kullanacak şekilde `0fd2332c753ae830793ed28bce1471aa76cb3e4c` ile düzeltildi.
+- Bot promotion `5b4083585337774d709f783bfb309bd6d5ed11a2`; canonical matrix artık TESTED + blocked=YES.
 
-### RC-0026 — ayrı BaZi motoru
+### RC-0027 — numeroloji bağımsızlığı
 
-- `lib/src/calculation_core/bazi/bazi_engine.dart`
-- `test/calculation_core/bazi/bazi_engine_test.dart`
-- `requirements/contracts/rc0026_bazi_engine_contract.json`
-- `tools/requirements/validate_rc0026_bazi_engine.py`
-- `.github/workflows/rc0026-bazi-engine.yml`
-- BaZi engine kendi `bazi` identity'sine sahip; dört pillar birbirinden bağımsız korunuyor; stem 0..9, branch 0..11 fail-closed doğrulanıyor. Calendar/day-boundary türetimi versioned evidence olmadan uydurulmuyor.
+- `requirements/contracts/rc0027_numerology_independence_contract.json`
+- `tools/requirements/validate_rc0027_numerology_independence.py`
+- `.github/workflows/rc0027-numerology-independence.yml`
+- Production numerology Dart ağacı Western/Vedic/Chinese/BaZi/ephemeris coupling ve `DateTime.now()` için fail-closed taranıyor.
+- Existing compiled golden test Pythagorean, Chaldean ve Lo Shu ailelerini çalıştırıyor.
+
+### RC-0028 — sistem hesaplama yöntemi izolasyonu
+
+- `requirements/contracts/rc0028_system_method_isolation_contract.json`
+- `tools/requirements/validate_rc0028_system_method_isolation.py`
+- `.github/workflows/rc0028-system-method-isolation.yml`
+- Named system roots başka named system calculation root'unu import edemez; neutral shared ephemeris/time/calculation-engine/domain altyapısı ortak kullanılabilir.
+- Workflow representative Western/Vedic/Chinese/BaZi ve numerology regressions'ı ayrı ayrı çalıştırır.
 
 ## Açık global blocker / release kapıları
 
@@ -70,11 +73,12 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 ## Sonraki devam noktası
 
 1. Her tetiklemede önce `requirements/requirement_state.csv`, bu dosya ve `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0025/RC-0026 exact CI sonuçları ve bot matrix promotion commit'leri fiziksel doğrulanacak; kırmızıysa root cause düzeltilip yeniden çalıştırılacak.
-3. RC-0020 corrected solar-events gate için physical promotion hâlâ yok; aynı requirement fail-closed açık tutulacak ve exact Actions/root-cause/retrigger doğrulaması sürdürülecek.
-4. Ardından dependency sırası RC-0027 (numeroloji astrolojiden tamamen bağımsız) → RC-0028 (bir sistem başka sistemin hesaplama yöntemini kullanmayacak) şeklinde ilerletilecek.
-5. Yalnız kanıtlanan state yazılacak; 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
+2. RC-0025 corrected gate physical olarak yeniden çalıştırılacak; SUCCESS + bot matrix promotion olmadan TESTED denmeyecek.
+3. RC-0027/RC-0028 exact CI sonuçları ve bot matrix promotion commit'leri fiziksel doğrulanacak; kırmızıysa root cause aynı requirement'ta düzeltilip yeniden çalıştırılacak.
+4. RC-0020 corrected solar-events gate physical promotion eksikliği ayrıca takip edilecek.
+5. Ardından dependency sırası RC-0029 (Western default Tropical) ve devamı şeklinde ilerletilecek.
+6. Yalnız kanıtlanan state yazılacak; 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
-Latest detailed checkpoint: `automation_runs/2026-09-05_0057_rc0020_rc0026_engine_progress.md`.
+Latest detailed checkpoint: `automation_runs/2026-09-05_0252_rc0025_rc0028_progress.md`.
 
 **FINAL: NO.**
