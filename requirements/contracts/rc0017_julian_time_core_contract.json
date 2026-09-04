@@ -1,0 +1,22 @@
+{
+  "contract_id": "RC-0017-JULIAN-TIME-CORE",
+  "binding_requirement": {
+    "rc_id": "RC-0017",
+    "text": "Julian Day ve gerekli astronomik zaman dönüşümleri merkezi çekirdekte yapılacak."
+  },
+  "central_core": {
+    "implementation": "lib/src/calculation_core/time/julian_day.dart",
+    "utc_input_rule": "non-UTC DateTime input is rejected",
+    "conversions": ["UTC/civil date to Julian Day", "Modified Julian Day", "Julian centuries since J2000"],
+    "reference_authority": "U.S. Naval Observatory Astronomical Applications Department"
+  },
+  "evidence": [
+    "lib/src/calculation_core/time/julian_day.dart",
+    "test/calculation_core/julian_day_test.dart",
+    "requirements/reference_sources/julian_day.json",
+    "tools/time/validate_julian_day_contract.py",
+    "tools/requirements/validate_rc0017_julian_time_core.py",
+    ".github/workflows/rc0017-julian-time-core.yml"
+  ],
+  "promotion_policy": "Dedicated static + compiled reference regression evidence may promote RC-0017 to TESTED. VERIFIED/DONE require the broader astronomical timescale/release evidence required by later binding requirements."
+}
