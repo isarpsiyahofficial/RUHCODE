@@ -1,0 +1,19 @@
+{
+  "schema": "ruh-code.rc0005-akiles-reference.v1",
+  "requirement": "RC-0005",
+  "binding_text": "AKİLES'in son güncel sürümü Ruh Code için referans alınacak.",
+  "status": "BLOCKED_REFERENCE_PROVENANCE_MISSING",
+  "required_evidence": {
+    "source_repository_or_artifact": null,
+    "exact_version_or_commit": null,
+    "artifact_sha256": null,
+    "capture_date": null,
+    "reference_scope": null
+  },
+  "search_evidence": {
+    "ruhcode_repository_code_search": "No AKİLES reference artifact/version metadata found in the current RUHCODE repository search.",
+    "installed_github_repository_search": "No accessible installed repository matching AKILES was found in the current GitHub connection."
+  },
+  "completion_rule": "RC-0005 must remain not-DONE until an exact AKİLES latest-version source/artifact, immutable version or commit identifier, integrity hash where applicable, capture date, and the scope used as Ruh Code reference are recorded and independently checkable.",
+  "notes": "This blocker record is evidence of missing provenance, not evidence that RC-0005 is implemented or complete. Independent requirements should continue while this reference is unresolved."
+}
