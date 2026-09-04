@@ -21,36 +21,42 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0017 = TESTED + blocked=YES** — central Julian Day/MJD/J2000 core; broader timescale/release evidence açık.
 - **RC-0018 = TESTED + blocked=YES** — explicit UT1/TT + location ASC/MC geometry; independent multi-location goldens/end-to-end time propagation açık.
 - **RC-0019 = TESTED + blocked=YES** — real 12-house cusp production motor and dedicated gate; independent multi-location/multi-epoch golden coverage açık.
-- **RC-0020 = pending physical promotion** — real solar-event production runtime bound to requirement-specific contract/validator/CI. First dedicated run `33903421927` failed only because validator used a broad word-level timezone guard; root cause fixed in `adbb9c0f746b0d3612df54860645693f5bc5250d` with concrete timezone/local-clock API rejection. Fresh CI/promotion must be physically observed before TESTED.
-- **RC-0021 = pending physical promotion** — real Moon phase now has packaged NASA/JPL DE440s Sun/Moon compiled runtime evidence plus binding validator/CI. Dedicated run `33903728252` was queued at last exact read. No TESTED claim until SUCCESS + bot matrix commit.
-- **RC-0022 = pending physical promotion** — entire `calculation_core` ↔ `interpretation` Dart dependency boundary is now scanned fail-closed; separate `CalculationEngine/CalculationResult` and snapshot-based `InterpretationEngine` contracts are required. CI commit `a226d11c9af595e25fd4541812ef2f57dc3fb4bc`; no TESTED claim until physical matrix promotion.
+- **RC-0020 = NOT_STARTED / corrected gate pending physical promotion** — real solar-event implementation/contract/CI mevcut; known validator false-positive `adbb9c0f746b0d3612df54860645693f5bc5250d` ile düzeltildi fakat `requirements(rc0020): ... TESTED` bot commit'i henüz fiziksel görülmedi.
+- **RC-0021 = TESTED + blocked=YES** — packaged NASA/JPL DE440s Sun/Moon states üzerinden gerçek astronomik Ay fazı gate'i physical matrixte TESTED.
+- **RC-0022 = TESTED + blocked=YES** — calculation-core ↔ interpretation dependency boundary ve snapshot-temelli interpretation ayrımı physical matrixte TESTED.
+- **RC-0023 = TESTED + blocked=YES** — ayrı `western-astrology` CalculationEngine ve requirement-specific gate physical matrixte TESTED.
+- **RC-0024 = TESTED + blocked=YES** — ayrı `vedic-astrology` CalculationEngine; explicit sidereal/ayanamsha ve ephemeris provenance kontrolleri. Physical bot promotion `de09bc914ff6818c7687571a7ed96cf448e6ca1a`.
+- **RC-0025 = NOT_STARTED / implementation+gate pending physical promotion** — ayrı `ChineseAstrologyEngine` eklendi; pre-resolved traditional cycle year → deterministic 60-year sexagenary/stem/branch state. Versioned Chinese calendar/solar-term boundary çözümü VERIFIED/DONE blocker'ı. Bot promotion henüz fiziksel görülmedi.
+- **RC-0026 = NOT_STARTED / implementation+gate pending physical promotion** — ayrı `BaZiEngine` eklendi; year/month/day/hour pillar girdileri bağımsız validate ediliyor. Versioned civil-time/location→solar-term/calendar→four-pillar derivation VERIFIED/DONE blocker'ı. Bot promotion henüz fiziksel görülmedi.
 
 ## Bu turdaki gerçek değişiklikler
 
-### RC-0020 — Güneş doğuş/batış
+### RC-0024 — ayrı Vedik hesaplama motoru
 
-- `requirements/contracts/rc0020_solar_events_contract.json`
-- `tools/requirements/validate_rc0020_solar_events.py`
-- `.github/workflows/rc0020-solar-events.yml`
-- Existing `lib/src/calculation_core/solar/solar_events.dart` + `test/calculation_core/solar_events_test.dart` requirement gate'e bağlandı.
-- Gate explicit `CivilDate + latitude + longitude`, apparent sunrise zenith `90.83333333333333°`, UTC sunrise/noon/sunset, polar day/night, coordinate fail-closed ve device-clock/timezone API isolation şartlarını doğrular.
-- First dedicated gate failure runtime hesaplama hatası değildi; validator false-positive kök nedeni aynı turda düzeltildi.
+- `lib/src/calculation_core/vedic/vedic_astrology_engine.dart`
+- `test/calculation_core/vedic/vedic_astrology_engine_test.dart`
+- `requirements/contracts/rc0024_vedic_engine_contract.json`
+- `tools/requirements/validate_rc0024_vedic_engine.py`
+- `.github/workflows/rc0024-vedic-engine.yml`
+- Separate engine id, explicit sidereal/ayanamsha identity/value, same-instant/source/data-version ephemeris provenance, duplicate-body guard ve deterministic tropical→sidereal placement dönüşümü fail-closed kapıda doğrulandı.
 
-### RC-0021 — gerçek Ay fazı
+### RC-0025 — ayrı Çin astrolojisi motoru
 
-- `test/calculation_core/rc0021_real_moon_phase_test.dart`
-- `requirements/contracts/rc0021_real_moon_phase_contract.json`
-- `tools/requirements/validate_rc0021_real_moon_phase.py`
-- `.github/workflows/rc0021-real-moon-phase.yml`
-- Physical compiled test packaged `De440sEphemerisProvider.loadPackaged()` kullanır; Sun ve Moon aynı explicit TT Julian Day'de sample edilir; phase angle `Moon longitude - Sun longitude`, illumination elongation'dan türetilir; NASA/JPL DE440s provenance doğrulanır; mixed provenance fail-closed kalır.
+- `lib/src/calculation_core/chinese/chinese_astrology_engine.dart`
+- `test/calculation_core/chinese/chinese_astrology_engine_test.dart`
+- `requirements/contracts/rc0025_chinese_engine_contract.json`
+- `tools/requirements/validate_rc0025_chinese_engine.py`
+- `.github/workflows/rc0025-chinese-engine.yml`
+- Jia-Zi reference year 1984 üzerinden deterministic sexagenary cycle, stem/branch indeksleri ve pre-reference floor-mod regressions eklendi. Chinese New Year/solar-term sınırları versioned kaynak olmadan tahmin edilmiyor.
 
-### RC-0022 — astronomi / yorumlama ayrımı
+### RC-0026 — ayrı BaZi motoru
 
-- `requirements/contracts/rc0022_astronomy_interpretation_boundary_contract.json`
-- `tools/requirements/validate_rc0022_astronomy_interpretation_boundary.py`
-- `.github/workflows/rc0022-astronomy-interpretation-boundary.yml`
-- Validator complete `lib/src/calculation_core/**/*.dart` ve `lib/src/interpretation/**/*.dart` ağaçlarını cross-boundary import için tarar.
-- `CalculationEngine/CalculationResult` ve `InterpretationEngine<TSnapshot>` ayrılığı zorunlu; merkezi interpretation contract'ın ephemeris/solar/Julian runtime çağırması reddedilir.
+- `lib/src/calculation_core/bazi/bazi_engine.dart`
+- `test/calculation_core/bazi/bazi_engine_test.dart`
+- `requirements/contracts/rc0026_bazi_engine_contract.json`
+- `tools/requirements/validate_rc0026_bazi_engine.py`
+- `.github/workflows/rc0026-bazi-engine.yml`
+- BaZi engine kendi `bazi` identity'sine sahip; dört pillar birbirinden bağımsız korunuyor; stem 0..9, branch 0..11 fail-closed doğrulanıyor. Calendar/day-boundary türetimi versioned evidence olmadan uydurulmuyor.
 
 ## Açık global blocker / release kapıları
 
@@ -64,11 +70,11 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 ## Sonraki devam noktası
 
 1. Her tetiklemede önce `requirements/requirement_state.csv`, bu dosya ve `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0020/RC-0021/RC-0022 exact CI sonuçları ve bot matrix promotion commit'leri fiziksel doğrulanacak.
-3. Kırmızı gate varsa job logs alınarak root cause aynı requirement hattında düzeltilecek ve yeniden doğrulanacak.
-4. Yeşil/promotion kanıtı sonrası dependency sırası RC-0023 → RC-0024 → ... şeklinde atlamadan sürdürülecek; blocker dışındaki bağımsız işler paralel ilerletilebilir.
+2. RC-0025/RC-0026 exact CI sonuçları ve bot matrix promotion commit'leri fiziksel doğrulanacak; kırmızıysa root cause düzeltilip yeniden çalıştırılacak.
+3. RC-0020 corrected solar-events gate için physical promotion hâlâ yok; aynı requirement fail-closed açık tutulacak ve exact Actions/root-cause/retrigger doğrulaması sürdürülecek.
+4. Ardından dependency sırası RC-0027 (numeroloji astrolojiden tamamen bağımsız) → RC-0028 (bir sistem başka sistemin hesaplama yöntemini kullanmayacak) şeklinde ilerletilecek.
 5. Yalnız kanıtlanan state yazılacak; 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
-Latest detailed checkpoint: `automation_runs/2026-09-04_2110_rc0019_rc0022_solar_lunar_boundary.md`.
+Latest detailed checkpoint: `automation_runs/2026-09-05_0057_rc0020_rc0026_engine_progress.md`.
 
 **FINAL: NO.**
