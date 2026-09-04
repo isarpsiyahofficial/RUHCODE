@@ -1,0 +1,24 @@
+{
+  "rcId": "RC-0015",
+  "bindingRequirementSha256": "f94515b2816cb09bf1eca4ca58183b5909e002349bf4d31cf4de0c2412592383",
+  "bindingRequirement": "Ay düğümleri gerekli sistemlerde ayrıca hesaplanacak.",
+  "promotionCeiling": "TESTED",
+  "policy": {
+    "timeScale": "TT Julian Day",
+    "meanAscendingNode": "Meeus lunar mean-element polynomial around J2000",
+    "trueAscendingNode": "mean node plus leading lunar periodic perturbation terms",
+    "descendingNode": "ascending node + 180 degrees modulo 360",
+    "outputRangeDegrees": "[0,360)",
+    "forbidPhysicalSpkBodyPretence": true,
+    "forbidDeviceClockDependency": true,
+    "requireFiniteInput": true
+  },
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/ephemeris/lunar_node_calculator.dart",
+    "lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/lunar_node_calculator_test.dart"
+  ],
+  "verificationBlocker": "Independent authoritative multi-epoch mean/true lunar-node golden vectors, frame/equinox semantics review, and end-to-end integration into every astrology system that consumes nodes remain required before VERIFIED/DONE."
+}
