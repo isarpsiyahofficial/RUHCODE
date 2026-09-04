@@ -2,17 +2,22 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-04_0654_rc0005_rc0006_progress.md`
+`automation_runs/2026-09-04_0905_rc0008_rc0012_progress.md`
 
 ## Bu turda ilerleyen ana bloklar
 
-1. RC-0005 exact AKİLES provenance blocker'ının fiziksel matrix'e işlendiği doğrulandı; kanıtsız lifecycle promotion yapılmadı.
-2. RC-0006 için modular Ruh Code core contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi.
-3. Implementation commit: `1081e5924be05f544cbf68629d1069cc6ce8baa3`.
-4. CI promotion commit: `faa13b47260a012a0181f9f0d02170e9133f8833`.
-5. RC-0006 artık fiziksel `TESTED + blocked=YES`; AKİLES exact source/version/hash ve method-level comparison/provenance olmadan VERIFIED/DONE yok.
-6. RC-0003 hâlâ `NOT_STARTED`; kanıtsız promotion yapılmadı. RC-0004 `TESTED + blocked=YES` olarak korunuyor.
+1. `RUH_CODE_MASTER_TODO.md`, `RUH_CODE_MASTER_INDEX.md`, binding şartname, progress ve requirement matrix yeniden okundu.
+2. RC-0007 AKİLES provenance/method-comparison bağımlılığı nedeniyle kanıtsız ilerletilmedi.
+3. RC-0008/0009/0010 için deterministic time + bundled IANA tzdb + DST/historical discontinuity dedicated contract/validator/Flutter CI gate eklendi.
+4. RC-0008/0009/0010 fiziksel matrix'te `TESTED` promotion aldı; RC-0008 end-to-end location→astronomy propagation kanıtı için blocked=YES tutuluyor.
+5. RC-0011/0012 için coordinate/timezone identity + same-name city disambiguation requirement contract, validator ve dedicated Flutter CI gate eklendi.
+6. RC-0011/0012 promotion exact CI sonucu fiziksel matrix'te görülmeden TESTED/VERIFIED/DONE sayılmıyor.
 
-Sonraki dependency: RC-0003 physical promotion/gate → RC-0005 provenance; blocker dışındaki RC-0007+ requirement'lar ve astronomy/UI/release kapıları paralel ilerletilecek.
+Ana yeni workflow commitleri:
+
+- `069b427e4d793c851e95e1f13d7c6718d02e68f1` — RC-0008→0010 time determinism gate
+- `2e69ecd906e16d4224350cfbe963837d3e872816` — RC-0011/0012 location identity gate
+
+Sonraki dependency: RC-0011/0012 exact CI/promotion doğrulaması → RC-0013+ common astronomy core; AKİLES blocker'ları, RC-1436/1437, RC-1439 ve release/device kapıları bağımsız ilerletilmeye devam edilecek.
 
 **FINAL: NO.**
