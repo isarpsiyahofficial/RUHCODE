@@ -22,7 +22,11 @@ def main():
     provider=(ROOT/'lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart').read_text(encoding='utf-8')
     for needle in ('enum ApparentMotion { direct, stationary, retrograde }','longitudeSpeedDegreesPerDay','speed.abs() <= stationaryThresholdDegreesPerDay','speed < 0 ? ApparentMotion.retrograde : ApparentMotion.direct'):
         req(needle in ep,f'RC-0016 motion contract missing: {needle}')
-    for needle in ('longitudeSpeedDegreesPerDay','velocityKmPerSecond','_toJ2000Ecliptic'):
+    # The provider propagates the physical SPK Cartesian velocity components
+    # (vx/vy/vz km/s), rotates vx/vy into the ecliptic frame, then derives
+    # signed longitude speed. Validate the real implementation symbols rather
+    # than requiring a non-existent aggregate `velocityKmPerSecond` field.
+    for needle in ('longitudeSpeedDegreesPerDay','state.vxKmPerSecond','state.vyKmPerSecond','state.vzKmPerSecond','longitudeRateRadiansPerSecond','_toJ2000Ecliptic'):
         req(needle in provider,f'RC-0016 physical velocity propagation missing: {needle}')
     req('DateTime.now()' not in provider,'RC-0016 provider must not infer status from device clock')
     print('RC-0016 retrograde motion contract: OK')
