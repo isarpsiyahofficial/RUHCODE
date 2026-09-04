@@ -51,7 +51,7 @@ void main() {
       year: validPillar, month: validPillar, day: validPillar, hour: validPillar,
     )), throwsStateError);
     await expectLater(engine.calculate(BaZiInput(
-      manifest: manifest(validity: CalculationValidity.invalid),
+      manifest: manifest(validity: CalculationValidity.error),
       year: validPillar, month: validPillar, day: validPillar, hour: validPillar,
     )), throwsStateError);
   });
