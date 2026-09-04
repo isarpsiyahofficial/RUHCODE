@@ -1,0 +1,23 @@
+{
+  "rcId": "RC-0021",
+  "bindingRequirementSha256": "670f600e93c25ef105875cf1e8a0fbc8b3f44f8942770751a6e0b48d26dc6bb7",
+  "requirement": "Ay fazı gerçek astronomik konum üzerinden hesaplanacak.",
+  "promotionCeiling": "TESTED",
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/lunar/moon_phase.dart",
+    "lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart",
+    "lib/src/calculation_core/ephemeris/de440s_asset_loader.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/moon_phase_test.dart",
+    "test/calculation_core/rc0021_real_moon_phase_test.dart"
+  ],
+  "mustProve": [
+    "Sun and Moon states are sampled at the same explicit TT Julian Day",
+    "phase angle is derived from Moon longitude minus Sun longitude",
+    "illumination is derived from astronomical elongation",
+    "mixed ephemeris provenance fails closed",
+    "packaged NASA/JPL DE440s physically drives runtime phase classification"
+  ],
+  "verificationBlocker": "Independent authoritative multi-epoch lunar phase/illumination golden vectors and end-to-end display integration remain required before VERIFIED/DONE."
+}
