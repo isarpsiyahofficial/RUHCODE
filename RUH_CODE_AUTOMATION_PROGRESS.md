@@ -2,111 +2,81 @@
 
 Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md`, `RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md`, `RUH_CODE_MASTER_TODO.md`.
 
-**Kural:** IMPLEMENTED, DONE değildir. DONE yalnız gerekli test, independent/golden, cihaz ve release kanıtlarıyla verilir.
+**Kural:** IMPLEMENTED, DONE değildir. DONE yalnız ilgili test, independent/golden, cihaz ve release kanıtları tamamlandığında verilir.
 
-## Requirement durumu / FAZ 0
+## Requirement matrix / FAZ 0
 
-- Exact kapsam: `RC-0001 → RC-1442` / **1.442 requirement**.
-- Bağlayıcı lifecycle `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE` olarak enforce ediliyor.
-- Blocker lifecycle statüsünden ayrıdır: `blocked=YES/NO` ve açıklama ayrı alanlarda tutulur.
-- Canonical materializer her RC'yi binding specification filename/number + normalized requirement text SHA-256 ile bağlar; şartname drift'i stale matrix'i fail-closed kırar.
-- Her RC en az bir `TASK-*` ID, impact tag ve zorunlu `evidence_type` taşır.
-- `TESTED`, `VERIFIED` veya `DONE` evidence link olmadan CI'dan geçemez; `DONE` blocked olamaz.
-- Canonical matrix fiziksel olarak 1.442 RC satırını tutuyor.
-- **RC-0002 fiziksel matrix üzerinde DONE**: production runtime language scope yalnız `tr/en`, Flutter localization delegate wiring ve packaged language scope dedicated static+compiled CI ile doğrulandı.
-- **RC-0003 çalışma altında**: TR/EN içeriklerin bağımsız hazırlanması / otomatik TR→EN çeviri pipeline yasağı için dedicated fail-closed validator + CI eklendi. Bu kapı editoryal provenance olmadan VERIFIED/DONE vermez; otomatik olarak en fazla TESTED seviyesine çıkar.
+- Exact kapsam `RC-0001 → RC-1442`, toplam **1.442 requirement**.
+- Lifecycle `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE`; blocker ayrı `blocked=YES/NO` alanıdır.
+- Canonical materializer her RC'yi binding spec filename/number + normalized requirement SHA-256 ile bağlar.
+- `TESTED / VERIFIED / DONE` evidence links olmadan matrix validator'dan geçemez; `DONE` blocked olamaz.
+- **RC-0002 = DONE**: production runtime language scope yalnız TR/EN ve dedicated static+compiled gate ile doğrulanmış durumda.
+- **RC-0003 = NOT_STARTED (son fiziksel matrix okuması)**: repository-level editorial-independence validator/workflow mevcut fakat `requirements(rc0003): ... TESTED` bot promotion commit'i henüz fiziksel görülmediği için statü varsayılmıyor.
+- **RC-0004 = TESTED + blocked=YES**: machine-checkable bilingual terminology/copy-quality gate fiziksel olarak main'e promotion yaptı; independent bilingual editorial review olmadan VERIFIED/DONE verilmeyecek.
 
-## RC-0003 — editorial independence kanıt hattı
+## RC-0003 — bağımsız TR/EN içerik
 
-- Physical Daily Message katalogları ayrı `assets/content/daily_messages/tr/` ve `.../en/` ağaçlarında tutuluyor.
-- Validator paired TR/EN title/teaser/body değerlerinin normalize edilmiş biçimde aynı olmamasını, physical catalog digestlerinin farklı olmasını, known machine-translation dependency/API bulunmamasını ve explicit TR-source→EN-destination translation automation bulunmamasını zorunlu tutuyor.
-- Production katalogda iki tarihsel CSV şeması bulunuyor ve validator bunları tek canonical modele normalize ediyor:
-  - legacy: `date,title,teaser,message,theme`
-  - current: `date,locale,title,teaser,full_text,theme_tag`
-- Katalog ayrıca hem `YYYY-MM.csv` aylık hem `YYYY.csv` yıllık shard kullanıyor. Monthly shard primary; annual shard yalnız aylıkta bulunmayan tarihi doldurabilir. Aynı tarih iki shard'da varsa canonical içerik birebir eşleşmezse fail-closed.
-- İlk CI failure legacy schema varsayımından kaynaklandı ve düzeltildi.
-- İkinci CI failure yalnız aylık shardların sayılmasından kaynaklandı: 3.959 günlük kayıt bulundu; eksik görünen 59 gün 2026 Ocak+Şubat kayıtlarının yıllık `2026.csv` shardında tutulmasından kaynaklanıyordu. Annual-shard reconciliation eklendi.
-- Son validator commit: `3c4c4e7d53d4ab2582f7af8a53b444fd1eb9a937`.
-- Bu exact SHA için yeni CI tetiklendi; son gözlemde tamamlanmış RC-0003 sonucu henüz yoktu, bu nedenle green veya TESTED varsayılmıyor.
+- `assets/content/daily_messages/tr/` ve `.../en/` ayrı fiziksel kataloglardır.
+- `tools/requirements/validate_rc0003_editorial_independence.py` date coverage, paired-copy non-identity, physical digest separation ve known automatic TR→EN translation pipeline yasağını fail-closed doğrular.
+- Legacy/current CSV şemaları ve monthly/annual shard reconciliation desteklenir; overlapping annual/monthly içerik uyuşmazsa gate kırılır.
+- `.github/workflows/rc0003-editorial-independence.yml` artık shared `requirement-matrix-writers` concurrency group kullanır ve human editorial provenance eksikliğini explicit blocker olarak kaydeder.
+- Son workflow-code commit: `f404c0203718c68c66e33687ebcee9d9e00d193e`.
+- Matrix promotion fiziksel görülmeden RC-0003 TESTED/VERIFIED/DONE sayılmaz.
 
-## Doğrulanmış ana ilerleme
+## RC-0004 — doğal/profesyonel terminoloji
 
-- Calculation, timezone/date, astronomy provider, Western, numerology, BaZi ve Çin astrolojisi çekirdeklerinde source/test altyapısı mevcut.
+- Binding requirement: TR ve EN astroloji, numeroloji ve spiritüel terminolojinin doğal/profesyonel olması.
+- `requirements/contracts/rc0004_terminology_contract.json` sürümlü canonical TR/EN terminology sözleşmesidir; astroloji, numeroloji ve spiritüalizm domainlerini açıkça kapsar.
+- `tools/requirements/validate_rc0004_content_quality.py` sözleşme bütünlüğü ile packaged TR/EN copy üzerinde UTF-8, NFC, boş metin, placeholder, mojibake, control-character, unresolved template ve localization-key leakage kontrollerini fail-closed uygular.
+- `.github/workflows/rc0004-content-quality.yml` dedicated gate'tir; en fazla TESTED promotion yapabilir.
+- Physical promotion commit: `a9823f7a022f553359405d9e772222e9b8e27e50`.
+- Writer serialization commit: `867dc23ba090a1b3f10c8867df1015186bad23dc`.
+- RC-0004 doğal/profesyonel editoryal kaliteyi makine tek başına kanıtlayamayacağı için `TESTED + blocked=YES`; independent bilingual review gerekir.
+
+## Doğrulanmış ana teknik altyapı
+
+- Calculation/timezone/date, astronomy provider, Western, numerology, BaZi ve Çin astrolojisi source/test katmanları mevcut.
 - Free/PRO guard ve offline entitlement state mevcut.
 - 15 tablolu backup/restore, transaction/rollback ve platform file-store katmanları mevcut.
 - Professional/combined PDF planning, preview/build parity ve structural validation mevcut.
 - UI action/accessibility contracts mevcut; catastrophic restore rollback persistent accessible integrity alarmıdır.
-- Daily Message runtime packaged loader ve production Today wiring mevcut.
-- TR/EN localization delegates production app'te explicit bağlı.
-
-## Günün Mesajı doğrulanmış kanıtı
-
-- Ürün kataloğu hedef/kapsamı `2026-01-01 → 2036-12-31`.
-- Daha önceki catalog contract kanıtı TR **4018/4018**, EN **4018/4018**, toplam **8036/8036**; missing/duplicate exact date-locale kaydı 0 olarak kaydedildi.
-- Earlier exact APK packaging proof (`5283cc2381fbf850f86c85cb458f96a6b8250f45`) yaklaşık 53.2 MB release APK; APK SHA-256 `2720059bf969681f67e119cd7cf1185e41914224613f74dffcd75fc328d63948`.
-- RC-1433 rolling-horizon release gate kaynak seviyesinde mevcut; final release tarihine göre strict pass gerekir.
+- Daily Message packaged loader/Today wiring ve TR/EN localization delegates production app'te bağlı.
 
 ## RC-1436 / RC-1437 astronomy evidence
 
-- GeoNames city catalog physically bundled / `BUNDLED_VERIFIED`: 235,640 records, source/generated SHA evidence, attribution ve Flutter asset binding.
-- IERS `finals2000A.all` physically bundled; runtime loader exact SHA/version doğruluyor, published UT1-UTC satırlarını parse ediyor ve physical coverage dışına fail-closed davranıyor.
-- Earth-orientation manifestindeki eski `pendingRuntimeData: NOT_DONE` durumu fiziksel kanıtla hizalandı: `BUNDLED_VERIFIED_SUBGATE`; `fullRc1437Done=false` korunuyor.
-- Product date range explicit capability policy: `1890-01-01` inclusive → `2111-01-01` exclusive. Ürün aralığında fakat published IERS EOP coverage dışında kalan UT1-dependent hesaplar `EOP_OUTSIDE_PUBLISHED_COVERAGE` ile fail-closed; UTC-for-UT1 substitution, nearest-neighbour, extrapolation ve fabricated future EOP yasak.
-- EOP validator fiziksel `assets/data/eop/finals2000A.all` için 3,763,572 byte ve SHA-256 `e3905ff7a74b791744704aa3e900a2161e96db97a30095d8fc442b04e4cfe058` değerlerini manifest/runtime loader ile çapraz doğruluyor.
-- JPL/NASA NAIF DE440s SPK physically bundled; exact SHA/byte evidence ve runtime integrity loader mevcut.
-- DAF/SPK parser; Type-2 record/Chebyshev position+velocity evaluator; target/center body graph chaining ve ilgili fail-closed contract testleri mevcut.
-- Real packaged DE440s J2000 Type-2 ve Earth(399)→EMB(3)→SSB(0) graph testleri mevcut.
-- Raw SPK state tolerance contract: position max `0.001 km` / axis, velocity max `1e-9 km/s` / axis. Bu yalnız raw ephemeris state alt-kapısıdır; RC-1436 kapsamındaki diğer motor toleranslarının yerine geçmez.
+- GeoNames physical catalog ve IERS `finals2000A.all` physical asset/provenance katmanları mevcut.
+- Product date capability `1890-01-01` inclusive → `2111-01-01` exclusive; published EOP coverage dışı UT1-dependent hesaplar fail-closed.
+- DE440s SPK bundled; DAF/SPK Type-2 evaluator, body/center graph chaining ve physical packaged-kernel testleri mevcut.
+- Raw state tolerance alt-kapısı position `0.001 km/axis`, velocity `1e-9 km/s/axis`.
+- Canonical official JPL Earth→SSB J2000 evidence repository'de mevcut.
+- Multi-vector Horizons altyapısı mevcut; full canonical multi-vector evidence ve diğer astronomy-engine tolerans kanıtları tamamlanmadan RC-1436/1437 DONE değil.
 
-### Official independent JPL golden
+## RC-1439 / release açık kapıları
 
-- `evidence/rc1436/jpl_horizons_earth_ssb_j2000.json` fiziksel canonical evidence olarak repository'de.
-- Materializer exact NASA/JPL Horizons API query kullanıyor: Earth `399`, SSB `@0`, JD `2451545.0`, TDB, ICRF/FRAME, geometric `VEC_CORR=NONE`, KM-S, VEC_TABLE=2.
-- Evidence API signature, request URL, captured time, raw response SHA-256 ve x/y/z/vx/vy/vz state taşıyor.
-- Packaged DE440s comparator mevcut raw-state tolerance contract altında PASS kanıtına sahip.
-- Multi-vector Horizons materializer/test altyapısı (Earth 1900/J2000/2100, Sun J2000, Moon J2000) mevcut; canonical `evidence/rc1436/jpl_horizons_de440s_coverage.json` son kontrolde henüz repository'de fiziksel olarak yoktu.
+- RC-1439 physical canonical UI reference images/hashes henüz tam kanıtlanmış değil.
+- Secret-backed signed reproducible clean-checkout release artifact exact execution açık.
+- Daily Message airplane-mode real-device proof, production Unicode PDF font/render/device proof, Play/rewarded real-device proof ve visual/accessibility device regression açık.
+- Final exact 1.442-RC lifecycle audit açık.
 
-**RC-1436 ve RC-1437 bütünüyle DONE değil.** Tek J2000 Earth→SSB vektörü bütün astronomik motorların, tüm tarih aralığının veya tüm bağlayıcı toleransların kanıtı değildir.
+## Açık blocker'lar
 
-## RC-1439 — physical UI reference images
-
-- Reference manifest explicit `NOT_PROVEN`.
-- Validator fiziksel dosya, unique screen ID/path, filename ve exact SHA-256 doğruluyor; generated placeholder evidence reddediliyor.
-
-**RC-1439 DONE değil.**
-
-## RC-1442 — clean-checkout release readiness
-
-- Tracked Android host + canonical identity `com.ruhcode.ruh_code` mevcut.
-- Gradle 9.1.0 / AGP 9.0.1 / Kotlin 2.3.20 host contract mevcut.
-- Release debug keystore ile imzalanmıyor; production signing explicit secret-backed inputs gerektiriyor.
-- Verified Gradle wrapper JAR tracked; wrapper SHA-256 `76805e32c009c0cf0dd5d206bddc9fb22ea42e84db904b764f3047de095493f3`.
-- Signed clean-checkout workflow fail-closed build/apksigner/provenance hattına sahip.
-
-## Açık ana blocker'lar
-
-- RC-0003 independent editorial provenance/review (repository contract TESTED olabilir ama provenance olmadan DONE değil),
-- RC-0001 ve RC-0004 sonrası requirement reconciliation / dependency sırası,
-- RC-1436 için daha geniş independent official ephemeris golden/tolerance coverage,
-- RC-1439 canonical physical reference screenshots/images + hashes,
-- secret-backed signed reproducible clean-checkout APK actual execution,
-- Daily Message real airplane-mode device lookup proof,
-- production Unicode PDF font/license/hash/parser-render/device delivery proof,
-- Play/rewarded real-device evidence,
-- visual/accessibility real-device regression,
-- final exact 1.442-RC lifecycle audit.
+- RC-0003: independent editorial provenance/review + fiziksel TESTED promotion sonucu.
+- RC-0004: independent bilingual editorial review.
+- RC-0005: AKİLES son güncel sürümün exact source/version/hash provenance'ı repository içinde henüz saptanmış değil; referans kanıtı bulunmadan DONE verilemez.
+- RC-1436/1437 geniş independent astronomy golden/tolerance coverage.
+- RC-1439 physical UI references.
+- Signed reproducible artifact ve real-device release kanıtları.
 
 ## Son checkpoint
 
-`automation_runs/2026-09-04_0252_rc0003_editorial_independence.md`
+`automation_runs/2026-09-04_0500_rc0003_rc0004_progress.md`
 
 ## Sıradaki çalışma
 
-1. `3c4c4e7d...` exact RC-0003 CI sonucunu doğrula; kırmızıysa decoded log kök nedenini aynı dependency üzerinde düzelt.
-2. Green ise bot-persisted RC-0003 `TESTED` matrix satırını fiziksel doğrula.
-3. Independent editorial provenance/review kanıtını oluşturmadan RC-0003 VERIFIED/DONE yapma.
-4. RC-0004 professional/natural terminology contract ve bağımsız uygulanabilir RC işlerine devam et.
-5. RC-1436/1437, RC-1439, signed reproducible release ve real-device kapılarını bağımsız işler olarak ilerlet.
-6. Real-device proof + final 1.442 RC lifecycle audit tamamlanmadan FINAL deme.
+1. RC-0003 exact workflow/promotion sonucunu fiziksel doğrula; kırmızıysa decoded log kök nedenini düzelt, green ise TESTED evidence commit'ini doğrula.
+2. RC-0003/RC-0004 independent editorial review olmadan VERIFIED/DONE verme.
+3. RC-0005 AKİLES latest-reference exact provenance ara; yoksa blocker'ı matrix/evidence hattında explicit tutup bağımsız RC'lere devam et.
+4. RC-1436/1437, RC-1439, signed clean-checkout ve real-device kapılarını bağımsız ilerlet.
+5. 1.442 RC tamamı DONE ve final release artifact exact doğrulanmadan FINAL deme.
 
 **FINAL: NO.**
