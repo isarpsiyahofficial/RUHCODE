@@ -1,0 +1,68 @@
+name: RC-0025 Chinese Astrology Engine
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/chinese/chinese_astrology_engine.dart'
+      - 'test/calculation_core/chinese/chinese_astrology_engine_test.dart'
+      - 'requirements/contracts/rc0025_chinese_engine_contract.json'
+      - 'tools/requirements/validate_rc0025_chinese_engine.py'
+      - '.github/workflows/rc0025-chinese-engine.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0025 binding and engine boundary
+        run: python tools/requirements/validate_rc0025_chinese_engine.py
+      - name: Execute Chinese engine regressions
+        run: flutter test test/calculation_core/chinese/chinese_astrology_engine_test.dart
+      - name: Promote RC-0025 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0025_chinese_engine.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          r=next(x for x in rows if x['rc_id']=='RC-0025')
+          if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+          r['evidence_links']='requirements/contracts/rc0025_chinese_engine_contract.json|tools/requirements/validate_rc0025_chinese_engine.py|lib/src/calculation_core/chinese/chinese_astrology_engine.dart|test/calculation_core/chinese/chinese_astrology_engine_test.dart|.github/workflows/rc0025-chinese-engine.yml'
+          r['notes']='Machine gate proves Çin astrolojisi ortak CalculationEngine sözleşmesini uygulayan ayrı chinese-astrology motorunda pre-resolved traditional cycle year değerini deterministic 60-year stem/branch cycle state içine dönüştürür; foreign/invalid manifest fail-closed davranır. TESTED only.'
+          r['blocked']='YES'
+          r['blocker']='Versioned Chinese calendar/solar-term boundary resolution, authoritative multi-era golden vectors, full Chinese astrology rule coverage and end-to-end date/location→calendar→Chinese engine→UI integration remain required before VERIFIED/DONE.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0025): record Chinese engine TESTED'
+          git push origin HEAD:main
