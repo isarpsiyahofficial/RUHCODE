@@ -1,0 +1,23 @@
+{
+  "rcId": "RC-0027",
+  "bindingRequirementSha256": "03b134cacc8631e9fb6b8d2b12e79d3867dd4570198004a4ab931c4dd38d9f2d",
+  "requirement": "Numeroloji sistemleri astrolojiden tamamen bağımsız hesaplanacak.",
+  "evidence": {
+    "productionRoot": "lib/src/calculation_core/numerology",
+    "compiledGoldenTest": "test/calculation_core/numerology/golden_vectors_test.dart",
+    "forbiddenCalculationCouplings": [
+      "/western/",
+      "/vedic/",
+      "/chinese/",
+      "/bazi/",
+      "/ephemeris/",
+      "EphemerisProvider",
+      "WesternAstrologyEngine",
+      "VedicAstrologyEngine",
+      "ChineseAstrologyEngine",
+      "BaZiEngine"
+    ]
+  },
+  "promotionCeiling": "TESTED",
+  "verifiedDoneBlocker": "Independent authoritative numerology-method review and complete end-to-end numerology UI coverage remain required before VERIFIED/DONE."
+}
