@@ -21,7 +21,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0010 = TESTED**: DST fold/gap ve tarihsel discontinuity politikaları dedicated runtime testlerle doğrulandı.
 - **RC-0011 = TESTED + blocked=YES**: city records coordinate ve IANA timezone'u ayrı doğrulanabilir alanlar olarak taşıyor; end-to-end doğum yeri seçimi propagasyonu açık.
 - **RC-0012 = TESTED + blocked=YES**: same-name city stable identity + admin/country disambiguation compiled regression ile doğrulandı; end-to-end seçim kanıtı açık.
-- **RC-0013 → RC-0016 = NOT_STARTED**: common astronomy core / physical positions / node selection / motion-state maddeleri interface veya kaynak kod varlığına bakılarak kanıtsız yükseltilmedi.
+- **RC-0013 = TESTED + blocked=YES**: packaged DE440s ortak astronomi çekirdeği; physical loader + DAF parser + SPK Type-2 + body graph + compiled JPL accuracy regressions dedicated gate'te SUCCESS. RC-0014→0016 ve broader golden/tolerance coverage açık.
+- **RC-0014 → RC-0016 = NOT_STARTED**: gerçek gökcismi konumu / lunar-node / motion-state requirements interface veya enum varlığına bakılarak kanıtsız yükseltilmedi.
 - **RC-0017 = TESTED + blocked=YES**: merkezi Julian Day/MJD/J2000 dönüşüm çekirdeği USNO/J2000 reference regressions ile requirement-specific gate'te doğrulandı; daha geniş astronomical timescale/release evidence açık.
 
 ## RC-0003 — bağımsız TR/EN içerik
@@ -64,8 +65,20 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - `requirements/contracts/rc0011_rc0012_location_identity_contract.json`, `tools/requirements/validate_rc0011_rc0012_location_identity.py`, `.github/workflows/rc0011-rc0012-location-identity.yml` eklendi.
 - Gate physical city catalog validator + requirement validator + compiled Flutter city testini zincirler.
 - Commits: `f38a5c96ec4272cf9d68a01ed9406e9439d1e4e0`, `6402aad9eb059e9d34b697c6ba9eac8cf7837969`, `2e69ecd906e16d4224350cfbe963837d3e872816`.
-- Physical matrix promotion artık görüldü: RC-0011/0012 = TESTED + blocked=YES.
+- Physical matrix promotion görüldü: RC-0011/0012 = TESTED + blocked=YES.
 - End-to-end birth-place selection stable identity + coordinate + IANA timezone propagation kanıtı olmadan VERIFIED/DONE yok.
+
+## RC-0013 — ortak astronomik hesaplama çekirdeği
+
+- Binding requirement: `Uygulamanın ortak bir astronomik hesaplama çekirdeği olacak.`
+- `requirements/contracts/rc0013_common_astronomy_core_contract.json` interface-only kanıtı yetersiz sayar; packaged/offline/versioned/fail-closed çekirdek zorunludur.
+- `tools/requirements/validate_rc0013_common_astronomy_core.py` physical runtime bileşenlerini ve shared ephemeris contract'ı fail-closed doğrular.
+- `.github/workflows/rc0013-common-astronomy-core.yml` Flutter 3.44.7 ile ephemeris contract, packaged DE440s loader/parser, SPK Type-2, body-graph ve JPL Horizons accuracy regression dosyalarını çalıştırır.
+- Dedicated CI run `33851109923` tüm adımları SUCCESS tamamladı.
+- Contract commit: `a7c8c06c5321262f9f9a59e7cbcbff54d297bb19`.
+- CI gate commit: `92254e5552373a4fa7537c93fd0ce81c2235445d`.
+- Physical promotion commit: `f219bf02c1c802df626e889876234f96c4296151` (`requirements(rc0013): record common astronomy core TESTED`).
+- RC-0013 VERIFIED/DONE değildir; RC-0014→0016 real output coverage ve broader independent golden/tolerance evidence açık.
 
 ## RC-0017 — merkezi Julian Day / astronomik zaman temeli
 
@@ -79,7 +92,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Doğrulanmış ana teknik altyapı
 
-- Calculation/timezone/date, astronomy provider, Western, numerology, BaZi ve Çin astrolojisi source/test katmanları mevcut.
+- Calculation/timezone/date, astronomy provider contract, Western, numerology, BaZi ve Çin astrolojisi source/test katmanları mevcut.
 - Free/PRO guard ve offline entitlement state mevcut.
 - 15 tablolu backup/restore, transaction/rollback ve platform file-store katmanları mevcut.
 - Professional/combined PDF planning, preview/build parity ve structural validation mevcut.
@@ -110,6 +123,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0006/0007: RC-0005 provenance + method-level comparison/transfer evidence.
 - RC-0008: end-to-end astronomical calculation input propagation (validated location coordinates + explicit date/timezone).
 - RC-0011/0012: end-to-end birth-place selection/runtime propagation evidence.
+- RC-0013: RC-0014→0016 real output coverage + broader astronomy golden/tolerance evidence.
 - RC-0017: broader astronomical timescale accuracy/release evidence.
 - RC-1436/1437 geniş independent astronomy golden/tolerance coverage.
 - RC-1439 physical UI references.
@@ -117,14 +131,15 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Son checkpoint
 
-`automation_runs/2026-09-04_0915_rc0008_rc0017_verified_promotions.md`
+`automation_runs/2026-09-04_1100_rc0013_common_astronomy_core.md`
 
 ## Sıradaki çalışma
 
-1. RC-0013→RC-0016 real packaged ephemeris/common-core evidence'ını tek tek incele; interface-only evidence ile promotion yapma.
-2. RC-0007 AKİLES provenance blocker'ını korurken bağımsız requirement'ları dependency sırasıyla ilerlet.
-3. RC-0003 promotion zincirini ve independent editorial blocker'ı tekrar ele al.
-4. RC-1436/1437, RC-1439, signed clean-checkout ve real-device kapılarını bağımsız ilerlet.
-5. 1.442 RC tamamı DONE ve final release artifact exact doğrulanmadan FINAL deme.
+1. RC-0014 packaged DE440s body mapping + production provider/output katmanını compiled + independent golden evidence ile ilerlet.
+2. RC-0015 lunar-node ve RC-0016 motion/retrograde hesaplarını ayrı executable/golden gates olarak ilerlet; enum/interface-only evidence kabul etme.
+3. RC-0007 AKİLES provenance blocker'ını korurken bağımsız requirement'ları dependency sırasıyla ilerlet.
+4. RC-0003 promotion zincirini ve independent editorial blocker'ı tekrar ele al.
+5. RC-1436/1437, RC-1439, signed clean-checkout ve real-device kapılarını bağımsız ilerlet.
+6. 1.442 RC tamamı DONE ve final release artifact exact doğrulanmadan FINAL deme.
 
 **FINAL: NO.**
