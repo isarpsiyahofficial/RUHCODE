@@ -22,7 +22,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0011 = TESTED + blocked=YES**: city records coordinate ve IANA timezone'u ayrı doğrulanabilir alanlar olarak taşıyor; end-to-end doğum yeri seçimi propagasyonu açık.
 - **RC-0012 = TESTED + blocked=YES**: same-name city stable identity + admin/country disambiguation compiled regression ile doğrulandı; end-to-end seçim kanıtı açık.
 - **RC-0013 = TESTED + blocked=YES**: packaged DE440s ortak astronomi çekirdeği; physical loader + DAF parser + SPK Type-2 + body graph + compiled JPL accuracy regressions dedicated gate'te SUCCESS. RC-0014→0016 ve broader golden/tolerance coverage açık.
-- **RC-0014 → RC-0016 = NOT_STARTED**: gerçek gökcismi konumu / lunar-node / motion-state requirements interface veya enum varlığına bakılarak kanıtsız yükseltilmedi.
+- **RC-0014 = NOT_STARTED (implementation + gate mevcut, promotion bekliyor)**: production packaged-DE440s `EphemerisProvider` köprüsü eklendi; ilk dedicated gate validator kolon adı hatası nedeniyle kırıldı, kök neden aynı turda düzeltildi. Yeni exact-HEAD CI sonucu fiziksel promotion commit'iyle doğrulanmadan TESTED sayılmıyor.
+- **RC-0015 / RC-0016 = NOT_STARTED**: lunar-node / motion-state requirements interface veya enum varlığına bakılarak kanıtsız yükseltilmedi.
 - **RC-0017 = TESTED + blocked=YES**: merkezi Julian Day/MJD/J2000 dönüşüm çekirdeği USNO/J2000 reference regressions ile requirement-specific gate'te doğrulandı; daha geniş astronomical timescale/release evidence açık.
 
 ## RC-0003 — bağımsız TR/EN içerik
@@ -80,6 +81,21 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Physical promotion commit: `f219bf02c1c802df626e889876234f96c4296151` (`requirements(rc0013): record common astronomy core TESTED`).
 - RC-0013 VERIFIED/DONE değildir; RC-0014→0016 real output coverage ve broader independent golden/tolerance evidence açık.
 
+## RC-0014 — packaged DE440s physical body provider
+
+- `lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart` mevcut physical loader/parser/SPK Type-2/body-graph zincirini shared `EphemerisProvider` arayüzüne bağlar.
+- Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune ve Pluto explicit NAIF target mapping ile Earth (`399`) observer'a göre çözülür.
+- Explicit TT Julian Day, network/UTC fallback olmadan DE kernel ET/TDB independent variable'a çevrilir; J2000 ICRF position+velocity J2000 ecliptic longitude/latitude/distance/speed state'e dönüştürülür.
+- Mean/true node physical-body mapping'e alınmamıştır; RC-0015 ayrı executable algoritma olmadan sahte biçimde karşılanmaz.
+- Compiled runtime test: `test/calculation_core/de440s_ephemeris_provider_test.dart`.
+- Binding contract: `requirements/contracts/rc0014_physical_body_positions_contract.json`.
+- Fail-closed validator: `tools/requirements/validate_rc0014_physical_body_positions.py`.
+- Dedicated workflow: `.github/workflows/rc0014-physical-body-positions.yml`.
+- Implementation commits: `4b624b3710853835083063aadd8d57304f6663a7`, `a60ab7ad05caa1cdf634281594b8af04fe02e1d1`, `6d4c0fdbd6b35a9ae35ee983c857b29c7fd8bd01`, `9a8261e9d6f443363e8d5c8d14ad1837862334f9`, `88c0fd115681fa167a740a79af2a459bb860dd0c`, `f78a4bc79e2b6899a357d3d00a01a4d3979b0adb`.
+- İlk exact workflow `33861068615` validator adımında kırıldı. Kök neden: matrix canonical hash kolonu `source_text_sha256` iken yeni validator yanlışlıkla `requirement_sha256` okuyordu. Uygulama/runtime testi bu nedenle çalıştırılmadan gate fail-closed kapandı.
+- Validator kolon adı `9a4caf99667b79fa31e21a065ed451408a0b3b3d` commit'inde düzeltildi ve fresh exact-HEAD CI tetiklendi.
+- Yeni exact workflow fiziksel SUCCESS + bot matrix promotion commit'i görülmeden RC-0014 `TESTED` sayılmayacak; current truth `NOT_STARTED`.
+
 ## RC-0017 — merkezi Julian Day / astronomik zaman temeli
 
 - Existing `lib/src/calculation_core/time/julian_day.dart` merkezi `JulianDay` çekirdeği fromUtc/fromCivilDate/MJD/J2000 centuries dönüşümlerini içerir ve non-UTC DateTime girdisini reddeder.
@@ -124,6 +140,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0008: end-to-end astronomical calculation input propagation (validated location coordinates + explicit date/timezone).
 - RC-0011/0012: end-to-end birth-place selection/runtime propagation evidence.
 - RC-0013: RC-0014→0016 real output coverage + broader astronomy golden/tolerance evidence.
+- RC-0014: exact gate SUCCESS + physical TESTED promotion, ardından independent official multi-body JPL/Horizons longitude/latitude golden coverage ve release accuracy evidence.
+- RC-0015: executable lunar-node algorithm + authoritative formula/golden provenance bulunmuyor.
 - RC-0017: broader astronomical timescale accuracy/release evidence.
 - RC-1436/1437 geniş independent astronomy golden/tolerance coverage.
 - RC-1439 physical UI references.
@@ -131,11 +149,11 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Son checkpoint
 
-`automation_runs/2026-09-04_1100_rc0013_common_astronomy_core.md`
+`automation_runs/2026-09-04_1253_rc0014_physical_body_provider.md`
 
 ## Sıradaki çalışma
 
-1. RC-0014 packaged DE440s body mapping + production provider/output katmanını compiled + independent golden evidence ile ilerlet.
+1. `9a4caf99667b79fa31e21a065ed451408a0b3b3d` exact RC-0014 CI sonucunu oku; kırmızıysa log kök nedenini aynı hat üzerinde düzelt, yeşilse physical bot promotion commit'ini ve matrixte `RC-0014=TESTED+blocked=YES` durumunu ayrıca doğrula.
 2. RC-0015 lunar-node ve RC-0016 motion/retrograde hesaplarını ayrı executable/golden gates olarak ilerlet; enum/interface-only evidence kabul etme.
 3. RC-0007 AKİLES provenance blocker'ını korurken bağımsız requirement'ları dependency sırasıyla ilerlet.
 4. RC-0003 promotion zincirini ve independent editorial blocker'ı tekrar ele al.
