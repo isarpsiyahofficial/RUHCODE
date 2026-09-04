@@ -99,10 +99,14 @@ final class De440sEphemerisProvider implements EphemerisProvider {
       if (segments.isEmpty) {
         throw StateError('Packaged DE440s is missing required NAIF target $target.');
       }
-      final targetStart = segments.map((segment) => segment.startEtSeconds).reduce(math.min);
-      final targetEnd = segments.map((segment) => segment.endEtSeconds).reduce(math.max);
-      commonStart = math.max(commonStart, targetStart);
-      commonEnd = math.min(commonEnd, targetEnd);
+      final targetStart = segments
+          .map((segment) => segment.startEtSeconds)
+          .reduce((a, b) => a < b ? a : b);
+      final targetEnd = segments
+          .map((segment) => segment.endEtSeconds)
+          .reduce((a, b) => a > b ? a : b);
+      commonStart = commonStart > targetStart ? commonStart : targetStart;
+      commonEnd = commonEnd < targetEnd ? commonEnd : targetEnd;
     }
     if (!commonStart.isFinite || !commonEnd.isFinite || commonStart >= commonEnd) {
       throw StateError('Packaged DE440s has no common physical coverage for required bodies.');
