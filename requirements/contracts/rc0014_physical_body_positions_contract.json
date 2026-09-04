@@ -1,0 +1,28 @@
+{
+  "rcId": "RC-0014",
+  "bindingRequirementSha256": "90d54830a080c1050f5f62db7b44452cf2b6da921a5d221a6a3483d267b5e929",
+  "promotionCeiling": "TESTED",
+  "policy": {
+    "packagedDe440sRequired": true,
+    "requiredPhysicalBodies": ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"],
+    "geocentricStateRequired": true,
+    "eclipticStateRequired": true,
+    "physicalVelocityRequired": true,
+    "coverageFailClosedRequired": true,
+    "nodeSubstitutionForbidden": true,
+    "networkFallbackForbidden": true
+  },
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/ephemeris/ephemeris.dart",
+    "lib/src/calculation_core/ephemeris/de440s_asset_loader.dart",
+    "lib/src/calculation_core/ephemeris/de440s_daf_parser.dart",
+    "lib/src/calculation_core/ephemeris/spk_type2_evaluator.dart",
+    "lib/src/calculation_core/ephemeris/spk_body_graph_evaluator.dart",
+    "lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/de440s_ephemeris_provider_test.dart",
+    "test/calculation_core/de440s_jpl_horizons_accuracy_test.dart"
+  ],
+  "verificationBlocker": "Independent official multi-body JPL/Horizons longitude/latitude golden coverage and later release accuracy gates remain required before VERIFIED/DONE."
+}
