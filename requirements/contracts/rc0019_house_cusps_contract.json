@@ -1,0 +1,26 @@
+{
+  "rcId": "RC-0019",
+  "bindingRequirementSha256": "a80a0024bd0f7cb412c797e1e818ee5c21fc7170ac036cf47d428dd28d0b51b7",
+  "bindingRequirement": "Ev başlangıç dereceleri gerçek hesaplamalarla üretilecek.",
+  "promotionCeiling": "TESTED",
+  "policy": {
+    "primarySystem": "PLACIDUS",
+    "requiredCuspCount": 12,
+    "angularCusps": {"1": "ASC", "10": "MC"},
+    "oppositeCusps": true,
+    "iterativeGeometry": true,
+    "polarGeometry": "fail closed unless caller explicitly selects visible Porphyry fallback",
+    "forbidLookupTableCusps": true,
+    "forbidSilentFallback": true
+  },
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/western/asc_mc.dart",
+    "lib/src/calculation_core/western/placidus_houses.dart",
+    "lib/src/calculation_core/western/porphyry_houses.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/western/placidus_houses_test.dart",
+    "test/calculation_core/western/porphyry_houses_test.dart"
+  ],
+  "verificationBlocker": "Independent authoritative multi-location/multi-epoch Placidus cusp golden vectors and end-to-end birth-input→angles→12-cusp propagation remain required before VERIFIED/DONE."
+}
