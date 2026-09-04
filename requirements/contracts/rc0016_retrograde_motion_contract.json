@@ -1,0 +1,27 @@
+{
+  "rcId": "RC-0016",
+  "bindingRequirementSha256": "89565f9942d6b0d1d67cc1ebd0dc270d42a546387d21645ee8659c57effe8ef3",
+  "bindingRequirement": "Retrograde durumları hesaplanacak.",
+  "promotionCeiling": "TESTED",
+  "policy": {
+    "source": "physical geocentric ecliptic longitude velocity",
+    "classification": {
+      "retrograde": "longitudeSpeedDegreesPerDay < -stationaryThresholdDegreesPerDay",
+      "stationary": "abs(longitudeSpeedDegreesPerDay) <= stationaryThresholdDegreesPerDay",
+      "direct": "longitudeSpeedDegreesPerDay > stationaryThresholdDegreesPerDay"
+    },
+    "defaultStationaryThresholdDegreesPerDay": 0.0001,
+    "forbidPositionOnlyGuess": true,
+    "forbidHardcodedBodyStatus": true,
+    "requireFiniteVelocity": true
+  },
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/ephemeris/ephemeris.dart",
+    "lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/retrograde_motion_test.dart",
+    "test/calculation_core/de440s_ephemeris_provider_test.dart"
+  ],
+  "verificationBlocker": "Independent official multi-epoch planetary apparent-motion golden coverage and broader release astronomy accuracy gates remain required before VERIFIED/DONE."
+}
