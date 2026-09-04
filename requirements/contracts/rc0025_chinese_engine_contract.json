@@ -1,0 +1,17 @@
+{
+  "rcId": "RC-0025",
+  "bindingRequirementSha256": "7928668d91de1f8a969ddecd3ccc9615445cf1114c55a4e457371e417a48de2c",
+  "requirement": "Çin astrolojisi ayrı bir hesaplama motoruna sahip olacak.",
+  "promotionCeiling": "TESTED",
+  "engineFile": "lib/src/calculation_core/chinese/chinese_astrology_engine.dart",
+  "engineId": "chinese-astrology",
+  "mustProve": [
+    "ChineseAstrologyEngine implements the common CalculationEngine contract without importing western, Vedic or BaZi engines",
+    "the engine has its own chinese-astrology engine identity and fail-closes foreign manifests",
+    "a pre-resolved traditional cycle year is mapped deterministically into the 60-year sexagenary cycle",
+    "heavenly-stem and earthly-branch indices are derived from the same normalized sexagenary index",
+    "pre-reference years use mathematical floor-mod semantics instead of negative remainders",
+    "the engine does not invent Chinese New Year or solar-term boundaries without a versioned calendar source"
+  ],
+  "verificationBlocker": "Versioned Chinese calendar/solar-term boundary resolution, authoritative multi-era golden vectors, full Chinese astrology rule coverage and end-to-end date/location→calendar→Chinese engine→UI integration remain required before VERIFIED/DONE."
+}
