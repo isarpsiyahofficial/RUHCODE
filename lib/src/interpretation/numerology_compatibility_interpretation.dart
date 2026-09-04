@@ -1,4 +1,4 @@
-import '../calculation_core/numerology/compatibility.dart';
+import '../domain/models/numerology_compatibility_models.dart';
 import 'interpretation_engine.dart';
 
 final class NumerologyCompatibilityInterpretationKey {
