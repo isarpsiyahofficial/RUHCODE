@@ -1,0 +1,25 @@
+{
+  "rcId": "RC-0024",
+  "bindingRequirementSha256": "2397f233abee6863122c12941998ccf61d4995ad22cea3d5e58fdc6702efaaf9",
+  "requirement": "Vedik astroloji ayrı bir hesaplama motoruna sahip olacak.",
+  "promotionCeiling": "TESTED",
+  "engineFile": "lib/src/calculation_core/vedic/vedic_astrology_engine.dart",
+  "engineId": "vedic-astrology",
+  "requiredInputs": [
+    "CalculationManifest",
+    "List<EclipticState>",
+    "explicit ayanamshaDegrees"
+  ],
+  "requiredOutputs": [
+    "CalculationResult<VedicChart>"
+  ],
+  "mustProve": [
+    "VedicAstrologyEngine implements CalculationEngine independently of the western engine",
+    "engine requires an explicit sidereal zodiac manifest and ayanamsha identifier",
+    "tropical astronomical longitudes are deterministically transformed to normalized sidereal placements using the supplied ayanamsha value",
+    "foreign engine manifests and invalid calculation manifests fail closed",
+    "mixed instant, source or data-version ephemeris provenance fails closed",
+    "duplicate body states and invalid ayanamsha values fail closed"
+  ],
+  "verificationBlocker": "Authoritative ayanamsha calculation/golden vectors, complete Vedic rule coverage and end-to-end birth-input to ephemeris to Vedic engine to UI integration remain required before VERIFIED/DONE."
+}
