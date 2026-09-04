@@ -2,32 +2,24 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-04_0915_rc0008_rc0017_verified_promotions.md`
+`automation_runs/2026-09-04_1100_rc0013_common_astronomy_core.md`
 
 ## Bu turda doğrulanmış ilerleme
 
-1. Master TODO/index, binding şartname, progress ve physical requirement matrix yeniden okundu.
-2. RC-0008/0009/0010 için deterministic time + bundled IANA tzdb + DST/history dedicated contract/validator/compiled Flutter gate eklendi ve physical matrix promotion görüldü.
-3. RC-0011/0012 için coordinate/timezone identity + same-name city disambiguation dedicated contract/validator/compiled Flutter gate eklendi ve physical matrix promotion görüldü.
-4. RC-0017 için merkezi Julian Day çekirdeği existing USNO/J2000 reference evidence ile requirement-specific CI/promotion gate'e bağlandı ve physical `TESTED` promotion görüldü.
-5. RC-0007 ile RC-0013→0016 kanıtsız ilerletilmedi; interface/code varlığı tek başına requirement completion sayılmadı.
+1. Binding şartname, progress ve physical requirement matrix yeniden okundu.
+2. RC-0013 için packaged DE440s ortak astronomi çekirdeği ayrı contract + fail-closed validator + dedicated Flutter CI gate'e bağlandı.
+3. Gate yalnız interface marker'ı aramıyor; asset loader, DAF parser, SPK Type-2 evaluator, body/center graph evaluator ve compiled runtime/accuracy testlerini zorunlu tutuyor.
+4. Dedicated CI run `33851109923` bütünüyle SUCCESS oldu; validator, altı compiled ephemeris/runtime/JPL regression dosyası ve promotion step'i geçti.
+5. Physical bot promotion commit `f219bf02c1c802df626e889876234f96c4296151` ile `RC-0013 = TESTED + blocked=YES` oldu.
+6. RC-0014→RC-0016 enum/interface varlığına bakılarak yükseltilmedi; gerçek body/node/motion output evidence ayrı ayrı gerekecek.
 
-Physical durumlar:
+Ana commitler:
 
-- RC-0008 = TESTED + blocked=YES
-- RC-0009 = TESTED
-- RC-0010 = TESTED
-- RC-0011 = TESTED + blocked=YES
-- RC-0012 = TESTED + blocked=YES
-- RC-0017 = TESTED + blocked=YES
+- `a7c8c06c5321262f9f9a59e7cbcbff54d297bb19` — RC-0013 common astronomy core contract
+- `92254e5552373a4fa7537c93fd0ce81c2235445d` — dedicated RC-0013 CI gate
+- `f219bf02c1c802df626e889876234f96c4296151` — physical RC-0013 TESTED promotion
+- `7b651375be0b53a22afb072e4156f700e75e640b` — checkpoint
 
-Ana workflow/promotion commitleri:
-
-- `069b427e4d793c851e95e1f13d7c6718d02e68f1` — RC-0008→0010 gate
-- `2e69ecd906e16d4224350cfbe963837d3e872816` — RC-0011/0012 gate
-- `d4251b26efcfc7fdce499554d0b0d3d517aac9b9` — RC-0017 gate
-- `4da48b2530b4c83de2645dc8dfee78a0c801f8bf` — RC-0017 physical TESTED promotion
-
-Sonraki dependency: RC-0013→0016 real packaged ephemeris/common-core evidence'ını ayrı ayrı doğrulamak; AKİLES blocker'larını korurken RC-1436/1437, RC-1439 ve exact release/device kapılarını bağımsız ilerletmek.
+Sonraki dependency: RC-0014 için production packaged-DE440s body mapping/output; ardından RC-0015 lunar nodes ve RC-0016 motion/retrograde executable + golden gates. AKİLES blocker'ları, RC-1436/1437, RC-1439 ve exact release/device kapıları açık kalıyor.
 
 **FINAL: NO.**
