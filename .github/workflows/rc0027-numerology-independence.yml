@@ -1,0 +1,68 @@
+name: RC-0027 Numerology Independence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/numerology/**'
+      - 'test/calculation_core/numerology/**'
+      - 'requirements/contracts/rc0027_numerology_independence_contract.json'
+      - 'tools/requirements/validate_rc0027_numerology_independence.py'
+      - '.github/workflows/rc0027-numerology-independence.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0027 numerology independence
+        run: python tools/requirements/validate_rc0027_numerology_independence.py
+      - name: Execute numerology golden regressions
+        run: flutter test test/calculation_core/numerology/golden_vectors_test.dart
+      - name: Promote RC-0027 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0027_numerology_independence.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          r=next(x for x in rows if x['rc_id']=='RC-0027')
+          if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+          r['evidence_links']='requirements/contracts/rc0027_numerology_independence_contract.json|tools/requirements/validate_rc0027_numerology_independence.py|lib/src/calculation_core/numerology/|test/calculation_core/numerology/golden_vectors_test.dart|.github/workflows/rc0027-numerology-independence.yml'
+          r['notes']='Machine gate proves numerology production code is isolated from western/vedic/chinese/bazi/ephemeris calculation paths and executes compiled numerology golden vectors. TESTED only.'
+          r['blocked']='YES'
+          r['blocker']='Independent authoritative numerology-method review and complete end-to-end numerology UI coverage remain required before VERIFIED/DONE.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0027): record numerology independence TESTED'
+          git push origin HEAD:main
