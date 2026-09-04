@@ -1,0 +1,21 @@
+{
+  "rcId": "RC-0028",
+  "bindingRequirementSha256": "d2aebfddbd7dd0642fb6806721808ee717a0d49f894fde70547635f09aa0456e",
+  "requirement": "Bir sistemin sonucu başka bir sistemin hesaplama yöntemiyle oluşturulmayacak.",
+  "systemRoots": {
+    "western": "lib/src/calculation_core/western",
+    "vedic": "lib/src/calculation_core/vedic",
+    "chinese": "lib/src/calculation_core/chinese",
+    "bazi": "lib/src/calculation_core/bazi",
+    "numerology": "lib/src/calculation_core/numerology"
+  },
+  "allowedSharedRoots": [
+    "lib/src/calculation_core/ephemeris",
+    "lib/src/calculation_core/time",
+    "lib/src/calculation_core/calculation_engine.dart",
+    "lib/src/domain"
+  ],
+  "rule": "A system calculation root may use shared neutral infrastructure but may not import or invoke another named system calculation root.",
+  "promotionCeiling": "TESTED",
+  "verifiedDoneBlocker": "End-to-end result provenance across all system entry points and later-added calculation systems must be proven before VERIFIED/DONE."
+}
