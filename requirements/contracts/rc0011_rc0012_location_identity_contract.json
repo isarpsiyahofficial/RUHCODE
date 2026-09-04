@@ -1,0 +1,28 @@
+{
+  "contract_id": "RC-0011-RC-0012-LOCATION-IDENTITY",
+  "binding_requirements": {
+    "RC-0011": "Kullanıcı doğum yeri seçtiğinde koordinat ile zaman dilimi ayrı ayrı doğrulanacak.",
+    "RC-0012": "Aynı şehir ismine sahip farklı ülkelerdeki şehirlerin birbirine karışması engellenecek."
+  },
+  "runtime_contract": {
+    "city_identity_fields": ["stable id", "canonical name", "country code", "country name", "admin area"],
+    "coordinate_fields": ["latitude", "longitude"],
+    "timezone_field": "IANA timezone id",
+    "coordinate_timezone_independence": "coordinates and IANA timezone are distinct required fields; neither may be inferred from the other at runtime selection time",
+    "same_name_policy": "same-name city records remain distinct by stable id and visibly disambiguated by admin area/country; search must not collapse them",
+    "validation": {
+      "latitude": "-90..90",
+      "longitude": "-180..180",
+      "timezone": "non-empty IANA id, dataset release gate validates packaged ids"
+    }
+  },
+  "evidence": [
+    "lib/src/data/location/city_catalog.dart",
+    "test/data/city_catalog_test.dart",
+    "tools/location/validate_city_catalog_contract.py",
+    "requirements/data_manifests/cities.json",
+    "tools/requirements/validate_rc0011_rc0012_location_identity.py",
+    ".github/workflows/rc0011-rc0012-location-identity.yml"
+  ],
+  "promotion_policy": "Machine evidence may promote RC-0011 and RC-0012 to TESTED. VERIFIED/DONE require end-to-end birth-place selection UI/runtime evidence against the physically bundled city dataset."
+}
