@@ -1,0 +1,78 @@
+name: RC-0005 AKILES Reference Provenance
+
+on:
+  push:
+    paths:
+      - "requirements/contracts/rc0005_akiles_reference_blocker.json"
+      - ".github/workflows/rc0005-akiles-reference.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  provenance:
+    name: Record fail-closed AKILES reference blocker
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate blocker contract and persist matrix state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+
+          contract_path = Path('requirements/contracts/rc0005_akiles_reference_blocker.json')
+          data = json.loads(contract_path.read_text(encoding='utf-8'))
+          if data.get('schema') != 'ruh-code.rc0005-akiles-reference.v1' or data.get('requirement') != 'RC-0005':
+              raise SystemExit('RC0005_BLOCKER_FAIL: invalid provenance blocker contract')
+          required = data.get('required_evidence') or {}
+          required_keys = {'source_repository_or_artifact','exact_version_or_commit','artifact_sha256','capture_date','reference_scope'}
+          if set(required) != required_keys:
+              raise SystemExit('RC0005_BLOCKER_FAIL: required evidence schema drifted')
+          if data.get('status') == 'BLOCKED_REFERENCE_PROVENANCE_MISSING' and any(required.values()):
+              raise SystemExit('RC0005_BLOCKER_FAIL: blocked contract contains partial provenance; resolve atomically')
+
+          import subprocess
+          subprocess.run(['python','tools/requirements/materialize_requirement_matrix.py'], check=True)
+          path = Path('requirements/requirement_state.csv')
+          with path.open('r', encoding='utf-8', newline='') as handle:
+              reader = csv.DictReader(handle); fields = reader.fieldnames; rows = list(reader)
+          if not fields: raise SystemExit('RC0005_BLOCKER_FAIL: matrix header missing')
+          found = False
+          for row in rows:
+              if row['rc_id'] != 'RC-0005': continue
+              found = True
+              if row['source_text_sha256'] != '047f1f44a1c2f58c3a6abc0ab0b928080356dcee601408c444208cdb83c92b67':
+                  raise SystemExit('RC0005_BLOCKER_FAIL: binding requirement hash drifted')
+              if row['status'] == 'DONE':
+                  raise SystemExit('RC0005_BLOCKER_FAIL: DONE cannot coexist with missing reference provenance')
+              row['blocked'] = 'YES'
+              row['blocker'] = 'Exact AKİLES latest-version source/artifact, immutable version/commit, integrity hash, capture date and reference scope are missing.'
+              row['evidence_links'] = 'requirements/contracts/rc0005_akiles_reference_blocker.json'
+              row['notes'] = 'Fail-closed blocker recorded after RUHCODE code search and accessible installed GitHub repository search found no exact AKİLES reference provenance. This does not promote implementation lifecycle state.'
+          if not found: raise SystemExit('RC0005_BLOCKER_FAIL: RC-0005 row missing')
+          with path.open('w', encoding='utf-8', newline='') as handle:
+              writer = csv.DictWriter(handle, fieldnames=fields, lineterminator='\n'); writer.writeheader(); writer.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then echo "RC-0005 blocker already persisted."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add requirements/requirement_state.csv
+          git commit -m "requirements(rc0005): persist AKILES provenance blocker"
+          git push origin main
