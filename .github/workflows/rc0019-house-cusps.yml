@@ -1,0 +1,71 @@
+name: RC-0019 Real House Cusps
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/western/asc_mc.dart'
+      - 'lib/src/calculation_core/western/placidus_houses.dart'
+      - 'lib/src/calculation_core/western/porphyry_houses.dart'
+      - 'test/calculation_core/western/placidus_houses_test.dart'
+      - 'test/calculation_core/western/porphyry_houses_test.dart'
+      - 'requirements/contracts/rc0019_house_cusps_contract.json'
+      - 'tools/requirements/validate_rc0019_house_cusps.py'
+      - '.github/workflows/rc0019-house-cusps.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0019 binding and house-cusp contract
+        run: python tools/requirements/validate_rc0019_house_cusps.py
+      - name: Execute Placidus and explicit Porphyry regressions
+        run: flutter test test/calculation_core/western/placidus_houses_test.dart test/calculation_core/western/porphyry_houses_test.dart
+      - name: Promote RC-0019 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0019_house_cusps.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          r=next(x for x in rows if x['rc_id']=='RC-0019')
+          if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+          r['evidence_links']='requirements/contracts/rc0019_house_cusps_contract.json|tools/requirements/validate_rc0019_house_cusps.py|lib/src/calculation_core/western/asc_mc.dart|lib/src/calculation_core/western/placidus_houses.dart|lib/src/calculation_core/western/porphyry_houses.dart|test/calculation_core/western/placidus_houses_test.dart|test/calculation_core/western/porphyry_houses_test.dart|.github/workflows/rc0019-house-cusps.yml'
+          r['notes']='Machine gate proves 12 real house-start longitudes are generated through deterministic Placidus spherical/iterative geometry with ASC/MC angular cusps, opposite-cusp invariants, ordered-cycle validation, and explicit visible Porphyry fallback only when requested. TESTED only.'
+          r['blocked']='YES'
+          r['blocker']='Independent authoritative multi-location/multi-epoch Placidus cusp golden vectors and end-to-end birth-input→angles→12-cusp propagation remain required before VERIFIED/DONE.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0019): record real house cusps TESTED'
+          git push origin HEAD:main
