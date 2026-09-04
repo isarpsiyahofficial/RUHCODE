@@ -1,0 +1,24 @@
+{
+  "rcId": "RC-0023",
+  "bindingRequirementSha256": "7fa63f3026587a914a87e825bc572de5f39e23f9b4dd31a256f8004f619a91db",
+  "requirement": "Batı astrolojisi ayrı bir hesaplama motoruna sahip olacak.",
+  "promotionCeiling": "TESTED",
+  "engineFile": "lib/src/calculation_core/western/western_astrology_engine.dart",
+  "engineId": "western-astrology",
+  "requiredInputs": [
+    "CalculationManifest",
+    "List<EclipticState>",
+    "HouseCusps"
+  ],
+  "requiredOutputs": [
+    "CalculationResult<WesternNatalChart>"
+  ],
+  "mustProve": [
+    "WesternAstrologyEngine implements CalculationEngine",
+    "western chart assembly stays under calculation_core/western",
+    "foreign engine manifests fail closed",
+    "ephemeris and manifest data-version mismatches fail closed",
+    "engine produces WesternNatalChart through WesternNatalChartAssembler"
+  ],
+  "verificationBlocker": "End-to-end birth-input to ephemeris, house calculation, western engine and UI integration plus broader golden/release gates remain required before VERIFIED/DONE."
+}
