@@ -1,0 +1,17 @@
+{
+  "rcId": "RC-0026",
+  "bindingRequirementSha256": "fd1604746f72af43058c07da3752826b1abb4405d370626462f00a3e582763a5",
+  "requirement": "BaZi ayrı bir hesaplama motoruna sahip olacak.",
+  "promotionCeiling": "TESTED",
+  "engineFile": "lib/src/calculation_core/bazi/bazi_engine.dart",
+  "engineId": "bazi",
+  "mustProve": [
+    "BaZiEngine implements the common CalculationEngine contract with a BaZi-specific identity",
+    "BaZi does not call the generic Chinese astrology engine to produce its result",
+    "year, month, day and hour pillars remain four independently supplied and validated pillar values",
+    "heavenly-stem indices are constrained to 0..9 and earthly-branch indices to 0..11",
+    "foreign engine and invalid manifests fail closed",
+    "the engine does not invent calendar, solar-term or day-boundary derivation without versioned evidence"
+  ],
+  "verificationBlocker": "Versioned civil-time/location→solar-term/calendar→four-pillar derivation, authoritative multi-era BaZi golden vectors, complete rule coverage and end-to-end UI integration remain required before VERIFIED/DONE."
+}
