@@ -1,0 +1,24 @@
+{
+  "rcId": "RC-0020",
+  "bindingRequirementSha256": "9c31e40021da13706842115a67ca713293cbe166cf1c854526a441a673e0273a",
+  "requirement": "Güneş doğuşu ve batışı gerçek konum ve tarihe göre hesaplanacak.",
+  "promotionCeiling": "TESTED",
+  "requiredRuntimeComponents": [
+    "lib/src/calculation_core/solar/solar_events.dart",
+    "lib/src/calculation_core/time/civil_calendar.dart",
+    "lib/src/calculation_core/time/julian_day.dart"
+  ],
+  "requiredCompiledTests": [
+    "test/calculation_core/solar_events_test.dart"
+  ],
+  "mustProve": [
+    "explicit civil date and latitude/longitude inputs",
+    "apparent sunrise zenith 90.83333333333333 degrees",
+    "UTC sunrise solar-noon sunset calculation",
+    "longitude and date materially affect event times",
+    "polar day and polar night are explicit states",
+    "invalid coordinates fail closed",
+    "no device-clock or timezone/DST dependency in the astronomy layer"
+  ],
+  "verificationBlocker": "Independent authoritative multi-location/multi-date sunrise/sunset golden vectors and end-to-end timezone localization remain required before VERIFIED/DONE."
+}
