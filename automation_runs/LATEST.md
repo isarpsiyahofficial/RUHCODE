@@ -2,27 +2,25 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-04_1253_rc0014_physical_body_provider.md`
+`automation_runs/2026-09-04_1453_rc0014_rc0016_motion_gate.md`
 
 ## Bu turda doğrulanmış ilerleme
 
-1. Binding progress ve physical requirement matrix yeniden okundu; RC-0014/0015/0016 fiziksel promotion olmadan yükseltilmedi.
-2. RC-0014 için packaged DE440s loader/parser/SPK graph katmanını shared `EphemerisProvider` arayüzüne bağlayan production `De440sEphemerisProvider` eklendi.
-3. Sun/Moon/Mercury/Venus/Mars/Jupiter/Saturn/Uranus/Neptune/Pluto explicit NAIF mapping, Earth-relative state, TT→ET/TDB dönüşümü, J2000-ecliptic position/velocity ve fail-closed coverage üretimi uygulandı.
-4. Mean/true lunar node substitution açıkça reddedildi; RC-0015 ayrı executable algoritma/golden kanıt olmadan ilerletilmiyor.
-5. Compiled packaged-provider testi, RC-0014 binding contract, fail-closed validator ve dedicated CI gate eklendi.
-6. RC-0014 workflow ilk exact commit için pending durumdaydı; strict-double arithmetic hardening sonrası fresh exact-HEAD validation gerekiyor. Bu nedenle matrixte RC-0014 hâlâ `NOT_STARTED`; TESTED iddiası yapılmıyor.
+1. Physical requirement matrix yeniden okundu; önceki bekleyen RC-0014 promotion'ın gerçekten tamamlandığı doğrulandı: `RC-0014 = TESTED + blocked=YES`, promotion commit `378f62c7c029c2f437aee8ce7a9682ed97a6befb`.
+2. RC-0015 kanıtsız yükseltilmedi. `meanNode/trueNode` enum varlığı executable lunar-node hesabı değildir; authoritative algorithm + golden evidence hâlâ gerekli.
+3. RC-0016 için binding contract, kapsamlı compiled motion regression, fail-closed static validator ve dedicated CI/promotion gate eklendi.
+4. Motion sınıflaması signed finite geocentric ecliptic longitude velocity üzerinden direct/stationary/retrograde üretmek zorunda; position-only tahmin veya hardcoded body-status kabul edilmiyor.
+5. Packaged DE440s üzerinde Mercury/Venus/Mars/Jupiter/Saturn/Uranus/Neptune/Pluto velocity→motion sınıflaması compiled testte çalıştırılıyor; stationary threshold sınırları ve invalid threshold fail-closed ayrıca test ediliyor.
+6. Dedicated RC-0016 run `33870235754`, exact head `36a583eedbb1039c374adb281fbefd0998842267`; son kontrolde queued. SUCCESS + physical bot matrix promotion görülmeden RC-0016 TESTED sayılmıyor.
 
 Ana commitler:
 
-- `4b624b3710853835083063aadd8d57304f6663a7` — production DE440s provider
-- `a60ab7ad05caa1cdf634281594b8af04fe02e1d1` — compiled provider tests
-- `6d4c0fdbd6b35a9ae35ee983c857b29c7fd8bd01` — RC-0014 contract
-- `9a8261e9d6f443363e8d5c8d14ad1837862334f9` — RC-0014 validator
-- `88c0fd115681fa167a740a79af2a459bb860dd0c` — RC-0014 CI
-- `f78a4bc79e2b6899a357d3d00a01a4d3979b0adb` — arithmetic hardening
-- `0217e9050cb83a06668aa6ba7413920797c0515d` — checkpoint
+- `04e9c6b6667b2217cfefae26e8e2ae4aea0bfbbf` — RC-0016 contract
+- `1a2f610c832e8e7538d05b953b0e0deeb7bfb54e` — compiled motion tests
+- `f18513e07949fa2f514b47efbebd6c857bd2f598` — RC-0016 validator
+- `36a583eedbb1039c374adb281fbefd0998842267` — RC-0016 CI/promotion gate
+- `fcb4117538c2e295b3c6239586e8bb0a81d84262` — automation checkpoint
 
-Sonraki dependency: exact RC-0014 CI sonucu → physical matrix promotion doğrulaması → ayrı RC-0015 lunar-node motoru/golden evidence → ayrı RC-0016 physical motion gate. AKİLES, RC-1436/1437, RC-1439 ve exact release/device kapıları açık kalıyor.
+Sonraki dependency: exact RC-0016 CI sonucu → physical matrix promotion doğrulaması/failure root-cause → RC-0015 authoritative lunar-node algorithm + golden evidence. AKİLES, RC-1436/1437, RC-1439 ve exact signed clean-checkout/device release kapıları açık kalıyor.
 
 **FINAL: NO.**
