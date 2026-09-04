@@ -45,8 +45,19 @@ def main() -> None:
         require(marker in runtime, f'RC-0020 runtime marker missing: {marker}')
 
     require('DateTime.now()' not in runtime, 'RC-0020 solar astronomy must not depend on device clock')
-    require('timezone' not in runtime.lower() or 'timezone layer' in runtime.lower(),
-            'RC-0020 astronomy layer must not silently localize timezone/DST')
+    # Comments may correctly document that localization belongs to a higher layer.
+    # Fail only on concrete timezone/local-clock APIs inside the astronomy runtime.
+    for forbidden in (
+        'TZDateTime',
+        'getLocation(',
+        'initializeTimeZones(',
+        '.toLocal()',
+        'timeZoneOffset',
+        "package:timezone/",
+        "package:flutter_timezone/",
+    ):
+        require(forbidden not in runtime,
+                f'RC-0020 astronomy layer must not silently localize timezone/DST: {forbidden}')
 
     for marker in (
         'NOAA New York 2026-08-01 sunrise agrees within one minute',
