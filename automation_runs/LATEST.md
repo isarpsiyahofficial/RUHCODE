@@ -2,16 +2,16 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-05_0057_rc0020_rc0026_engine_progress.md`
+`automation_runs/2026-09-05_0252_rc0025_rc0028_progress.md`
 
 ## Bu turda doğrulanmış ilerleme
 
-1. Physical matrix yeniden okundu: RC-0021, RC-0022 ve RC-0023 artık `TESTED + blocked=YES`; RC-0020 hâlâ physical promotion olmadan NOT_STARTED.
-2. RC-0024 ayrı Vedik hesaplama motoru production code + compiled test + binding validator + dedicated CI ile ilerletildi ve bot promotion `de09bc914ff6818c7687571a7ed96cf448e6ca1a` ile fiziksel olarak `TESTED + blocked=YES` oldu.
-3. RC-0025 için ayrı `ChineseAstrologyEngine`, compiled 60-year sexagenary-cycle regressions, binding contract, fail-closed validator ve dedicated CI/promotion gate eklendi. Chinese New Year/solar-term sınırları kanıtsız uydurulmuyor; physical bot promotion henüz görülmediği için statü yükseltilmedi.
-4. RC-0026 için ayrı `BaZiEngine`, dört bağımsız pillar input'u, stem/branch range doğrulaması, compiled tests, binding contract, fail-closed validator ve dedicated CI/promotion gate eklendi. Civil-time→pillar derivation kanıtsız uydurulmuyor; physical bot promotion henüz görülmediği için statü yükseltilmedi.
-5. RC-0020 corrected solar-events gate için hâlâ bot promotion yok; aynı requirement açık tutuluyor.
+1. RC-0025'in ilk kırmızı CI root cause'u exact logdan bulundu: production source calendar-boundary ownership'i semantic olarak ayırmasına rağmen validator explicit `Chinese New Year` açıklaması istiyordu. Production sözleşme açıklaması `f5ee2924eb5c1112f38237a2a6e8b3f87df21d55` ile düzeltildi. Corrected run concurrency kuyruğunda job başlamadan cancelled olduğu için RC-0025 hâlâ physical promotion bekliyor.
+2. RC-0026 kırmızı CI root cause'u düzeltildi: test var olmayan `CalculationValidity.invalid` kullanıyordu; canonical `CalculationValidity.error` ile düzeltildi (`0fd2332c753ae830793ed28bce1471aa76cb3e4c`). Bot promotion `5b4083585337774d709f783bfb309bd6d5ed11a2` ile **RC-0026 = TESTED + blocked=YES** fiziksel olarak doğrulandı.
+3. RC-0027 için numeroloji production ağacının Western/Vedic/Chinese/BaZi/ephemeris hesaplama yollarından bağımsızlığını tarayan fail-closed contract + validator + CI eklendi. Pythagorean/Chaldean/Lo Shu compiled golden vectors aynı gate'te çalıştırılıyor. Promotion henüz fiziksel görülmedi.
+4. RC-0028 için Western/Vedic/Chinese/BaZi/Numerology named system root'ları arasında cross-system calculation importlarını yasaklayan architecture contract + validator + representative compiled regression CI eklendi. Promotion henüz fiziksel görülmedi.
+5. RC-0020 corrected solar-events gate physical promotion eksikliği açık tutuluyor; hiçbir pending requirement yalnız kod yazıldığı için yükseltilmedi.
 
-Sonraki dependency: RC-0025/26 exact CI + physical matrix promotion doğrulaması → RC-0020 corrected gate root-cause/retrigger doğrulaması → RC-0027/28 architecture independence. Global editorial/AKİLES/astronomy/UI/signed clean-checkout/real-device release blocker'ları açık.
+Sonraki dependency: RC-0025 corrected physical rerun/promotion → RC-0027/28 exact CI + promotion/root-cause → RC-0020 physical promotion → RC-0029+.
 
 **FINAL: NO.**
