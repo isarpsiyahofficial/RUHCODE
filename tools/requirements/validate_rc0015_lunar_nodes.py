@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import csv, json
+import csv, json, re
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 CONTRACT=ROOT/'requirements/contracts/rc0015_lunar_nodes_contract.json'
@@ -33,14 +33,26 @@ def main() -> None:
         'descendingNodeDegrees',
         '125.0445479',
         '1934.1362891',
-        '-1.4979',
-        '-0.1500',
-        '-0.1226',
-        '+\n        0.1176',
-        '-\n        0.0801',
+        '1.4979',
+        '0.1500',
+        '0.1226',
+        '0.1176',
+        '0.0801',
         '_requireFiniteJd',
     ):
         require(needle in calc,f'RC-0015 lunar node algorithm marker missing: {needle}')
+
+    # Verify the intended signs/terms semantically while tolerating dartfmt line wrapping.
+    compact=re.sub(r'\s+',' ',calc)
+    for pattern in (
+        r'-\s*1\.4979\s*\*\s*_sinDegrees\(2\.0\s*\*\s*\(d\s*-\s*f\)\)',
+        r'-\s*0\.1500\s*\*\s*_sinDegrees\(m\)',
+        r'-\s*0\.1226\s*\*\s*_sinDegrees\(2\.0\s*\*\s*d\)',
+        r'\+\s*0\.1176\s*\*\s*_sinDegrees\(2\.0\s*\*\s*f\)',
+        r'-\s*0\.0801\s*\*\s*_sinDegrees\(2\.0\s*\*\s*\(mPrime\s*-\s*f\)\)',
+    ):
+        require(re.search(pattern,compact) is not None,
+                f'RC-0015 lunar node signed periodic term missing: {pattern}')
 
     require('DateTime.now()' not in calc,'RC-0015 lunar nodes must not depend on device clock')
     require('Lunar nodes are calculated by the dedicated node engine.' in provider,
