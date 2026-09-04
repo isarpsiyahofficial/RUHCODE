@@ -1,0 +1,25 @@
+{
+  "rc_id": "RC-0006",
+  "requirement": "AKİLES doğrudan kopyalanmayacak; doğruluğu kanıtlanmış hesaplama yöntemleri yeni ve modüler Ruh Code çekirdeğine aktarılacak.",
+  "architecture_contract": {
+    "new_core_root": "lib/src/calculation_core",
+    "engine_abstraction": "lib/src/calculation_core/calculation_engine.dart",
+    "interpretation_boundary": "lib/src/interpretation/interpretation_engine.dart",
+    "required_module_roots": [
+      "bazi", "chinese", "daily", "ephemeris", "lunar", "numerology",
+      "planetary_hours", "solar", "time", "transits", "vedic", "western"
+    ],
+    "rules": [
+      "Calculation methods live under the Ruh Code calculation_core boundary.",
+      "Calculation and interpretation engines remain separate abstractions.",
+      "Subsystems are separated into domain module roots rather than a monolithic AKILES-derived engine.",
+      "No RC-0006 VERIFIED/DONE promotion is allowed until RC-0005 provides immutable AKİLES provenance and method-level comparison evidence proving what was transferred and independently revalidated."
+    ]
+  },
+  "verification_state": {
+    "modular_ruh_code_core_machine_verifiable": true,
+    "akiles_non_copy_and_method_transfer_provenance_available": false,
+    "full_requirement_proven": false,
+    "blocker": "RC-0005 exact AKİLES source/version/hash and method-level provenance are missing."
+  }
+}
