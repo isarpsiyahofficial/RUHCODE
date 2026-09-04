@@ -1,0 +1,37 @@
+{
+  "contract_id": "RC-0008-RC-0010-TIME-DETERMINISM",
+  "binding_requirements": {
+    "RC-0008": "Hesaplamaların kullanıcı cihazının saatine güvenmesi yerine gerçek tarih, zaman dilimi ve konum verisi üzerinden deterministik çalışması sağlanacak.",
+    "RC-0009": "Tarihsel hesaplamalarda IANA timezone verisi kullanılacak.",
+    "RC-0010": "Yaz saati ve geçmiş tarih değişimleri doğru şekilde hesaba katılacak."
+  },
+  "runtime_contract": {
+    "timezone_database": "IANA tzdb via package:timezone/data/latest_all.dart",
+    "declared_tzdb_version": "2025c",
+    "wall_clock_resolution": {
+      "ambiguous_default": "reject",
+      "ambiguous_explicit_policies": ["earlier", "later"],
+      "nonexistent_default": "reject",
+      "nonexistent_explicit_policy": "shiftForward"
+    },
+    "deterministic_inputs": ["explicit UTC instant", "IANA zone ID", "civil date/time", "explicit ambiguity policy when needed"],
+    "device_clock_rule": "calculation-core date/time resolution APIs must accept an explicit UTC instant or wall-clock value; DateTime.now() is forbidden in the calculation-core time module",
+    "historical_cases": [
+      "America/New_York 2026 fall-back ambiguity",
+      "America/New_York 2026 spring-forward gap",
+      "Pacific/Apia 2011-12-30 skipped civil day",
+      "Asia/Kolkata half-hour offset",
+      "Asia/Kathmandu 45-minute offset",
+      "Pacific/Kiritimati UTC+14 civil-day boundary"
+    ]
+  },
+  "evidence": [
+    "lib/src/calculation_core/time/time_zone_runtime.dart",
+    "lib/src/calculation_core/time/daily_date_context.dart",
+    "test/calculation_core/time_zone_runtime_test.dart",
+    "test/calculation_core/daily_date_context_test.dart",
+    "tools/requirements/validate_rc0008_rc0010_time_determinism.py",
+    ".github/workflows/rc0008-rc0010-time-determinism.yml"
+  ],
+  "promotion_policy": "Machine evidence may promote RC-0008, RC-0009 and RC-0010 to TESTED. VERIFIED/DONE require the global release/accuracy gates and any independent provenance demanded by later requirements."
+}
