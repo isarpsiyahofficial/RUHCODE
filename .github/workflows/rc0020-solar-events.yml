@@ -1,0 +1,70 @@
+name: RC-0020 Real Solar Events
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/solar/solar_events.dart'
+      - 'lib/src/calculation_core/time/civil_calendar.dart'
+      - 'lib/src/calculation_core/time/julian_day.dart'
+      - 'test/calculation_core/solar_events_test.dart'
+      - 'requirements/contracts/rc0020_solar_events_contract.json'
+      - 'tools/requirements/validate_rc0020_solar_events.py'
+      - '.github/workflows/rc0020-solar-events.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0020 binding and solar-event contract
+        run: python tools/requirements/validate_rc0020_solar_events.py
+      - name: Execute solar-event regressions
+        run: flutter test test/calculation_core/solar_events_test.dart
+      - name: Promote RC-0020 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0020_solar_events.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          r=next(x for x in rows if x['rc_id']=='RC-0020')
+          if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+          r['evidence_links']='requirements/contracts/rc0020_solar_events_contract.json|tools/requirements/validate_rc0020_solar_events.py|lib/src/calculation_core/solar/solar_events.dart|lib/src/calculation_core/time/civil_calendar.dart|lib/src/calculation_core/time/julian_day.dart|test/calculation_core/solar_events_test.dart|.github/workflows/rc0020-solar-events.yml'
+          r['notes']='Machine gate proves apparent sunrise/noon/sunset are deterministically computed from explicit civil date and validated coordinates using the astronomical solar-event runtime, with polar-day/night and fail-closed coordinate behavior. TESTED only.'
+          r['blocked']='YES'
+          r['blocker']='Broader independent authoritative multi-location/multi-date sunrise/sunset golden vectors and end-to-end timezone localization remain required before VERIFIED/DONE.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0020): record real solar events TESTED'
+          git push origin HEAD:main
