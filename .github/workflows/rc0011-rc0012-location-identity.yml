@@ -1,0 +1,91 @@
+name: RC-0011 RC-0012 Location Identity Contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/data/location/**'
+      - 'test/data/city_catalog_test.dart'
+      - 'tools/location/**'
+      - 'requirements/data_manifests/cities.json'
+      - 'requirements/contracts/rc0011_rc0012_location_identity_contract.json'
+      - 'tools/requirements/validate_rc0011_rc0012_location_identity.py'
+      - '.github/workflows/rc0011-rc0012-location-identity.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Install Flutter dependencies
+        run: flutter pub get
+      - name: Validate packaged city dataset contract
+        run: python tools/location/validate_city_catalog_contract.py
+      - name: Validate RC-0011/0012 requirement contract
+        run: python tools/requirements/validate_rc0011_rc0012_location_identity.py
+      - name: Run city identity regressions
+        run: flutter test test/data/city_catalog_test.dart
+      - name: Promote RC-0011 RC-0012 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/location/validate_city_catalog_contract.py
+          python tools/requirements/validate_rc0011_rc0012_location_identity.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8', newline='')))
+          fields=rows[0].keys()
+          evidence='requirements/contracts/rc0011_rc0012_location_identity_contract.json|tools/requirements/validate_rc0011_rc0012_location_identity.py|lib/src/data/location/city_catalog.dart|test/data/city_catalog_test.dart|tools/location/validate_city_catalog_contract.py|requirements/data_manifests/cities.json|.github/workflows/rc0011-rc0012-location-identity.yml'
+          notes={
+            'RC-0011':'Machine gate proves city records independently require and validate coordinates and IANA timezone identifiers; packaged city release contract requires valid IANA ids. End-to-end birth-place selection binding remains required.',
+            'RC-0012':'Machine gate proves same-name city records retain distinct stable ids and visible admin/country disambiguation and regression coverage. End-to-end selection UI evidence remains required.'
+          }
+          found=set()
+          for r in rows:
+              if r['rc_id'] in notes:
+                  found.add(r['rc_id'])
+                  if r['status'] not in ('VERIFIED','DONE'):
+                      r['status']='TESTED'
+                  r['evidence_links']=evidence
+                  r['notes']=notes[r['rc_id']]
+                  r['blocked']='YES'
+                  r['blocker']='End-to-end birth-place selection UI/runtime must prove the selected stable city identity, coordinates and IANA timezone are propagated together without ambiguity before VERIFIED/DONE.'
+          missing={'RC-0011','RC-0012'}-found
+          if missing:
+              raise SystemExit(f'missing requirement rows: {sorted(missing)}')
+          with p.open('w', encoding='utf-8', newline='') as f:
+              w=csv.DictWriter(f, fieldnames=fields)
+              w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then
+            echo 'RC-0011/0012 matrix already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0011-0012): record location identity TESTED'
+          git push origin HEAD:main
