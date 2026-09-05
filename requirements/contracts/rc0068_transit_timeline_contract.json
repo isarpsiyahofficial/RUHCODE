@@ -1,0 +1,14 @@
+{
+  "requirements": {
+    "RC-0068": "Önemli transitler zaman çizelgesinde gösterilebilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/transit_timeline.dart",
+  "compiled_test": "test/calculation_core/western/transit_timeline_test.dart",
+  "invariants": [
+    "Important transit events are derived from natal-transit comparison snapshots and retain explicit TT instants.",
+    "The importance policy is explicit, deterministic and configurable; default policy is not inferred from device time or network data.",
+    "Timeline output is chronologically sorted with deterministic tie-breaking.",
+    "Mixed ephemeris provenance fails closed.",
+    "This machine gate proves timeline calculation/model readiness only; rendered product timeline evidence remains required before VERIFIED/DONE."
+  ]
+}
