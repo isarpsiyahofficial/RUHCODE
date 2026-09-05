@@ -2,16 +2,17 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-05_0700_rc0025_rc0029_progress.md`
+`automation_runs/2026-09-05_0854_rc0020_rc0036_western_core.md`
 
 ## Bu turda doğrulanmış ilerleme
 
-1. RC-0025 physical TESTED promotion doğrulandı: `5d9b1c6cc7c302e8836045fde895e828bd375847`.
-2. RC-0027 physical TESTED promotion doğrulandı: `78e0956aab0989327121eacac33297200d6b7da0`.
-3. RC-0028 corrected Chinese test fix'i (`3b753102d473d61b3ce016f66378ae4b147b896e`) önceki workflow path filtresi nedeniyle gate'i yeniden tetiklemiyordu. `9c8c33f1b907aba7ebcec0f4e7b07886174275cb` ile representative test paths trigger kapsamına alındı; exact corrected run `33943328752` başlatıldı.
-4. RC-0029 için bağlayıcı Tropical contract, fail-closed validator ve compiled Flutter + matrix-promotion workflow tamamlandı: `b6d53d9577dda30d3ec28a547a59a11a61345266`, `2f48d9889c020e7fc4184596d4d578e4031d97da`, `4fc77a4c70a8b107c2866676d92ae9251363c921`.
-5. RC-0020 physical solar-events promotion eksikliği açık tutuluyor. Pending RC-0028/0029 yalnız kod yazıldığı için TESTED sayılmıyor.
+1. RC-0028 physical TESTED promotion doğrulandı: `2940c3534d318ef7b13575deceb716993f21d561`; corrected run `33943328752` SUCCESS.
+2. RC-0029 physical TESTED promotion doğrulandı: `38a298e8c2990a2ec0a8d2a37e1bcb82e15eb7af`.
+3. RC-0020 corrected solar-events gate yeniden tetiklendi ve physical TESTED promotion `5dbb577f8754cb30b888dae415417cd8d6cc139d` oluştu.
+4. RC-0030 için gerçek Sun/Moon/Ascendant production projection, compiled regressions, binding contract, validator ve dedicated CI gate eklendi. Physical promotion henüz görülmediği için matrix statüsü yükseltilmedi.
+5. RC-0031→RC-0035 için ayrı binding contract'lar ve requirement-bazlı ortak validation/promotion gate eklendi; physical promotion bekleniyor.
+6. RC-0036 için 12 ev başlangıç/cusp derecesi binding contract, validator ve dedicated CI gate eklendi; physical promotion bekleniyor.
 
-Sonraki dependency: RC-0028 exact result/promotion → RC-0029 exact result/promotion → RC-0020 corrected gate → RC-0030 Sun/Moon/Ascendant.
+Sonraki dependency: RC-0030/0031-0035/0036 exact gate + physical promotion doğrulaması → failure varsa root-cause düzeltmesi → RC-0037 ev tema içeriği → RC-0038 ev yöneticileri.
 
 **FINAL: NO.**
