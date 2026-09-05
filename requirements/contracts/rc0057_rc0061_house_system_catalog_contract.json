@@ -1,0 +1,13 @@
+{
+  "requirement_ids": ["RC-0057", "RC-0058", "RC-0059", "RC-0060", "RC-0061"],
+  "production_catalog": "lib/src/calculation_core/western/house_system_catalog.dart",
+  "compiled_test": "test/calculation_core/western/house_system_catalog_test.dart",
+  "evaluated_fail_closed": ["koch", "campanus", "regiomontanus"],
+  "supported": ["placidus", "wholeSign", "equal", "porphyry"],
+  "visibility": {
+    "languages": ["tr", "en"],
+    "active_system_name_required": true
+  },
+  "porphyry_runtime": "lib/src/calculation_core/western/porphyry_houses.dart",
+  "policy": "An evaluated house system must not be advertised as executable until a validated production implementation and authoritative golden evidence exist."
+}
