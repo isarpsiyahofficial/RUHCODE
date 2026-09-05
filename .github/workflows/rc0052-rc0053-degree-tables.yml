@@ -72,3 +72,5 @@ jobs:
           git add requirements/requirement_state.csv
           git commit -m 'requirements(rc0052-rc0053): record degree tables TESTED'
           git push origin HEAD:main
+
+# Explicit retrigger marker: previous dedicated run was cancelled before promotion.
