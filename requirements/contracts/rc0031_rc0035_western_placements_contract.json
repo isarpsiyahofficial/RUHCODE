@@ -1,0 +1,21 @@
+{
+  "contract_id": "rc0031_rc0035_western_placements",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0031": "Kullanıcının bütün gezegen yerleşimleri gösterilecek.",
+    "RC-0032": "Gezegenlerin hangi burçta olduğu gösterilecek.",
+    "RC-0033": "Gezegen dereceleri gösterilecek.",
+    "RC-0034": "Gezegenlerin hangi evlerde bulunduğu gösterilecek.",
+    "RC-0035": "12 ev ayrı ayrı hesaplanacak."
+  },
+  "runtime_evidence": [
+    "lib/src/calculation_core/western/natal_placements.dart",
+    "lib/src/calculation_core/western/placidus_houses.dart"
+  ],
+  "compiled_evidence": [
+    "test/calculation_core/western/natal_placements_test.dart",
+    "test/calculation_core/western/placidus_houses_test.dart"
+  ],
+  "promotion_ceiling": "TESTED",
+  "blocker": "Product/UI visibility plus independent golden and release evidence remains required before VERIFIED/DONE."
+}
