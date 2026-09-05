@@ -1,0 +1,15 @@
+{
+  "rcId": "RC-0037",
+  "bindingRequirementSha256": "5f25283b4628a240681df6b56700b7c2604022c62d4c1e30776d3e0141804472",
+  "requirement": "Her ev için tema açıklaması bulunacak.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/interpretation/western_house_themes.dart",
+  "testFile": "test/interpretation/western_house_themes_test.dart",
+  "mustProve": [
+    "exactly twelve separately addressable house themes exist",
+    "every house has non-empty TR and EN title and description",
+    "invalid house numbers fail closed",
+    "interpretation content stays outside calculation_core"
+  ],
+  "verificationBlocker": "Independent bilingual editorial review, final UI rendering, accessibility and exact release-artifact evidence remain required before VERIFIED/DONE."
+}
