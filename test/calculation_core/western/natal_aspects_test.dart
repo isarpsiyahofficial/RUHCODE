@@ -4,13 +4,18 @@ import 'package:ruh_code/src/calculation_core/western/equal_house_systems.dart';
 import 'package:ruh_code/src/calculation_core/western/natal_aspects.dart';
 import 'package:ruh_code/src/calculation_core/western/natal_placements.dart';
 
-EclipticState state(AstroBody body, double longitude) => EclipticState(
+EclipticState state(
+  AstroBody body,
+  double longitude, {
+  double speed = 1,
+}) =>
+    EclipticState(
       body: body,
       jdTt: 2460000.5,
       longitudeDegrees: longitude,
       latitudeDegrees: 0,
       distanceAu: 1,
-      longitudeSpeedDegreesPerDay: 1,
+      longitudeSpeedDegreesPerDay: speed,
       sourceId: 'test-source',
       dataVersion: 'v1',
     );
@@ -124,6 +129,56 @@ void main() {
     );
     expect(wide.aspects.single.aspect, MajorAspect.square);
     expect(wide.aspects.single.orbDegrees, closeTo(2, 1e-12));
+  });
+
+  test('derives applying exact and separating phases from physical longitude speeds', () {
+    final applying = WesternNatalAspects.build(
+      placements: placements([
+        state(AstroBody.sun, 0, speed: 1),
+        state(AstroBody.moon, 88, speed: 13),
+      ]),
+    );
+    expect(applying.aspects.single.aspect, MajorAspect.square);
+    expect(applying.aspects.single.phase, AspectPhase.applying);
+
+    final exact = WesternNatalAspects.build(
+      placements: placements([
+        state(AstroBody.sun, 0, speed: 1),
+        state(AstroBody.moon, 90, speed: 13),
+      ]),
+    );
+    expect(exact.aspects.single.phase, AspectPhase.exact);
+
+    final separating = WesternNatalAspects.build(
+      placements: placements([
+        state(AstroBody.sun, 0, speed: 1),
+        state(AstroBody.moon, 92, speed: 13),
+      ]),
+    );
+    expect(separating.aspects.single.phase, AspectPhase.separating);
+  });
+
+  test('phase calculation handles retrograde relative motion and rejects non-finite input', () {
+    expect(
+      WesternNatalAspects.phaseFor(
+        longitudeA: 0,
+        longitudeB: 92,
+        speedA: 1,
+        speedB: -1,
+        aspect: MajorAspect.square,
+      ),
+      AspectPhase.applying,
+    );
+    expect(
+      () => WesternNatalAspects.phaseFor(
+        longitudeA: double.nan,
+        longitudeB: 90,
+        speedA: 1,
+        speedB: 13,
+        aspect: MajorAspect.square,
+      ),
+      throwsStateError,
+    );
   });
 
   test('rejects incomplete or invalid orb policy', () {
