@@ -1,0 +1,15 @@
+{
+  "requirements": {
+    "RC-0069": "Synastry hesaplaması yapılacak.",
+    "RC-0070": "İki kişinin haritaları birbirine karşılaştırılabilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/synastry.dart",
+  "compiled_test": "test/calculation_core/western/synastry_test.dart",
+  "invariants": [
+    "Synastry consumes two separately assembled natal chart snapshots; it does not merge or overwrite either person's natal state.",
+    "Cross-chart aspects are calculated from person-A placements against person-B placements with the shared explicit aspect/orb policy.",
+    "Both natal TT instants are retained in the comparison result.",
+    "Mismatched ephemeris source/version provenance fails closed.",
+    "Result ordering is deterministic and no device current time or network fallback is used."
+  ]
+}
