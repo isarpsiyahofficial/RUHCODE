@@ -1,0 +1,86 @@
+name: RC-0038 RC-0040 Western Rulerships
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/western/rulerships.dart'
+      - 'test/calculation_core/western/rulerships_test.dart'
+      - 'requirements/contracts/rc0038_house_rulers_contract.json'
+      - 'requirements/contracts/rc0039_planet_ruled_signs_contract.json'
+      - 'requirements/contracts/rc0040_natural_rulerships_contract.json'
+      - 'tools/requirements/validate_rc0038_rc0040_western_rulerships.py'
+      - '.github/workflows/rc0038-rc0040-western-rulerships.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0038 through RC-0040 contracts
+        run: python tools/requirements/validate_rc0038_rc0040_western_rulerships.py
+      - name: Execute Western rulership regressions
+        run: flutter test test/calculation_core/western/rulerships_test.dart
+      - name: Promote individually proven RC-0038 through RC-0040 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0038_rc0040_western_rulerships.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          contract={
+            'RC-0038':'requirements/contracts/rc0038_house_rulers_contract.json',
+            'RC-0039':'requirements/contracts/rc0039_planet_ruled_signs_contract.json',
+            'RC-0040':'requirements/contracts/rc0040_natural_rulerships_contract.json',
+          }
+          blocker={
+            'RC-0038':'End-to-end selected rulership scheme plus house-ruler UI evidence remains required before VERIFIED/DONE.',
+            'RC-0039':'TR/EN UI presentation of ruled signs and selected scheme provenance remain required before VERIFIED/DONE.',
+            'RC-0040':'Independent editorial/source review and final TR/EN content/UI presentation remain required before VERIFIED/DONE.',
+          }
+          note={
+            'RC-0038':'Machine gate proves all 12 house rulers derive from actual calculated cusp signs under an explicit traditional/modern scheme, with invalid house lookup fail-closed. TESTED only.',
+            'RC-0039':'Machine gate proves deterministic reverse planet-to-ruled-sign lookup from complete 12-sign traditional/modern catalogs. TESTED only.',
+            'RC-0040':'Machine gate proves traditional and modern natural-rulership catalogs are explicit and outer-planet modern assignments are not silently substituted into traditional rulership. TESTED only.',
+          }
+          common='tools/requirements/validate_rc0038_rc0040_western_rulerships.py|lib/src/calculation_core/western/rulerships.dart|test/calculation_core/western/rulerships_test.dart|.github/workflows/rc0038-rc0040-western-rulerships.yml'
+          for r in rows:
+            rc=r['rc_id']
+            if rc not in contract: continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=contract[rc]+'|'+common
+            r['blocked']='YES'; r['blocker']=blocker[rc]; r['notes']=note[rc]
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0038-rc0040): record Western rulerships TESTED'
+          git push origin HEAD:main
