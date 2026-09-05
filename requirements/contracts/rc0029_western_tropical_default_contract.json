@@ -1,0 +1,15 @@
+{
+  "rcId": "RC-0029",
+  "bindingRequirementSha256": "043bade47029a81614dc846feb8fe753e241f9e8554a6fc08bf280c16ca1b89e",
+  "requirement": "Batı astrolojisinin varsayılan zodyağı Tropical olacak.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/natal_placements.dart",
+  "testFile": "test/calculation_core/western/natal_placements_test.dart",
+  "mustProve": [
+    "Western natal placements expose TropicalZodiacSign explicitly",
+    "0 degrees maps to Aries and each 30-degree boundary advances one tropical sign",
+    "Western default placement calculation applies no sidereal or ayanamsha offset",
+    "the full 0..360 tropical longitude range is normalized by upstream ephemeris validation and mapped deterministically"
+  ],
+  "verificationBlocker": "End-to-end Western settings/UI must prove Tropical is the visible default and sidereal/ayanamsha choices cannot silently alter the Western default before VERIFIED/DONE."
+}
