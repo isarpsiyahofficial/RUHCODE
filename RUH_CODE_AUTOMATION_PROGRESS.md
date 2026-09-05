@@ -2,64 +2,45 @@
 
 Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md`, `RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md`, `RUH_CODE_MASTER_TODO.md`.
 
-**Kural:** IMPLEMENTED, DONE değildir. `DONE` yalnız requirement-specific test/evidence ile birlikte ilgili independent/golden, cihaz ve release kapıları da gerçekten kapandığında verilir. Canonical lifecycle: `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE`; blocker ayrı `blocked=YES/NO` alanıdır. Exact kapsam `RC-0001 → RC-1442`, toplam **1.442 requirement**.
+**Kural:** IMPLEMENTED, DONE değildir. `DONE` yalnız requirement-specific test/evidence ile birlikte ilgili independent/golden, cihaz ve release kapıları gerçekten kapandığında verilir. Canonical lifecycle: `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE`; blocker ayrı `blocked=YES/NO` alanıdır. Exact kapsam `RC-0001 → RC-1442`, toplam **1.442 requirement**.
 
 ## Güncel canonical requirement durumu
 
-- **RC-0002 = DONE** — production runtime dil kapsamı exact TR/EN ve dedicated static+compiled gate ile doğrulandı.
-- **RC-0003 = NOT_STARTED** — editorial-independence otomasyonu mevcut; fiziksel promotion/provenance eksik.
-- **RC-0004 = TESTED + blocked=YES** — terminology/copy-quality machine gate geçti; independent bilingual editorial review açık.
-- **RC-0005 = NOT_STARTED + blocked=YES** — exact latest AKİLES source/artifact + immutable version/hash/capture/reference-scope provenance eksik.
-- **RC-0006 = TESTED + blocked=YES** — modular calculation core doğrulandı; AKİLES method-level comparison/provenance açık.
-- **RC-0007 = NOT_STARTED** — RC-0005/0006 provenance blocker'ına bağlı.
-- **RC-0008 = TESTED + blocked=YES**, **RC-0009 = TESTED**, **RC-0010 = TESTED** — deterministic explicit time/IANA/DST-history gates.
-- **RC-0011 = TESTED + blocked=YES**, **RC-0012 = TESTED + blocked=YES** — stable city identity + coordinates + IANA timezone; end-to-end birth-place propagation açık.
-- **RC-0013 = TESTED + blocked=YES** — shared packaged DE440s astronomy core.
-- **RC-0014 = TESTED + blocked=YES** — physical Sun/Moon/planet positions via packaged DE440s provider.
-- **RC-0015 = TESTED + blocked=YES** — deterministic TT-based mean/true lunar-node engine; independent official goldens/integration açık.
-- **RC-0016 = TESTED + blocked=YES** — signed longitude-velocity direct/stationary/retrograde classification; independent apparent-motion goldens açık.
-- **RC-0017 = TESTED + blocked=YES** — central Julian Day/MJD/J2000 core; broader timescale/release evidence açık.
-- **RC-0018 = TESTED + blocked=YES** — explicit UT1/TT + location ASC/MC geometry; independent multi-location goldens/end-to-end time propagation açık.
-- **RC-0019 = TESTED + blocked=YES** — real 12-house cusp production motor and dedicated gate; independent multi-location/multi-epoch golden coverage açık.
-- **RC-0020 = NOT_STARTED / corrected gate pending physical promotion** — real solar-event implementation/contract/CI mevcut; known validator false-positive `adbb9c0f746b0d3612df54860645693f5bc5250d` ile düzeltildi fakat `requirements(rc0020): ... TESTED` bot commit'i henüz fiziksel görülmedi.
-- **RC-0021 = TESTED + blocked=YES** — packaged NASA/JPL DE440s Sun/Moon states üzerinden gerçek astronomik Ay fazı gate'i physical matrixte TESTED.
-- **RC-0022 = TESTED + blocked=YES** — calculation-core ↔ interpretation dependency boundary ve snapshot-temelli interpretation ayrımı physical matrixte TESTED.
-- **RC-0023 = TESTED + blocked=YES** — ayrı `western-astrology` CalculationEngine ve requirement-specific gate physical matrixte TESTED.
-- **RC-0024 = TESTED + blocked=YES** — ayrı `vedic-astrology` CalculationEngine; explicit sidereal/ayanamsha ve ephemeris provenance kontrolleri. Physical bot promotion `de09bc914ff6818c7687571a7ed96cf448e6ca1a`.
-- **RC-0025 = NOT_STARTED / corrected gate pending physical rerun** — ayrı `ChineseAstrologyEngine` mevcut. İlk CI `33924063984`, source'ta calendar-boundary ownership açıklaması exact validator marker'ını karşılamadığı için kırıldı; `f5ee2924eb5c1112f38237a2a6e8b3f87df21d55` ile Chinese New Year + solar-term ownership versioned calendar layer'a açıkça bağlandı. Corrected run `33931165269` ortak matrix-writer concurrency kuyruğunda job başlamadan cancelled oldu; bot promotion olmadan statü yükseltilmedi.
-- **RC-0026 = TESTED + blocked=YES** — ayrı `BaZiEngine`; ilk CI testte var olmayan `CalculationValidity.invalid` enumu nedeniyle compile kırıldı, `0fd2332c753ae830793ed28bce1471aa76cb3e4c` ile canonical `.error` durumuna düzeltildi. Physical promotion `5b4083585337774d709f783bfb309bd6d5ed11a2`. Versioned civil-time/location→solar-term/calendar→four-pillar derivation ve authoritative goldens açık.
-- **RC-0027 = NOT_STARTED / implementation+gate pending physical promotion** — mevcut numerology production ağacı için astroloji sistemlerinden bağımsızlık contract/validator/CI eklendi; Pythagorean, Chaldean ve Lo Shu compiled golden vectors gate'e bağlı. Bot promotion henüz fiziksel görülmedi.
-- **RC-0028 = NOT_STARTED / implementation+gate pending physical promotion** — Western/Vedic/Chinese/BaZi/Numerology named calculation root'ları arasında cross-system calculation importlarını fail-closed yasaklayan architecture contract/validator/CI eklendi; neutral shared core izinli. Bot promotion henüz fiziksel görülmedi.
+- **RC-0002 = DONE**.
+- **RC-0003 = NOT_STARTED** — independent editorial evidence açık.
+- **RC-0004 = TESTED + blocked=YES** — independent bilingual editorial review açık.
+- **RC-0005 = NOT_STARTED + blocked=YES**, **RC-0006 = TESTED + blocked=YES**, **RC-0007 = NOT_STARTED** — exact AKİLES provenance/comparison blocker'ı açık.
+- **RC-0008→RC-0019** — ilgili requirement matrix satırlarında TESTED; independent astronomy/location/release kanıtları açık olanlar blocked=YES.
+- **RC-0020 = NOT_STARTED** — real solar-events implementation/contract/CI mevcut; corrected gate'in physical TESTED promotion'ı hâlâ bulunmadı.
+- **RC-0021→RC-0024 = TESTED + blocked=YES**.
+- **RC-0025 = TESTED + blocked=YES** — physical bot promotion `5d9b1c6cc7c302e8836045fde895e828bd375847`; Chinese engine compiled testteki canonical `CalculationValidity.error` düzeltmesiyle gate başarıyla promotion yaptı.
+- **RC-0026 = TESTED + blocked=YES** — physical promotion `5b4083585337774d709f783bfb309bd6d5ed11a2`.
+- **RC-0027 = TESTED + blocked=YES** — physical promotion `78e0956aab0989327121eacac33297200d6b7da0`; numerology calculation root'u astroloji engine'lerinden bağımsızlık gate'inden geçti.
+- **RC-0028 = NOT_STARTED / corrected rerun pending** — önceki failure Chinese representative regression'daki `CalculationValidity.invalid` kullanımından kaynaklandı ve `3b753102d473d61b3ce016f66378ae4b147b896e` ile düzeltildi. Workflow test path'lerini izlemediği için corrected test commit'i gate'i yeniden tetiklememişti; `9c8c33f1b907aba7ebcec0f4e7b07886174275cb` ile representative test yolları trigger kapsamına eklendi ve exact rerun `33943328752` başlatıldı. SUCCESS + bot promotion olmadan TESTED denmeyecek.
+- **RC-0029 = NOT_STARTED / gate running** — bağlayıcı contract `b6d53d9577dda30d3ec28a547a59a11a61345266`; fail-closed validator `2f48d9889c020e7fc4184596d4d578e4031d97da`; dedicated compiled Flutter + matrix-promotion workflow `4fc77a4c70a8b107c2866676d92ae9251363c921`. Gate explicit `TropicalZodiacSign`, 0° Aries/30° Taurus/359.999999° Pisces sınır regresyonları ve Western default calculation path'inde sidereal/ayanamsha offset bulunmamasını zorunlu tutuyor. Physical bot promotion görülmeden TESTED yazılmayacak.
 
 ## Bu turdaki gerçek değişiklikler
 
-### RC-0025 — Chinese engine CI root-cause düzeltmesi
+### RC-0025 / RC-0027 physical promotion doğrulaması
 
-- İlk run `33924063984`: validator failure `RC-0025 source must explicitly document calendar-boundary ownership`.
-- `f5ee2924eb5c1112f38237a2a6e8b3f87df21d55`: Chinese New Year ve solar-term boundary ownership production source içinde explicit hale getirildi.
-- Corrected run `33931165269` job başlamadan concurrency nedeniyle cancelled; physical promotion tekrar tetiklenecek.
+- RC-0025 physical `record Chinese engine TESTED` commit'i `5d9b1c6cc7c302e8836045fde895e828bd375847` doğrulandı.
+- RC-0027 physical `record numerology independence TESTED` commit'i `78e0956aab0989327121eacac33297200d6b7da0` doğrulandı.
 
-### RC-0026 — BaZi compiled test düzeltmesi ve TESTED promotion
+### RC-0028 rerun zinciri düzeltmesi
 
-- İlk run `33924214176`: validator PASS, Flutter compile failure `CalculationValidity.invalid` member yok.
-- Canonical enum `valid / partial / unavailable / error`; test `CalculationValidity.error` kullanacak şekilde `0fd2332c753ae830793ed28bce1471aa76cb3e4c` ile düzeltildi.
-- Bot promotion `5b4083585337774d709f783bfb309bd6d5ed11a2`; canonical matrix artık TESTED + blocked=YES.
+- Önceki RC-0028 run `33931388559` failure'dı; representative Chinese test eski invalid enum nedeniyle compile kırıyordu.
+- `3b753102d473d61b3ce016f66378ae4b147b896e` canonical `.error` state düzeltmesini içeriyor.
+- Workflow yalnız production root'larını izlediği için bu test düzeltmesi RC-0028'i yeniden tetiklememişti.
+- `9c8c33f1b907aba7ebcec0f4e7b07886174275cb` ile Western/Vedic/Chinese/BaZi/Numerology representative test path'leri trigger kapsamına eklendi; corrected run `33943328752` physical olarak başladı.
 
-### RC-0027 — numeroloji bağımsızlığı
+### RC-0029 — Western Tropical default
 
-- `requirements/contracts/rc0027_numerology_independence_contract.json`
-- `tools/requirements/validate_rc0027_numerology_independence.py`
-- `.github/workflows/rc0027-numerology-independence.yml`
-- Production numerology Dart ağacı Western/Vedic/Chinese/BaZi/ephemeris coupling ve `DateTime.now()` için fail-closed taranıyor.
-- Existing compiled golden test Pythagorean, Chaldean ve Lo Shu ailelerini çalıştırıyor.
-
-### RC-0028 — sistem hesaplama yöntemi izolasyonu
-
-- `requirements/contracts/rc0028_system_method_isolation_contract.json`
-- `tools/requirements/validate_rc0028_system_method_isolation.py`
-- `.github/workflows/rc0028-system-method-isolation.yml`
-- Named system roots başka named system calculation root'unu import edemez; neutral shared ephemeris/time/calculation-engine/domain altyapısı ortak kullanılabilir.
-- Workflow representative Western/Vedic/Chinese/BaZi ve numerology regressions'ı ayrı ayrı çalıştırır.
+- Binding requirement: `Batı astrolojisinin varsayılan zodyağı Tropical olacak.`
+- Mevcut production `WesternNatalPlacements` explicit `TropicalZodiacSign` kullanıyor ve longitude'u 30° segmentlerle deterministik map ediyor.
+- `requirements/contracts/rc0029_western_tropical_default_contract.json`
+- `tools/requirements/validate_rc0029_western_tropical_default.py`
+- `.github/workflows/rc0029-western-tropical-default.yml`
+- Compiled regression `test/calculation_core/western/natal_placements_test.dart` 0°, 30° ve 359.999999° tropical sınırlarını doğruluyor.
 
 ## Açık global blocker / release kapıları
 
@@ -72,13 +53,13 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Sonraki devam noktası
 
-1. Her tetiklemede önce `requirements/requirement_state.csv`, bu dosya ve `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0025 corrected gate physical olarak yeniden çalıştırılacak; SUCCESS + bot matrix promotion olmadan TESTED denmeyecek.
-3. RC-0027/RC-0028 exact CI sonuçları ve bot matrix promotion commit'leri fiziksel doğrulanacak; kırmızıysa root cause aynı requirement'ta düzeltilip yeniden çalıştırılacak.
-4. RC-0020 corrected solar-events gate physical promotion eksikliği ayrıca takip edilecek.
-5. Ardından dependency sırası RC-0029 (Western default Tropical) ve devamı şeklinde ilerletilecek.
+1. `requirements/requirement_state.csv`, bu dosya ve `automation_runs/LATEST.md` yeniden okunacak.
+2. RC-0028 run `33943328752` sonucu ve physical bot promotion doğrulanacak; failure varsa exact failing step düzeltilip yeniden çalıştırılacak.
+3. RC-0029 dedicated gate sonucu ve `requirements(rc0029): record Western Tropical default TESTED` physical commit'i doğrulanacak.
+4. RC-0020 corrected solar-events promotion eksikliği tekrar ele alınacak.
+5. Ardından dependency sırası RC-0030 (Western Sun/Moon/Ascendant) ve devamı şeklinde ilerletilecek.
 6. Yalnız kanıtlanan state yazılacak; 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
-Latest detailed checkpoint: `automation_runs/2026-09-05_0252_rc0025_rc0028_progress.md`.
+Latest detailed checkpoint: `automation_runs/2026-09-05_0700_rc0025_rc0029_progress.md`.
 
 **FINAL: NO.**
