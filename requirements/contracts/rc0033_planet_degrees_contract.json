@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0033",
+  "bindingRequirementSha256": "b16e85bf10f1d43fcad117b661675cf99ddbf2a5bdbc08fcb371ff61364de84d",
+  "requirement": "Gezegen dereceleri gösterilecek.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/natal_placements.dart",
+  "testFile": "test/calculation_core/western/natal_placements_test.dart",
+  "mustProve": ["every placement retains normalized longitudeDegrees", "degreeInSign is derived from physical longitude", "exact sign-boundary degree regression exists"],
+  "verificationBlocker": "TR/EN degree formatting and complete Western chart/UI evidence remain required before VERIFIED/DONE."
+}
