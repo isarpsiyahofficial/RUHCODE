@@ -1,0 +1,70 @@
+name: RC-0072 Davison Chart
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/western/davison_chart.dart'
+      - 'lib/src/calculation_core/ephemeris/ephemeris.dart'
+      - 'test/calculation_core/western/davison_chart_test.dart'
+      - 'requirements/contracts/rc0072_davison_chart_contract.json'
+      - 'tools/requirements/validate_rc0072_davison_chart.py'
+      - '.github/workflows/rc0072-davison-chart.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0072_davison_chart.py
+      - run: flutter test test/calculation_core/western/davison_chart_test.dart
+      - name: Promote proven Davison core to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0072_davison_chart.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=list(rows[0].keys())
+          links='requirements/contracts/rc0072_davison_chart_contract.json|tools/requirements/validate_rc0072_davison_chart.py|lib/src/calculation_core/western/davison_chart.dart|test/calculation_core/western/davison_chart_test.dart|.github/workflows/rc0072-davison-chart.yml'
+          for r in rows:
+            if r['rc_id'] != 'RC-0072': continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Rendered Davison UI, verified house/angle pipeline at the midpoint location, independent astrology/astronomy review and release/device gates remain required before VERIFIED/DONE.'
+            r['notes']='Machine gate proves deterministic midpoint TT + spherical midpoint location and fresh versioned-ephemeris planetary evaluation; natal longitudes are not averaged. TESTED only.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0072): record Davison chart core TESTED'
+          git push origin HEAD:main
