@@ -1,0 +1,100 @@
+name: RC-0041 RC-0049 Western Aspects
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/western/natal_aspects.dart'
+      - 'test/calculation_core/western/natal_aspects_test.dart'
+      - 'requirements/contracts/rc0041_planet_aspects_contract.json'
+      - 'requirements/contracts/rc0042_conjunction_contract.json'
+      - 'requirements/contracts/rc0043_opposition_contract.json'
+      - 'requirements/contracts/rc0044_trine_contract.json'
+      - 'requirements/contracts/rc0045_square_contract.json'
+      - 'requirements/contracts/rc0046_sextile_contract.json'
+      - 'requirements/contracts/rc0047_quincunx_contract.json'
+      - 'requirements/contracts/rc0048_aspect_orbs_contract.json'
+      - 'requirements/contracts/rc0049_body_aspect_orbs_contract.json'
+      - 'tools/requirements/validate_rc0041_rc0049_western_aspects.py'
+      - '.github/workflows/rc0041-rc0049-western-aspects.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0041 through RC-0049 contracts
+        run: python tools/requirements/validate_rc0041_rc0049_western_aspects.py
+      - name: Execute Western aspect regressions
+        run: flutter test test/calculation_core/western/natal_aspects_test.dart
+      - name: Promote individually proven RC-0041 through RC-0049 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0041_rc0049_western_aspects.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          contract={
+            'RC-0041':'requirements/contracts/rc0041_planet_aspects_contract.json',
+            'RC-0042':'requirements/contracts/rc0042_conjunction_contract.json',
+            'RC-0043':'requirements/contracts/rc0043_opposition_contract.json',
+            'RC-0044':'requirements/contracts/rc0044_trine_contract.json',
+            'RC-0045':'requirements/contracts/rc0045_square_contract.json',
+            'RC-0046':'requirements/contracts/rc0046_sextile_contract.json',
+            'RC-0047':'requirements/contracts/rc0047_quincunx_contract.json',
+            'RC-0048':'requirements/contracts/rc0048_aspect_orbs_contract.json',
+            'RC-0049':'requirements/contracts/rc0049_body_aspect_orbs_contract.json',
+          }
+          blocker={
+            'RC-0041':'End-to-end physical ephemeris placement -> aspect -> Western UI evidence remains required before VERIFIED/DONE.',
+            'RC-0042':'Final UI/entitlement presentation and release evidence remain required before VERIFIED/DONE.',
+            'RC-0043':'Final Western UI and release-artifact evidence remain required before VERIFIED/DONE.',
+            'RC-0044':'Final Western UI/entitlement and release-artifact evidence remain required before VERIFIED/DONE.',
+            'RC-0045':'Final Western UI and release-artifact evidence remain required before VERIFIED/DONE.',
+            'RC-0046':'Final trace/UI presentation and release evidence remain required before VERIFIED/DONE.',
+            'RC-0047':'Final Western UI and release evidence remain required before VERIFIED/DONE.',
+            'RC-0048':'Final configuration/UI documentation and release evidence remain required before VERIFIED/DONE.',
+            'RC-0049':'Final configuration provenance, UI behavior and exact release-artifact evidence remain required before VERIFIED/DONE.',
+          }
+          common='tools/requirements/validate_rc0041_rc0049_western_aspects.py|lib/src/calculation_core/western/natal_aspects.dart|test/calculation_core/western/natal_aspects_test.dart|.github/workflows/rc0041-rc0049-western-aspects.yml'
+          for r in rows:
+            rc=r['rc_id']
+            if rc not in contract: continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=contract[rc]+'|'+common
+            r['blocked']='YES'; r['blocker']=blocker[rc]
+            r['notes']='Machine gate proves this bound Western aspect/orb requirement through compiled deterministic runtime tests. TESTED only.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0041-rc0049): record Western aspects TESTED'
+          git push origin HEAD:main
