@@ -20,6 +20,7 @@ final class NatalPlacement {
   const NatalPlacement({
     required this.body,
     required this.longitudeDegrees,
+    required this.longitudeSpeedDegreesPerDay,
     required this.sign,
     required this.degreeInSign,
     required this.houseNumber,
@@ -28,6 +29,7 @@ final class NatalPlacement {
 
   final AstroBody body;
   final double longitudeDegrees;
+  final double longitudeSpeedDegreesPerDay;
   final TropicalZodiacSign sign;
   final double degreeInSign;
   final int houseNumber;
@@ -88,6 +90,7 @@ abstract final class WesternNatalPlacements {
         NatalPlacement(
           body: state.body,
           longitudeDegrees: state.longitudeDegrees,
+          longitudeSpeedDegreesPerDay: state.longitudeSpeedDegreesPerDay,
           sign: TropicalZodiacSign.values[signIndex],
           degreeInSign: degreeInSign,
           houseNumber: houses.houseForLongitude(state.longitudeDegrees),
