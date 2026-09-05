@@ -1,0 +1,14 @@
+{
+  "requirements": {
+    "RC-0079": "Eclipse overlay ve tutulma etkileri ilerleyen profesyonel modüllerde kullanılabilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/eclipse_overlay.dart",
+  "compiled_test": "test/calculation_core/western/eclipse_overlay_test.dart",
+  "invariants": [
+    "The calculation layer accepts only explicit provenance-tagged eclipse events; it never invents eclipse dates, locations or interpretive claims.",
+    "Eclipse longitudes must be normalized and source/dataVersion provenance must match the natal placement set.",
+    "The overlay exposes deterministic conjunction/opposition contacts to natal bodies under an explicit caller-controlled orb.",
+    "Events outside the configured orb create no contact and invalid input fails closed.",
+    "The core contains no device-time or network fallback and is suitable as neutral data infrastructure for later professional eclipse modules."
+  ]
+}
