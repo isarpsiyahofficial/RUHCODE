@@ -1,0 +1,29 @@
+{
+  "contractId": "rc0062_natal_chart",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0062": {
+      "text": "Natal harita oluşturulacak.",
+      "bindingRequirementSha256": "9c732cafd538326442a9937e718d0ebdc4237b464f510293eb0dfe3146ebc3d2"
+    }
+  },
+  "runtimeEvidence": [
+    "lib/src/calculation_core/western/natal_chart.dart",
+    "lib/src/calculation_core/western/natal_placements.dart",
+    "lib/src/calculation_core/western/natal_aspects.dart",
+    "lib/src/calculation_core/western/aspect_grid.dart",
+    "lib/src/calculation_core/western/essential_dignities.dart"
+  ],
+  "compiledEvidence": [
+    "test/calculation_core/western/natal_chart_test.dart"
+  ],
+  "requiredChartComponents": [
+    "houses",
+    "placements",
+    "aspects",
+    "aspectGrid",
+    "dignities",
+    "provenance"
+  ],
+  "promotionCeiling": "TESTED"
+}
