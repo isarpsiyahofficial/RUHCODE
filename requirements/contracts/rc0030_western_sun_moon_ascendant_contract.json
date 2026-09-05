@@ -1,0 +1,19 @@
+{
+  "rcId": "RC-0030",
+  "bindingRequirementSha256": "823d0276f9829cacc625c544f5991c6fa16e946714013841fd66a7cc1e45982a",
+  "requirement": "Batı astrolojisinde Güneş, Ay ve Yükselen hesaplanacak.",
+  "promotionCeiling": "TESTED",
+  "productionFiles": [
+    "lib/src/calculation_core/western/luminaries_ascendant.dart",
+    "lib/src/calculation_core/western/natal_placements.dart",
+    "lib/src/calculation_core/western/equal_house_systems.dart"
+  ],
+  "testFile": "test/calculation_core/western/luminaries_ascendant_test.dart",
+  "mustProve": [
+    "Sun and Moon are required physical ephemeris states from one Western snapshot",
+    "Ascendant is consumed from the calculated house/ASC result rather than a hardcoded sign",
+    "Sun Moon and Ascendant expose tropical sign plus degree-in-sign deterministically",
+    "missing Sun or Moon fails closed"
+  ],
+  "verificationBlocker": "End-to-end birth input -> time/location -> ephemeris -> ASC/houses -> Western UI golden evidence remains required before VERIFIED/DONE."
+}
