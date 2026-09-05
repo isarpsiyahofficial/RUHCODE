@@ -1,0 +1,18 @@
+{
+  "requirements": {
+    "RC-0063": "Transit haritası oluşturulacak.",
+    "RC-0064": "Natal × Transit karşılaştırması yapılabilecek.",
+    "RC-0065": "Geçmiş bir tarih için transit hesaplanabilecek.",
+    "RC-0066": "Gelecek bir tarih için transit hesaplanabilecek.",
+    "RC-0067": "Transitlerin natal gezegenlere yaptığı açılar hesaplanacak."
+  },
+  "runtime": "lib/src/calculation_core/western/transit_chart.dart",
+  "compiled_test": "test/calculation_core/western/transit_chart_test.dart",
+  "invariants": [
+    "Transit chart consumes explicit versioned ephemeris states at one TT instant and never uses device current time.",
+    "Historical and future transit support are the same deterministic explicit-instant calculation path, without date substitution or network fallback.",
+    "Natal and transit charts remain separate snapshots and comparison retains both natal and transit TT instants.",
+    "Transit-to-natal aspects are calculated from transit longitudes against fixed natal longitudes with the shared explicit orb policy.",
+    "Mixed transit instants, duplicate bodies, mixed provenance and natal/transit provenance mismatch fail closed."
+  ]
+}
