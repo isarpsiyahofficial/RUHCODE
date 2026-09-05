@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0031",
+  "bindingRequirementSha256": "5c19ed6c1a5de0c5ee9d38f193adbe5eb31f2dbdfb0d36ade169336cca07e254",
+  "requirement": "Kullanıcının bütün gezegen yerleşimleri gösterilecek.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/natal_placements.dart",
+  "testFile": "test/calculation_core/western/natal_placements_test.dart",
+  "mustProve": ["all supplied unique physical body states become placements", "no supplied body is silently dropped", "duplicates fail closed", "placement provenance is coherent"],
+  "verificationBlocker": "The complete required-body set must be proven through end-to-end Western chart/UI rendering before VERIFIED/DONE."
+}
