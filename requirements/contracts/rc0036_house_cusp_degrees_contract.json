@@ -1,0 +1,15 @@
+{
+  "rcId": "RC-0036",
+  "bindingRequirementSha256": "973124a37fcc5f233f677f9f9e3423ed38447e67f4d88b4dbaafae829d7e8753",
+  "requirement": "Her evin başlangıç derecesi gösterilecek.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/equal_house_systems.dart",
+  "testFile": "test/calculation_core/western/equal_house_systems_test.dart",
+  "mustProve": [
+    "all twelve house cusp/start longitudes are individually addressable",
+    "every cusp is a finite normalized longitude in [0,360)",
+    "house 1 and house 10 expose ASC/MC cusp values without recomputation",
+    "invalid house numbers fail closed"
+  ],
+  "verificationBlocker": "TR/EN UI rendering of all 12 house start degrees plus exact release-artifact evidence remains required before VERIFIED/DONE."
+}
