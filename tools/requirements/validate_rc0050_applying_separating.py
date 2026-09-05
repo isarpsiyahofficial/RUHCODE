@@ -21,6 +21,7 @@ require(contract['bindingRequirementSha256'] == row['source_text_sha256'] == EXP
 require(contract['promotionCeiling'] == 'TESTED', 'promotion ceiling weakened')
 
 source = (ROOT / 'lib/src/calculation_core/western/natal_aspects.dart').read_text(encoding='utf-8')
+placements = (ROOT / 'lib/src/calculation_core/western/natal_placements.dart').read_text(encoding='utf-8')
 test = (ROOT / 'test/calculation_core/western/natal_aspects_test.dart').read_text(encoding='utf-8')
 for token in [
     'enum AspectPhase { applying, exact, separating }',
@@ -34,6 +35,12 @@ for token in [
     'return AspectPhase.separating',
 ]:
     require(token in source, f'missing applying/separating runtime token: {token}')
+for token in [
+    'required this.longitudeSpeedDegreesPerDay',
+    'final double longitudeSpeedDegreesPerDay;',
+    'longitudeSpeedDegreesPerDay: state.longitudeSpeedDegreesPerDay',
+]:
+    require(token in placements, f'physical ephemeris speed is not preserved in NatalPlacement: {token}')
 for token in [
     'derives applying exact and separating phases from physical longitude speeds',
     'AspectPhase.applying',
