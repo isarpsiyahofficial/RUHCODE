@@ -18,13 +18,12 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0057→RC-0060 = TESTED + blocked=YES**; physical bot promotion: `b2c6a512dfc0cb5c95c8fa1ff09203c02b8e1aca`.
 - **RC-0061 = IMPLEMENTED + blocked=YES**; aktif ev sistemi adı için reusable TR/EN contract mevcut, fakat gerçek kullanıcı ekranı/widget-device evidence henüz yok.
 - **RC-0062 = NOT_STARTED**; dedicated natal-chart contract/test/CI zinciri mevcut fakat physical `record natal chart TESTED` promotion henüz görülmedi.
-- **RC-0063→RC-0067 = NOT_STARTED**; bu turda production transit core, compiled regression, binding contract, validator ve dedicated CI/promotion gate eklendi; physical SUCCESS + matrix promotion bekleniyor.
+- **RC-0063→RC-0067 = NOT_STARTED**; production transit core, compiled regression, binding contract, validator ve dedicated CI/promotion gate eklendi; physical SUCCESS + matrix promotion bekleniyor.
+- **RC-0068 = IMPLEMENTED + blocked=YES**; important-transit timeline calculation/model katmanı eklendi, fakat requirement-specific compiled gate ve gerçek timeline UI/widget-device evidence henüz yok.
 
 ## Bu turdaki gerçek geliştirme
 
 ### RC-0057→RC-0061 — physical promotion sonucu
-
-Önceki cancelled gate retrigger'ının sonucu artık fiziksel matrix commit'iyle doğrulandı:
 
 - `b2c6a512dfc0cb5c95c8fa1ff09203c02b8e1aca` — `requirements(rc0057-rc0061): record house-system evaluation state`
 - RC-0057/58/59/60 → TESTED + blocked=YES
@@ -37,15 +36,11 @@ Dedicated zincir mevcut:
 - `requirements/contracts/rc0062_natal_chart_contract.json`
 - `tools/requirements/validate_rc0062_natal_chart.py`
 - `.github/workflows/rc0062-natal-chart.yml`
-- compiled `test/calculation_core/western/natal_chart_test.dart`
+- `test/calculation_core/western/natal_chart_test.dart`
 
 Physical bot promotion commit'i henüz görülmediği için status yükseltilmedi.
 
 ### RC-0063→RC-0067 — Transit calculation core
-
-Bağlayıcı şartlar: transit chart, natal×transit comparison, geçmiş transit, gelecek transit ve transit→natal aspect calculation.
-
-Bu turda gerçek production çekirdek eklendi:
 
 - `lib/src/calculation_core/western/transit_chart.dart` — `10fad8356316d0a21ffd61c92e77bd76204612eb`
 - `test/calculation_core/western/transit_chart_test.dart` — `4efa74da3304ef70bf499d1977dc2ba24f8da91a`
@@ -53,9 +48,15 @@ Bu turda gerçek production çekirdek eklendi:
 - `tools/requirements/validate_rc0063_rc0067_transit.py` — `ed3a79f312667de71ccf2ca060645e50e47be76d`
 - `.github/workflows/rc0063-rc0067-transit.yml` — `c1edff0c5d9574dfac82fe7069d4cf4f48046a31`
 
-Transit chart yalnız explicit TT instant'taki versioned ephemeris state'lerini tüketiyor; mixed instant, duplicate body ve mixed provenance fail-closed. Geçmiş/gelecek tarih için ayrı uydurma algoritma yok: aynı deterministic explicit-instant path kullanılıyor. Natal ve transit snapshot'ları ayrı tutuluyor; comparison iki JD'yi de koruyor. Transit→natal aspect'ler shared major-aspect/orb policy üzerinden hesaplanıyor ve transit motion ile applying/exact/separating phase türetiliyor.
+Transit chart yalnız explicit TT instant'taki versioned ephemeris state'lerini tüketiyor; mixed instant, duplicate body ve mixed provenance fail-closed. Geçmiş/gelecek tarih aynı deterministic explicit-instant path'i kullanıyor. Natal ve transit snapshot'ları ayrı tutuluyor; comparison iki JD'yi de koruyor. Transit→natal aspect'ler shared major-aspect/orb policy üzerinden hesaplanıyor.
 
-Dedicated gate son kontrolde queued durumundaydı; physical SUCCESS + bot matrix promotion görülmeden RC-0063→0067 TESTED sayılmayacak.
+Physical bot promotion görülmeden RC-0063→0067 TESTED sayılmayacak.
+
+### RC-0068 — önemli transit timeline
+
+- `lib/src/calculation_core/western/transit_timeline.dart` — `da53297d4a5f45e7100bb61f0b5516b26cab02fe`
+
+Yeni timeline builder natal×transit comparison snapshot'larını kronolojik `ImportantTransitEvent` kayıtlarına dönüştürüyor. Varsayılan önemli aspect policy conjunction/square/trine/opposition ve explicit 2° orb; policy değiştirilebilir. Mixed provenance fail-closed ve sonuç sırası deterministic. Bu yalnız calculation/model implementation'dır; compiled requirement gate ve gerçek kullanıcı timeline görünürlüğü olmadan TESTED sayılmayacak.
 
 ## Açık product-facing Western maddeleri
 
@@ -65,6 +66,7 @@ Dedicated gate son kontrolde queued durumundaydı; physical SUCCESS + bot matrix
 - RC-0048 retrograde planetlerin kullanıcıya ayrıca belirtilmesi.
 - RC-0049 planetary rulerships'in ürün yüzeyinde gösterilebilmesi.
 - RC-0061 active house-system adının gerçek kullanıcı ekranında görünürlüğü.
+- RC-0068 important-transit timeline gerçek UI/widget-device evidence.
 
 ## Açık global blocker / release kapıları
 
@@ -79,9 +81,10 @@ Dedicated gate son kontrolde queued durumundaydı; physical SUCCESS + bot matrix
 
 1. `requirements/requirement_state.csv`, bu progress dosyası ve `automation_runs/LATEST.md` yeniden okunacak.
 2. RC-0062 dedicated gate ve RC-0063→0067 transit gate exact CI/promotion sonuçları doğrulanacak; kırmızıysa job/log kök nedeni aynı turda düzeltilecek.
-3. RC-0061 gerçek product-screen/widget evidence ile TESTED seviyesine taşınmaya çalışılacak.
-4. Transit gate yeşilse dependency sırasıyla **RC-0068 önemli transit timeline → RC-0069 synastry** hattına geçilecek.
-5. Açık RC-0042/0044/0046/0048/0049 product-facing eksikleri blocker olmayan noktalarda paralel kapatılacak.
-6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
+3. RC-0068 için compiled requirement gate kurulacak ve sonrasında gerçek timeline UI evidence üretilecek.
+4. RC-0061 gerçek product-screen/widget evidence ile TESTED seviyesine taşınmaya çalışılacak.
+5. Ardından dependency sırasıyla **RC-0069 synastry** ve devamı ilerletilecek.
+6. Açık RC-0042/0044/0046/0048/0049 product-facing eksikleri blocker olmayan noktalarda paralel kapatılacak.
+7. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
 **FINAL: NO.**
