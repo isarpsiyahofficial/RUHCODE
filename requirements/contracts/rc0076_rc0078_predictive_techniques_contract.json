@@ -1,0 +1,17 @@
+{
+  "requirements": {
+    "RC-0076": "Secondary Progressions hesaplanacak.",
+    "RC-0077": "Solar Arc desteklenilecek.",
+    "RC-0078": "Annual Profections desteklenilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/predictive_techniques.dart",
+  "compiled_test": "test/calculation_core/western/predictive_techniques_test.dart",
+  "invariants": [
+    "Secondary Progressions uses the explicit day-for-year mapping: ageYears maps to natalJdTt + ageYears ephemeris days.",
+    "Secondary Progressions uses only the supplied versioned EphemerisProvider and rejects duplicate bodies, coverage violations and returned body/TT/provenance mismatches.",
+    "Solar Arc is derived from the actual secondary-progressed Sun longitude relative to the natal Sun, then the same normalized arc is applied to every natal placement.",
+    "Solar Arc requires natal source/dataVersion provenance to match the supplied ephemeris and does not substitute a fixed mean solar arc.",
+    "Annual Profections activates house one at age zero, advances one house/sign per integer year, and repeats modulo twelve from the natal Ascendant sign.",
+    "All three techniques are deterministic from caller-supplied birth/age inputs; device current time and network fallback are forbidden."
+  ]
+}
