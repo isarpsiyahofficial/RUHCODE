@@ -1,0 +1,17 @@
+{
+  "requirements": {
+    "RC-0073": "Solar Return hesaplanacak.",
+    "RC-0074": "Lunar Return hesaplanacak.",
+    "RC-0075": "Planetary Return sistemleri desteklenebilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/planetary_return.dart",
+  "compiled_test": "test/calculation_core/western/planetary_return_test.dart",
+  "invariants": [
+    "Every return is solved as the first longitude root inside an explicit TT search window.",
+    "Solar Return uses the Sun, Lunar Return uses the Moon, and Planetary Return accepts an explicit requested body.",
+    "The solver uses the supplied versioned EphemerisProvider and rejects body, TT instant, source or data-version mismatches.",
+    "The plus/minus 180-degree signed-angle branch cut cannot be mistaken for a longitude-return root.",
+    "Search windows outside packaged ephemeris coverage fail closed and no device clock or network fallback is used.",
+    "No return is fabricated when the supplied window contains no root."
+  ]
+}
