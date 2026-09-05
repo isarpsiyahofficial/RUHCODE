@@ -1,0 +1,21 @@
+{
+  "contractId": "rc0052_rc0053_degree_tables",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0052": {
+      "text": "Gezegen derece tablosu oluşturulacak.",
+      "bindingRequirementSha256": "56623fcd87dd35668d4defc2a67f3dae28e35531580f548a269a61e3beee36b4"
+    },
+    "RC-0053": {
+      "text": "Ev derece tablosu oluşturulacak.",
+      "bindingRequirementSha256": "a0bd8ee9de0dd67778e814eed1ce2d14c6e249f096c13a4ab295120d51d1ef7b"
+    }
+  },
+  "runtimeEvidence": [
+    "lib/src/calculation_core/western/degree_tables.dart",
+    "lib/src/calculation_core/western/natal_placements.dart",
+    "lib/src/calculation_core/western/equal_house_systems.dart"
+  ],
+  "compiledEvidence": ["test/calculation_core/western/degree_tables_test.dart"],
+  "promotionCeiling": "TESTED"
+}
