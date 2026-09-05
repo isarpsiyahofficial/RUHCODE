@@ -31,31 +31,26 @@ houses = (ROOT / 'lib/src/calculation_core/western/equal_house_systems.dart').re
 placement_test = (ROOT / 'test/calculation_core/western/natal_placements_test.dart').read_text(encoding='utf-8')
 house_test = (ROOT / 'test/calculation_core/western/equal_house_systems_test.dart').read_text(encoding='utf-8')
 
-# RC-0031: every unique supplied body is materialized; duplicates/provenance mismatch fail closed.
 for token in ['for (final state in states)', 'seenBodies.add(state.body)', 'placements.add(', 'placements.sort(', 'NatalPlacementSet(']:
     require(token in placements, f'RC-0031 missing placement token: {token}')
 require('Duplicate ephemeris body' in placements and 'share source/version provenance' in placements, 'RC-0031 fail-closed body/provenance checks missing')
 require('rejects duplicate bodies and mixed provenance' in placement_test, 'RC-0031 compiled duplicate/provenance regression missing')
 
-# RC-0032: sign mapping.
 for token in ['enum TropicalZodiacSign', 'final TropicalZodiacSign sign', '(state.longitudeDegrees / 30.0).floor()', 'TropicalZodiacSign.values[signIndex]']:
     require(token in placements, f'RC-0032 missing sign token: {token}')
 for token in ['state(AstroBody.sun, 0)', 'state(AstroBody.mercury, 30)', 'state(AstroBody.venus, 359.999999)']:
     require(token in placement_test, f'RC-0032 boundary regression missing: {token}')
 
-# RC-0033: full longitude and degree in sign retained.
 for token in ['final double longitudeDegrees', 'final double degreeInSign', 'degreeInSign = state.longitudeDegrees - signIndex * 30.0', 'longitudeDegrees: state.longitudeDegrees']:
     require(token in placements, f'RC-0033 missing degree token: {token}')
 require('degreeInSign, closeTo(0, 1e-12)' in placement_test, 'RC-0033 exact degree boundary regression missing')
 
-# RC-0034: house assignment is calculated from HouseCusps.
 for token in ['final int houseNumber', 'houseNumber: houses.houseForLongitude(state.longitudeDegrees)']:
     require(token in placements, f'RC-0034 missing house placement token: {token}')
 require('houseForLongitude(double longitude)' in houses, 'RC-0034 HouseCusps assignment method missing')
 require('houseNumber, 11' in placement_test, 'RC-0034 compiled house assignment regression missing')
 
-# RC-0035: exactly twelve validated, separately addressable cusps.
-for token in ['if (cusps.length != 12)', 'final List<double> cusps', 'double cusp(int houseNumber)', 'RangeError.range(houseNumber, 1, 12', 'List<double>.generate(\n      12,']:
+for token in ['if (cusps.length != 12)', 'final List<double> cusps', 'double cusp(int houseNumber)', 'RangeError.range(houseNumber, 1, 12', 'List<double>.generate(']:
     require(token in houses, f'RC-0035 missing twelve-house token: {token}')
 for token in ['houses.cusp(1)', 'houses.cusp(2)', 'houses.cusp(12)']:
     require(token in house_test, f'RC-0035 compiled cusp regression missing: {token}')
