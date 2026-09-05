@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0039",
+  "bindingRequirementSha256": "e7f4cda7686550135d25d5d0a593953b2c85ed981d54700aa73d108592e7d1d3",
+  "requirement": "Gezegenlerin yönettikleri burçlar gösterilecek.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/rulerships.dart",
+  "testFile": "test/calculation_core/western/rulerships_test.dart",
+  "mustProve": ["sign-to-ruler catalog covers all twelve Tropical signs", "reverse planet-to-ruled-sign lookup is deterministic", "traditional and modern scheme differences remain explicit"],
+  "verificationBlocker": "TR/EN UI presentation of ruled signs and selected scheme provenance remain required before VERIFIED/DONE."
+}
