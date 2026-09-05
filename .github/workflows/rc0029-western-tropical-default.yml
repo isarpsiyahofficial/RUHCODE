@@ -1,0 +1,68 @@
+name: RC-0029 Western Tropical Default
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/western/**'
+      - 'test/calculation_core/western/natal_placements_test.dart'
+      - 'requirements/contracts/rc0029_western_tropical_default_contract.json'
+      - 'tools/requirements/validate_rc0029_western_tropical_default.py'
+      - '.github/workflows/rc0029-western-tropical-default.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0029 Western Tropical default
+        run: python tools/requirements/validate_rc0029_western_tropical_default.py
+      - name: Execute compiled Tropical placement regressions
+        run: flutter test test/calculation_core/western/natal_placements_test.dart
+      - name: Promote RC-0029 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0029_western_tropical_default.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          r=next(x for x in rows if x['rc_id']=='RC-0029')
+          if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+          r['evidence_links']='requirements/contracts/rc0029_western_tropical_default_contract.json|tools/requirements/validate_rc0029_western_tropical_default.py|lib/src/calculation_core/western/natal_placements.dart|test/calculation_core/western/natal_placements_test.dart|.github/workflows/rc0029-western-tropical-default.yml'
+          r['notes']='Machine gate proves Western natal placements use an explicit Tropical zodiac mapping, with Aries at 0 degrees, deterministic 30-degree boundaries and no sidereal/ayanamsha offset in the default calculation path. TESTED only.'
+          r['blocked']='YES'
+          r['blocker']='End-to-end Western settings/UI must prove Tropical is the visible default and no sidereal/ayanamsha setting silently changes that default before VERIFIED/DONE.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0029): record Western Tropical default TESTED'
+          git push origin HEAD:main
