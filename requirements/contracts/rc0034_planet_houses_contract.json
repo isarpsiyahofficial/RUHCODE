@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0034",
+  "bindingRequirementSha256": "460fc27ef21a9bef18eb31c5b56e24ffbfba16116542f57f9b5323ebe8e4fa4b",
+  "requirement": "Gezegenlerin hangi evlerde bulunduğu gösterilecek.",
+  "promotionCeiling": "TESTED",
+  "productionFiles": ["lib/src/calculation_core/western/natal_placements.dart", "lib/src/calculation_core/western/equal_house_systems.dart"],
+  "testFile": "test/calculation_core/western/natal_placements_test.dart",
+  "mustProve": ["every placement carries houseNumber", "houseNumber is computed by HouseCusps.houseForLongitude", "house assignment is deterministic from calculated cusps and physical longitude"],
+  "verificationBlocker": "End-to-end selected house system and planet-house UI rendering remain required before VERIFIED/DONE."
+}
