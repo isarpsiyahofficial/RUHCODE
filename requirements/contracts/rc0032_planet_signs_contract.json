@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0032",
+  "bindingRequirementSha256": "2222dd4e72479f0e3b55ffd7d0d5fbc16d241da409d865664b71af8d5830fa76",
+  "requirement": "Gezegenlerin hangi burçta olduğu gösterilecek.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/natal_placements.dart",
+  "testFile": "test/calculation_core/western/natal_placements_test.dart",
+  "mustProve": ["every placement carries a TropicalZodiacSign", "30-degree sign boundaries are deterministic", "sign mapping uses physical longitude"],
+  "verificationBlocker": "UI rendering of every required planet sign in both TR/EN remains required before VERIFIED/DONE."
+}
