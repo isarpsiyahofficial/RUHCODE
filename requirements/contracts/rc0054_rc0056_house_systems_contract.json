@@ -1,0 +1,18 @@
+{
+  "contractId": "rc0054_rc0056_house_systems",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0054": {"text": "Placidus ev sistemi desteklenilecek.", "bindingRequirementSha256": "54d660a13595894efee6af23b32cd3204468d9f847003362099ed037bdc3babc"},
+    "RC-0055": {"text": "Whole Sign ev sistemi desteklenilecek.", "bindingRequirementSha256": "d660492ca1c5b20d2658b6ded2a53a3e99a043603f3e33391a11f76ae4e243ef"},
+    "RC-0056": {"text": "Equal House desteklenilecek.", "bindingRequirementSha256": "d601b538d4c38b2d180c1026d0935d57433ab01830457a6428616a527be47b88"}
+  },
+  "runtimeEvidence": [
+    "lib/src/calculation_core/western/placidus_houses.dart",
+    "lib/src/calculation_core/western/equal_house_systems.dart"
+  ],
+  "compiledEvidence": [
+    "test/calculation_core/western/placidus_houses_test.dart",
+    "test/calculation_core/western/equal_house_systems_test.dart"
+  ],
+  "promotionCeiling": "TESTED"
+}
