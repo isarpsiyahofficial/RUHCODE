@@ -10,63 +10,56 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0003 = NOT_STARTED** — independent editorial evidence açık.
 - **RC-0004 = TESTED + blocked=YES** — independent bilingual editorial review açık.
 - **RC-0005 = NOT_STARTED + blocked=YES**, **RC-0006 = TESTED + blocked=YES**, **RC-0007 = NOT_STARTED** — exact AKİLES provenance/comparison blocker'ı açık.
-- **RC-0008→RC-0030** için daha önce physical TESTED promotion görmüş satırlar matrix gerçeğine göre korunur; global astronomy/location/UI/release blocker'ları açık kalır.
-- **RC-0031→RC-0035** son fiziksel matrix okumasında `NOT_STARTED`; mevcut kod/contract iddiaları physical promotion görülmeden yükseltilmez.
-- **RC-0036→RC-0050** için bu turda kritik semantic-drift düzeltmesi başlatıldı. Binding şartnamedeki gerçek anlamlar yeniden okunarak eski ilerleme notlarının RC numaralarıyla kaydığı doğrulandı.
+- **RC-0008→RC-0030** için physical TESTED promotion görmüş satırlar matrix gerçeğine göre korunur; global astronomy/location/UI/release blocker'ları açık kalır.
+- Semantic reconciliation tamamlandı: exact binding anlamıyla **RC-0036→0041, RC-0043, RC-0045, RC-0047 ve RC-0050 = TESTED + blocked=YES**; shifted/non-matching kanıt taşıyan **RC-0042/0044/0046/0048/0049 = NOT_STARTED** olarak konservatif biçimde bırakıldı.
 
-## Kritik semantic reconciliation
+## Bu turdaki gerçek geliştirme
 
-Önceki otomasyon turlarında RC-0036 sonrası bazı kanıtlar yanlış requirement numaralarına bağlanmıştı. Örnekler:
+### RC-0031→RC-0035 — Western placements / signs / degrees / houses
 
-- Binding **RC-0036 = Ev yöneticileri hesaplanacak**, fakat eski ilerleme notu cusp/start degree olarak yazılmıştı.
-- Binding **RC-0037→RC-0041 = conjunction/opposition/square/trine/sextile**, fakat eski ilerleme notlarında house themes/rulership/aspect numaraları kaymıştı.
-- Binding **RC-0045 = element dağılımı**, **RC-0047 = modality dağılımı**, **RC-0050 = exaltation/detriment/fall klasik dignities**; buna karşın matrixte RC-0041→0050 için fiziksel TESTED promotion alan kanıtların bir bölümü farklı anlamlara (ör. applying/separating) bağlıydı.
+Mevcut `WesternNatalPlacements` runtime'ı fiziksel ephemeris state'lerinden her body için longitude, tropical sign, degree-in-sign ve calculated house number üretiyor; `HouseCusps` 12 ayrı cusp'ı fail-closed doğruluyor. Önceki kanıt hattına ek olarak exact binding'i yeniden tetikleyen yeni contract/validator/workflow zinciri eklendi:
 
-Bu nedenle yanlış anlamla alınmış TESTED statülerini korumak yasaklandı. `tools/requirements/reconcile_rc0036_rc0050_semantics.py` exact binding metnini kontrol eder ve shifted evidence ile TESTED olmuş **RC-0041→RC-0050** satırlarını konservatif olarak `NOT_STARTED` durumuna geri alır; VERIFIED/DONE satırlarını otomatik düşürmeyi reddeder. Dedicated writer workflow: `.github/workflows/reconcile-rc0036-rc0050-semantics.yml`.
+- `requirements/contracts/rc0031_rc0035_western_placements_contract.json`
+- `tools/requirements/validate_rc0031_rc0035_western_placements.py`
+- `.github/workflows/rc0031-rc0035-western-placements.yml`
 
-Reconciliation kod commitleri:
+Commitler: `9ed43fc04ccef6d256bbd36bbe95c10c34efc38c`, `f3a615923aa412e5896b262a086da2d66fbb86a9`, `7e730ff11faba775701b958153c7c26757173526`.
 
-- `3ab5fbe49f6585d65d7b5b4e1a4f464f66566546` — semantic reconciliation script.
-- `22e127c9843f47f1b47a36b233dcdea4d612312d` — dedicated matrix-writer CI.
+Physical bot promotion görülmeden RC-0031→0035 TESTED sayılmayacak.
 
-Physical bot reconciliation commit'i görülmeden burada matrix sonucu olmuş gibi gösterilmeyecek.
+### RC-0052 / RC-0053 — Gezegen ve ev derece tabloları
 
-## Doğru numaralara yeniden bağlanan Western kanıtları
+Yeni production model `lib/src/calculation_core/western/degree_tables.dart` eklendi. `WesternDegreeTables.planets()` hesaplanmış natal placement snapshot'ından body/longitude/sign/degree-in-sign/house number satırları; `WesternDegreeTables.houses()` ise `HouseCusps` üzerinden tam 12 numaralı cusp/sign/degree-in-sign satırı üretir. Compiled regresyon: `test/calculation_core/western/degree_tables_test.dart`.
 
-Yeni exact contract: `requirements/contracts/rc0036_rc0050_western_binding_contract.json`.
+Binding/evidence zinciri:
 
-Yeni validator: `tools/requirements/validate_rc0036_rc0050_western_binding.py`.
+- `requirements/contracts/rc0052_rc0053_degree_tables_contract.json`
+- `tools/requirements/validate_rc0052_rc0053_degree_tables.py`
+- `.github/workflows/rc0052-rc0053-degree-tables.yml`
 
-Yeni dedicated compiled gate: `.github/workflows/rc0036-rc0050-western-binding.yml`.
+Commitler: `5c90d70719b35dce05225a85ec1d754e85c3d605`, `c0221bfa4f2b1154aa4cf39dc7f8c62b979802a6`, `726a92c6d1a18859212e290780aa1901146b5dcc`, `0e05429dc9aab8acea380d2433ad3c084d0d0672`, `15a0916b710532c73e83962e96082bb42683a9ac`.
 
-Gate yalnız gerçekten mevcut runtime + compiled test kanıtıyla şu exact maddeleri TESTED seviyesine kadar promote etmeye izin verir:
+Physical CI + matrix promotion görülmeden RC-0052/0053 TESTED sayılmayacak.
 
-- **RC-0036** — actual 12 house cusp üzerinden house ruler hesaplama.
-- **RC-0037** — conjunction 0°.
-- **RC-0038** — opposition 180°.
-- **RC-0039** — square 90°.
-- **RC-0040** — trine 120°.
-- **RC-0041** — sextile 60°.
-- **RC-0043** — yönetilebilir/validated orb policy.
-- **RC-0045** — element dağılımı hesabı.
-- **RC-0047** — cardinal/fixed/mutable modality dağılımı hesabı.
-- **RC-0050** — domicile/exaltation/detriment/fall klasik essential-dignity desteği.
+### RC-0054→RC-0056 — Placidus / Whole Sign / Equal House
 
-Bu gate için runtime evidence: `rulerships.dart`, `natal_aspects.dart`, `natal_distribution.dart`, `essential_dignities.dart`; compiled tests: `rulerships_test.dart`, `natal_aspects_test.dart`, `natal_distribution_test.dart`, `essential_dignities_test.dart`.
+Mevcut production `placidus_houses.dart` ile `equal_house_systems.dart` ayrı executable house-system yolları olarak exact requirement kanıtına bağlandı. Binding contract/validator/compiled gate:
 
-Exact-binding commitleri:
+- `requirements/contracts/rc0054_rc0056_house_systems_contract.json`
+- `tools/requirements/validate_rc0054_rc0056_house_systems.py`
+- `.github/workflows/rc0054-rc0056-house-systems.yml`
 
-- `0c639ee8207d415e8dd3de7e208ed9a13cacd37d` — binding contract.
-- `4d14a23ff800444f145cf29a553936dc8b2efe2f` — fail-closed semantic/runtime validator.
-- `74429fbe4f28532d40b66dbd39223d9af189315d` — compiled CI + physical matrix promotion gate.
+Commitler: `8cf013266dcc5f829ab3f0a12fb224303d48adcb`, `33b19665457d092bec5e332695bac4fa7b14e9e5`, `025c2ee440a058710cd68b3fee0a449b77b82895`.
 
-Aşağıdaki maddeler kasıtlı olarak **promote edilmez**; calculation varlığı ürün şartını tek başına kanıtlamaz:
+Physical CI + matrix promotion görülmeden RC-0054/0055/0056 TESTED sayılmayacak.
 
-- **RC-0042** professional minor-aspect settings.
-- **RC-0044** professional user-editable orb settings + persistence/entitlement/UI.
-- **RC-0046** Fire/Earth/Air/Water yoğunluklarının kullanıcıya gösterimi.
-- **RC-0048** retrograde planetlerin kullanıcıya ayrıca belirtilmesi.
-- **RC-0049** planetary rulerships'in ürün yüzeyinde gösterilebilmesi.
+## Açık product-facing Western maddeleri
+
+- RC-0042 professional minor-aspect settings.
+- RC-0044 professional user-editable orb settings + persistence/entitlement/UI.
+- RC-0046 Fire/Earth/Air/Water yoğunluklarının kullanıcıya gösterimi.
+- RC-0048 retrograde planetlerin kullanıcıya ayrıca belirtilmesi.
+- RC-0049 planetary rulerships'in ürün yüzeyinde gösterilebilmesi.
 
 ## Açık global blocker / release kapıları
 
@@ -80,10 +73,9 @@ Aşağıdaki maddeler kasıtlı olarak **promote edilmez**; calculation varlığ
 ## Sonraki devam noktası
 
 1. `requirements/requirement_state.csv`, bu progress dosyası ve `automation_runs/LATEST.md` yeniden okunacak.
-2. Semantic reconciliation workflow physical commit/result doğrulanacak; kırmızıysa exact job/log okunacak ve kök neden düzeltilecek.
-3. Exact RC-0036→0050 Western gate sonucu ve bot promotion fiziksel olarak doğrulanacak; yalnız physical promotion gören satırlar TESTED sayılacak.
-4. RC-0031→0035 için gerçek binding gate/promotion durumu ayrıca doğrulanacak.
-5. Sonra açık kalan RC-0042/0044/0046/0048/0049 ürün/UI şartları gerçekten uygulanacak; ardından dependency sırası RC-0051+ ile devam edecek.
-6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
+2. RC-0031→0035, RC-0052/0053 ve RC-0054→0056 dedicated CI sonuçları + physical bot matrix promotion commitleri doğrulanacak; kırmızıysa job/log kök nedeni aynı turda düzeltilecek.
+3. Açık product-facing RC-0042/0044/0046/0048/0049 gerçekten uygulanacak.
+4. Ardından dependency sırası RC-0057+ ile devam edecek.
+5. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
 **FINAL: NO.**
