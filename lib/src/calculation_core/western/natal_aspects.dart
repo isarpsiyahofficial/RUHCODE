@@ -13,6 +13,8 @@ enum MajorAspect {
   final double exactAngleDegrees;
 }
 
+enum AspectPhase { applying, exact, separating }
+
 final class AspectOrbPolicy {
   AspectOrbPolicy({
     Map<MajorAspect, double>? maximumOrbDegrees,
@@ -78,6 +80,7 @@ final class NatalAspectHit {
     required this.aspect,
     required this.separationDegrees,
     required this.orbDegrees,
+    required this.phase,
   });
 
   final AstroBody bodyA;
@@ -85,6 +88,7 @@ final class NatalAspectHit {
   final MajorAspect aspect;
   final double separationDegrees;
   final double orbDegrees;
+  final AspectPhase phase;
 }
 
 final class NatalAspectSet {
@@ -144,6 +148,13 @@ abstract final class WesternNatalAspects {
               aspect: bestAspect,
               separationDegrees: separation,
               orbDegrees: bestOrb,
+              phase: phaseFor(
+                longitudeA: a.longitudeDegrees,
+                longitudeB: b.longitudeDegrees,
+                speedA: a.longitudeSpeedDegreesPerDay,
+                speedB: b.longitudeSpeedDegreesPerDay,
+                aspect: bestAspect,
+              ),
             ),
           );
         }
@@ -158,8 +169,40 @@ abstract final class WesternNatalAspects {
     );
   }
 
+  static AspectPhase phaseFor({
+    required double longitudeA,
+    required double longitudeB,
+    required double speedA,
+    required double speedB,
+    required MajorAspect aspect,
+  }) {
+    for (final value in [longitudeA, longitudeB, speedA, speedB]) {
+      if (!value.isFinite) {
+        throw StateError('Aspect phase inputs must be finite.');
+      }
+    }
+    final currentSeparation = _shortestSeparation(longitudeA, longitudeB);
+    final currentOrb = (currentSeparation - aspect.exactAngleDegrees).abs();
+    const exactTolerance = 1e-10;
+    if (currentOrb <= exactTolerance) return AspectPhase.exact;
+
+    const probeDays = 1e-4;
+    final futureA = _normalize(longitudeA + speedA * probeDays);
+    final futureB = _normalize(longitudeB + speedB * probeDays);
+    final futureSeparation = _shortestSeparation(futureA, futureB);
+    final futureOrb = (futureSeparation - aspect.exactAngleDegrees).abs();
+    const phaseTolerance = 1e-12;
+    if (futureOrb < currentOrb - phaseTolerance) return AspectPhase.applying;
+    return AspectPhase.separating;
+  }
+
   static double _shortestSeparation(double a, double b) {
     final difference = (a - b).abs() % 360.0;
     return difference > 180.0 ? 360.0 - difference : difference;
+  }
+
+  static double _normalize(double value) {
+    final normalized = value % 360.0;
+    return normalized < 0 ? normalized + 360.0 : normalized;
   }
 }
