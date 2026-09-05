@@ -1,0 +1,89 @@
+name: RC-0036 RC-0050 Exact Western Binding
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/western/rulerships.dart'
+      - 'lib/src/calculation_core/western/natal_aspects.dart'
+      - 'lib/src/calculation_core/western/natal_distribution.dart'
+      - 'lib/src/calculation_core/western/essential_dignities.dart'
+      - 'test/calculation_core/western/rulerships_test.dart'
+      - 'test/calculation_core/western/natal_aspects_test.dart'
+      - 'test/calculation_core/western/natal_distribution_test.dart'
+      - 'test/calculation_core/western/essential_dignities_test.dart'
+      - 'requirements/contracts/rc0036_rc0050_western_binding_contract.json'
+      - 'tools/requirements/validate_rc0036_rc0050_western_binding.py'
+      - '.github/workflows/rc0036-rc0050-western-binding.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate exact binding semantics
+        run: python tools/requirements/validate_rc0036_rc0050_western_binding.py
+      - name: Test house rulerships
+        run: flutter test test/calculation_core/western/rulerships_test.dart
+      - name: Test major aspects and managed orbs
+        run: flutter test test/calculation_core/western/natal_aspects_test.dart
+      - name: Test element and modality distributions
+        run: flutter test test/calculation_core/western/natal_distribution_test.dart
+      - name: Test classical essential dignities
+        run: flutter test test/calculation_core/western/essential_dignities_test.dart
+      - name: Promote exact proven requirements to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/reconcile_rc0036_rc0050_semantics.py
+          python tools/requirements/validate_rc0036_rc0050_western_binding.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8', newline='')))
+          fields=list(rows[0].keys())
+          promote={'RC-0036','RC-0037','RC-0038','RC-0039','RC-0040','RC-0041','RC-0043','RC-0045','RC-0047','RC-0050'}
+          links='requirements/contracts/rc0036_rc0050_western_binding_contract.json|tools/requirements/validate_rc0036_rc0050_western_binding.py|lib/src/calculation_core/western/rulerships.dart|lib/src/calculation_core/western/natal_aspects.dart|lib/src/calculation_core/western/natal_distribution.dart|lib/src/calculation_core/western/essential_dignities.dart|test/calculation_core/western/rulerships_test.dart|test/calculation_core/western/natal_aspects_test.dart|test/calculation_core/western/natal_distribution_test.dart|test/calculation_core/western/essential_dignities_test.dart|.github/workflows/rc0036-rc0050-western-binding.yml'
+          for r in rows:
+            if r['rc_id'] not in promote:
+              continue
+            if r['status'] not in ('VERIFIED','DONE'):
+              r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='End-to-end Western UI/persistence plus independent golden/release evidence remains required before VERIFIED/DONE.'
+            r['notes']='Exact binding gate validates this RC against RUH_CODE_MASTER_SARTNAME.md and executes the corresponding compiled Western runtime regressions. TESTED only.'
+          with p.open('w', encoding='utf-8', newline='') as f:
+            w=csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0036-rc0050): record exact Western bindings TESTED'
+          git push origin HEAD:main
