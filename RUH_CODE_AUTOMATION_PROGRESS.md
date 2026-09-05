@@ -19,28 +19,39 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0063→0067 = TESTED + blocked=YES** (`fcf83a4361757fb110dbc688be02cd7342273b66`).
 - **RC-0068 = TESTED + blocked=YES** (`b1a6a9aeaf0eba788a9b4dc8061d3796bcb2e97d`).
 - **RC-0069→0070 = TESTED + blocked=YES** (`c02f9c5ee4860a222aa01f98e0cc7080b83e92c2`).
-- **RC-0071 = TESTED + blocked=YES**; physical bot promotion: `cbd4b158e363199c7ca3f36ae44b08aa8fbcbb7c`.
-- **RC-0072 = IMPLEMENTED + blocked=YES**; Davison deterministic astronomical core + compiled tests + exact contract + fail-closed validator + dedicated CI/matrix gate main üzerinde. Physical TESTED promotion henüz görülmedi.
+- **RC-0071 = TESTED + blocked=YES** (`cbd4b158e363199c7ca3f36ae44b08aa8fbcbb7c`).
+- **RC-0072 = TESTED + blocked=YES**; physical bot promotion `5fcb1d816a72ad2a3b2d90218a6efb8f66afbc16`.
+- **RC-0073→0075 = IMPLEMENTED + blocked=YES**; deterministic return core + compiled tests + exact contract + fail-closed validator + dedicated CI/matrix gate main üzerinde. Physical TESTED promotion henüz görülmedi.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0071 — physical TESTED doğrulandı
+### RC-0072 — physical TESTED doğrulandı
 
-`requirements/requirement_state.csv` RC-0071 satırı artık fiziksel olarak TESTED. Promotion commit: `cbd4b158e363199c7ca3f36ae44b08aa8fbcbb7c`.
+`requirements/requirement_state.csv` RC-0072 satırı artık fiziksel olarak TESTED. Promotion commit: `5fcb1d816a72ad2a3b2d90218a6efb8f66afbc16`.
 
-### RC-0072 — Davison chart
+### RC-0073 → RC-0075 — Solar/Lunar/Planetary Return
 
-- `fbb9284f42cba66a2d1ad9dfdef3389250d674a6` — production `davison_chart.dart`.
-- `ab19336ea17d248a92a5f833bf868df9f7682c75` — compiled regressions.
-- `971750b17e67baa98a855621f2d187f7ce0084c1` — exact RC-0072 binding contract.
-- `ec0402aeebf836293a236da0c29333c32be9fe02` — fail-closed validator.
-- `bfee3f8cc78117354dd7e10bf20eaff5f8a51921` — dedicated Flutter CI + matrix promotion gate.
+Bağlayıcı şartname:
 
-Davison implementation iki explicit TT doğum anının gerçek orta zamanını alır, iki koordinatın dateline-safe spherical midpoint'ini hesaplar ve istenen her gezegeni supplied versioned `EphemerisProvider` üzerinden bu midpoint TT anında yeniden hesaplar. Natal planetary longitude'lar ortalanmaz. Invalid coordinate, duplicate body, coverage dışı midpoint, ephemeris instant/provenance mismatch ve antipodal location fail-closed. Verified UT/sidereal-time house pipeline olmadan houses/angles uydurulmaz.
+- RC-0073 — `Solar Return hesaplanacak.`
+- RC-0074 — `Lunar Return hesaplanacak.`
+- RC-0075 — `Planetary Return sistemleri desteklenebilecek.`
+
+Commit zinciri:
+
+- `4f398f0224b1af4a079907fcebcb5c8421d365ee` — production explicit-TT planetary longitude-return solver.
+- `ad0fee3b6ab4d329c84befdaf48e22981cf7d1b9` — compiled Solar/Lunar/non-luminary regressions ve fail-closed testleri.
+- `abadbfcb0e4836b6e6d10dbc843faed47260015b` — exact binding contract.
+- `3a1c3bfb0751ac8e6a84e8b945c6c556bed1494c` — fail-closed validator.
+- `ea61b5e81470061f6eb79646a12309769e6fa545` — dedicated Flutter CI + matrix promotion gate.
+
+Solver yalnız caller-supplied explicit TT window ve versioned `EphemerisProvider` kullanır. Coverage, body/instant/source/version provenance doğrulanır. Signed angular difference içindeki ±180° branch cut sahte return kökü olarak kabul edilmez. Supplied aralıkta return bulunmazsa fail-closed; device current time/network fallback yok. Solar ve Lunar Return aynı fiziksel root solver'ı explicit Sun/Moon seçimiyle kullanır; Planetary Return explicit body kabul eder.
+
+Physical SUCCESS + bot matrix promotion görülmeden RC-0073→0075 TESTED sayılmayacak. Rendered return UI, verified house/angle integration, independent astronomy golden/tolerance review ve release/device kanıtları VERIFIED/DONE öncesinde açık.
 
 ## Açık product-facing Western maddeleri
 
-RC-0042 minor-aspect settings; RC-0044 user-editable orb settings/persistence/entitlement/UI; RC-0046 element yoğunluk UI; RC-0048 retrograde UI; RC-0049 rulership UI; RC-0061 active house-system UI; RC-0068 transit timeline UI; RC-0069/0070 synastry UI; RC-0071 composite UI/verified house-angle policy; RC-0072 Davison UI/verified midpoint-location house-angle pipeline.
+RC-0042 minor-aspect settings; RC-0044 user-editable orb settings/persistence/entitlement/UI; RC-0046 element yoğunluk UI; RC-0048 retrograde UI; RC-0049 rulership UI; RC-0061 active house-system UI; RC-0068 transit timeline UI; RC-0069/0070 synastry UI; RC-0071 composite UI/verified house-angle policy; RC-0072 Davison UI/verified midpoint-location house-angle pipeline; RC-0073/0074/0075 return-chart UI/house-angle integration.
 
 ## Açık global blocker / release kapıları
 
@@ -48,12 +59,12 @@ Independent editorial evidence; exact AKİLES provenance/comparison; RC-1436/143
 
 ## Sonraki devam noktası
 
-1. RC-0072 exact workflow sonucu + physical matrix promotion okunacak; kırmızıysa exact job/log kök nedeni aynı turda düzeltilecek.
+1. RC-0073→0075 exact workflow sonucu + physical matrix promotion okunacak; kırmızıysa exact job/log kök nedeni aynı turda düzeltilecek.
 2. RC-0062 natal-chart unresolved physical promotion tekrar incelenecek.
-3. Dependency sırasıyla **RC-0073 Solar Return → RC-0074 Lunar Return → RC-0075 Planetary Return** uygulanacak; approximate astronomy shortcut kullanılmayacak.
-4. RC-0061/0068/0069/0070/0071/0072 product-screen/widget evidence ve RC-0042/0044/0046/0048/0049 bağımsız oldukça paralel ilerletilecek.
+3. Dependency sırasıyla **RC-0076 Secondary Progressions → RC-0077 Solar Arc → RC-0078 Annual Profections** uygulanacak; şartname/entitlement bağımlılıkları korunacak ve approximate astronomy shortcut kullanılmayacak.
+4. Product-screen/widget evidence ve RC-0042/0044/0046/0048/0049 bağımsız oldukça paralel ilerletilecek.
 5. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
-Checkpoint: `automation_runs/2026-09-05_2254_rc0071_rc0072_progress.md`.
+Checkpoint: `automation_runs/2026-09-06_0055_rc0072_rc0075_progress.md`.
 
 **FINAL: NO.**
