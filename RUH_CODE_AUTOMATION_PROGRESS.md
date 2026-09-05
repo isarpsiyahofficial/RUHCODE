@@ -19,36 +19,27 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0061 = IMPLEMENTED + blocked=YES**; aktif ev sistemi adı için reusable TR/EN contract mevcut, fakat gerçek kullanıcı ekranı/widget-device evidence henüz yok.
 - **RC-0062 = NOT_STARTED**; dedicated natal-chart contract/test/CI zinciri mevcut fakat physical `record natal chart TESTED` promotion henüz görülmedi.
 - **RC-0063→RC-0067 = TESTED + blocked=YES**; physical bot promotion: `fcf83a4361757fb110dbc688be02cd7342273b66`.
-- **RC-0068 = IMPLEMENTED + blocked=YES**; production timeline modeline ek olarak compiled test, binding contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi; physical promotion bekleniyor ve rendered timeline UI/widget-device evidence açık.
-- **RC-0069→RC-0070 = IMPLEMENTED + blocked=YES**; deterministic synastry/two-chart production core, compiled regressions, binding contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi; physical promotion bekleniyor.
+- **RC-0068 = TESTED + blocked=YES**; physical bot promotion: `b1a6a9aeaf0eba788a9b4dc8061d3796bcb2e97d`. Rendered timeline UI/widget-device evidence açık.
+- **RC-0069→RC-0070 = TESTED + blocked=YES**; physical bot promotion: `c02f9c5ee4860a222aa01f98e0cc7080b83e92c2`. Rendered synastry/two-chart product UI evidence açık.
+- **RC-0071 = IMPLEMENTED + blocked=YES**; deterministic Composite chart planetary core, compiled regressions, exact binding contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi. Physical `record composite chart core TESTED` promotion henüz görülmedi.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0063→RC-0067 — physical promotion doğrulandı
+### RC-0068 ve RC-0069→RC-0070 — physical promotion doğrulandı
 
-- `fcf83a4361757fb110dbc688be02cd7342273b66` — `requirements(rc0063-rc0067): record transit core TESTED`
-- Transit haritası, Natal×Transit, geçmiş/gelecek explicit TT transitleri ve transit→natal aspect machine gate'i physical matrix tarafından TESTED kabul edildi.
-- End-to-end date selection, rendered transit/timeline UI, independent astronomy goldens ve release/device kapıları VERIFIED/DONE öncesinde açık.
+- `b1a6a9aeaf0eba788a9b4dc8061d3796bcb2e97d` — `requirements(rc0068): record transit timeline core TESTED`
+- `c02f9c5ee4860a222aa01f98e0cc7080b83e92c2` — `requirements(rc0069-rc0070): record synastry core TESTED`
+- Her iki hat TESTED seviyesine fiziksel requirement-matrix promotion ile yükseldi; UI/device/release blocker'ları nedeniyle VERIFIED/DONE değildir.
 
-### RC-0068 — önemli transit timeline requirement gate
+### RC-0071 — Composite chart
 
-- production model: `lib/src/calculation_core/western/transit_timeline.dart`
-- compiled regression: `36539a66b40c7482400d1bde5c779897c5fb5a47`
-- binding contract: `967c354cbf9945bfec5384255c53633f27fbb5f7`
-- fail-closed validator: `9f43f52c7d6b46110e8e7039e93bf78f30005283`
-- CI/matrix gate: `99e894d85c8e2b22c504da533d02821fa445fcee`
+- production core: `1b31fda1af52a7b65eb1b29bd3255b441c70f8b2` (`lib/src/calculation_core/western/composite_chart.dart`)
+- compiled regressions: `2456ef597af6ee4cf4a8c5afec2c2de58295a616`
+- binding contract: `d91c6f5f8664f5197e0b0df93094ff079bf22235`
+- fail-closed validator: `0440c7eda31f00cf8d3a66309e843585e083950f`
+- CI/matrix gate: `fd4993a2d9f2ad635190ee428144ad667527f070`
 
-Timeline explicit natal×transit snapshot'larından deterministic important-event records üretir; explicit policy kullanır, kronolojik sıralama ve deterministic tie-break uygular, mixed provenance durumunu fail-closed reddeder. Physical SUCCESS + matrix promotion görülmeden TESTED sayılmayacak. Gerçek product timeline rendering ayrıca açık blocker'dır.
-
-### RC-0069→RC-0070 — Synastry / iki kişinin harita karşılaştırması
-
-- production core: `62fffc27d0bed683de853512054925ff47dbac5a` (`lib/src/calculation_core/western/synastry.dart`)
-- compiled regressions: `89981e503929581df233d94f9857c5ea6526f353`
-- binding contract: `622c846069d0a9877f5696297e8cffa33ab639ee`
-- fail-closed validator: `00ece3d97bda3da048625b4e259befba909b1856`
-- CI/matrix gate: `fc53658e2495b3bc50fa9f015b25324141ee0880`
-
-İki natal snapshot birbirine karıştırılmadan ayrı korunur; iki TT instant sonuçta saklanır. Person-A placements × Person-B placements cross-chart aspectleri shared explicit aspect/orb policy ile hesaplanır. Signed physical speeds aspect phase hesabına taşınır. Ephemeris source/version uyuşmazlığı fail-closed; device current time veya network fallback yoktur. Physical bot promotion olmadan TESTED denmeyecek.
+Composite planetary placements iki bağımsız natal placement setinden shortest-circular midpoint ile üretilir; 350°/10° sınırı 0° olarak çözülür. Person A ve B TT instant'ları ayrı korunur. Ephemeris source/version uyuşmazlığı, duplicate body ve unequal body set fail-closed reddedilir. Explicit ayrıca doğrulanmış time/location policy olmadan composite houses/angles uydurulmaz. Physical bot promotion oluşmadan TESTED denmeyecek.
 
 ## Açık product-facing Western maddeleri
 
@@ -60,6 +51,7 @@ Timeline explicit natal×transit snapshot'larından deterministic important-even
 - RC-0061 active house-system adının gerçek kullanıcı ekranında görünürlüğü.
 - RC-0068 important-transit timeline gerçek UI/widget-device evidence.
 - RC-0069/0070 rendered synastry/two-chart product UI evidence.
+- RC-0071 rendered composite-chart UI ve ayrıca tanımlanmış/doğrulanmış composite house/angle policy.
 
 ## Açık global blocker / release kapıları
 
@@ -73,11 +65,13 @@ Timeline explicit natal×transit snapshot'larından deterministic important-even
 ## Sonraki devam noktası
 
 1. `requirements/requirement_state.csv`, bu progress dosyası ve `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0068 ve RC-0069→0070 dedicated CI/promotion sonuçları doğrulanacak; kırmızıysa exact Actions job/log kök nedeni aynı turda düzeltilecek.
+2. RC-0071 dedicated CI/promotion sonucu doğrulanacak; kırmızıysa exact Actions job/log kök nedeni aynı turda düzeltilecek.
 3. RC-0062 natal-chart physical promotion problemi yeniden doğrulanacak/retrigger gereksinimi incelenecek.
-4. RC-0061 ve RC-0068 product-screen/widget evidence ilerletilecek.
-5. Ardından dependency sırasıyla **RC-0071 Composite chart** ve RC-0072+ ilerletilecek.
+4. RC-0061 ve RC-0068/0069/0070/0071 product-screen/widget evidence ilerletilecek.
+5. Ardından bağlayıcı dependency sırasıyla **RC-0072 Davison chart → RC-0073 Solar Return → RC-0074 Lunar Return → RC-0075 Planetary Return** ilerletilecek. Astronomik algoritma/golden kanıt olmadan approximation uydurulmayacak.
 6. Açık RC-0042/0044/0046/0048/0049 product-facing eksikleri blocker olmayan noktalarda paralel kapatılacak.
 7. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
+
+Checkpoint: `automation_runs/2026-09-05_2057_rc0068_rc0071_progress.md`.
 
 **FINAL: NO.**
