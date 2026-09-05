@@ -2,17 +2,18 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-05_2254_rc0071_rc0072_progress.md`
+`automation_runs/2026-09-06_0055_rc0072_rc0075_progress.md`
 
 ## Bu turda doğrulanmış / uygulanmış ilerleme
 
-1. RC-0071 physical TESTED promotion doğrulandı: `cbd4b158e363199c7ca3f36ae44b08aa8fbcbb7c`.
-2. RC-0072 Davison chart için deterministic production core eklendi: `fbb9284f42cba66a2d1ad9dfdef3389250d674a6`.
-3. RC-0072 compiled regressions, exact binding contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi: `ab19336e…`, `971750b1…`, `ec0402ae…`, `bfee3f8c…`.
-4. Davison planetary longitudes natal değerlerden ortalanmıyor; midpoint TT + spherical midpoint location üzerinden versioned ephemeris yeniden değerlendiriliyor. Antipodal location, duplicate body, coverage/provenance/instant uyumsuzluğu fail-closed.
-5. RC-0072 physical TESTED bot promotion henüz görülmedi; erken yükseltilmeyecek. Houses/angles explicit verified UT/sidereal-time pipeline olmadan uydurulmuyor.
-6. RC-0062 natal-chart physical promotion ve product-facing UI evidence açık kalıyor.
+1. RC-0072 physical TESTED promotion doğrulandı: `5fcb1d816a72ad2a3b2d90218a6efb8f66afbc16`.
+2. RC-0073→RC-0075 için deterministic explicit-TT return calculation core eklendi: `4f398f0224b1af4a079907fcebcb5c8421d365ee`.
+3. Solar Return, Lunar Return ve non-luminary Planetary Return için compiled regressions eklendi: `ad0fee3b6ab4d329c84befdaf48e22981cf7d1b9`.
+4. Exact binding contract, fail-closed validator ve dedicated CI/matrix gate eklendi: `abadbfcb…`, `3a1c3bfb…`, `ea61b5e8…`.
+5. Solver explicit TT window + versioned ephemeris kullanıyor; ±180° branch-cut false-root, coverage dışı arama, provenance/body/instant mismatch ve root bulunmaması fail-closed.
+6. RC-0073→0075 physical TESTED bot promotion henüz görülmedi; CI kanıtı oluşmadan erken yükseltilmeyecek.
+7. RC-0062 natal-chart physical promotion ve product-facing UI/release evidence açık kalıyor.
 
-Sonraki dependency: RC-0072 exact CI/promotion doğrulaması → RC-0062 unresolved promotion → RC-0073 Solar Return → RC-0074 Lunar Return → RC-0075 Planetary Return. Product-facing açıklar güvenli oldukça paralel ilerletilecek.
+Sonraki dependency: RC-0073→0075 exact CI/promotion → RC-0062 unresolved promotion → RC-0076 Secondary Progressions → RC-0077 Solar Arc → RC-0078 Annual Profections. Product-facing açıklar güvenli oldukça paralel ilerletilecek.
 
 **FINAL: NO.**
