@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0035",
+  "bindingRequirementSha256": "6a762e4e636c89ee6d1896b7231f03511614244e8642eab96e2a619b4d5b70b1",
+  "requirement": "12 ev ayrı ayrı hesaplanacak.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/equal_house_systems.dart",
+  "testFile": "test/calculation_core/western/equal_house_systems_test.dart",
+  "mustProve": ["HouseCusps contains exactly 12 cusps", "each house 1 through 12 is individually addressable", "cusp values are validated normalized longitudes", "invalid house numbers fail closed"],
+  "verificationBlocker": "Authoritative house-system goldens and full selected-system UI evidence remain required before VERIFIED/DONE."
+}
