@@ -76,7 +76,7 @@ void main() {
     await expectLater(
       engine.calculate(
         ChineseAstrologyInput(
-          manifest: manifest(validity: CalculationValidity.invalid),
+          manifest: manifest(validity: CalculationValidity.error),
           cycleYear: 2024,
         ),
       ),
