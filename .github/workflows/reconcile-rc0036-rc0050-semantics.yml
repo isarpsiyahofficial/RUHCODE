@@ -1,0 +1,46 @@
+name: Reconcile RC-0036 RC-0050 Semantics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'requirements/requirement_state.csv'
+      - 'tools/requirements/reconcile_rc0036_rc0050_semantics.py'
+      - '.github/workflows/reconcile-rc0036-rc0050-semantics.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reconcile shifted RC semantics
+        run: python tools/requirements/reconcile_rc0036_rc0050_semantics.py
+      - name: Validate complete requirement matrix
+        run: python tools/requirements/validate_requirement_matrix.py
+      - name: Persist conservative matrix repair
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/reconcile_rc0036_rc0050_semantics.py
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0036-rc0050): reconcile binding semantics'
+          git push origin HEAD:main
