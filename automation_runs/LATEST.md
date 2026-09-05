@@ -2,18 +2,17 @@
 
 Latest checkpoint:
 
-`automation_runs/2026-09-06_0055_rc0072_rc0075_progress.md`
+`automation_runs/2026-09-06_0253_rc0073_rc0079_progress.md`
 
 ## Bu turda doğrulanmış / uygulanmış ilerleme
 
-1. RC-0072 physical TESTED promotion doğrulandı: `5fcb1d816a72ad2a3b2d90218a6efb8f66afbc16`.
-2. RC-0073→RC-0075 için deterministic explicit-TT return calculation core eklendi: `4f398f0224b1af4a079907fcebcb5c8421d365ee`.
-3. Solar Return, Lunar Return ve non-luminary Planetary Return için compiled regressions eklendi: `ad0fee3b6ab4d329c84befdaf48e22981cf7d1b9`.
-4. Exact binding contract, fail-closed validator ve dedicated CI/matrix gate eklendi: `abadbfcb…`, `3a1c3bfb…`, `ea61b5e8…`.
-5. Solver explicit TT window + versioned ephemeris kullanıyor; ±180° branch-cut false-root, coverage dışı arama, provenance/body/instant mismatch ve root bulunmaması fail-closed.
-6. RC-0073→0075 physical TESTED bot promotion henüz görülmedi; CI kanıtı oluşmadan erken yükseltilmeyecek.
-7. RC-0062 natal-chart physical promotion ve product-facing UI/release evidence açık kalıyor.
+1. RC-0073→RC-0075 physical TESTED promotion doğrulandı: `59ac91550ecd1e4ebf14367c9c4a2c549f6b96b8`.
+2. RC-0076→RC-0078 için Secondary Progressions, Solar Arc ve Annual Profections production çekirdekleri + compiled tests + exact contract + fail-closed validator + dedicated CI/matrix gate eklendi (`db214a03…`, `e14a27d8…`, `e8bee0b4…`, `49db080a…`, `fdaf8cc2…`).
+3. RC-0076→0078 dedicated run `33999963235` son kontrolde pending; physical SUCCESS/promotion olmadan TESTED denmedi.
+4. RC-0079 için provenance-safe neutral eclipse overlay core + tests + contract + validator + CI gate eklendi (`6f19cecf…`, `4f516d3f…`, `63d5fde9…`, `9d8c87db…`, `4979cf4b…`).
+5. RC-0079 tutulma verisi/yorum uydurmuyor; verified event input + explicit orb ile natal conjunction/opposition contact altyapısı sağlıyor, provenance mismatch fail-closed.
+6. RC-0062 natal-chart physical promotion ve product-facing UI/release evidence hâlâ açık ve atlanmış sayılmıyor.
 
-Sonraki dependency: RC-0073→0075 exact CI/promotion → RC-0062 unresolved promotion → RC-0076 Secondary Progressions → RC-0077 Solar Arc → RC-0078 Annual Profections. Product-facing açıklar güvenli oldukça paralel ilerletilecek.
+Sonraki dependency: RC-0076→0078 exact CI/promotion → RC-0079 exact CI/promotion → RC-0062 unresolved promotion → RC-0080/0081 Vedic engine separation. Product-facing açıklar güvenli oldukça paralel ilerletilecek.
 
 **FINAL: NO.**
