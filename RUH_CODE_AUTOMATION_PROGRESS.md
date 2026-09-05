@@ -11,36 +11,51 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0004 = TESTED + blocked=YES** — independent bilingual editorial review açık.
 - **RC-0005 = NOT_STARTED + blocked=YES**, **RC-0006 = TESTED + blocked=YES**, **RC-0007 = NOT_STARTED** — exact AKİLES provenance/comparison blocker'ı açık.
 - **RC-0008→RC-0019** — ilgili requirement matrix satırlarında TESTED; independent astronomy/location/release kanıtları açık olanlar blocked=YES.
-- **RC-0020 = NOT_STARTED** — real solar-events implementation/contract/CI mevcut; corrected gate'in physical TESTED promotion'ı hâlâ bulunmadı.
-- **RC-0021→RC-0024 = TESTED + blocked=YES**.
-- **RC-0025 = TESTED + blocked=YES** — physical bot promotion `5d9b1c6cc7c302e8836045fde895e828bd375847`; Chinese engine compiled testteki canonical `CalculationValidity.error` düzeltmesiyle gate başarıyla promotion yaptı.
-- **RC-0026 = TESTED + blocked=YES** — physical promotion `5b4083585337774d709f783bfb309bd6d5ed11a2`.
-- **RC-0027 = TESTED + blocked=YES** — physical promotion `78e0956aab0989327121eacac33297200d6b7da0`; numerology calculation root'u astroloji engine'lerinden bağımsızlık gate'inden geçti.
-- **RC-0028 = NOT_STARTED / corrected rerun pending** — önceki failure Chinese representative regression'daki `CalculationValidity.invalid` kullanımından kaynaklandı ve `3b753102d473d61b3ce016f66378ae4b147b896e` ile düzeltildi. Workflow test path'lerini izlemediği için corrected test commit'i gate'i yeniden tetiklememişti; `9c8c33f1b907aba7ebcec0f4e7b07886174275cb` ile representative test yolları trigger kapsamına eklendi ve exact rerun `33943328752` başlatıldı. SUCCESS + bot promotion olmadan TESTED denmeyecek.
-- **RC-0029 = NOT_STARTED / gate running** — bağlayıcı contract `b6d53d9577dda30d3ec28a547a59a11a61345266`; fail-closed validator `2f48d9889c020e7fc4184596d4d578e4031d97da`; dedicated compiled Flutter + matrix-promotion workflow `4fc77a4c70a8b107c2866676d92ae9251363c921`. Gate explicit `TropicalZodiacSign`, 0° Aries/30° Taurus/359.999999° Pisces sınır regresyonları ve Western default calculation path'inde sidereal/ayanamsha offset bulunmamasını zorunlu tutuyor. Physical bot promotion görülmeden TESTED yazılmayacak.
+- **RC-0020 = TESTED + blocked=YES** — corrected real solar-events gate explicit retrigger sonrası physical bot promotion `5dbb577f8754cb30b888dae415417cd8d6cc139d` ile doğrulandı. Broader authoritative multi-location/date goldens ve timezone-localization e2e kanıtı açık.
+- **RC-0021→RC-0027 = TESTED + blocked=YES**.
+- **RC-0028 = TESTED + blocked=YES** — corrected run `33943328752` SUCCESS; physical bot promotion `2940c3534d318ef7b13575deceb716993f21d561`.
+- **RC-0029 = TESTED + blocked=YES** — physical bot promotion `38a298e8c2990a2ec0a8d2a37e1bcb82e15eb7af`; Western default Tropical mapping machine gate'ten geçti.
+- **RC-0030 = NOT_STARTED / gate pending** — Sun/Moon/Ascendant production projection + compiled regressions + contract + validator + dedicated gate mevcut; physical promotion görülmeden TESTED denmeyecek.
+- **RC-0031→RC-0035 = NOT_STARTED / gate pending** — her RC için ayrı binding contract; all placements/signs/degrees/houses/12 cusps requirement-bazlı validator + compiled gate mevcut. Physical matrix promotion bekleniyor.
+- **RC-0036 = NOT_STARTED / gate pending** — 12 house cusp/start degree contract + validator + dedicated gate mevcut; physical promotion bekleniyor.
 
 ## Bu turdaki gerçek değişiklikler
 
-### RC-0025 / RC-0027 physical promotion doğrulaması
+### RC-0028 / RC-0029 / RC-0020 physical kapanışları
 
-- RC-0025 physical `record Chinese engine TESTED` commit'i `5d9b1c6cc7c302e8836045fde895e828bd375847` doğrulandı.
-- RC-0027 physical `record numerology independence TESTED` commit'i `78e0956aab0989327121eacac33297200d6b7da0` doğrulandı.
+- RC-0028 corrected workflow run `33943328752` SUCCESS ve `2940c3534d318ef7b13575deceb716993f21d561` TESTED promotion.
+- RC-0029 `38a298e8c2990a2ec0a8d2a37e1bcb82e15eb7af` TESTED promotion.
+- RC-0020 corrected solar-event gate `db79aba7ee66411dbb96cb4bb717a39701688f82` ile açıkça retrigger edildi; physical TESTED promotion `5dbb577f8754cb30b888dae415417cd8d6cc139d` oluştu.
 
-### RC-0028 rerun zinciri düzeltmesi
+### RC-0030 — Western Sun / Moon / Ascendant
 
-- Önceki RC-0028 run `33931388559` failure'dı; representative Chinese test eski invalid enum nedeniyle compile kırıyordu.
-- `3b753102d473d61b3ce016f66378ae4b147b896e` canonical `.error` state düzeltmesini içeriyor.
-- Workflow yalnız production root'larını izlediği için bu test düzeltmesi RC-0028'i yeniden tetiklememişti.
-- `9c8c33f1b907aba7ebcec0f4e7b07886174275cb` ile Western/Vedic/Chinese/BaZi/Numerology representative test path'leri trigger kapsamına eklendi; corrected run `33943328752` physical olarak başladı.
+- `lib/src/calculation_core/western/luminaries_ascendant.dart`: aynı coherent Western snapshot'tan physical Sun/Moon placement ve calculated HouseCusps ASC tüketimi.
+- `test/calculation_core/western/luminaries_ascendant_test.dart`: Sun/Moon/ASC tropical sign+degree regression ve missing luminary fail-closed.
+- `requirements/contracts/rc0030_western_sun_moon_ascendant_contract.json`.
+- `tools/requirements/validate_rc0030_western_sun_moon_ascendant.py`.
+- `.github/workflows/rc0030-western-sun-moon-ascendant.yml`.
+- End-to-end birth input → time/location → ephemeris → houses/ASC → Western UI goldens tamamlanmadan VERIFIED/DONE yok.
 
-### RC-0029 — Western Tropical default
+### RC-0031 → RC-0035 — placements / signs / degrees / houses
 
-- Binding requirement: `Batı astrolojisinin varsayılan zodyağı Tropical olacak.`
-- Mevcut production `WesternNatalPlacements` explicit `TropicalZodiacSign` kullanıyor ve longitude'u 30° segmentlerle deterministik map ediyor.
-- `requirements/contracts/rc0029_western_tropical_default_contract.json`
-- `tools/requirements/validate_rc0029_western_tropical_default.py`
-- `.github/workflows/rc0029-western-tropical-default.yml`
-- Compiled regression `test/calculation_core/western/natal_placements_test.dart` 0°, 30° ve 359.999999° tropical sınırlarını doğruluyor.
+Her requirement ayrı binding/hash/evidence/blocker ile tutuluyor:
+
+- RC-0031 tüm supplied unique physical body states → placements; duplicate/provenance fail-closed.
+- RC-0032 physical longitude → Tropical sign; exact boundary regressions.
+- RC-0033 normalized longitude + degree-in-sign.
+- RC-0034 physical longitude + HouseCusps → houseNumber.
+- RC-0035 exactly 12 validated/individually addressable cusps.
+
+Ortak requirement-specific validator: `tools/requirements/validate_rc0031_rc0035_western_placements_houses.py`.
+Dedicated compiled gate: `.github/workflows/rc0031-rc0035-western-placements-houses.yml`.
+
+### RC-0036 — her evin başlangıç derecesi
+
+- `requirements/contracts/rc0036_house_cusp_degrees_contract.json`.
+- `tools/requirements/validate_rc0036_house_cusp_degrees.py`.
+- `.github/workflows/rc0036-house-cusp-degrees.yml`.
+- Gate 12 cusp değerinin ayrı ayrı adreslenmesini, `[0,360)` normalizasyonunu, ASC/MC'nin cusp 1/10'a bağlılığını ve invalid house-number fail-closed davranışını zorunlu tutuyor.
+- TR/EN UI rendering + exact release artifact kanıtı VERIFIED/DONE blocker'ı olarak açık.
 
 ## Açık global blocker / release kapıları
 
@@ -54,12 +69,12 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 ## Sonraki devam noktası
 
 1. `requirements/requirement_state.csv`, bu dosya ve `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0028 run `33943328752` sonucu ve physical bot promotion doğrulanacak; failure varsa exact failing step düzeltilip yeniden çalıştırılacak.
-3. RC-0029 dedicated gate sonucu ve `requirements(rc0029): record Western Tropical default TESTED` physical commit'i doğrulanacak.
-4. RC-0020 corrected solar-events promotion eksikliği tekrar ele alınacak.
-5. Ardından dependency sırası RC-0030 (Western Sun/Moon/Ascendant) ve devamı şeklinde ilerletilecek.
+2. RC-0030 dedicated gate + physical `record ... TESTED` promotion doğrulanacak; failure varsa exact root cause aynı requirement standardı korunarak düzeltilecek.
+3. RC-0031→RC-0035 ortak gate'in her ayrı matrix row promotion'ı doğrulanacak; failure varsa failing contract/test tek tek düzeltilecek.
+4. RC-0036 dedicated gate ve physical promotion doğrulanacak.
+5. Ardından dependency sırası RC-0037 (ev tema açıklaması), RC-0038 (ev yöneticileri) ve sonraki Western rulership/aspect requirement'ları şeklinde ilerletilecek.
 6. Yalnız kanıtlanan state yazılacak; 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
-Latest detailed checkpoint: `automation_runs/2026-09-05_0700_rc0025_rc0029_progress.md`.
+Latest detailed checkpoint: `automation_runs/2026-09-05_0854_rc0020_rc0036_western_core.md`.
 
 **FINAL: NO.**
