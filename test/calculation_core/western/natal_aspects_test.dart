@@ -22,7 +22,7 @@ NatalPlacementSet placements(List<EclipticState> states) =>
     );
 
 void main() {
-  test('detects all five major aspects deterministically', () {
+  test('detects conjunction sextile square trine quincunx and opposition', () {
     final result = WesternNatalAspects.build(
       placements: placements([
         state(AstroBody.sun, 0),
@@ -30,6 +30,7 @@ void main() {
         state(AstroBody.mercury, 60),
         state(AstroBody.venus, 90),
         state(AstroBody.mars, 120),
+        state(AstroBody.saturn, 150),
         state(AstroBody.jupiter, 180),
       ]),
     );
@@ -51,6 +52,7 @@ void main() {
           MajorAspect.sextile: 0,
           MajorAspect.square: 0,
           MajorAspect.trine: 0,
+          MajorAspect.quincunx: 0,
           MajorAspect.opposition: 0,
         },
       ),
@@ -68,6 +70,7 @@ void main() {
         MajorAspect.sextile: 1,
         MajorAspect.square: 1,
         MajorAspect.trine: 1,
+        MajorAspect.quincunx: 1,
         MajorAspect.opposition: 1,
       },
     );
@@ -92,6 +95,37 @@ void main() {
     expect(excluded.aspects, isEmpty);
   });
 
+  test('planet and aspect specific orb overrides change detection deterministically', () {
+    final strictMoonSquare = AspectOrbPolicy(
+      bodyAspectOverrides: {
+        AstroBody.moon: {MajorAspect.square: 1.0},
+      },
+    );
+    final strict = WesternNatalAspects.build(
+      placements: placements([
+        state(AstroBody.sun, 0),
+        state(AstroBody.moon, 92),
+      ]),
+      orbPolicy: strictMoonSquare,
+    );
+    expect(strict.aspects, isEmpty);
+
+    final wideMoonSquare = AspectOrbPolicy(
+      bodyAspectOverrides: {
+        AstroBody.moon: {MajorAspect.square: 3.0},
+      },
+    );
+    final wide = WesternNatalAspects.build(
+      placements: placements([
+        state(AstroBody.sun, 0),
+        state(AstroBody.moon, 92),
+      ]),
+      orbPolicy: wideMoonSquare,
+    );
+    expect(wide.aspects.single.aspect, MajorAspect.square);
+    expect(wide.aspects.single.orbDegrees, closeTo(2, 1e-12));
+  });
+
   test('rejects incomplete or invalid orb policy', () {
     expect(
       () => AspectOrbPolicy(maximumOrbDegrees: const {MajorAspect.conjunction: 8}),
@@ -104,9 +138,16 @@ void main() {
           MajorAspect.sextile: 5,
           MajorAspect.square: 7,
           MajorAspect.trine: 7,
+          MajorAspect.quincunx: 3,
           MajorAspect.opposition: 31,
         },
       ),
+      throwsStateError,
+    );
+    expect(
+      () => AspectOrbPolicy(bodyAspectOverrides: {
+        AstroBody.sun: {MajorAspect.conjunction: 31},
+      }),
       throwsStateError,
     );
   });
