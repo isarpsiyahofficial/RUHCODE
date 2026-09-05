@@ -4,66 +4,69 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 **Kural:** IMPLEMENTED, DONE değildir. `DONE` yalnız requirement-specific test/evidence ile birlikte ilgili independent/golden, cihaz ve release kapıları gerçekten kapandığında verilir. Canonical lifecycle: `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE`; blocker ayrı `blocked=YES/NO` alanıdır. Exact kapsam `RC-0001 → RC-1442`, toplam **1.442 requirement**.
 
-## Güncel canonical requirement durumu
+## Güncel canonical durum
 
 - **RC-0002 = DONE**.
 - **RC-0003 = NOT_STARTED** — independent editorial evidence açık.
 - **RC-0004 = TESTED + blocked=YES** — independent bilingual editorial review açık.
 - **RC-0005 = NOT_STARTED + blocked=YES**, **RC-0006 = TESTED + blocked=YES**, **RC-0007 = NOT_STARTED** — exact AKİLES provenance/comparison blocker'ı açık.
-- **RC-0008→RC-0019** — ilgili requirement matrix satırlarında TESTED; independent astronomy/location/release kanıtları açık olanlar blocked=YES.
-- **RC-0020 = TESTED + blocked=YES** — physical bot promotion `5dbb577f8754cb30b888dae415417cd8d6cc139d`.
-- **RC-0021→RC-0027 = TESTED + blocked=YES**.
-- **RC-0028 = TESTED + blocked=YES** — corrected run `33943328752` SUCCESS; physical bot promotion `2940c3534d318ef7b13575deceb716993f21d561`.
-- **RC-0029 = TESTED + blocked=YES** — physical bot promotion `38a298e8c2990a2ec0a8d2a37e1bcb82e15eb7af`.
-- **RC-0030 = TESTED + blocked=YES** — physical bot promotion `9158aa0c8853f87c61d19813814fb1dfaa9a929c`; end-to-end birth/time/location/ephemeris/houses/UI goldens hâlâ açık.
-- **RC-0031→RC-0036 = gate pending / physical promotion not yet observed at last check.** Kod, ayrı binding contract'lar, validator ve compiled CI mevcut; physical TESTED commit görülmeden statü yükseltilmeyecek.
-- **RC-0037 = gate pending** — 12/12 bilingual house-theme interpretation katalogu + tests/contract/validator/CI mevcut; independent editorial/UI/accessibility/release evidence blocker.
-- **RC-0038→RC-0040 = gate pending** — explicit traditional/modern rulership catalogs, reverse lookup, actual cusp-sign house rulers + separate contracts/tests/CI mevcut.
-- **RC-0041→RC-0049 = gate pending** — six major aspects including quincunx, complete explicit orb policy, body+aspect overrides and compiled tests/contracts/CI mevcut.
-- **RC-0050 = corrected gate pending** — applying/exact/separating current longitude + signed physical speed üzerinden hesaplanıyor. NatalPlacement speed-provenance açığı `07bbab3596179c491299e3001da8c463e3ad430c` ile düzeltildi; validator `dff5abeacd69a6b12aa0966dfc880a1c444ff400` ile güçlendirildi; corrected gate `0a00007cf0a1b23848cab76955ae808b3a0a5d80` ile retrigger edildi. Physical promotion görülmeden TESTED denmeyecek.
+- **RC-0008→RC-0030** için daha önce physical TESTED promotion görmüş satırlar matrix gerçeğine göre korunur; global astronomy/location/UI/release blocker'ları açık kalır.
+- **RC-0031→RC-0035** son fiziksel matrix okumasında `NOT_STARTED`; mevcut kod/contract iddiaları physical promotion görülmeden yükseltilmez.
+- **RC-0036→RC-0050** için bu turda kritik semantic-drift düzeltmesi başlatıldı. Binding şartnamedeki gerçek anlamlar yeniden okunarak eski ilerleme notlarının RC numaralarıyla kaydığı doğrulandı.
 
-## Bu turdaki gerçek geliştirme
+## Kritik semantic reconciliation
 
-### RC-0030 — Sun / Moon / Ascendant
+Önceki otomasyon turlarında RC-0036 sonrası bazı kanıtlar yanlış requirement numaralarına bağlanmıştı. Örnekler:
 
-Aynı coherent Western snapshot'tan physical Sun/Moon placement ve calculated HouseCusps ASC tüketen production projection + compiled regressions + binding/validator/CI tamamlandı. Physical TESTED promotion `9158aa0c8853f87c61d19813814fb1dfaa9a929c` ile doğrulandı.
+- Binding **RC-0036 = Ev yöneticileri hesaplanacak**, fakat eski ilerleme notu cusp/start degree olarak yazılmıştı.
+- Binding **RC-0037→RC-0041 = conjunction/opposition/square/trine/sextile**, fakat eski ilerleme notlarında house themes/rulership/aspect numaraları kaymıştı.
+- Binding **RC-0045 = element dağılımı**, **RC-0047 = modality dağılımı**, **RC-0050 = exaltation/detriment/fall klasik dignities**; buna karşın matrixte RC-0041→0050 için fiziksel TESTED promotion alan kanıtların bir bölümü farklı anlamlara (ör. applying/separating) bağlıydı.
 
-### RC-0031 → RC-0036 — placements / signs / degrees / houses / cusp degrees
+Bu nedenle yanlış anlamla alınmış TESTED statülerini korumak yasaklandı. `tools/requirements/reconcile_rc0036_rc0050_semantics.py` exact binding metnini kontrol eder ve shifted evidence ile TESTED olmuş **RC-0041→RC-0050** satırlarını konservatif olarak `NOT_STARTED` durumuna geri alır; VERIFIED/DONE satırlarını otomatik düşürmeyi reddeder. Dedicated writer workflow: `.github/workflows/reconcile-rc0036-rc0050-semantics.yml`.
 
-- RC-0031: her supplied unique physical body state placement olur; duplicate/provenance fail-closed.
-- RC-0032: physical longitude → Tropical sign; boundary regressions.
-- RC-0033: normalized longitude + degree-in-sign.
-- RC-0034: actual HouseCusps + physical longitude → houseNumber.
-- RC-0035: exactly 12 validated/individually addressable cusps.
-- RC-0036: her evin cusp/start degree'si ayrı adreslenebilir; ASC=cusp1, MC=cusp10; invalid house fail-closed.
+Reconciliation kod commitleri:
 
-Her RC ayrı binding/hash/evidence satırı olarak korunuyor; ortak gate yalnız kanıt yürütmesini paylaşıyor.
+- `3ab5fbe49f6585d65d7b5b4e1a4f464f66566546` — semantic reconciliation script.
+- `22e127c9843f47f1b47a36b233dcdea4d612312d` — dedicated matrix-writer CI.
 
-### RC-0037 — bilingual house themes
+Physical bot reconciliation commit'i görülmeden burada matrix sonucu olmuş gibi gösterilmeyecek.
 
-`lib/src/interpretation/western_house_themes.dart` içine tam 12 ev için ayrı TR/EN title+description eklendi. Interpretation içeriği calculation_core'a karıştırılmadı. Completeness/range compiled tests ve dedicated requirement gate eklendi.
+## Doğru numaralara yeniden bağlanan Western kanıtları
 
-### RC-0038 → RC-0040 — Western rulerships
+Yeni exact contract: `requirements/contracts/rc0036_rc0050_western_binding_contract.json`.
 
-`lib/src/calculation_core/western/rulerships.dart` eklendi:
+Yeni validator: `tools/requirements/validate_rc0036_rc0050_western_binding.py`.
 
-- explicit traditional + modern schemes,
-- bütün 12 Tropical sign için complete maps,
-- planet → ruled signs reverse lookup,
-- actual calculated cusp sign → house ruler,
-- 1..12 all-house resolution ve range fail-closed.
+Yeni dedicated compiled gate: `.github/workflows/rc0036-rc0050-western-binding.yml`.
 
-Traditional/modern farkları sessizce birleştirilmiyor: Scorpio Mars/Pluto, Aquarius Saturn/Uranus, Pisces Jupiter/Neptune ayrımı explicit.
+Gate yalnız gerçekten mevcut runtime + compiled test kanıtıyla şu exact maddeleri TESTED seviyesine kadar promote etmeye izin verir:
 
-### RC-0041 → RC-0049 — aspects / orbs
+- **RC-0036** — actual 12 house cusp üzerinden house ruler hesaplama.
+- **RC-0037** — conjunction 0°.
+- **RC-0038** — opposition 180°.
+- **RC-0039** — square 90°.
+- **RC-0040** — trine 120°.
+- **RC-0041** — sextile 60°.
+- **RC-0043** — yönetilebilir/validated orb policy.
+- **RC-0045** — element dağılımı hesabı.
+- **RC-0047** — cardinal/fixed/mutable modality dağılımı hesabı.
+- **RC-0050** — domicile/exaltation/detriment/fall klasik essential-dignity desteği.
 
-Production aspect motoru artık conjunction 0°, sextile 60°, square 90°, trine 120°, quincunx 150°, opposition 180° destekliyor. Explicit default orb policy doğrulanıyor. `bodyAspectOverrides` ile orb değerleri hem planet hem aspect türüne göre ayrıştırılabiliyor. Pairwise detection shortest angular separation kullanıyor. Quincunx eklenince eski custom-orb test map'lerinin eksik kalacağı regresyon riski aynı turda giderildi.
+Bu gate için runtime evidence: `rulerships.dart`, `natal_aspects.dart`, `natal_distribution.dart`, `essential_dignities.dart`; compiled tests: `rulerships_test.dart`, `natal_aspects_test.dart`, `natal_distribution_test.dart`, `essential_dignities_test.dart`.
 
-### RC-0050 — applying / exact / separating
+Exact-binding commitleri:
 
-`AspectPhase { applying, exact, separating }` production aspect sonucuna eklendi. Phase wall-clock/etiket tahmini değil; current physical longitudes + signed longitude speeds ile ileri-zaman probe sonucu orb daralıyor/genişliyor mantığından hesaplanıyor. Retrograde relative-motion ve non-finite fail-closed compiled tests var.
+- `0c639ee8207d415e8dd3de7e208ed9a13cacd37d` — binding contract.
+- `4d14a23ff800444f145cf29a553936dc8b2efe2f` — fail-closed semantic/runtime validator.
+- `74429fbe4f28532d40b66dbd39223d9af189315d` — compiled CI + physical matrix promotion gate.
 
-İncelemede gerçek data-flow açığı yakalandı: `NatalPlacement` ephemeris `longitudeSpeedDegreesPerDay` değerini taşımıyordu. Bu speed provenance production modele eklendi (`07bbab...`), RC-0050 validator bunu artık zorunlu tutuyor (`dff5abe...`) ve workflow dependency path'i eklenerek yeniden tetiklendi (`0a00007...`).
+Aşağıdaki maddeler kasıtlı olarak **promote edilmez**; calculation varlığı ürün şartını tek başına kanıtlamaz:
+
+- **RC-0042** professional minor-aspect settings.
+- **RC-0044** professional user-editable orb settings + persistence/entitlement/UI.
+- **RC-0046** Fire/Earth/Air/Water yoğunluklarının kullanıcıya gösterimi.
+- **RC-0048** retrograde planetlerin kullanıcıya ayrıca belirtilmesi.
+- **RC-0049** planetary rulerships'in ürün yüzeyinde gösterilebilmesi.
 
 ## Açık global blocker / release kapıları
 
@@ -76,13 +79,11 @@ Production aspect motoru artık conjunction 0°, sextile 60°, square 90°, trin
 
 ## Sonraki devam noktası
 
-1. Matrix + progress + `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0031→0036, RC-0037, RC-0038→0040, RC-0041→0049 ve corrected RC-0050 physical gate/promotion sonuçları doğrulanacak.
-3. Kırmızı gate varsa exact workflow job/log okunup root cause aynı çalıştırmada düzeltilecek ve yeniden koşturulacak; requirement zayıflatılmayacak.
-4. Yalnız physical promotion gören satırlar TESTED kabul edilecek.
-5. Ardından dependency sırası RC-0051+ ile devam edecek.
+1. `requirements/requirement_state.csv`, bu progress dosyası ve `automation_runs/LATEST.md` yeniden okunacak.
+2. Semantic reconciliation workflow physical commit/result doğrulanacak; kırmızıysa exact job/log okunacak ve kök neden düzeltilecek.
+3. Exact RC-0036→0050 Western gate sonucu ve bot promotion fiziksel olarak doğrulanacak; yalnız physical promotion gören satırlar TESTED sayılacak.
+4. RC-0031→0035 için gerçek binding gate/promotion durumu ayrıca doğrulanacak.
+5. Sonra açık kalan RC-0042/0044/0046/0048/0049 ürün/UI şartları gerçekten uygulanacak; ardından dependency sırası RC-0051+ ile devam edecek.
 6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
-
-Latest detailed checkpoint: `automation_runs/2026-09-05_0912_rc0030_rc0050_western_rulership_aspects.md`.
 
 **FINAL: NO.**
