@@ -21,6 +21,7 @@ concurrency:
   group: requirement-matrix-writers
   cancel-in-progress: false
 
+# Retriggered after validator false-positive correction; semantic gate remains unchanged.
 jobs:
   validate:
     runs-on: ubuntu-latest
