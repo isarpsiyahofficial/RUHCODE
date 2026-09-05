@@ -1,0 +1,14 @@
+{
+  "requirements": {
+    "RC-0071": "Composite chart desteklenilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/composite_chart.dart",
+  "compiled_test": "test/calculation_core/western/composite_chart_test.dart",
+  "invariants": [
+    "Composite placements are derived from two independently calculated natal placement sets.",
+    "Planetary longitudes use the shortest circular midpoint, including correct wraparound at 0/360 degrees.",
+    "Both natal TT instants and common ephemeris source/version provenance are retained.",
+    "Mismatched ephemeris provenance, duplicate bodies or unequal body sets fail closed.",
+    "Composite houses/angles are not fabricated without an explicit separately verified policy."
+  ]
+}
