@@ -21,6 +21,7 @@ concurrency:
   group: requirement-matrix-writers
   cancel-in-progress: false
 
+# Retrigger note: previous dedicated run was cancelled before validation completed.
 jobs:
   validate:
     runs-on: ubuntu-latest
