@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0038",
+  "bindingRequirementSha256": "1217c3c1306df0d45235421d1b0a9d09b6db50d0122cccaecfa7d18153fcfb92",
+  "requirement": "Ev yöneticileri bulunacak.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/rulerships.dart",
+  "testFile": "test/calculation_core/western/rulerships_test.dart",
+  "mustProve": ["house ruler is derived from the actual calculated cusp sign", "all 12 houses are resolved", "selected traditional/modern scheme is explicit", "invalid house numbers fail closed"],
+  "verificationBlocker": "End-to-end selected rulership scheme plus house-ruler UI evidence remains required before VERIFIED/DONE."
+}
