@@ -1,0 +1,36 @@
+{
+  "contract_id": "rc0036-rc0050-western-binding-v1",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "tested_requirements": {
+    "RC-0036": "Ev yöneticileri hesaplanacak.",
+    "RC-0037": "Kavuşum açıları hesaplanacak.",
+    "RC-0038": "Karşıt açıları hesaplanacak.",
+    "RC-0039": "Kare açıları hesaplanacak.",
+    "RC-0040": "Üçgen açıları hesaplanacak.",
+    "RC-0041": "Sekstil açıları hesaplanacak.",
+    "RC-0043": "Aspect orb değerleri sabit kodlanmak yerine sistem tarafından yönetilebilir olacak.",
+    "RC-0045": "Element dağılımı hesaplanacak.",
+    "RC-0047": "Öncü, Sabit ve Değişken nitelik dağılımları hesaplanacak.",
+    "RC-0050": "Exaltation, detriment ve fall gibi klasik astrolojik durumlar desteklenilecek."
+  },
+  "intentionally_not_promoted": {
+    "RC-0042": "Professional minor-aspect settings need an explicit settings/entitlement path; quincunx in the calculation enum alone is insufficient.",
+    "RC-0044": "Professional user-editable orb settings require UI/entitlement persistence evidence, not only an injectable calculation policy.",
+    "RC-0046": "Element intensities must be presented to the user; calculation percentages alone do not prove the display requirement.",
+    "RC-0048": "Retrograde must be visibly indicated in the product surface; motion calculation alone does not prove presentation.",
+    "RC-0049": "Planetary rulerships must be visibly exposable in the product surface; calculation catalog alone does not prove presentation."
+  },
+  "runtime_evidence": [
+    "lib/src/calculation_core/western/rulerships.dart",
+    "lib/src/calculation_core/western/natal_aspects.dart",
+    "lib/src/calculation_core/western/natal_distribution.dart",
+    "lib/src/calculation_core/western/essential_dignities.dart"
+  ],
+  "compiled_tests": [
+    "test/calculation_core/western/rulerships_test.dart",
+    "test/calculation_core/western/natal_aspects_test.dart",
+    "test/calculation_core/western/natal_distribution_test.dart",
+    "test/calculation_core/western/essential_dignities_test.dart"
+  ],
+  "promotion_ceiling": "TESTED"
+}
