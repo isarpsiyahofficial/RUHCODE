@@ -1,0 +1,98 @@
+name: RC-0031 RC-0035 Western Placements Houses
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/western/natal_placements.dart'
+      - 'lib/src/calculation_core/western/equal_house_systems.dart'
+      - 'test/calculation_core/western/natal_placements_test.dart'
+      - 'test/calculation_core/western/equal_house_systems_test.dart'
+      - 'requirements/contracts/rc0031_all_planet_placements_contract.json'
+      - 'requirements/contracts/rc0032_planet_signs_contract.json'
+      - 'requirements/contracts/rc0033_planet_degrees_contract.json'
+      - 'requirements/contracts/rc0034_planet_houses_contract.json'
+      - 'requirements/contracts/rc0035_twelve_houses_contract.json'
+      - 'tools/requirements/validate_rc0031_rc0035_western_placements_houses.py'
+      - '.github/workflows/rc0031-rc0035-western-placements-houses.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate RC-0031 through RC-0035 binding contracts
+        run: python tools/requirements/validate_rc0031_rc0035_western_placements_houses.py
+      - name: Execute Western placement regressions
+        run: flutter test test/calculation_core/western/natal_placements_test.dart
+      - name: Execute twelve-house regressions
+        run: flutter test test/calculation_core/western/equal_house_systems_test.dart
+      - name: Promote individually proven RC-0031 through RC-0035 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0031_rc0035_western_placements_houses.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=rows[0].keys()
+          evidence={
+            'RC-0031':'requirements/contracts/rc0031_all_planet_placements_contract.json',
+            'RC-0032':'requirements/contracts/rc0032_planet_signs_contract.json',
+            'RC-0033':'requirements/contracts/rc0033_planet_degrees_contract.json',
+            'RC-0034':'requirements/contracts/rc0034_planet_houses_contract.json',
+            'RC-0035':'requirements/contracts/rc0035_twelve_houses_contract.json',
+          }
+          blockers={
+            'RC-0031':'Complete required-body set must be proven through end-to-end Western chart/UI rendering before VERIFIED/DONE.',
+            'RC-0032':'UI rendering of every required planet sign in both TR/EN remains required before VERIFIED/DONE.',
+            'RC-0033':'TR/EN degree formatting and complete Western chart/UI evidence remain required before VERIFIED/DONE.',
+            'RC-0034':'End-to-end selected house system and planet-house UI rendering remain required before VERIFIED/DONE.',
+            'RC-0035':'Authoritative house-system goldens and full selected-system UI evidence remain required before VERIFIED/DONE.',
+          }
+          notes={
+            'RC-0031':'Machine gate proves every unique supplied physical body state is materialized into a coherent natal placement set with duplicate/provenance fail-closed checks. TESTED only.',
+            'RC-0032':'Machine gate proves each placement carries a deterministic Tropical zodiac sign derived from physical longitude with exact boundary regressions. TESTED only.',
+            'RC-0033':'Machine gate proves full longitude and degree-in-sign are retained/derived deterministically for each placement. TESTED only.',
+            'RC-0034':'Machine gate proves each placement house number is calculated from HouseCusps.houseForLongitude and physical body longitude. TESTED only.',
+            'RC-0035':'Machine gate proves HouseCusps contains exactly twelve validated, individually addressable cusps with range checks. TESTED only.',
+          }
+          common='tools/requirements/validate_rc0031_rc0035_western_placements_houses.py|lib/src/calculation_core/western/natal_placements.dart|lib/src/calculation_core/western/equal_house_systems.dart|test/calculation_core/western/natal_placements_test.dart|test/calculation_core/western/equal_house_systems_test.dart|.github/workflows/rc0031-rc0035-western-placements-houses.yml'
+          for r in rows:
+            rc=r['rc_id']
+            if rc not in evidence: continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=evidence[rc]+'|'+common
+            r['blocked']='YES'; r['blocker']=blockers[rc]; r['notes']=notes[rc]
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0031-rc0035): record Western placements and houses TESTED'
+          git push origin HEAD:main
