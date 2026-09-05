@@ -1,0 +1,15 @@
+{
+  "requirements": {
+    "RC-0072": "Davison chart ilerleyen aşamada desteklenilecek."
+  },
+  "runtime": "lib/src/calculation_core/western/davison_chart.dart",
+  "compiled_test": "test/calculation_core/western/davison_chart_test.dart",
+  "invariants": [
+    "Davison time is the arithmetic midpoint of two explicit TT birth instants.",
+    "Davison location is a spherical geographic midpoint, including dateline-safe behavior.",
+    "Planetary states are freshly evaluated at the midpoint TT by the supplied versioned ephemeris; natal longitudes are never averaged.",
+    "Requested bodies are unique and every returned state must match the requested midpoint TT and ephemeris provenance.",
+    "Antipodal location pairs fail closed because their spherical midpoint is undefined.",
+    "Houses/angles are not fabricated until a separately verified UT/sidereal-time house pipeline consumes the midpoint location."
+  ]
+}
