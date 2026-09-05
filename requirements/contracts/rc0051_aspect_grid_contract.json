@@ -1,0 +1,16 @@
+{
+  "requirement_id": "RC-0051",
+  "binding_text": "Aspect grid oluşturulacak.",
+  "source": "RUH_CODE_MASTER_SARTNAME.md#51",
+  "runtime": "lib/src/calculation_core/western/aspect_grid.dart",
+  "compiled_test": "test/calculation_core/western/aspect_grid_test.dart",
+  "requirements": [
+    "square grid dimensions equal the unique placement body count",
+    "row/column bodies are deterministic and addressable",
+    "diagonal cells contain no self-aspect",
+    "aspect hits are symmetric by body pair",
+    "placement and aspect provenance must match exactly",
+    "duplicate/foreign aspect bodies fail closed"
+  ],
+  "promotion_ceiling": "TESTED"
+}
