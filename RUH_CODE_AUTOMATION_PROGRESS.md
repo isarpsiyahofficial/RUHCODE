@@ -18,45 +18,37 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0057→RC-0060 = TESTED + blocked=YES**; physical bot promotion: `b2c6a512dfc0cb5c95c8fa1ff09203c02b8e1aca`.
 - **RC-0061 = IMPLEMENTED + blocked=YES**; aktif ev sistemi adı için reusable TR/EN contract mevcut, fakat gerçek kullanıcı ekranı/widget-device evidence henüz yok.
 - **RC-0062 = NOT_STARTED**; dedicated natal-chart contract/test/CI zinciri mevcut fakat physical `record natal chart TESTED` promotion henüz görülmedi.
-- **RC-0063→RC-0067 = NOT_STARTED**; production transit core, compiled regression, binding contract, validator ve dedicated CI/promotion gate eklendi; physical SUCCESS + matrix promotion bekleniyor.
-- **RC-0068 = IMPLEMENTED + blocked=YES**; important-transit timeline calculation/model katmanı eklendi, fakat requirement-specific compiled gate ve gerçek timeline UI/widget-device evidence henüz yok.
+- **RC-0063→RC-0067 = TESTED + blocked=YES**; physical bot promotion: `fcf83a4361757fb110dbc688be02cd7342273b66`.
+- **RC-0068 = IMPLEMENTED + blocked=YES**; production timeline modeline ek olarak compiled test, binding contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi; physical promotion bekleniyor ve rendered timeline UI/widget-device evidence açık.
+- **RC-0069→RC-0070 = IMPLEMENTED + blocked=YES**; deterministic synastry/two-chart production core, compiled regressions, binding contract, fail-closed validator ve dedicated CI/matrix promotion gate eklendi; physical promotion bekleniyor.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0057→RC-0061 — physical promotion sonucu
+### RC-0063→RC-0067 — physical promotion doğrulandı
 
-- `b2c6a512dfc0cb5c95c8fa1ff09203c02b8e1aca` — `requirements(rc0057-rc0061): record house-system evaluation state`
-- RC-0057/58/59/60 → TESTED + blocked=YES
-- RC-0061 → IMPLEMENTED + blocked=YES; product screen integration ve widget/device evidence açık.
+- `fcf83a4361757fb110dbc688be02cd7342273b66` — `requirements(rc0063-rc0067): record transit core TESTED`
+- Transit haritası, Natal×Transit, geçmiş/gelecek explicit TT transitleri ve transit→natal aspect machine gate'i physical matrix tarafından TESTED kabul edildi.
+- End-to-end date selection, rendered transit/timeline UI, independent astronomy goldens ve release/device kapıları VERIFIED/DONE öncesinde açık.
 
-### RC-0062 — Natal chart
+### RC-0068 — önemli transit timeline requirement gate
 
-Dedicated zincir mevcut:
+- production model: `lib/src/calculation_core/western/transit_timeline.dart`
+- compiled regression: `36539a66b40c7482400d1bde5c779897c5fb5a47`
+- binding contract: `967c354cbf9945bfec5384255c53633f27fbb5f7`
+- fail-closed validator: `9f43f52c7d6b46110e8e7039e93bf78f30005283`
+- CI/matrix gate: `99e894d85c8e2b22c504da533d02821fa445fcee`
 
-- `requirements/contracts/rc0062_natal_chart_contract.json`
-- `tools/requirements/validate_rc0062_natal_chart.py`
-- `.github/workflows/rc0062-natal-chart.yml`
-- `test/calculation_core/western/natal_chart_test.dart`
+Timeline explicit natal×transit snapshot'larından deterministic important-event records üretir; explicit policy kullanır, kronolojik sıralama ve deterministic tie-break uygular, mixed provenance durumunu fail-closed reddeder. Physical SUCCESS + matrix promotion görülmeden TESTED sayılmayacak. Gerçek product timeline rendering ayrıca açık blocker'dır.
 
-Physical bot promotion commit'i henüz görülmediği için status yükseltilmedi.
+### RC-0069→RC-0070 — Synastry / iki kişinin harita karşılaştırması
 
-### RC-0063→RC-0067 — Transit calculation core
+- production core: `62fffc27d0bed683de853512054925ff47dbac5a` (`lib/src/calculation_core/western/synastry.dart`)
+- compiled regressions: `89981e503929581df233d94f9857c5ea6526f353`
+- binding contract: `622c846069d0a9877f5696297e8cffa33ab639ee`
+- fail-closed validator: `00ece3d97bda3da048625b4e259befba909b1856`
+- CI/matrix gate: `fc53658e2495b3bc50fa9f015b25324141ee0880`
 
-- `lib/src/calculation_core/western/transit_chart.dart` — `10fad8356316d0a21ffd61c92e77bd76204612eb`
-- `test/calculation_core/western/transit_chart_test.dart` — `4efa74da3304ef70bf499d1977dc2ba24f8da91a`
-- `requirements/contracts/rc0063_rc0067_transit_contract.json` — `89f23951d5667853b15ac005698ab41b6c3ed0f0`
-- `tools/requirements/validate_rc0063_rc0067_transit.py` — `ed3a79f312667de71ccf2ca060645e50e47be76d`
-- `.github/workflows/rc0063-rc0067-transit.yml` — `c1edff0c5d9574dfac82fe7069d4cf4f48046a31`
-
-Transit chart yalnız explicit TT instant'taki versioned ephemeris state'lerini tüketiyor; mixed instant, duplicate body ve mixed provenance fail-closed. Geçmiş/gelecek tarih aynı deterministic explicit-instant path'i kullanıyor. Natal ve transit snapshot'ları ayrı tutuluyor; comparison iki JD'yi de koruyor. Transit→natal aspect'ler shared major-aspect/orb policy üzerinden hesaplanıyor.
-
-Physical bot promotion görülmeden RC-0063→0067 TESTED sayılmayacak.
-
-### RC-0068 — önemli transit timeline
-
-- `lib/src/calculation_core/western/transit_timeline.dart` — `da53297d4a5f45e7100bb61f0b5516b26cab02fe`
-
-Yeni timeline builder natal×transit comparison snapshot'larını kronolojik `ImportantTransitEvent` kayıtlarına dönüştürüyor. Varsayılan önemli aspect policy conjunction/square/trine/opposition ve explicit 2° orb; policy değiştirilebilir. Mixed provenance fail-closed ve sonuç sırası deterministic. Bu yalnız calculation/model implementation'dır; compiled requirement gate ve gerçek kullanıcı timeline görünürlüğü olmadan TESTED sayılmayacak.
+İki natal snapshot birbirine karıştırılmadan ayrı korunur; iki TT instant sonuçta saklanır. Person-A placements × Person-B placements cross-chart aspectleri shared explicit aspect/orb policy ile hesaplanır. Signed physical speeds aspect phase hesabına taşınır. Ephemeris source/version uyuşmazlığı fail-closed; device current time veya network fallback yoktur. Physical bot promotion olmadan TESTED denmeyecek.
 
 ## Açık product-facing Western maddeleri
 
@@ -67,6 +59,7 @@ Yeni timeline builder natal×transit comparison snapshot'larını kronolojik `Im
 - RC-0049 planetary rulerships'in ürün yüzeyinde gösterilebilmesi.
 - RC-0061 active house-system adının gerçek kullanıcı ekranında görünürlüğü.
 - RC-0068 important-transit timeline gerçek UI/widget-device evidence.
+- RC-0069/0070 rendered synastry/two-chart product UI evidence.
 
 ## Açık global blocker / release kapıları
 
@@ -80,10 +73,10 @@ Yeni timeline builder natal×transit comparison snapshot'larını kronolojik `Im
 ## Sonraki devam noktası
 
 1. `requirements/requirement_state.csv`, bu progress dosyası ve `automation_runs/LATEST.md` yeniden okunacak.
-2. RC-0062 dedicated gate ve RC-0063→0067 transit gate exact CI/promotion sonuçları doğrulanacak; kırmızıysa job/log kök nedeni aynı turda düzeltilecek.
-3. RC-0068 için compiled requirement gate kurulacak ve sonrasında gerçek timeline UI evidence üretilecek.
-4. RC-0061 gerçek product-screen/widget evidence ile TESTED seviyesine taşınmaya çalışılacak.
-5. Ardından dependency sırasıyla **RC-0069 synastry** ve devamı ilerletilecek.
+2. RC-0068 ve RC-0069→0070 dedicated CI/promotion sonuçları doğrulanacak; kırmızıysa exact Actions job/log kök nedeni aynı turda düzeltilecek.
+3. RC-0062 natal-chart physical promotion problemi yeniden doğrulanacak/retrigger gereksinimi incelenecek.
+4. RC-0061 ve RC-0068 product-screen/widget evidence ilerletilecek.
+5. Ardından dependency sırasıyla **RC-0071 Composite chart** ve RC-0072+ ilerletilecek.
 6. Açık RC-0042/0044/0046/0048/0049 product-facing eksikleri blocker olmayan noktalarda paralel kapatılacak.
 7. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
