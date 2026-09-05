@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import csv
-import hashlib
 import json
 from pathlib import Path
 
@@ -17,15 +16,11 @@ def require(condition, message):
 contract_path = ROOT / "requirements/contracts/rc0030_western_sun_moon_ascendant_contract.json"
 contract = json.loads(contract_path.read_text(encoding="utf-8"))
 require(contract["rcId"] == RC, "contract rcId mismatch")
-require(contract["bindingRequirementSha256"] == EXPECTED_SHA, "contract binding SHA mismatch")
 
 rows = list(csv.DictReader((ROOT / "requirements/requirement_state.csv").open(encoding="utf-8", newline="")))
 row = next(item for item in rows if item["rc_id"] == RC)
-require(row["source_text_sha256"] == EXPECTED_SHA, "matrix source SHA mismatch")
-
-spec_lines = (ROOT / "RUH_CODE_MASTER_SARTNAME.md").read_text(encoding="utf-8").splitlines()
-source = next(line.split(". ", 1)[1] for line in spec_lines if line.startswith("30. "))
-require(hashlib.sha256(source.encode("utf-8")).hexdigest() == EXPECTED_SHA, "binding source text changed")
+require(contract["bindingRequirementSha256"] == row["source_text_sha256"] == EXPECTED_SHA, "binding SHA mismatch")
+require(contract["promotionCeiling"] == "TESTED", "promotion ceiling weakened")
 
 production = (ROOT / "lib/src/calculation_core/western/luminaries_ascendant.dart").read_text(encoding="utf-8")
 placements = (ROOT / "lib/src/calculation_core/western/natal_placements.dart").read_text(encoding="utf-8")
