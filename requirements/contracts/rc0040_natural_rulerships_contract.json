@@ -1,0 +1,10 @@
+{
+  "rcId": "RC-0040",
+  "bindingRequirementSha256": "0f06f614a3c603c36728e9edbb41e85f09aba1acd6f0116a05b314611dccd8ee",
+  "requirement": "Gezegenlerin doğal yöneticilikleri içerikte yer alacak.",
+  "promotionCeiling": "TESTED",
+  "productionFile": "lib/src/calculation_core/western/rulerships.dart",
+  "testFile": "test/calculation_core/western/rulerships_test.dart",
+  "mustProve": ["traditional rulership catalog is explicit", "modern rulership catalog is explicit", "outer-planet modern assignments are not silently substituted into the traditional scheme", "all twelve Tropical signs have a ruler under each scheme"],
+  "verificationBlocker": "Independent editorial/source review and final TR/EN content/UI presentation remain required before VERIFIED/DONE."
+}
