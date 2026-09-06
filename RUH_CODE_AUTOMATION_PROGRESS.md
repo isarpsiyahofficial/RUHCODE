@@ -15,26 +15,32 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0102→0104 = TESTED + blocked=YES** (`7e6a91721ddd00ab6aeef8443a7fec5eb87dee84`).
 - **RC-0105→0110 = TESTED + blocked=YES** (`4bcd3593b39c7aa1b673178c3755b66ad02065af`).
 - **RC-0112, RC-0114 = TESTED + blocked=YES** (`5c6266c5af635e81c963c3c7255c6973875103fe`).
-- **RC-0111, RC-0113, RC-0115, RC-0116, RC-0117 = IMPLEMENTED + blocked=YES** at `b8dba27395f4e7a9ece0431b0927eada1c7571eb`; initial dedicated run was cancelled before jobs and physical TESTED promotion is still missing.
-- **RC-0118 = IMPLEMENTED + blocked=YES**. Production `fe5232177d798cd63ba27afb4da9e96487039da2`, regressions `8b8a85c332cbf7a954d4cf85bed6980550fec0f8`, contract `c972c3493ac8d053af3d2c3f0a340d8f5882b297`, validator `fed5eba8fd7a07e0a1938e30ad61e72880e11c28`, dedicated gate `d9f985a617ddd25ec0db49f0cb35d277d60bbbe9`. Physical promotion pending.
+- **RC-0118 = TESTED + blocked=YES** (`28c73506c796bb9ab3d045e4ba36ca16ee6b6737`).
+- **RC-0111, RC-0113, RC-0115, RC-0116, RC-0117 = IMPLEMENTED + blocked=YES**; cancelled initial gate was explicitly retriggered at `abda6575a466cb9463dae15957a69a44d195f2dc`. Physical promotion still required before TESTED.
+- **RC-0119 = IMPLEMENTED + blocked=YES**. Production `38a2633f7f6bfca5c72c3fb18568491b05b37694`, regressions `08b64627ebf2b9d36f28e4db5fb4f1aa9b9fec01`, contract `186bb7189ed9d73cc9df02bf2878169aee8f4fe6`, validator `75e2e89cae51049e11da03b36d82d5d904780468`, dedicated gate `29b9ad5d66fa5806a31370fa254cd6903963a52c`. Physical promotion pending.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0112 / RC-0114 promotion doğrulaması
+### RC-0118 promotion doğrulaması
 
-- Panchanga umbrella + sunrise-boundary Vara dedicated hattının physical bot promotion commit'i `5c6266c5af635e81c963c3c7255c6973875103fe` olarak doğrulandı.
-- Bu iki requirement yalnız TESTED seviyesinde tutuluyor; real sunrise golden/reference, TR/EN rendered UI ve device/release kanıtları hâlâ blocker.
+- Physical bot promotion `28c73506c796bb9ab3d045e4ba36ca16ee6b6737` doğrulandı; RC-0118 yalnız TESTED seviyesine yükseltildi.
+- Verified yoga catalog/source evidence, professional rendered UI, entitlement ve device/release kapıları açık olduğundan VERIFIED/DONE verilmedi.
 
-### RC-0118 Vedik yoga profesyonel değerlendirme çekirdeği
+### RC-0111/0113/0115/0116/0117 Panchanga/Gochara gate retrigger
 
-- `lib/src/calculation_core/vedic/vedic_yoga_engine.dart` eklendi.
-- Tartışmalı/kanıtsız yoga katalogları hesaplama gerçeği gibi hard-code edilmedi.
-- Profesyonel yoga tanımları explicit `id/version/sourceId` provenance ile giriliyor.
-- Engine bağımsız sidereal `VedicRashiChart` / Whole Sign verisi üzerinde `sameHouse`, `sameRashi`, `houseDistance` ilişkilerini deterministic değerlendiriyor.
-- Duplicate yoga id, kaynak/version eksikliği, invalid house/rashi ve chart provenance eksikliği fail-closed.
-- Match çıktısı hem yoga-definition provenance'ını hem ephemeris/ayanamsha provenance'ını koruyor.
+- Önceki cancelled dedicated gate yeniden tetiklendi (`abda6575a466cb9463dae15957a69a44d195f2dc`).
+- Promotion blocker metni RC-0112/RC-0114 artık TESTED olduğu için güncellendi; bu iki madde eski blocker olarak tutulmuyor.
+- Bot promotion fiziksel olarak oluşmadan bu beş requirement TESTED ilan edilmeyecek.
+
+### RC-0119 Ashtakavarga rule-data + deterministic evaluator
+
+- `lib/src/calculation_core/vedic/vedic_ashtakavarga.dart` eklendi.
+- Unverified klasik bindu tabloları runtime gerçeği olarak hard-code edilmedi; evaluator explicit `id/version/sourceId` taşıyan rule-set istiyor.
+- Graha veya Lagna contributor kaynakları ve contributor-relative 1..12 favorable-house kuralları ile Bhinna bindu satırları deterministic üretiliyor.
+- Sarvashtakavarga toplamları aynı Bhinna satırlarından türetiliyor; ayrı/uydurma hesap yok.
+- Missing contributor, duplicate subject/contributor rule, invalid relative house ve invalid chart provenance fail-closed.
 - Compiled regression, exact requirement contract, fail-closed validator ve dedicated Flutter/matrix promotion workflow main üzerinde.
-- Dedicated workflow run `34056428449` fiziksel olarak oluştu; son kontrolde queued olduğundan RC-0118 henüz TESTED ilan edilmedi.
+- Authoritative classical rule-data provenance + independent golden/reference karşılaştırması bulunmadan VERIFIED/DONE verilmeyecek.
 
 ## Açık product-facing / global blocker'lar
 
@@ -42,10 +48,10 @@ RC-0042/0044/0046/0048/0049 product-facing açıkları; RC-0061 active house-sys
 
 ## Sonraki devam noktası
 
-1. RC-0118 exact CI/promotion sonucu okunacak; kırmızıysa validator/test/job kök nedeni aynı hatta düzeltilecek.
-2. RC-0111/0113/0115/0116/0117 cancelled dedicated run yeniden fiziksel gate üzerinden ilerletilecek; bot promotion olmadan TESTED denmeyecek.
-3. RC-0119 Ashtakavarga için klasik bindu kuralları kaynaklanmadan yaklaşık tablo üretilmeyecek; önce versioned rule-data + deterministic evaluator mimarisi kurulacak.
-4. RC-0120 Shadbala ve RC-0121 Vedik gezegen güçleri birbirine karıştırılmadan ayrı provenance/golden kapılarıyla ilerletilecek.
+1. RC-0119 exact CI/promotion sonucu okunacak; kırmızıysa validator/test/analyzer kök nedeni aynı hatta düzeltilecek.
+2. RC-0111/0113/0115/0116/0117 retrigger sonucunda physical promotion doğrulanacak; kırmızıysa job/log kök nedeni kapatılacak.
+3. RC-0120 Shadbala için Sthana/Dig/Kala/Chesta/Naisargika/Drik bileşenleri kanıtsız tek skora indirgenmeyecek; versioned component-evidence mimarisi kurulacak.
+4. RC-0121 Vedik gezegen güçleri Shadbala ile aynı requirement gibi birleştirilmeyecek; ayrı aggregation/provenance kapısı olacak.
 5. RC-0082/0083 kırmızı Analyze/validator sorunu ve RC-0086/0087/RC-0062 physical promotion açıkları ayrıca çözülecek.
 6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
