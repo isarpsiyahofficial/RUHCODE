@@ -1,0 +1,16 @@
+{
+  "requirements": {
+    "RC-0080": "Vedik astroloji Batı astrolojisinin üzerine sidereal fark uygulanmış basit bir kopya olmayacak.",
+    "RC-0081": "Vedik hesaplama motoru ayrı çalışacak."
+  },
+  "runtime": "lib/src/calculation_core/vedic/vedic_engine.dart",
+  "compiled_test": "test/calculation_core/vedic/vedic_engine_test.dart",
+  "invariants": [
+    "The Vedic engine is a standalone calculation namespace and has no import or runtime dependency on calculation_core/western.",
+    "The engine consumes the shared astronomical EphemerisProvider directly and creates a VedicCalculationSnapshot rather than modifying a Western chart snapshot.",
+    "Ayanamsha is injected through a Vedic-specific versioned provider boundary; RC-0082 will bind the default Lahiri/Chitrapaksha implementation separately.",
+    "Exact TT, ephemeris source/data version and ayanamsha id/data version are preserved in the Vedic result.",
+    "Duplicate bodies, invalid ayanamsha values/provenance, ephemeris coverage violations and returned body/TT/provenance mismatch fail closed.",
+    "No device current time or network fallback is permitted in the Vedic calculation engine."
+  ]
+}
