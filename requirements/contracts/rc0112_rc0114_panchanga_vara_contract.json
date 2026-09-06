@@ -1,0 +1,13 @@
+{
+  "requirements": ["RC-0112", "RC-0114"],
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_vara.dart",
+    "lib/src/calculation_core/vedic/vedic_panchanga_snapshot.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_vara_panchanga_snapshot_test.dart"],
+  "claims": {
+    "RC-0114": "Vara is derived from the weekday of the previous location-aware sunrise boundary, never civil midnight.",
+    "RC-0112": "Panchanga snapshot assembles Tithi, Vara, Nakshatra, Yoga and Karana."
+  },
+  "blocker": "The SunriseBoundaryProvider interface is verified here with deterministic fixtures; a real AKILES-derived sunrise implementation, independent golden/tolerance agreement and device/UI evidence remain mandatory before VERIFIED/DONE."
+}
