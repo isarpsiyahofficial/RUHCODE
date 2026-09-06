@@ -1,0 +1,11 @@
+{
+  "requirements": ["RC-0118"],
+  "production": ["lib/src/calculation_core/vedic/vedic_yoga_engine.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_yoga_engine_test.dart"],
+  "claims": {
+    "RC-0118": "Professional Vedic yoga evaluation is available through explicit versioned source-tagged rule definitions applied deterministically to the independent sidereal Rashi/Whole-Sign chart."
+  },
+  "deliberate_exclusion": {
+    "catalog": "No disputed or unverified yoga catalog is silently hard-coded as calculation truth; editorial/source validation is required before VERIFIED/DONE."
+  }
+}
