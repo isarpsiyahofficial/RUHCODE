@@ -1,0 +1,17 @@
+{
+  "requirements": ["RC-0084", "RC-0085"],
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_lagna.dart",
+    "lib/src/calculation_core/vedic/vedic_grahas.dart"
+  ],
+  "tests": [
+    "test/calculation_core/vedic/vedic_lagna_test.dart",
+    "test/calculation_core/vedic/vedic_grahas_test.dart"
+  ],
+  "claims": {
+    "RC-0084": "Vedic Lagna is calculated from explicit UT1/TT, location and a versioned Vedic ayanamsha without importing Western calculation modules.",
+    "RC-0085": "The seven classical Graha sidereal placements are surfaced from the independent Vedic snapshot with provenance and completeness checks; Rahu/Ketu remain separate requirements."
+  },
+  "verification_limit": "Independent astronomy golden/tolerance evidence, numerical Lahiri verification, rendered product UI, device and release gates are still required before VERIFIED/DONE."
+}
