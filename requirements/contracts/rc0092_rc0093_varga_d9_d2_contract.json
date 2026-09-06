@@ -1,0 +1,17 @@
+{
+  "requirements": ["RC-0092", "RC-0093"],
+  "title": "Vedic Navamsa D9 and Hora D2 calculation core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_varga.dart",
+    "lib/src/calculation_core/vedic/vedic_engine.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_varga_test.dart"],
+  "claims": {
+    "RC-0092": "Normalized sidereal placements are deterministically divided into nine equal Navamsa parts with classical movable/fixed/dual starting-sign rules and zodiacal progression.",
+    "RC-0093": "Normalized sidereal placements are deterministically divided into two Hora halves using the classical Sun/Moon order reversal between odd and even signs."
+  },
+  "non_claims": [
+    "This contract does not prove D3+ Varga charts, interpretation/editorial content, rendered UI, entitlement behavior, independent ayanamsha astronomical golden tolerances, device evidence or release readiness."
+  ]
+}
