@@ -1,0 +1,16 @@
+{
+  "requirements": ["RC-0121"],
+  "production": ["lib/src/calculation_core/vedic/vedic_planet_strength.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_planet_strength_test.dart"],
+  "invariants": [
+    "RC-0121 remains a separate assessment layer from RC-0120 Shadbala.",
+    "Every strength metric has explicit method id/version/source provenance and unit.",
+    "Shadbala may be exposed as one metric but is not silently treated as the only Vedic strength doctrine.",
+    "No hidden weighting or synthetic combined score is created without an explicit future methodology."
+  ],
+  "blocked_until": [
+    "additional Vedic strength methodologies are independently sourced and golden-verified",
+    "rendered TR/EN professional UI and entitlement evidence",
+    "device and final release gates"
+  ]
+}
