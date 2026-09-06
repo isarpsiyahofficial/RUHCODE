@@ -1,0 +1,17 @@
+{
+  "requirements": ["RC-0102", "RC-0103", "RC-0104"],
+  "title": "Vedic Trimshamsa D30, Shashtiamsa D60 and systematic Varga extension core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": ["lib/src/calculation_core/vedic/vedic_varga.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_varga_test.dart"],
+  "claims": {
+    "RC-0102": "D30 is calculated with the classical unequal five-span odd/even Rashi mapping rather than an incorrect equal thirty-slice shortcut.",
+    "RC-0103": "D60 resolves sixty 0.5-degree portions and exposes the disputed sign-mapping convention explicitly, defaulting to count-from-natal-Rashi without silently erasing the alternative reading.",
+    "RC-0104": "Additional equal, zodiacally advancing Varga definitions can be added through a validated twelve-Rashi start-map definition while retaining the common provenance and fail-closed calculation path."
+  },
+  "non_claims": [
+    "No claim is made here that D60 deity-name interpretation is complete.",
+    "No arbitrary Varga definition is treated as classical without separate source evidence and regression coverage.",
+    "No claim is made here for rendered UI, interpretation/editorial data, entitlement, independent Varga golden/reference evidence, device evidence or release readiness."
+  ]
+}
