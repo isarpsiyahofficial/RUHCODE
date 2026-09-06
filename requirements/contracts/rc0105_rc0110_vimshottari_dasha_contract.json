@@ -1,0 +1,29 @@
+{
+  "requirements": ["RC-0105", "RC-0106", "RC-0107", "RC-0108", "RC-0109", "RC-0110"],
+  "title": "Vimshottari Dasha, Mahadasha, Antardasha, Pratyantardasha and current-period timing core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vimshottari_dasha.dart",
+    "lib/src/calculation_core/vedic/vedic_nakshatra.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vimshottari_dasha_test.dart"],
+  "claims": {
+    "RC-0105": "The canonical 120-year Vimshottari cycle is calculated from the sidereal Moon birth Nakshatra using the fixed Ketu-Venus-Sun-Moon-Mars-Rahu-Jupiter-Saturn-Mercury sequence and 7/20/6/10/7/18/16/19/17 year weights.",
+    "RC-0106": "Mahadasha periods are materialized as explicit half-open JD(TT) ranges with the birth-Nakshatra elapsed fraction applied to the starting period balance.",
+    "RC-0107": "Each Mahadasha is partitioned into nine Antardashas beginning with the parent lord and using the canonical proportional 120-year rule.",
+    "RC-0108": "Pratyantardasha is supported as an optional third level using the same recursive proportional rule.",
+    "RC-0109": "At an explicit query JD(TT), exactly one running Mahadasha and Antardasha, plus optional Pratyantardasha, are resolved fail-closed.",
+    "RC-0110": "Every generated period exposes explicit start and end JD(TT) values with half-open boundary semantics."
+  },
+  "conventions": {
+    "dasha_year_days": 365.25,
+    "range_semantics": "[startJdTt,endJdTt)",
+    "starting_lord": "birth nakshatra index modulo nine"
+  },
+  "non_claims": [
+    "Rendered TR/EN Dasha timeline UI is not proven by this core gate.",
+    "Interpretation/editorial meaning for Dasha periods is not proven here.",
+    "Independent external golden/tolerance agreement across historical dates is still required before VERIFIED/DONE.",
+    "Device, entitlement, offline, PDF/backup and exact release readiness are not proven here."
+  ]
+}
