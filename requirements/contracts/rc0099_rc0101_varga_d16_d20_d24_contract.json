@@ -1,0 +1,13 @@
+{
+  "requirements": ["RC-0099", "RC-0100", "RC-0101"],
+  "title": "Vedic Shodasamsa D16, Vimshamsa D20 and Chaturvimshamsa D24 calculation core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": ["lib/src/calculation_core/vedic/vedic_varga.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_varga_test.dart"],
+  "claims": {
+    "RC-0099": "D16 divides each Rashi into sixteen 1.875-degree parts; movable signs start from Aries, fixed signs from Leo, and dual signs from Sagittarius.",
+    "RC-0100": "D20 divides each Rashi into twenty 1.5-degree parts; movable signs start from Aries, fixed signs from Sagittarius, and dual signs from Leo.",
+    "RC-0101": "D24 divides each Rashi into twenty-four 1.25-degree parts; odd signs start from Leo and even signs from Cancer, advancing zodiacally."
+  },
+  "non_claims": ["No claim is made here for D30/D60, interpretation, rendered UI, entitlement, independent Varga golden/reference evidence, device evidence or release readiness."]
+}
