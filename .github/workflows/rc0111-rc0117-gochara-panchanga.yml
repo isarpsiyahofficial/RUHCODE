@@ -1,0 +1,72 @@
+name: RC-0111 RC-0117 Gochara Panchanga Core
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/vedic/vedic_engine.dart'
+      - 'lib/src/calculation_core/vedic/vedic_gochara.dart'
+      - 'lib/src/calculation_core/vedic/vedic_panchanga.dart'
+      - 'test/calculation_core/vedic/vedic_gochara_panchanga_test.dart'
+      - 'requirements/contracts/rc0111_rc0117_gochara_panchanga_contract.json'
+      - 'tools/requirements/validate_rc0111_rc0117_gochara_panchanga.py'
+      - '.github/workflows/rc0111-rc0117-gochara-panchanga.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0111_rc0117_gochara_panchanga.py
+      - run: flutter test test/calculation_core/vedic/vedic_gochara_panchanga_test.dart
+      - name: Promote verified calculation cores to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0111_rc0117_gochara_panchanga.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=list(rows[0].keys())
+          ids={'RC-0111','RC-0113','RC-0115','RC-0116','RC-0117'}
+          links='requirements/contracts/rc0111_rc0117_gochara_panchanga_contract.json|tools/requirements/validate_rc0111_rc0117_gochara_panchanga.py|lib/src/calculation_core/vedic/vedic_gochara.dart|lib/src/calculation_core/vedic/vedic_panchanga.dart|test/calculation_core/vedic/vedic_gochara_panchanga_test.dart|.github/workflows/rc0111-rc0117-gochara-panchanga.yml'
+          for r in rows:
+            if r['rc_id'] not in ids: continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='RC-0112 Panchanga umbrella and RC-0114 Vara sunrise-boundary calculation remain open; independent golden/tolerance, TR/EN rendered UI and device/release gates are also required before VERIFIED/DONE.'
+            r['notes']='Machine gate proves explicit-TT sidereal Gochara plus Tithi, daily Nakshatra, Yoga and canonical Karana partitions with fail-closed provenance. Vara is deliberately not approximated from civil weekday. TESTED only.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0111-rc0117): record Gochara Panchanga cores TESTED'
+          git push origin HEAD:main

@@ -1,0 +1,19 @@
+{
+  "requirements": ["RC-0111", "RC-0113", "RC-0115", "RC-0116", "RC-0117"],
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_gochara.dart",
+    "lib/src/calculation_core/vedic/vedic_panchanga.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_gochara_panchanga_test.dart"],
+  "claims": {
+    "RC-0111": "Explicit-TT independent sidereal Gochara snapshot with ephemeris and ayanamsha provenance.",
+    "RC-0113": "Tithi is partitioned from normalized Moon-Sun elongation in 12-degree spans.",
+    "RC-0115": "Daily Nakshatra is partitioned from sidereal Moon longitude into 27 equal spans.",
+    "RC-0116": "Panchanga Yoga is partitioned from normalized sidereal Sun+Moon longitude into 27 equal spans.",
+    "RC-0117": "Karana is partitioned from Moon-Sun elongation in 6-degree half-tithis with the canonical fixed/repeating sequence."
+  },
+  "deliberate_exclusion": {
+    "RC-0112": "Panchanga umbrella remains incomplete until all five limbs are verified.",
+    "RC-0114": "Vara is not approximated from civil weekday; location-aware sunrise-boundary evidence is required."
+  }
+}
