@@ -6,48 +6,43 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Güncel canonical durum
 
-- Önceki physical matrix durumları korunur; RC-0002 DONE, RC-0031→0035/0052→0060 ve RC-0063→0081 arasındaki daha önce TESTED olarak kanıtlanmış hatlar geriye düşürülmez.
+- Önceki physical matrix durumları korunur; RC-0002 DONE ve daha önce physical TESTED promotion ile kanıtlanan hatlar geriye düşürülmez.
 - **RC-0061 = IMPLEMENTED + blocked=YES**; active house-system name için gerçek product-screen/widget-device evidence açık.
-- **RC-0062 = NOT_STARTED**; natal-chart dedicated contract/test/CI mevcut fakat physical promotion unresolved ve atlanmış sayılmıyor.
-- **RC-0080→0081 = TESTED + blocked=YES** (`de9260ea79934c4f9cee912d451e746512d96943`). Independent Vedic engine physical matrix promotion doğrulandı.
-- **RC-0082→0083:** production seçim mimarisi ve dedicated gate main üzerinde; exact commit `9588f2dbd9b240721cbb9dffd7fc34306f25c8af` için Flutter Quality Analyze ve requirement-validation check'lerinde gerçek failure görüldü. Matrix bu nedenle hâlâ NOT_STARTED; TESTED denmiyor.
-- **RC-0084→0085 = IMPLEMENTED + blocked=YES (repository evidence)**. Vedic Lagna ve classical Graha çekirdekleri, compiled regressions, binding contract, fail-closed validator ve dedicated CI gate main üzerinde; physical CI/promotion bekleniyor, matrix henüz yükseltilmedi.
+- **RC-0062 = NOT_STARTED/unresolved promotion**; natal-chart dedicated contract/test/CI mevcut fakat physical promotion hâlâ çözülmemiştir ve atlanmış sayılmaz.
+- **RC-0080→0081 = TESTED + blocked=YES** (`de9260ea79934c4f9cee912d451e746512d96943`).
+- **RC-0082→0083 = NOT_STARTED/blocked**; exact `9588f2dbd9b240721cbb9dffd7fc34306f25c8af` için daha önce görülen Flutter Analyze + requirement-validation failure nedeniyle physical TESTED promotion hâlâ yok.
+- **RC-0084→0085 = TESTED + blocked=YES**; physical promotion `b9ef26398e5a7d572680d5e8630a2b4a06add8b2` ile doğrulandı.
+- **RC-0086→0087** ve **RC-0088→0089** için production/test/validator/CI zincirleri main üzerinde, fakat bu checkpoint anında physical `record ... TESTED` promotion commit'i bulunamadı; TESTED denmiyor.
+- **RC-0090→0091 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI gate `0c5eac7feace1bc8c65b399bc15ee6178abf8a97` ile main'e işlendi. Physical TESTED promotion henüz oluşmadığı için statü yükseltilmedi.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0082 → RC-0083 — kırmızı CI gerçek blocker olarak kaydedildi
+### RC-0090 — Rashi chart
 
-Önceki kayıttaki “workflow görünürlüğü henüz oluşmadı” varsayımı yeniden kontrol edildi. Exact `9588f2db...` commit'i üzerinde Flutter Quality `analyze-and-test` job'ının **Analyze** adımında failure ve requirement validation failure fiziksel olarak görüldü; test adımı analyze başarısızlığı nedeniyle skip oldu. Bu iki madde bu yüzden TESTED'e yükseltilmedi. Sonraki turda exact analyzer/validator diagnostic erişilebildiği anda kök neden düzeltilecek; kırmızı durum saklanmıyor.
+Bağlayıcı madde: `90. Rashi chart oluşturulacak.`
 
-### RC-0084 — Vedik Lagna
+`lib/src/calculation_core/vedic/vedic_rashi_chart.dart` ile independent `VedicCalculationSnapshot` içindeki normalized sidereal Graha longitudes 12 Rashi'ye deterministic olarak eşleniyor. Her placement için `rashiIndex` ve sign içi derece korunuyor; duplicate body, invalid longitude, eksik provenance ve ayanamsha uyuşmazlığı fail-closed. Western calculation katmanına import/delegation yok.
 
-Bağlayıcı madde: `84. Vedik Lagna hesaplanacak.`
+### RC-0091 — Vedik Whole Sign
 
-Commit zinciri:
-- `a35a670806baf1f1e94c90c3ebb1a4d9031f1138` — `lib/src/calculation_core/vedic/vedic_lagna.dart`
-- `4389da5b76c6e5b7500302f5b5e2abac2ce33eeb` — compiled Lagna regressions
+Bağlayıcı madde: `91. Vedik Whole Sign sistemi uygulanacak.`
 
-Yeni `VedicLagna` Western calculation namespace'ini import/delegate etmiyor. Explicit UT1 + TT + konum tüketiyor, shared sidereal-time primitive'inden yerel mean sidereal time üretiyor, eastern ecliptic/horizon intersection geometrisini kendi Vedic katmanında hesaplıyor ve seçili versioned ayanamsha'yı uygulayarak normalized sidereal Lagna üretiyor. Ayanamsha id/dataVersion sonucu üzerinde korunuyor; invalid longitude/latitude, non-finite time ve invalid ayanamsha fail-closed. Rashi index ve sign içi derece türetiliyor.
+Vedik Lagna'nın sidereal Rashi'si 1. ev kabul ediliyor ve her Graha için house assignment exact on-two-sign cycle ile `((rashiIndex - lagnaRashiIndex + 12) % 12) + 1` formülüyle üretiliyor. Aries wrap regression testi dahil edildi. Snapshot ile Lagna'nın ayanamsha id/dataVersion eşleşmesi zorunlu.
 
-Bu çalışma Lagna'nın bağımsız astronomy golden/tolerance doğruluğunu henüz kanıtlamaz; numerical Lahiri doğruluğu, real-world golden cases, product UI/device/release kapıları açık blocker.
+### RC-0090→0091 kanıt zinciri
 
-### RC-0085 — Graha konumları
+Atomic commit: `0c5eac7feace1bc8c65b399bc15ee6178abf8a97` — `feat(rc0090-rc0091): add Rashi Whole Sign core and gate`
 
-Bağlayıcı madde: `85. Graha konumları hesaplanacak.`
+Eklenen kanıtlar:
+- production: `lib/src/calculation_core/vedic/vedic_rashi_chart.dart`
+- compiled regressions: `test/calculation_core/vedic/vedic_rashi_chart_test.dart`
+- binding contract: `requirements/contracts/rc0090_rc0091_rashi_whole_sign_contract.json`
+- fail-closed validator: `tools/requirements/validate_rc0090_rc0091_rashi_whole_sign.py`
+- dedicated promotion workflow: `.github/workflows/rc0090-rc0091-rashi-whole-sign.yml`
 
-Commit zinciri:
-- `09bca3f559f555fc54f5825abe589f401b4b4571` — `lib/src/calculation_core/vedic/vedic_grahas.dart`
-- `8918043811a98eff5676dc172c8106c06a5e9f35` — compiled Graha regressions
+Gate yalnız Python binding/production doğrulaması ve compiled Flutter regressions fiziksel olarak green olduktan sonra RC-0090/0091'i TESTED'e promote edecek. Bu checkpoint'te promotion commit'i henüz oluşmadığı için TESTED ilan edilmedi.
 
-`VedicGrahaSet`, independent `VedicCalculationSnapshot` içinden Sun/Moon/Mercury/Venus/Mars/Jupiter/Saturn classical Graha setini completeness + normalized finite checks ile çıkarıyor ve ephemeris/ayanamsha provenance'ını koruyor. Rahu/Ketu bilerek bu requirement içine gizlice birleştirilmedi; RC-0086/RC-0087 ayrı kalıyor.
-
-### RC-0084 → RC-0085 requirement gate
-
-- `daadfa6a401a557d6cc64f7510540236e9666b21` — binding contract
-- `aa0d7c418b6611e228357fa8ed035169a59b68c6` — fail-closed validator
-- `9184bf24826c68be3af7ad6bff5925da23e0bde5` — dedicated Flutter CI + matrix-promotion workflow
-
-Dedicated gate Python contract validation + iki compiled Flutter testini çalıştırıyor; yalnız physical green push sonrasında matrix'i TESTED'e promote edecek. Bu tur sonunda workflow checks queued/başlıyor durumdaydı; promotion commit'i fiziksel olarak görülmeden TESTED denmiyor.
+Bu çalışma Varga divisional chartları, yorum/editoryal içerik, rendered UI, entitlement, bağımsız Lagna/Lahiri astronomy golden tolerances, real-device veya release readiness kanıtlamaz; bunlar açık blocker olarak korunur.
 
 ## Açık product-facing / global blocker'lar
 
@@ -55,11 +50,12 @@ RC-0042/0044/0046/0048/0049 product-facing açıkları; RC-0061 active house-sys
 
 ## Sonraki devam noktası
 
-1. `9588f2db...` RC-0082/0083 Flutter Analyze + requirement-validation failure exact diagnostic/kök nedeni çıkarılıp düzeltilecek ve yeniden doğrulanacak.
-2. RC-0084/0085 dedicated CI/promotion sonucu okunacak; kırmızıysa aynı şekilde kök neden düzeltilecek.
-3. **RC-0062** unresolved natal-chart promotion tekrar incelenecek; atlanmayacak.
-4. Dependency sırasıyla **RC-0086 Rahu → RC-0087 Ketu → RC-0088 Nakshatra → RC-0089 Pada** ilerletilecek; astronomik hesap uydurulmayacak.
-5. Lahiri/Chitrapaksha numerical doğruluğu için bağımsız provider/golden/tolerance kanıtı ayrı kapı olarak kurulacak.
-6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
+1. RC-0090/0091 dedicated CI sonucu okunacak; kırmızıysa exact job/log kök nedeni aynı hat üzerinde düzeltilecek, green ise physical matrix promotion doğrulanacak.
+2. RC-0082/0083 kırmızı Flutter Analyze + requirement-validation diagnostic'i çözülüp gate yeniden yeşile getirilecek.
+3. RC-0086/0087 ve RC-0088/0089 mevcut gate/promotion durumları fiziksel olarak doğrulanacak; yalnız gerçek bot promotion varsa TESTED kabul edilecek.
+4. **RC-0062** unresolved natal-chart promotion tekrar incelenecek; atlanmayacak.
+5. Dependency sırasındaki **RC-0092+ Varga** maddeleri bağlayıcı spec ve doğrulanabilir matematikle ilerletilecek; formül veya astronomik sonuç uydurulmayacak.
+6. Lahiri/Chitrapaksha numerical doğruluğu için bağımsız provider/golden/tolerance kanıtı ayrı kapı olarak kurulacak.
+7. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
 **FINAL: NO.**
