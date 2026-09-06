@@ -125,12 +125,14 @@ abstract final class VedicAshtakavargaEngine {
       switch (contributor.kind) {
         case AshtakavargaContributorKind.lagna:
           contributorRashis[contributor.id] = chart.lagnaRashiIndex;
+          break;
         case AshtakavargaContributorKind.graha:
           final rashi = placements[contributor.body];
           if (rashi == null) {
             throw StateError('Ashtakavarga chart is missing contributor ${contributor.id}.');
           }
           contributorRashis[contributor.id] = rashi;
+          break;
       }
     }
 
