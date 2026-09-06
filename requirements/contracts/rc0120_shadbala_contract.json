@@ -1,0 +1,16 @@
+{
+  "requirements": ["RC-0120"],
+  "production": ["lib/src/calculation_core/vedic/vedic_shadbala.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_shadbala_test.dart"],
+  "invariants": [
+    "Shadbala keeps Sthana, Dig, Kala, Cheshta, Naisargika and Drik strengths as six explicit component groups.",
+    "Every component carries method id/version/source provenance.",
+    "Incomplete or duplicate component sets fail closed rather than producing a professional score.",
+    "Total Rupa is derived only from the six validated component values."
+  ],
+  "blocked_until": [
+    "exact classical formulas for all six groups are versioned and independently golden-verified",
+    "professional rendered UI and entitlement evidence",
+    "device and final release gates"
+  ]
+}
