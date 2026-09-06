@@ -58,8 +58,8 @@ jobs:
             if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
             r['evidence_links']=links
             r['blocked']='YES'
-            r['blocker']='RC-0112 Panchanga umbrella and RC-0114 Vara sunrise-boundary calculation remain open; independent golden/tolerance, TR/EN rendered UI and device/release gates are also required before VERIFIED/DONE.'
-            r['notes']='Machine gate proves explicit-TT sidereal Gochara plus Tithi, daily Nakshatra, Yoga and canonical Karana partitions with fail-closed provenance. Vara is deliberately not approximated from civil weekday. TESTED only.'
+            r['blocker']='Independent astronomy golden/tolerance, TR/EN rendered UI and device/release gates remain required before VERIFIED/DONE.'
+            r['notes']='Machine gate proves explicit-TT sidereal Gochara plus Tithi, daily Nakshatra, Yoga and canonical Karana partitions with fail-closed provenance. RC-0112/RC-0114 umbrella and sunrise-boundary Vara are separately TESTED. TESTED only.'
           with p.open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
           PY
