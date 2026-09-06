@@ -1,0 +1,16 @@
+{
+  "requirements": ["RC-0119"],
+  "production": ["lib/src/calculation_core/vedic/vedic_ashtakavarga.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_ashtakavarga_test.dart"],
+  "invariants": [
+    "No authoritative Ashtakavarga bindu table is embedded without explicit source/version provenance.",
+    "Bhinna bindus are evaluated from versioned contributor-relative-house rules on sidereal Rashi positions.",
+    "Sarvashtakavarga totals are derived from the evaluated Bhinna rows, not separately approximated.",
+    "Missing contributors, duplicate rule bindings, invalid relative houses, and invalid chart provenance fail closed."
+  ],
+  "blocked_until": [
+    "authoritative classical rule-data provenance and independent golden/reference comparison",
+    "rendered TR/EN product UI and professional entitlement evidence",
+    "device and final release gates"
+  ]
+}
