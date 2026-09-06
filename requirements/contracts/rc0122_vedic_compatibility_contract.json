@@ -1,0 +1,16 @@
+{
+  "requirements": ["RC-0122"],
+  "production": ["lib/src/calculation_core/vedic/vedic_compatibility.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_compatibility_test.dart"],
+  "invariants": [
+    "Vedic compatibility is a separate subsystem and does not reuse Western compatibility logic.",
+    "Rules require explicit id/version/source provenance and expose per-rule results.",
+    "No disputed Kuta table is embedded without separate source/golden evidence.",
+    "Missing required bodies, duplicate rule ids and invalid distances fail closed."
+  ],
+  "blocked_until": [
+    "authoritative Vedic compatibility rule catalogs are independently sourced and golden-verified",
+    "rendered TR/EN compatibility UI and interpretation/editorial evidence",
+    "entitlement, device and final release gates"
+  ]
+}
