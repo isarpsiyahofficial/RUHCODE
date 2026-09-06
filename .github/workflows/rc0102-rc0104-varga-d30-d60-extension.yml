@@ -1,0 +1,70 @@
+name: RC-0102 RC-0104 Vedic D30 D60 Extension
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/vedic/vedic_varga.dart'
+      - 'lib/src/calculation_core/vedic/vedic_engine.dart'
+      - 'test/calculation_core/vedic/vedic_varga_test.dart'
+      - 'requirements/contracts/rc0102_rc0104_varga_d30_d60_extension_contract.json'
+      - 'tools/requirements/validate_rc0102_rc0104_varga_d30_d60_extension.py'
+      - '.github/workflows/rc0102-rc0104-varga-d30-d60-extension.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0102_rc0104_varga_d30_d60_extension.py
+      - run: flutter test test/calculation_core/vedic/vedic_varga_test.dart
+      - name: Promote D30/D60/Varga extension to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0102_rc0104_varga_d30_d60_extension.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=list(rows[0].keys())
+          links='requirements/contracts/rc0102_rc0104_varga_d30_d60_extension_contract.json|tools/requirements/validate_rc0102_rc0104_varga_d30_d60_extension.py|lib/src/calculation_core/vedic/vedic_varga.dart|test/calculation_core/vedic/vedic_varga_test.dart|.github/workflows/rc0102-rc0104-varga-d30-d60-extension.yml'
+          for r in rows:
+            if r['rc_id'] not in ('RC-0102','RC-0103','RC-0104'): continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Independent Varga golden/reference evidence, D60 deity/name semantics, interpretation/editorial data, rendered product UI and device/release gates remain required before VERIFIED/DONE.'
+            r['notes']='Machine gate proves D30 unequal-span boundaries, explicit D60 sign-convention handling, systematic equal-Varga extension validation and provenance fail-closed regressions. TESTED only.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0102-rc0104): record D30 D60 Varga extension TESTED'
+          git push origin HEAD:main
