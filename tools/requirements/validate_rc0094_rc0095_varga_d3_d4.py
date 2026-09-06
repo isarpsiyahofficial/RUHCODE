@@ -16,8 +16,8 @@ required = {
     PROD: [
         'drekkanaD3',
         'chaturthamsaD4',
-        'const offsets = <int>[0, 4, 8];',
-        'const offsets = <int>[0, 3, 6, 9];',
+        'const o=<int>[0,4,8];',
+        'const o=<int>[0,3,6,9];',
         "throw StateError('Varga chart requires explicit Vedic provenance.');",
     ],
     TEST: [
