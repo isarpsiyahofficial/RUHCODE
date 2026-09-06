@@ -10,7 +10,7 @@ final class VedicVargaChart {
   final double jdTt; final String ephemerisSourceId; final String ephemerisDataVersion; final String ayanamshaId; final String ayanamshaDataVersion; final int division; final List<VedicVargaPlacement> placements;
 }
 
-/// Classical Parashari Varga core for RC-0092 through RC-0098.
+/// Classical Parashari Varga core for RC-0092 onward.
 abstract final class VedicVargaBuilder {
   static VedicVargaChart navamsaD9(VedicCalculationSnapshot s)=>_build(snapshot:s,division:9,mapper:_navamsaRashi);
   static VedicVargaChart horaD2(VedicCalculationSnapshot s)=>_build(snapshot:s,division:2,mapper:_horaRashi);
@@ -19,6 +19,9 @@ abstract final class VedicVargaBuilder {
   static VedicVargaChart saptamsaD7(VedicCalculationSnapshot s)=>_build(snapshot:s,division:7,mapper:_saptamsaRashi);
   static VedicVargaChart dasamsaD10(VedicCalculationSnapshot s)=>_build(snapshot:s,division:10,mapper:_dasamsaRashi);
   static VedicVargaChart dwadasamsaD12(VedicCalculationSnapshot s)=>_build(snapshot:s,division:12,mapper:_dwadasamsaRashi);
+  static VedicVargaChart shodasamsaD16(VedicCalculationSnapshot s)=>_build(snapshot:s,division:16,mapper:_shodasamsaRashi);
+  static VedicVargaChart vimshamsaD20(VedicCalculationSnapshot s)=>_build(snapshot:s,division:20,mapper:_vimshamsaRashi);
+  static VedicVargaChart chaturvimshamsaD24(VedicCalculationSnapshot s)=>_build(snapshot:s,division:24,mapper:_chaturvimshamsaRashi);
 
   static VedicVargaChart _build({required VedicCalculationSnapshot snapshot,required int division,required int Function(int,int) mapper}) {
     _validateSnapshot(snapshot); final partSize=30.0/division; final placements=<VedicVargaPlacement>[]; final seen=<Object>{};
@@ -39,6 +42,9 @@ abstract final class VedicVargaBuilder {
   static int _saptamsaRashi(int r,int p){final start=r.isEven?r:(r+6)%12; return (start+p)%12;}
   static int _dasamsaRashi(int r,int p){final start=r.isEven?r:(r+8)%12; return (start+p)%12;}
   static int _dwadasamsaRashi(int r,int p)=>(r+p)%12;
+  static int _shodasamsaRashi(int r,int p){final start=switch(r%3){0=>0,1=>4,_=>8}; return (start+p)%12;}
+  static int _vimshamsaRashi(int r,int p){final start=switch(r%3){0=>0,1=>8,_=>4}; return (start+p)%12;}
+  static int _chaturvimshamsaRashi(int r,int p){final start=r.isEven?4:3; return (start+p)%12;}
 
   static void _validateSnapshot(VedicCalculationSnapshot snapshot){
     if(!snapshot.jdTt.isFinite||snapshot.ephemerisSourceId.trim().isEmpty||snapshot.ephemerisDataVersion.trim().isEmpty||snapshot.ayanamshaId.trim().isEmpty||snapshot.ayanamshaDataVersion.trim().isEmpty||!snapshot.ayanamshaDegrees.isFinite) throw StateError('Varga chart requires explicit Vedic provenance.');
