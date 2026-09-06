@@ -1,0 +1,71 @@
+name: RC-0090 RC-0091 Vedic Rashi and Whole Sign
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/vedic/vedic_rashi_chart.dart'
+      - 'lib/src/calculation_core/vedic/vedic_engine.dart'
+      - 'lib/src/calculation_core/vedic/vedic_lagna.dart'
+      - 'test/calculation_core/vedic/vedic_rashi_chart_test.dart'
+      - 'requirements/contracts/rc0090_rc0091_rashi_whole_sign_contract.json'
+      - 'tools/requirements/validate_rc0090_rc0091_rashi_whole_sign.py'
+      - '.github/workflows/rc0090-rc0091-rashi-whole-sign.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0090_rc0091_rashi_whole_sign.py
+      - run: flutter test test/calculation_core/vedic/vedic_rashi_chart_test.dart
+      - name: Promote Rashi/Whole Sign to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0090_rc0091_rashi_whole_sign.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=list(rows[0].keys())
+          links='requirements/contracts/rc0090_rc0091_rashi_whole_sign_contract.json|tools/requirements/validate_rc0090_rc0091_rashi_whole_sign.py|lib/src/calculation_core/vedic/vedic_rashi_chart.dart|test/calculation_core/vedic/vedic_rashi_chart_test.dart|.github/workflows/rc0090-rc0091-rashi-whole-sign.yml'
+          for r in rows:
+            if r['rc_id'] not in ('RC-0090','RC-0091'): continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Independent Lagna/ayanamsha golden tolerance, interpretation/editorial data, rendered product UI, downstream Varga modules and device/release gates remain required before VERIFIED/DONE.'
+            r['notes']='Machine gate proves deterministic 12-Rashi mapping and Lagna-based Vedic Whole Sign house assignment with provenance checks. TESTED only.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0090-rc0091): record Rashi Whole Sign TESTED'
+          git push origin HEAD:main

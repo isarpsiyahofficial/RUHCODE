@@ -1,0 +1,18 @@
+{
+  "requirements": ["RC-0090", "RC-0091"],
+  "title": "Vedic Rashi chart and Whole Sign house core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_rashi_chart.dart",
+    "lib/src/calculation_core/vedic/vedic_engine.dart",
+    "lib/src/calculation_core/vedic/vedic_lagna.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_rashi_chart_test.dart"],
+  "claims": {
+    "RC-0090": "Normalized sidereal Vedic placements are deterministically mapped into the twelve Rashi signs while preserving ephemeris and ayanamsha provenance.",
+    "RC-0091": "The sidereal Lagna Rashi is house one and each placement is assigned to a deterministic twelve-house Whole Sign cycle."
+  },
+  "non_claims": [
+    "This contract does not prove Varga divisional charts, interpretation/editorial content, rendered UI, entitlement behavior, independent Lagna/ayanamsha astronomical golden tolerances, device evidence or release readiness."
+  ]
+}
