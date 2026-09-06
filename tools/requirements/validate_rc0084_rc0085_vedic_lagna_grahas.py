@@ -42,7 +42,7 @@ for token in (
     'AstroBody.sun',
     'AstroBody.moon',
     'AstroBody.saturn',
-    'VedicGrahaSet.fromSnapshot',
+    'static VedicGrahaSet fromSnapshot(',
 ):
     if token not in graha_text:
         raise SystemExit(f'RC-0085 production token missing: {token}')
