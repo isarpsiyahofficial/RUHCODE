@@ -1,0 +1,17 @@
+{
+  "requirements": ["RC-0094", "RC-0095"],
+  "title": "Vedic Drekkana D3 and Chaturthamsa D4 calculation core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_varga.dart",
+    "lib/src/calculation_core/vedic/vedic_engine.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_varga_test.dart"],
+  "claims": {
+    "RC-0094": "Normalized sidereal placements are divided into three equal 10-degree Drekkana parts mapped to the 1st, 5th and 9th signs counted from the natal Rashi.",
+    "RC-0095": "Normalized sidereal placements are divided into four equal 7.5-degree Chaturthamsa parts mapped to the 1st, 4th, 7th and 10th signs counted from the natal Rashi."
+  },
+  "non_claims": [
+    "This contract does not prove D7+ Varga charts, interpretation/editorial content, rendered UI, entitlement behavior, independent ayanamsha astronomical golden tolerances, device evidence or release readiness."
+  ]
+}
