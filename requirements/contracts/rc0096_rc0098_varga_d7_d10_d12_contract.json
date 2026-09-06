@@ -1,0 +1,13 @@
+{
+  "requirements": ["RC-0096", "RC-0097", "RC-0098"],
+  "title": "Vedic Saptamsa D7, Dasamsa D10 and Dwadasamsa D12 calculation core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": ["lib/src/calculation_core/vedic/vedic_varga.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_varga_test.dart"],
+  "claims": {
+    "RC-0096": "D7 divides each Rashi into seven equal parts; odd signs count from themselves and even signs from the seventh sign.",
+    "RC-0097": "D10 divides each Rashi into ten 3-degree parts; odd signs count from themselves and even signs from the ninth sign.",
+    "RC-0098": "D12 divides each Rashi into twelve 2.5-degree parts counted zodiacally from the natal sign itself."
+  },
+  "non_claims": ["No claim is made here for D16+, interpretation, rendered UI, entitlement, independent astronomical golden evidence, device evidence or release readiness."]
+}
