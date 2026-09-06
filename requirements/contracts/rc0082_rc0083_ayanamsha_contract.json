@@ -1,0 +1,18 @@
+{
+  "requirements": ["RC-0082", "RC-0083"],
+  "title": "Vedic ayanamsha default and option architecture",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/ayanamsha_catalog.dart",
+    "lib/src/calculation_core/vedic/vedic_engine.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/ayanamsha_catalog_test.dart"],
+  "claims": {
+    "RC-0082": "Configured Vedic calculations default to the canonical Lahiri/Chitrapaksha provider id and fail closed if that provider is unavailable.",
+    "RC-0083": "Additional versioned ayanamsha providers can be selected explicitly through a registry without changing or coupling the independent Vedic engine."
+  },
+  "non_claims": [
+    "This contract does not by itself verify the numerical astronomy of any Lahiri implementation.",
+    "This contract does not prove rendered professional-settings UI, entitlement behavior, device evidence or release readiness."
+  ]
+}
