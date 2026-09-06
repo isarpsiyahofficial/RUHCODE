@@ -11,7 +11,7 @@ on:
       - 'test/calculation_core/vedic/vedic_nodes_test.dart'
       - 'requirements/contracts/rc0086_rc0087_vedic_nodes_contract.json'
       - 'tools/requirements/validate_rc0086_rc0087_vedic_nodes.py'
-      - '.github/workflows/rc0086-rc0080087-vedic-nodes.yml'
+      - '.github/workflows/rc0086-rc0087-vedic-nodes.yml'
   pull_request:
   workflow_dispatch:
 
