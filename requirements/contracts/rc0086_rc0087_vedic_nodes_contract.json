@@ -1,0 +1,19 @@
+{
+  "requirements": ["RC-0086", "RC-0087"],
+  "title": "Vedic Rahu and Ketu calculation core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_nodes.dart",
+    "lib/src/calculation_core/vedic/vedic_engine.dart",
+    "lib/src/calculation_core/ephemeris/ephemeris.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_nodes_test.dart"],
+  "claims": {
+    "RC-0086": "Rahu is derived from exactly one explicitly selected mean-node or true-node sidereal placement produced by the independent Vedic calculation boundary.",
+    "RC-0087": "Ketu is derived deterministically as the exact 180-degree antipode of the same Rahu node while preserving explicit calculation provenance and node policy."
+  },
+  "non_claims": [
+    "This contract does not choose mean node versus true node on behalf of the user or silently switch between them.",
+    "This contract does not by itself prove independent astronomical node golden tolerances, interpretation content, rendered UI, entitlement behavior, device evidence or release readiness."
+  ]
+}
