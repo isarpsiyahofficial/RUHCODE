@@ -36,13 +36,24 @@ final class VedicVargaChart {
   final List<VedicVargaPlacement> placements;
 }
 
-/// Classical Parashari Varga core for RC-0092 Navamsa D9 and RC-0093 Hora D2.
+/// Classical Parashari Varga core.
+///
+/// RC-0092: Navamsa D9
+/// RC-0093: Hora D2
+/// RC-0094: Drekkana D3
+/// RC-0095: Chaturthamsa D4
 abstract final class VedicVargaBuilder {
   static VedicVargaChart navamsaD9(VedicCalculationSnapshot snapshot) =>
       _build(snapshot: snapshot, division: 9, mapper: _navamsaRashi);
 
   static VedicVargaChart horaD2(VedicCalculationSnapshot snapshot) =>
       _build(snapshot: snapshot, division: 2, mapper: _horaRashi);
+
+  static VedicVargaChart drekkanaD3(VedicCalculationSnapshot snapshot) =>
+      _build(snapshot: snapshot, division: 3, mapper: _drekkanaRashi);
+
+  static VedicVargaChart chaturthamsaD4(VedicCalculationSnapshot snapshot) =>
+      _build(snapshot: snapshot, division: 4, mapper: _chaturthamsaRashi);
 
   static VedicVargaChart _build({
     required VedicCalculationSnapshot snapshot,
@@ -110,6 +121,20 @@ abstract final class VedicVargaBuilder {
     final isOddSign = rashiIndex.isEven; // Aries is the first/odd sign.
     final sunHora = isOddSign ? divisionIndex == 0 : divisionIndex == 1;
     return sunHora ? 4 : 3;
+  }
+
+  static int _drekkanaRashi(int rashiIndex, int divisionIndex) {
+    // Classical Parashari D3: first decan = sign itself, second = fifth sign,
+    // third = ninth sign from the natal Rashi.
+    const offsets = <int>[0, 4, 8];
+    return (rashiIndex + offsets[divisionIndex]) % 12;
+  }
+
+  static int _chaturthamsaRashi(int rashiIndex, int divisionIndex) {
+    // Classical Parashari D4: quarters map to the 1st, 4th, 7th and 10th
+    // signs counted from the natal Rashi.
+    const offsets = <int>[0, 3, 6, 9];
+    return (rashiIndex + offsets[divisionIndex]) % 12;
   }
 
   static void _validateSnapshot(VedicCalculationSnapshot snapshot) {
