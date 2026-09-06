@@ -1,0 +1,70 @@
+name: RC-0118 Vedic Yoga Core
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/vedic/vedic_rashi_chart.dart'
+      - 'lib/src/calculation_core/vedic/vedic_yoga_engine.dart'
+      - 'test/calculation_core/vedic/vedic_yoga_engine_test.dart'
+      - 'requirements/contracts/rc0118_vedic_yoga_contract.json'
+      - 'tools/requirements/validate_rc0118_vedic_yoga.py'
+      - '.github/workflows/rc0118-vedic-yoga.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0118_vedic_yoga.py
+      - run: flutter test test/calculation_core/vedic/vedic_yoga_engine_test.dart
+      - name: Promote RC-0118 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0118_vedic_yoga.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8',newline=''))); fields=list(rows[0].keys())
+          links='requirements/contracts/rc0118_vedic_yoga_contract.json|tools/requirements/validate_rc0118_vedic_yoga.py|lib/src/calculation_core/vedic/vedic_yoga_engine.dart|test/calculation_core/vedic/vedic_yoga_engine_test.dart|.github/workflows/rc0118-vedic-yoga.yml'
+          for r in rows:
+            if r['rc_id'] != 'RC-0118': continue
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Verified yoga catalog/source evidence, professional rendered UI, entitlement and device/release gates remain required before VERIFIED/DONE.'
+            r['notes']='Machine gate proves deterministic explicit-rule professional yoga evaluation on provenance-tagged sidereal Rashi/Whole-Sign data. No unverified yoga catalog is hard-coded. TESTED only.'
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0118): record Vedic yoga core TESTED'
+          git push origin HEAD:main
