@@ -1,0 +1,16 @@
+{
+  "requirements": ["RC-0123"],
+  "production": ["lib/src/calculation_core/vedic/vedic_muhurta.dart"],
+  "tests": ["test/calculation_core/vedic/vedic_muhurta_test.dart"],
+  "invariants": [
+    "Muhurta remains an independent Vedic tool boundary and consumes a provenance-tagged five-limb Panchanga snapshot.",
+    "Every electional rule requires explicit id/version/source provenance and exposes its observed value and per-rule result.",
+    "No universal or disputed Muhurta doctrine is embedded without separately sourced rule-data and golden evidence.",
+    "Duplicate rule ids, invalid canonical indices, invalid points, and incomplete Panchanga provenance fail closed."
+  ],
+  "blocked_until": [
+    "authoritative Muhurta rule catalogs are independently sourced and golden-verified",
+    "real sunrise provider and Panchanga golden/reference evidence",
+    "rendered TR/EN Muhurta UI, entitlement, device and final release gates"
+  ]
+}
