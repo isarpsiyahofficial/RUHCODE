@@ -1,0 +1,17 @@
+{
+  "requirements": ["RC-0088", "RC-0089"],
+  "title": "Vedic Nakshatra and Pada calculation core",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/vedic/vedic_nakshatra.dart",
+    "lib/src/calculation_core/vedic/vedic_engine.dart"
+  ],
+  "tests": ["test/calculation_core/vedic/vedic_nakshatra_test.dart"],
+  "claims": {
+    "RC-0088": "The normalized sidereal Moon longitude is deterministically partitioned into the canonical 27-fold Nakshatra cycle while preserving Vedic ephemeris and ayanamsha provenance.",
+    "RC-0089": "Each Nakshatra is deterministically partitioned into four equal one-based Padas with boundary regressions."
+  },
+  "non_claims": [
+    "This contract does not prove interpretation/editorial content, Nakshatra lords, daily Panchanga Nakshatra, rendered UI, entitlement behavior, independent astronomical Moon/ayanamsha golden tolerances, device evidence or release readiness."
+  ]
+}
