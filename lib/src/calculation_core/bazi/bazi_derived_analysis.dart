@@ -1,8 +1,6 @@
 import 'bazi_four_pillars.dart';
-
-enum BaziElement { wood, fire, earth, metal, water }
-
-enum BaziPolarity { yang, yin }
+import 'hidden_stems.dart';
+import 'sexagenary_cycle.dart';
 
 enum BaziTenGod {
   friend,
@@ -17,86 +15,6 @@ enum BaziTenGod {
   directResource,
 }
 
-extension BaziStemAttributes on BaziHeavenlyStem {
-  BaziElement get element => switch (this) {
-        BaziHeavenlyStem.jia || BaziHeavenlyStem.yi => BaziElement.wood,
-        BaziHeavenlyStem.bing || BaziHeavenlyStem.ding => BaziElement.fire,
-        BaziHeavenlyStem.wu || BaziHeavenlyStem.ji => BaziElement.earth,
-        BaziHeavenlyStem.geng || BaziHeavenlyStem.xin => BaziElement.metal,
-        BaziHeavenlyStem.ren || BaziHeavenlyStem.gui => BaziElement.water,
-      };
-
-  BaziPolarity get polarity => switch (this) {
-        BaziHeavenlyStem.jia ||
-        BaziHeavenlyStem.bing ||
-        BaziHeavenlyStem.wu ||
-        BaziHeavenlyStem.geng ||
-        BaziHeavenlyStem.ren =>
-          BaziPolarity.yang,
-        _ => BaziPolarity.yin,
-      };
-}
-
-/// RC-0149 Hidden Stems membership table.
-///
-/// Values are intentionally represented as sets. Sources agree on membership
-/// but can differ in presentation/order for secondary/residual qi. No universal
-/// percentage or ordering strength is inferred by this core.
-abstract final class BaziHiddenStems {
-  static const String sourceId = 'traditional-hidden-stems-membership';
-  static const String version = 'membership-v1';
-
-  static const Map<BaziEarthlyBranch, Set<BaziHeavenlyStem>> byBranch =
-      <BaziEarthlyBranch, Set<BaziHeavenlyStem>>{
-    BaziEarthlyBranch.zi: <BaziHeavenlyStem>{BaziHeavenlyStem.gui},
-    BaziEarthlyBranch.chou: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.ji,
-      BaziHeavenlyStem.gui,
-      BaziHeavenlyStem.xin,
-    },
-    BaziEarthlyBranch.yin: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.jia,
-      BaziHeavenlyStem.bing,
-      BaziHeavenlyStem.wu,
-    },
-    BaziEarthlyBranch.mao: <BaziHeavenlyStem>{BaziHeavenlyStem.yi},
-    BaziEarthlyBranch.chen: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.wu,
-      BaziHeavenlyStem.yi,
-      BaziHeavenlyStem.gui,
-    },
-    BaziEarthlyBranch.si: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.bing,
-      BaziHeavenlyStem.wu,
-      BaziHeavenlyStem.geng,
-    },
-    BaziEarthlyBranch.wu: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.ding,
-      BaziHeavenlyStem.ji,
-    },
-    BaziEarthlyBranch.wei: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.ji,
-      BaziHeavenlyStem.ding,
-      BaziHeavenlyStem.yi,
-    },
-    BaziEarthlyBranch.shen: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.geng,
-      BaziHeavenlyStem.ren,
-      BaziHeavenlyStem.wu,
-    },
-    BaziEarthlyBranch.you: <BaziHeavenlyStem>{BaziHeavenlyStem.xin},
-    BaziEarthlyBranch.xu: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.wu,
-      BaziHeavenlyStem.xin,
-      BaziHeavenlyStem.ding,
-    },
-    BaziEarthlyBranch.hai: <BaziHeavenlyStem>{
-      BaziHeavenlyStem.ren,
-      BaziHeavenlyStem.jia,
-    },
-  };
-}
-
 final class BaziElementDistribution {
   const BaziElementDistribution({
     required this.counts,
@@ -105,7 +23,7 @@ final class BaziElementDistribution {
     required this.hiddenStemsVersion,
   });
 
-  final Map<BaziElement, int> counts;
+  final Map<WuXingElement, int> counts;
   final String methodId;
   final String hiddenStemsSourceId;
   final String hiddenStemsVersion;
@@ -132,7 +50,7 @@ final class BaziTenGodOccurrence {
   });
 
   final BaziPillarKind pillarKind;
-  final BaziHeavenlyStem stem;
+  final HeavenlyStem stem;
   final BaziTenGod tenGod;
   final bool hidden;
 }
@@ -145,28 +63,36 @@ final class BaziDerivedAnalysisSnapshot {
     required this.tenGodOccurrences,
   });
 
-  final BaziHeavenlyStem dayMaster;
+  final HeavenlyStem dayMaster;
   final BaziElementDistribution elementDistribution;
   final BaziYinYangBalance yinYangBalance;
   final List<BaziTenGodOccurrence> tenGodOccurrences;
 }
 
+/// RC-0149..RC-0153 derived BaZi calculation core.
+///
+/// Hidden Stems reuse [BaZiHiddenStems], the repository's canonical primitive.
 /// RC-0150/0151 use an explicitly named structural occurrence method: the four
 /// visible stems plus each Hidden Stem membership occurrence are counted once.
 /// This is not a seasonal-strength score and does not imply qi percentages.
 abstract final class BaziDerivedAnalysis {
   static const String occurrenceMethodId = 'visible-plus-hidden-occurrences-v1';
+  static const String hiddenStemsSourceId = 'canonical-bazi-hidden-stems';
+  static const String hiddenStemsVersion = 'repository-v1';
 
   static BaziDerivedAnalysisSnapshot calculate(BaziFourPillarsSnapshot chart) {
+    BaZiHiddenStems.assertComplete();
     final dayMaster = chart.day.stem; // RC-0152.
-    final elementCounts = <BaziElement, int>{for (final e in BaziElement.values) e: 0};
+    final elementCounts = <WuXingElement, int>{
+      for (final element in WuXingElement.values) element: 0,
+    };
     var yang = 0;
     var yin = 0;
     final tenGods = <BaziTenGodOccurrence>[];
 
-    void add(BaziPillarKind kind, BaziHeavenlyStem stem, {required bool hidden}) {
+    void add(BaziPillarKind kind, HeavenlyStem stem, {required bool hidden}) {
       elementCounts[stem.element] = elementCounts[stem.element]! + 1;
-      if (stem.polarity == BaziPolarity.yang) {
+      if (stem.polarity == YinYang.yang) {
         yang += 1;
       } else {
         yin += 1;
@@ -181,11 +107,7 @@ abstract final class BaziDerivedAnalysis {
 
     for (final pillar in chart.pillars) {
       add(pillar.kind, pillar.stem, hidden: false);
-      final hidden = BaziHiddenStems.byBranch[pillar.branch];
-      if (hidden == null || hidden.isEmpty) {
-        throw StateError('Missing Hidden Stems membership for ${pillar.branch.name}');
-      }
-      for (final stem in hidden) {
+      for (final stem in BaZiHiddenStems.of(pillar.branch)) {
         add(pillar.kind, stem, hidden: true);
       }
     }
@@ -195,8 +117,8 @@ abstract final class BaziDerivedAnalysis {
       elementDistribution: BaziElementDistribution(
         counts: Map.unmodifiable(elementCounts),
         methodId: occurrenceMethodId,
-        hiddenStemsSourceId: BaziHiddenStems.sourceId,
-        hiddenStemsVersion: BaziHiddenStems.version,
+        hiddenStemsSourceId: hiddenStemsSourceId,
+        hiddenStemsVersion: hiddenStemsVersion,
       ),
       yinYangBalance: BaziYinYangBalance(
         yang: yang,
@@ -209,8 +131,8 @@ abstract final class BaziDerivedAnalysis {
 
   /// RC-0153 Ten Gods classification relative to the Day Master.
   static BaziTenGod tenGodFor({
-    required BaziHeavenlyStem dayMaster,
-    required BaziHeavenlyStem other,
+    required HeavenlyStem dayMaster,
+    required HeavenlyStem other,
   }) {
     final samePolarity = dayMaster.polarity == other.polarity;
     final self = dayMaster.element;
@@ -234,19 +156,19 @@ abstract final class BaziDerivedAnalysis {
     throw StateError('Unreachable Five Elements relationship');
   }
 
-  static bool _generates(BaziElement a, BaziElement b) => switch (a) {
-        BaziElement.wood => b == BaziElement.fire,
-        BaziElement.fire => b == BaziElement.earth,
-        BaziElement.earth => b == BaziElement.metal,
-        BaziElement.metal => b == BaziElement.water,
-        BaziElement.water => b == BaziElement.wood,
+  static bool _generates(WuXingElement a, WuXingElement b) => switch (a) {
+        WuXingElement.wood => b == WuXingElement.fire,
+        WuXingElement.fire => b == WuXingElement.earth,
+        WuXingElement.earth => b == WuXingElement.metal,
+        WuXingElement.metal => b == WuXingElement.water,
+        WuXingElement.water => b == WuXingElement.wood,
       };
 
-  static bool _controls(BaziElement a, BaziElement b) => switch (a) {
-        BaziElement.wood => b == BaziElement.earth,
-        BaziElement.fire => b == BaziElement.metal,
-        BaziElement.earth => b == BaziElement.water,
-        BaziElement.metal => b == BaziElement.wood,
-        BaziElement.water => b == BaziElement.fire,
+  static bool _controls(WuXingElement a, WuXingElement b) => switch (a) {
+        WuXingElement.wood => b == WuXingElement.earth,
+        WuXingElement.fire => b == WuXingElement.metal,
+        WuXingElement.earth => b == WuXingElement.water,
+        WuXingElement.metal => b == WuXingElement.wood,
+        WuXingElement.water => b == WuXingElement.fire,
       };
 }
