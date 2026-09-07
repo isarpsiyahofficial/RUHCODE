@@ -1,0 +1,28 @@
+{
+  "id": "rc0461-rc0480-professional-session",
+  "required_numbered_entries": [461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480],
+  "production_evidence": [
+    "lib/src/professional/numerology_session_workspace.dart"
+  ],
+  "regression_evidence": [
+    "test/professional/numerology_session_workspace_rc0461_rc0480_test.dart"
+  ],
+  "invariants": [
+    "numerology year provider returns all twelve monthly periods with provenance",
+    "five-year timeline is contiguous and explicit",
+    "numerology system is explicit and user-defaultable rather than silently mixed",
+    "pair comparison requires two distinct analyses",
+    "person business and brand analyses are distinct kinds",
+    "changed-name comparison preserves both old and new analyses",
+    "spiritual session preserves client spread card order positions and professional interpretation",
+    "spiritual content carries a disclosure policy and is not represented as astronomical measurement",
+    "session history supports retrieval and comparison of prior spreads"
+  ],
+  "promotion_ceiling": "IMPLEMENTED",
+  "blockers": [
+    "production numerology period providers and independent reference corpus",
+    "persistent encrypted client/session storage",
+    "rendered TR/EN professional UI and tablet evidence",
+    "backup/export/privacy/security/accessibility/device and exact-release evidence"
+  ]
+}
