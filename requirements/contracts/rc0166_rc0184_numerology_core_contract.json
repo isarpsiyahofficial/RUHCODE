@@ -1,0 +1,21 @@
+{
+  "contract_id": "rc0166_rc0184_numerology_core",
+  "requirements": ["RC-0166","RC-0167","RC-0168","RC-0169","RC-0170","RC-0171","RC-0172","RC-0173","RC-0174","RC-0175","RC-0176","RC-0177","RC-0178","RC-0179","RC-0180","RC-0181","RC-0182","RC-0183","RC-0184"],
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": ["lib/src/calculation_core/numerology/numerology_core.dart"],
+  "tests": ["test/calculation_core/numerology_core_rc0166_rc0184_test.dart"],
+  "evidence_policy": {
+    "status_after_machine_gate": "TESTED",
+    "blocked": true,
+    "blockers": [
+      "independent authoritative numerology reference vectors and editorial methodology review",
+      "rendered system-selection UI and TR/EN wording",
+      "offline Free/PRO backup/PDF accessibility performance device and exact-release gates"
+    ]
+  },
+  "notes": [
+    "Metrics are explicitly Pythagorean where a letter table is required; Chaldean mapping is a separate table and cannot be passed into the Pythagorean engine.",
+    "Compatibility remains version/source-tagged rule-driven rather than embedding an unsupported universal score doctrine.",
+    "Turkish characters are explicitly transliterated instead of being silently deleted."
+  ]
+}
