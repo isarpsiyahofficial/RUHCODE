@@ -1,0 +1,30 @@
+{
+  "contract_id": "rc0224-rc0229-spiritual-journal-v1",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": [
+    {"rc_id":"RC-0224","clause":224,"evidence":"ChakraJournalEntry preserves explicit chakra, date and note identity."},
+    {"rc_id":"RC-0225","clause":225,"evidence":"DreamJournalEntry is an independent journal record."},
+    {"rc_id":"RC-0226","clause":226,"evidence":"Dream entries require valid YYYY-MM-DD date keys and can be filtered by date."},
+    {"rc_id":"RC-0227","clause":227,"evidence":"AffirmationEntry is an explicit dated record primitive."},
+    {"rc_id":"RC-0228","clause":228,"evidence":"GratitudeEntry requires at least one nonblank gratitude item."},
+    {"rc_id":"RC-0229","clause":229,"evidence":"RitualPlanEntry is a modular planner record with status and optional source/version pair."}
+  ],
+  "evidence_paths": [
+    "lib/src/application/spiritual/spiritual_journal_core.dart",
+    "test/application/spiritual_journal_core_rc0224_rc0229_test.dart",
+    "tools/requirements/validate_rc0224_rc0229_spiritual_journal.py",
+    ".github/workflows/rc0224-rc0229-spiritual-journal.yml"
+  ],
+  "verification_policy": {
+    "machine_gate_status": "TESTED_only",
+    "blocked_until": [
+      "persistent_offline_repository_wiring",
+      "rendered_TR_EN_journal_UI",
+      "backup_restore_and_export_coverage",
+      "privacy_security_and_accessibility_gates",
+      "reviewed_ritual_editorial_content_if_shipped",
+      "device_and_exact_release_artifact_gates"
+    ],
+    "must_not_claim": ["VERIFIED", "DONE"]
+  }
+}
