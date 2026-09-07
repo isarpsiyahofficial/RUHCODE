@@ -21,41 +21,36 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0120 = IMPLEMENTED + blocked=YES**. Gate `d13e7bdec28ed7c24f9d6b04546c4be9db817a6e`; physical promotion still pending.
 - **RC-0121 = IMPLEMENTED + blocked=YES**. Gate `cfe29e29a7b7f485130ce54b9484bace41ca10ff`; physical promotion still pending.
 - **RC-0122 = IMPLEMENTED + blocked=YES**. Gate `7139a6af49b975bd52a1e97693234c62ad592959`; physical promotion still pending.
-- **RC-0123 = TESTED + blocked=YES**. Physical bot promotion `c29fbb359fee9dd0bf501d8cb7fd195c94a15638`; checkpointteki önceki gate SHA yazımı düzeltilerek gerçek gate `c7f11f0bb3f9b93f0b9b51247bc93120f6cec0f4` olarak doğrulandı.
+- **RC-0123 = TESTED + blocked=YES**. Physical bot promotion `c29fbb359fee9dd0bf501d8cb7fd195c94a15638`; real gate `c7f11f0bb3f9b93f0b9b51247bc93120f6cec0f4`.
 - **RC-0124→0126 = NOT_STARTED/blocked**. Exact AKİLES algorithm + sunrise/sunset source/version/hash/golden provenance repository'de henüz yok; mevcut NOAA/GML/Meeus solar core bu requirement'ları AKİLES diye kapatmak için kullanılamaz.
-- **RC-0127→0134 = IMPLEMENTED + blocked=YES**. Existing production planetary-hours core için requirement-specific regression `test/calculation_core/planetary_hours_rc0127_rc0134_test.dart`, contract, fail-closed validator ve dedicated gate eklendi. Gate fix HEAD `315887370b044b516c529de4417c996718120f0c`; physical run `34068566861` son kontrolde queued, bu yüzden TESTED promotion henüz verilmedi.
-- **RC-0135 = IMPLEMENTED + blocked=YES**. Source-tagged complete guidance model + compiled regression + contract + validator + dedicated gate eklendi; gate `435d274dba740b11da7fc1d115ebc53c06494aa1`. Authoritative TR/EN editorial catalog, entitlement/UI ve physical CI promotion açık.
-- **RC-0136 = NOT_STARTED/blocked**; timezone/DST rendered behavior bağımsız requirement olarak korunuyor.
+- **RC-0127→0134 = IMPLEMENTED + blocked=YES**. Physical run `34068566861` failure verdi; root cause calculation/test değil validator'ın `RUH_CODE_MASTER_SARTNAME.md` içinde literal `RC-0127` aramasıydı. Bağlayıcı şartname numbered-list kullandığı için validator numbered requirement 127→134 eşlemesine düzeltildi (`25258bbefcfe6b5e754377d8c69f8194bb4b5249`). Yeni physical success/promotion henüz kanıtlanmadı.
+- **RC-0135 = IMPLEMENTED + blocked=YES**. Production/test/contract/gate mevcut; validator'daki aynı literal-RC/spec uyuşmazlığı numbered requirement 135 kontrolüne düzeltildi (`12aade619977b9610bda3915008b34bacf7adb5d`). Physical TESTED promotion hâlâ kanıtlanacak.
+- **RC-0136 = IMPLEMENTED + blocked=YES**. Önceki progress kaydındaki “timezone/DST” yorumu yanlıştı; bağlayıcı requirement 136 gerçekte “aynı gezegen için haftanın her günü birebir aynı yorum gösterilmeyecek”. 7 gün × 7 klasik gezegen = 49 kombinasyonlu fail-closed weekday-specific guidance katmanı, compiled regression, contract, validator ve dedicated CI gate eklendi. Gate commit `551d862460d15f2654a927be1fdee93ed5bb797b`; physical promotion henüz kanıtlanmadı.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0123 physical promotion düzeltmesi
+### RC-0127→0134 kırmızı gate root-cause ve repair
 
-- Önceki checkpointte gate SHA yanlış kaydedilmişti; gerçek gate `c7f11f0bb3f9b93f0b9b51247bc93120f6cec0f4` ve physical bot promotion `c29fbb359fee9dd0bf501d8cb7fd195c94a15638` doğrulandı.
-- RC-0123 yalnız TESTED seviyesine yükseltildi; authoritative Muhurta rule-data/golden, UI/entitlement/device/release kapıları açık olduğundan VERIFIED/DONE verilmedi.
+- Run `34068566861` fiziksel olarak `failure` ile tamamlandı.
+- Job log exact hata: `RC0127_RC0134_FAIL: binding specification no longer contains RC-0127`.
+- `RUH_CODE_MASTER_SARTNAME.md` literal RC ID değil `127. ...`, `128. ...` biçiminde numbered binding entries taşıyor. Validator yanlış sözleşme formatı varsayıyordu.
+- `tools/requirements/validate_rc0127_rc0134_planetary_hour_structure.py` regex ile line-start numbered requirement kontrolüne geçirildi; `1270` gibi substring false-positive'leri de kabul etmiyor.
+- Calculation core değiştirilmedi; AKİLES golden blocker zayıflatılmadı.
 
-### RC-0124→0126 AKİLES blocker doğrulaması
+### RC-0135 validator repair
 
-- Existing `planetary_hours.dart` gerçek sunrise/sunset/next-sunrise tabanlı 12+12 calculation yapıyor, ancak solar implementation repository'de NOAA/GML/Meeus-derived olarak tanımlı.
-- `rc0005-akiles-reference.yml` exact AKİLES source/artifact/version/commit/hash/capture reference eksikliğini açık blocker olarak tutuyor.
-- Bu nedenle RC-0124/0125/0126 uydurma eşdeğerlikle TESTED/DONE yapılmadı.
+- RC-0135 validator'ında da aynı literal `RC-0135` varsayımı bulundu.
+- Binding check numbered requirement `135.` eşleşmesine geçirildi; içerik, AKİLES ve Free/PRO blocker'ları korunuyor.
 
-### RC-0127→0134 Planetary Hours structure
+### RC-0136 weekday × planet guidance
 
-- Day arc = sunset − sunrise ve day hour = day arc / 12 compiled regression ile bağlandı.
-- Night arc = next sunrise − sunset ve night hour = night arc / 12 compiled regression ile bağlandı.
-- Monday fixture'ında first-hour ruler Moon ve tüm 24 slot boyunca Chaldean continuation doğrulanacak şekilde test eklendi.
-- Exact 24 contiguous ordered slot listesi test ediliyor.
-- İlk regression yazımında production modelinde olmayan `.duration` alanına yanlış başvuru fark edilip aynı turda `endUtc.difference(startUtc)` kullanacak şekilde düzeltildi (`315887370b044b516c529de4417c996718120f0c`).
-- Contract/validator AKİLES blocker'ını özellikle koruyor; dedicated workflow physical success olmadan matrix promotion yok.
-
-### RC-0135 Planetary-hour guidance
-
-- Authoritative yorum/mantra metni hard-code edilmedi.
-- `PlanetaryHourGuidanceCatalog` yedi klasik gezegenin tamamını zorunlu tutuyor; duplicate/missing planet ve boş editorial/provenance alanları fail-closed.
-- 24 slotun her biri planet, start/end, quality, interpretation, PRO action, do-not, mantra, sourceId ve version ile deterministic olarak birleştiriliyor.
-- Fixture strings yalnız compiled regression içindir; authoritative TR/EN content evidence yerine geçmez.
-- Production `c0c8a3ec55257d709a767570e67494cc65969414`, regressions `58d458ba3b9bf28f146660099173d39ede6b24b3`, contract `a509f689c2c51e48001c1dacc69efdbfcdea3ad1`, validator `060154b99591cc0c0b5ffe72b1ee5c6ad2473238`, gate `435d274dba740b11da7fc1d115ebc53c06494aa1`.
+- Binding şartname yeniden okununca RC-0136'nın timezone/DST değil, weekday-specific interpretation requirement olduğu doğrulandı.
+- Production `PlanetaryHourWeekdayGuidanceCatalog` artık bütün `CivilWeekday × ClassicalPlanet` kombinasyonlarını zorunlu tutuyor: 7×7 = 49 rule.
+- Duplicate/missing day-planet combination, empty interpretation/source/version fail-closed.
+- Her bir gezegen için yedi günün tamamında tek bir birebir aynı interpretation tekrar edilirse katalog fail-closed; böylece requirement yalnız UI niyeti olarak değil data-model invariant olarak korunuyor.
+- `PlanetaryHourWeekdayGuidance.build` aktif `hours.date.weekday` ve gerçek slot ruler'ını birleştirerek 24 slot için weekday-specific guidance üretiyor.
+- Fixture strings authoritative content değildir. Source-tagged gerçek TR/EN 49-combination editorial catalog ayrıca gereklidir.
+- Production commit `8d3f6db237cc420daa5ab5391cc1f01c39c11042`; regression `8a7b8a93a890f945ab3ba762e5c26a706211b318`; contract `31ca734142e942bc71464447d9fa4ca953e5e6ca`; validator `baa373f5baffb771af99f0a38ed28b82207a90aa`; dedicated gate `551d862460d15f2654a927be1fdee93ed5bb797b`.
 
 ## Açık product-facing / global blocker'lar
 
@@ -63,9 +58,9 @@ RC-0042/0044/0046/0048/0049 product-facing açıkları; RC-0061 active house-sys
 
 ## Sonraki devam noktası
 
-1. RC-0127→0135 dedicated workflow/promotion sonuçları fiziksel olarak okunacak; kırmızıysa exact validator/test/analyzer root cause aynı hatta düzeltilecek.
+1. RC-0127→0136 dedicated workflow/promotion sonuçları fiziksel olarak okunacak; kırmızıysa exact validator/test/analyzer root cause aynı hatta düzeltilecek.
 2. RC-0119→0122 exact CI/promotion ve RC-0111/0113/0115/0116/0117 retrigger sonucu okunacak; physical promotion olmadan TESTED verilmeyecek.
-3. RC-0136 timezone/DST behavior product/runtime altyapısı incelenip requirement-specific evidence eklenecek.
+3. Bağlayıcı şartname sırasındaki **RC-0137 Çin astrolojisi temel 12 hayvan sistemi** ve devam eden RC-0138+ hesaplama requirement'ları, bağımlılıklar doğrulanarak ilerletilecek.
 4. RC-0124→0126 exact AKİLES source/version/hash/golden provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0082/0083 kırmızı Analyze/validator sorunu ve RC-0086/0087/RC-0062 physical promotion açıkları ayrıca çözülecek.
 6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
