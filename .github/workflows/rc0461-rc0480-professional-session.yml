@@ -1,0 +1,65 @@
+name: RC-0461 through RC-0480 Professional Numerology and Spiritual Sessions
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/professional/numerology_session_workspace.dart'
+      - 'test/professional/numerology_session_workspace_rc0461_rc0480_test.dart'
+      - 'requirements/contracts/rc0461_rc0480_professional_session_contract.json'
+      - 'tools/requirements/validate_rc0461_rc0480_professional_session.py'
+      - '.github/workflows/rc0461-rc0480-professional-session.yml'
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: requirement-matrix-writers-rc0461-rc0480
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0461_rc0480_professional_session.py
+      - run: flutter test test/professional/numerology_session_workspace_rc0461_rc0480_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0461_rc0480_professional_session.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(461,481)}
+          links='requirements/contracts/rc0461_rc0480_professional_session_contract.json|tools/requirements/validate_rc0461_rc0480_professional_session.py|lib/src/professional/numerology_session_workspace.dart|test/professional/numerology_session_workspace_rc0461_rc0480_test.dart|.github/workflows/rc0461-rc0480-professional-session.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Professional numerology/session domain is compiled, but production reference providers, encrypted persistence, rendered TR/EN UI, backup/security/device and exact-release evidence remain.'
+            r['notes']='Year and five-year numerology timelines, explicit/default numerology systems, pair/name comparisons, spiritual client sessions, card order/positions, professional notes, history and symbolic disclosure are implemented.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0461_RC0480_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0461-rc0480): record professional session IMPLEMENTED'
+          git push origin HEAD:main
