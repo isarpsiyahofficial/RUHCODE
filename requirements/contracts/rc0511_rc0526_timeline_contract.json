@@ -1,0 +1,20 @@
+{
+  "id": "rc0511-rc0526-professional-timeline",
+  "required_numbered_entries": [511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526],
+  "production_evidence": ["lib/src/professional/timeline_workspace.dart"],
+  "regression_evidence": ["test/professional/timeline_workspace_rc0511_rc0526_test.dart"],
+  "invariants": [
+    "professional timeline exposes future important transit events sorted by UTC time",
+    "thirty-day three-month and one-year windows are explicit selectable filters",
+    "high-importance Saturn relationship and career filters are independently selectable",
+    "timeline event provenance requires result source and version identifiers",
+    "TR and EN language explicitly reject certain-event-prediction framing",
+    "professional can store reusable named filter presets including relationship career and annual consultation"
+  ],
+  "promotion_ceiling": "IMPLEMENTED",
+  "blockers": [
+    "production astronomy/timed-hit provider and independent golden corpus",
+    "rendered TR/EN timeline UI and saved preset persistence",
+    "performance/device/accessibility/security and exact-release evidence"
+  ]
+}
