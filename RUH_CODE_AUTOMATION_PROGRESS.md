@@ -28,27 +28,41 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0224→0229 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
 - RC-0230→0247 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
 - RC-0248→0270 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
-- **RC-0271→0305 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri eklendi. Physical TESTED promotion henüz kanıtlanmadı.
+- RC-0271→0305 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0306→0323 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri eklendi. Physical TESTED promotion henüz kanıtlanmadı.
 
-## Son çalıştırmadaki gerçek geliştirme — RC-0271→0305
+## Son çalıştırmadaki gerçek geliştirme
+
+### RC-0271→0305 — professional PDF + Free/PRO boundary
 
 Bağlayıcı 271→305 maddeleri yeniden okundu. Professional PDF, TR/EN rapor, PDF'nin uygulama hesaplama sonucuyla aynı kaynaktan beslenmesi, Free/PRO tek-uygulama sınırı, Free temel değer, rewarded günlük premium açılım, reklamsız PRO, gelişmiş PRO yüzeyleri ve monetizasyon/calculation ayrımı machine-testable application contract olarak kuruldu.
 
-- `lib/src/application/product/report_entitlement_core.dart` (`ba4a4e37d7039e29fffe2d07ccd35007d68a0349`): `CalculationResultRef` + report section/document modeli; rapor katmanında yeniden hesaplama callback/engine'i yok. TR/EN locale explicit. Tek uygulama `AppTier.free/pro`, anlamlı Free temel seti, advanced PRO seti, temporary rewarded daily unlock, reklamsız PRO ve tier'dan bağımsız calculation truth.
-- `test/application/product/report_entitlement_core_test.dart` (`3e9e1d56d7841738238c5bef868a52b939fc3b26`): TR/EN aynı manifest kaynağı, PRO-only PDF, Free temel değer, advanced PRO sınırı, expiry/scoped rewarded unlock ve calculation-result identity regressions.
+- `lib/src/application/product/report_entitlement_core.dart` (`ba4a4e37d7039e29fffe2d07ccd35007d68a0349`).
+- `test/application/product/report_entitlement_core_test.dart` (`3e9e1d56d7841738238c5bef868a52b939fc3b26`).
 - `requirements/contracts/rc0271_rc0305_report_entitlement_contract.json` (`2a89351b1f3099310c27ef6ab3ff86729d25c0c0`).
-- `tools/requirements/validate_rc0271_rc0305_report_entitlement.py` (`a7d5b64deedc9ef450601668392b54e690c72e2e`): binding `271.`→`305.` satırlarını anchored doğrulayan fail-closed validator; report-specific recalculation yüzeylerini yasaklıyor.
-- `.github/workflows/rc0271-rc0305-report-entitlement.yml` (`ab24521e7311d6b22091eb4b987bab22dca5923a`): unique concurrency, validator + Flutter regression ve yalnız başarılı physical main run sonrası TESTED matrix promotion.
-- Physical workflow run `34141015875` oluşturuldu; son kontrolde `queued`, conclusion `null`. Bu nedenle RC-0271→0305 TESTED/DONE yapılmadı.
+- `tools/requirements/validate_rc0271_rc0305_report_entitlement.py` (`a7d5b64deedc9ef450601668392b54e690c72e2e`).
+- `.github/workflows/rc0271-rc0305-report-entitlement.yml` (`ab24521e7311d6b22091eb4b987bab22dca5923a`). Physical run `34141015875` son kontrolde queued/conclusion=null; TESTED verilmedi.
+
+### RC-0306→0323 — Calculation Manifest + reproducibility + QA separation
+
+Bağlayıcı 306→323 maddeleri implementation seviyesine getirildi.
+
+- `lib/src/calculation/calculation_manifest.dart` (`63c2c91ecb83a8269067587d3ad6e11248bb72e1`): engine ID/version, tropical/sidereal, house system, ayanamsha, node system, timezone DB version, coordinate, UTC/local time, timezone ID ve explicit assumptions tek reproducibility record içinde tutuluyor. Historical artifact engineVersion bilgisini kaybetmiyor.
+- Calculation ve interpretation ayrı artifact türleri; biri diğerinin digest/provenance alanı değil.
+- `QaRecord` Calculation QA yapılmadan Interpretation QA'ya izin vermiyor; hesaplama doğru/yorum yanlış ve hesaplama yanlış/yorum doğru durumları birbirini maskelemiyor.
+- `test/calculation/calculation_manifest_rc0306_rc0323_test.dart` (`8207cd0161323f35fa189d4144ede61916d1a238`).
+- `requirements/contracts/rc0306_rc0323_calculation_manifest_contract.json` (`ce99df726e4a36f038cbf70ff69eb3f0477da7f3`).
+- `tools/requirements/validate_rc0306_rc0323_calculation_manifest.py` (`617185f6ded651a30b91bdd367e0cc2ab4bd28c5`).
+- `.github/workflows/rc0306-rc0323-calculation-manifest.yml` (`05086d7317aeae1c8a73e5b7026d37d96e6e8168`): unique concurrency, validator + Flutter regression, successful physical main run sonrası TESTED matrix promotion. Yeni HEAD workflow'ları fiziksel olarak oluştu ancak son kontrolde queued; promotion kanıtlanmadı.
 
 ## Açık blocker'lar
 
-Real rendered TR/EN PDF artifacts, production Calculation Manifest storage/wiring, gerçek ad/rewarded ve PRO entitlement sağlayıcıları, rendered Free/PRO UI/store lifecycle, offline/device/accessibility/security/performance/clean-checkout/lifecycle/exact-release kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Real rendered TR/EN PDF artifacts, production Calculation Manifest persistence/wiring, independent golden/reference datasets, interpretation provenance/editorial QA, gerçek ad/rewarded ve PRO entitlement sağlayıcıları, rendered Free/PRO UI/store lifecycle, offline/device/accessibility/security/performance/clean-checkout/lifecycle/exact-release kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0212→0270 ve RC-0271→0305 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
-2. Binding sıra RC-0306+ Calculation Manifest / reproducibility / Calculation QA ayrımı üzerinden devam edecek.
+1. RC-0212→0323 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
+2. Binding sıra RC-0324+ reference/golden calculation QA setleri ve boundary/DST testleri üzerinden devam edecek.
 3. RC-0158→0184, RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları kapatılacak.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. 1.442 RC tamamı DONE ve tüm final release kapıları green olmadan FINAL denmeyecek.
