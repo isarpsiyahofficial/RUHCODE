@@ -20,43 +20,43 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0119→0122 = IMPLEMENTED + blocked=YES**; dedicated gates mevcut, physical promotion sonuçları ayrıca doğrulanacak.
 - **RC-0123 = TESTED + blocked=YES** (`c29fbb359fee9dd0bf501d8cb7fd195c94a15638`).
 - **RC-0124→0126 = NOT_STARTED/blocked**; exact AKİLES algorithm/source/version/hash/golden provenance yok.
-- **RC-0127→0134 = IMPLEMENTED + blocked=YES**; validator/spec repair mevcut, yeni physical TESTED promotion ayrıca kanıtlanacak.
+- **RC-0127→0134 = IMPLEMENTED + blocked=YES**; validator/spec repair mevcut, physical TESTED promotion ayrıca kanıtlanacak.
 - **RC-0135 = TESTED + blocked=YES** (`919afe87d349b4dd61b531830d3927ed43d08aa5`).
 - **RC-0136 = TESTED + blocked=YES** (`cec58ff86d9631ffce36190581e633f5b35f61a4`).
 - **RC-0137→0141 = TESTED + blocked=YES** (`6d639ca3deceeb1b88892e3ca02b02b6cb5fbbfc`).
 - **RC-0142→0148 = TESTED + blocked=YES** (`e076b1d4698aee48f3a07f49448a27ebee04afde`).
-- **RC-0149→0153 = TESTED + blocked=YES**; latest observed promotion `85edfde6f2064991a47cfef2ee10a6c13d923d7e`.
+- **RC-0149→0153 = TESTED + blocked=YES** (`85edfde6f2064991a47cfef2ee10a6c13d923d7e`).
 - **RC-0154→0157 = TESTED + blocked=YES** (`d4c6b14bf6c09ea2ae6830d445148850bc8b0048`).
-- **RC-0158→0165 = IMPLEMENTED + blocked=YES**; production boundary commit `49e04735f9a3fb0f9af2467c34b05387dd71b3af`, physical TESTED promotion henüz kanıtlanmadı.
-- **RC-0166→0184 = IMPLEMENTED + blocked=YES**; commit `1b7e85ca1a8b3860b71d7887446bbe11e5d1246e`. Numerology metric core/test/contract/validator/dedicated CI mevcut; physical TESTED promotion henüz kanıtlanmadı.
-- **RC-0185→0186 = TESTED + blocked=YES**; implementation `338f8c8aa3b9224f8793efcc442863e691f4f634`, physical bot promotion `d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`.
-- **RC-0187→0211 = IMPLEMENTED + blocked=YES**; commit `862bcec56eb40c97b37a77add6d79a43aec6a3ba`. Daily Today data/provenance envelope, deterministic message recipe, system identity, Western/Vedic anti-fusion, finite rewarded unlock ve explicit PRO access policy için production/test/contract/validator/dedicated CI eklendi. Physical TESTED promotion sonucu bekleniyor.
+- **RC-0158→0165 = IMPLEMENTED + blocked=YES**; physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0166→0184 = IMPLEMENTED + blocked=YES**; physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0185→0186 = TESTED + blocked=YES** (`d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`).
+- **RC-0187→0211 = TESTED + blocked=YES**; physical bot promotion doğrulandı: `ef1dba9efb73d9ce0c5bc852548f704e5dd26aa4`.
+- **RC-0212→0223 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri mevcut. Physical TESTED promotion commit’i henüz görülmedi.
+- **RC-0224→0229 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri mevcut. Physical TESTED promotion commit’i henüz görülmedi.
 
-## Bu turdaki gerçek geliştirme
+## Son çalıştırmadaki gerçek geliştirme
 
-### RC-0166→0184 numerology core
+### RC-0212→0223 Spiritüel araçlar / Tarot
 
-- Life Path, Expression/Destiny, Soul Urge, Personality, Birthday, Maturity, Balance, Karmic Lessons/Debt, Hidden Passion, Personal Year/Month/Day, Pinnacles ve Challenges calculation core eklendi.
-- Reduction policy explicit/version/source-tagged; Pythagorean ve Chaldean tabloları ayrıldı.
-- Türkçe Ç/Ğ/İ/I/ı/Ö/Ş/Ü karakterleri explicit transliteration ile işleniyor; gelişi güzel silinmiyor.
-- Compatibility universal doctrine olarak hard-code edilmedi; version/source-tagged bounded rule engine.
-- Commit: `1b7e85ca1a8b3860b71d7887446bbe11e5d1246e`.
+- `lib/src/application/spiritual/spiritual_tools_core.dart` oluşturuldu (`e8af451800c39e34642264b73e1b9025c2d60da8`).
+- Tarot, I Ching, Ay döngüsü rehberliği, niyet, meditasyon ve nefes çalışmaları ayrı domain türleri olarak tutuluyor.
+- Tek kart ve üç kart açılımları explicit spread tanımıdır; daha büyük açılımlar veri olarak eklenebilir.
+- Tarot çekimi gizli RNG kullanmaz; caller-order ile deterministic/replayable assembly yapar. Duplicate/unknown card fail-closed.
+- Tarot yorum kaydı locale + card + spread position + editorialPolicyId + version + sourceId taşır; salt random filler metin üretme motoru yoktur.
+- I Ching Tarot/astroloji motoruna alias değildir; ayrı provider/method/source/version sınırı vardır.
+- MoonCycleGuidance astronomi hesaplamaz; doğrulanmış upstream fazı tüketir ve astronomy/editorial provenance ayrımını korur.
+- Regression `ea100ab9a0baf94a009d38ba16f03740aefacd83`, exact contract `3655e25c87a3e33b5207732934ab2c4ace6752c0`, validator `d4b8c69821f11d905d175d78eeee7f2f1b060b4a`, dedicated gate `ff550d38d163e55fd14d30e1f0d2a7592275b0b2`.
+- Rendered UI, authoritative TR/EN Tarot/I Ching content/method provenance, audited real-draw entropy, verified Moon provider wiring, reviewed meditation/breathwork content ve global release gates blocker olarak kalır.
 
-### RC-0185→0186 Lo Shu + future Kabbalistic boundary
+### RC-0224→0229 Spiritüel günlük/planner
 
-- Lo Shu birth-date digit grid ayrı motor olarak oluşturuldu; Pythagorean reduction import etmiyor.
-- Kabbalistic numerology ayrı source/version-tagged future engine contract.
-- Physical matrix promotion başarılı: `d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`.
-
-### RC-0187→0211 Bugün core
-
-- `lib/src/application/daily/daily_today_core.dart` eklendi.
-- Tarih, Moon sign/phase, current-next planetary hour, Personal Day, transit, retrograde ve günlük görünüm için source/system provenance taşıyan snapshot modeli kuruldu.
-- Günün mesajı random-pool değildir; version/source/system-tagged deterministic recipe ile üretilir.
-- Western ve Vedic yorum aynı recipe içinde tek gerçekmiş gibi birleştirilemez.
-- Rewarded unlock scope + UTC expiry ile sınırlı; PRO erişimi explicit; reklam prompt politikası user-initiated ve session cap kontrollü.
-- Regression, exact contract, fail-closed validator ve unique-concurrency promotion gate aynı committe: `862bcec56eb40c97b37a77add6d79a43aec6a3ba`.
-- Rendered UI, real verified provider wiring, authoritative TR/EN editorial recipes ve gerçek rewarded-ad/PRO integration henüz blocker; bu nedenle TESTED/DONE erken verilmedi.
+- `lib/src/application/spiritual/spiritual_journal_core.dart` oluşturuldu (`ea4153d73f2c42b752a3d25aa099ef8a6bc3cda7`).
+- Chakra journal, dream journal, dated dream entries, affirmation, gratitude ve ritual planner ayrı kayıt tipleridir.
+- Local date key yalnız biçim olarak değil gerçek takvim tarihi olarak doğrulanır; UTC creation timestamp zorunludur.
+- Dream records explicit tarihe göre filtrelenebilir; invalid/impossible tarih ve duplicate same-kind ID fail-closed.
+- Gratitude boş item kabul etmez; ritual sourced content sourceId/version ikilisini birlikte ister.
+- Regression `fe6dd01956e084a205ffc8e66b19b8760e85dccd`, exact contract `906ddafa0bfee125901149b17e2522ef86614ee1`, validator `9479efb4e392f13e99663ad12867dbdba3d46d98`, dedicated gate `f136de7bd3429cf7ef9d00488be806446b241bf5`.
+- Persistent offline storage, TR/EN rendered UI, backup/restore/export, privacy/security/accessibility ve device/exact-release kanıtları blocker olarak kalır.
 
 ## Açık product-facing / global blocker'lar
 
@@ -64,9 +64,9 @@ RC-0042/0044/0046/0048/0049 product-facing açıkları; RC-0061 active house-sys
 
 ## Sonraki devam noktası
 
-1. RC-0158→0184 ve RC-0187→0211 dedicated workflow/physical bot promotion sonuçları kontrol edilecek; kırmızıysa validator/test/analyzer root cause aynı hatta düzeltilecek.
-2. Binding sıra **RC-0212+ Spiritüel araçlar / Tarot** exact spec üzerinden okunup hesaplama çekirdeğinden bağımsız domain sınırıyla ilerletilecek; placeholder kart/metin, telifli içerik veya kanıtsız yöntem DONE sayılmayacak.
-3. RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları ayrıca kapatılacak.
+1. RC-0212→0229 dedicated physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause aynı hatta düzeltilecek.
+2. Binding sıra RC-0230+ exact şartnameden okunup bağımlılık sırasıyla ilerletilecek; spiritüel/editorial domain calculation truth gibi modellenmeyecek.
+3. RC-0158→0184, RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları ayrıca kapatılacak.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0082/0083, RC-0086/0087 ve RC-0062 eski promotion/root-cause açıkları ayrıca çözülecek.
 6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
