@@ -1,35 +1,11 @@
+import 'sexagenary_cycle.dart';
+
 /// BaZi / Four Pillars calculation domain.
 ///
 /// This module intentionally does not import the simple Chinese-zodiac engine.
-/// RC-0142 requires BaZi to remain a separate calculation system.
-enum BaziHeavenlyStem {
-  jia,
-  yi,
-  bing,
-  ding,
-  wu,
-  ji,
-  geng,
-  xin,
-  ren,
-  gui,
-}
-
-enum BaziEarthlyBranch {
-  zi,
-  chou,
-  yin,
-  mao,
-  chen,
-  si,
-  wu,
-  wei,
-  shen,
-  you,
-  xu,
-  hai,
-}
-
+/// RC-0142 requires BaZi to remain a separate calculation system. Stem/branch
+/// identity and 60-cycle arithmetic reuse the repository's canonical BaZi
+/// primitives rather than defining a second competing type system.
 enum BaziPillarKind { year, month, day, hour }
 
 final class BaziPillar {
@@ -41,8 +17,8 @@ final class BaziPillar {
   });
 
   final BaziPillarKind kind;
-  final BaziHeavenlyStem stem;
-  final BaziEarthlyBranch branch;
+  final HeavenlyStem stem;
+  final EarthlyBranch branch;
   final int sexagenaryCycleIndex;
 }
 
@@ -67,7 +43,7 @@ final class BaziFourPillarsResolution {
       'dayCycleIndex': dayCycleIndex,
       'hourCycleIndex': hourCycleIndex,
     }.entries) {
-      if (entry.value < 0 || entry.value >= 60) {
+      if (entry.value < 0 || entry.value >= SexagenaryCycle.length) {
         throw ArgumentError.value(
           entry.value,
           entry.key,
@@ -125,38 +101,11 @@ final class BaziFourPillarsSnapshot {
 
 /// RC-0142..RC-0148 Four Pillars assembly core.
 ///
-/// The deterministic Gan-Zhi mapping is performed here. Calendar astronomy,
-/// solar-term boundaries, day-cycle anchoring and local hour-boundary policy
-/// remain the responsibility of a versioned [BaziFourPillarsProvider].
+/// The deterministic Gan-Zhi mapping is performed here through the canonical
+/// [SexagenaryCycle]. Calendar astronomy, solar-term boundaries, day-cycle
+/// anchoring and local hour-boundary policy remain the responsibility of a
+/// versioned [BaziFourPillarsProvider].
 abstract final class BaziFourPillarsEngine {
-  static const List<BaziHeavenlyStem> stems = <BaziHeavenlyStem>[
-    BaziHeavenlyStem.jia,
-    BaziHeavenlyStem.yi,
-    BaziHeavenlyStem.bing,
-    BaziHeavenlyStem.ding,
-    BaziHeavenlyStem.wu,
-    BaziHeavenlyStem.ji,
-    BaziHeavenlyStem.geng,
-    BaziHeavenlyStem.xin,
-    BaziHeavenlyStem.ren,
-    BaziHeavenlyStem.gui,
-  ];
-
-  static const List<BaziEarthlyBranch> branches = <BaziEarthlyBranch>[
-    BaziEarthlyBranch.zi,
-    BaziEarthlyBranch.chou,
-    BaziEarthlyBranch.yin,
-    BaziEarthlyBranch.mao,
-    BaziEarthlyBranch.chen,
-    BaziEarthlyBranch.si,
-    BaziEarthlyBranch.wu,
-    BaziEarthlyBranch.wei,
-    BaziEarthlyBranch.shen,
-    BaziEarthlyBranch.you,
-    BaziEarthlyBranch.xu,
-    BaziEarthlyBranch.hai,
-  ];
-
   static BaziFourPillarsSnapshot calculate({
     required DateTime birthInstantUtc,
     required BaziFourPillarsProvider provider,
@@ -182,10 +131,13 @@ abstract final class BaziFourPillarsEngine {
     );
   }
 
-  static BaziPillar _pillar(BaziPillarKind kind, int cycleIndex) => BaziPillar(
-        kind: kind,
-        stem: stems[cycleIndex % 10],
-        branch: branches[cycleIndex % 12],
-        sexagenaryCycleIndex: cycleIndex,
-      );
+  static BaziPillar _pillar(BaziPillarKind kind, int cycleIndex) {
+    final canonical = SexagenaryCycle.at(cycleIndex);
+    return BaziPillar(
+      kind: kind,
+      stem: canonical.stem,
+      branch: canonical.branch,
+      sexagenaryCycleIndex: canonical.cycleIndex,
+    );
+  }
 }
