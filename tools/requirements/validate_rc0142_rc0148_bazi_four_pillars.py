@@ -31,16 +31,16 @@ def main() -> None:
 
     require("chinese_zodiac.dart" not in source, "BaZi must not depend on simple Chinese-zodiac implementation")
     for needle in (
-        "enum BaziHeavenlyStem",
-        "enum BaziEarthlyBranch",
+        "import 'sexagenary_cycle.dart';",
         "enum BaziPillarKind { year, month, day, hour }",
+        "final HeavenlyStem stem",
+        "final EarthlyBranch branch",
         "abstract interface class BaziFourPillarsProvider",
         "yearCycleIndex",
         "monthCycleIndex",
         "dayCycleIndex",
         "hourCycleIndex",
-        "stem: stems[cycleIndex % 10]",
-        "branch: branches[cycleIndex % 12]",
+        "final canonical = SexagenaryCycle.at(cycleIndex)",
         "sourceId",
         "version",
         "conventionId",
@@ -50,7 +50,7 @@ def main() -> None:
     for needle in (
         "RC-0142 BaZi remains a distinct Four Pillars domain",
         "RC-0143..RC-0146 assemble Year Month Day Hour pillars independently",
-        "RC-0147 and RC-0148 map cycle indices to canonical stems and branches",
+        "RC-0147 and RC-0148 reuse canonical Stem Branch cycle primitives",
         "BaZi provenance and convention are mandatory",
         "BaZi core rejects non-UTC birth instants",
     ):
