@@ -1,0 +1,80 @@
+name: RC-0142 through RC-0148 BaZi Four Pillars
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/bazi/bazi_four_pillars.dart'
+      - 'test/calculation_core/bazi_four_pillars_test.dart'
+      - 'requirements/contracts/rc0142_rc0148_bazi_four_pillars_contract.json'
+      - 'tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py'
+      - '.github/workflows/rc0142-rc0148-bazi-four-pillars.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py
+      - run: flutter test test/calculation_core/bazi_four_pillars_test.dart
+      - name: Promote RC-0142 through RC-0148 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p = Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8', newline='') as f:
+            rows = list(csv.DictReader(f))
+          fields = list(rows[0].keys())
+          targets = {f'RC-{i:04d}' for i in range(142, 149)}
+          links = 'requirements/contracts/rc0142_rc0148_bazi_four_pillars_contract.json|tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py|lib/src/calculation_core/bazi/bazi_four_pillars.dart|test/calculation_core/bazi_four_pillars_test.dart|.github/workflows/rc0142-rc0148-bazi-four-pillars.yml'
+          found = set()
+          for r in rows:
+            if r['rc_id'] not in targets:
+              continue
+            found.add(r['rc_id'])
+            if r['status'] not in ('VERIFIED', 'DONE'):
+              r['status'] = 'TESTED'
+            r['evidence_links'] = links
+            r['blocked'] = 'YES'
+            r['blocker'] = 'Production authoritative BaZi calendar provider for solar-term/day-cycle/hour-boundary rules with location/timezone handling and independent golden vectors, plus later BaZi interpretation/content and rendered TR/EN product/release evidence remain required.'
+            r['notes'] = 'Machine gate proves BaZi/simple-zodiac separation, four distinct pillars, canonical 60-cycle to 10 Stem/12 Branch mapping, provenance/convention requirements and fail-closed UTC input. Fixture provider is regression evidence only; TESTED only.'
+          missing = targets - found
+          if missing:
+            raise SystemExit(f'RC0142_RC0148_FAIL: missing matrix rows: {sorted(missing)}')
+          with p.open('w', encoding='utf-8', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
+            w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0142-rc0148): record BaZi Four Pillars TESTED'
+          git push origin HEAD:main
