@@ -1,0 +1,23 @@
+{
+  "requirement_range": "RC-0382..RC-0393",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/ui/chart/chart_readability_policy.dart",
+  "tests": "test/ui/chart_readability_rc0382_rc0393_test.dart",
+  "claims": [
+    "visual tone is professional/modern rather than fortune-telling themed",
+    "calculation-screen readability is an explicit priority",
+    "phone degree text and planet glyphs have explicit minimum readable sizes",
+    "nearby planet labels are deterministically deconflicted without mutating original astronomical longitude",
+    "phone aspect-line density is capped and higher-priority/tighter-orb aspects are retained first",
+    "chart zoom is explicitly supported inside bounded limits",
+    "Android may be primary while Flutter/domain boundaries remain portable to iOS"
+  ],
+  "blocked_until": [
+    "a production chart renderer consumes these policies",
+    "real natal/transit/synastry chart screenshots pass overlap/readability tests on representative phones and tablets",
+    "professional tables are rendered and reachable from chart/results UI",
+    "TR/EN visual regression and accessibility checks pass",
+    "iOS portability is proven by clean build after Android release baseline",
+    "clean-checkout/device/performance/exact-release gates pass"
+  ]
+}
