@@ -6,6 +6,7 @@ on:
     paths:
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - 'lib/src/calculation_core/bazi/bazi_four_pillars.dart'
+      - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
       - 'test/calculation_core/bazi_four_pillars_test.dart'
       - 'requirements/contracts/rc0142_rc0148_bazi_four_pillars_contract.json'
       - 'tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py'
@@ -17,7 +18,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: requirement-matrix-writers
+  group: requirement-matrix-writers-rc0142-rc0148
   cancel-in-progress: false
 
 jobs:
@@ -52,7 +53,7 @@ jobs:
             rows = list(csv.DictReader(f))
           fields = list(rows[0].keys())
           targets = {f'RC-{i:04d}' for i in range(142, 149)}
-          links = 'requirements/contracts/rc0142_rc0148_bazi_four_pillars_contract.json|tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py|lib/src/calculation_core/bazi/bazi_four_pillars.dart|test/calculation_core/bazi_four_pillars_test.dart|.github/workflows/rc0142-rc0148-bazi-four-pillars.yml'
+          links = 'requirements/contracts/rc0142_rc0148_bazi_four_pillars_contract.json|tools/requirements/validate_rc0142_rc0148_bazi_four_pillars.py|lib/src/calculation_core/bazi/bazi_four_pillars.dart|lib/src/calculation_core/bazi/sexagenary_cycle.dart|test/calculation_core/bazi_four_pillars_test.dart|.github/workflows/rc0142-rc0148-bazi-four-pillars.yml'
           found = set()
           for r in rows:
             if r['rc_id'] not in targets:
@@ -63,7 +64,7 @@ jobs:
             r['evidence_links'] = links
             r['blocked'] = 'YES'
             r['blocker'] = 'Production authoritative BaZi calendar provider for solar-term/day-cycle/hour-boundary rules with location/timezone handling and independent golden vectors, plus later BaZi interpretation/content and rendered TR/EN product/release evidence remain required.'
-            r['notes'] = 'Machine gate proves BaZi/simple-zodiac separation, four distinct pillars, canonical 60-cycle to 10 Stem/12 Branch mapping, provenance/convention requirements and fail-closed UTC input. Fixture provider is regression evidence only; TESTED only.'
+            r['notes'] = 'Machine gate proves BaZi/simple-zodiac separation, four distinct pillars, reuse of canonical SexagenaryCycle mapping, provenance/convention requirements and fail-closed UTC input. Fixture provider is regression evidence only; TESTED only.'
           missing = targets - found
           if missing:
             raise SystemExit(f'RC0142_RC0148_FAIL: missing matrix rows: {sorted(missing)}')
