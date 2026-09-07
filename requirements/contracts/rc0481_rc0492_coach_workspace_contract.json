@@ -1,0 +1,21 @@
+{
+  "id": "rc0481-rc0492-coach-workspace",
+  "required_numbered_entries": [481,482,483,484,485,486,487,488,489,490,491,492],
+  "production_evidence": ["lib/src/professional/coach_workspace.dart"],
+  "regression_evidence": ["test/professional/coach_workspace_rc0481_rc0492_test.dart"],
+  "invariants": [
+    "coach client workspace keeps goals meeting notes between-session work and weekly reviews",
+    "goal progress is bounded from zero through one hundred",
+    "astrology or numerology context is optional rather than mandatory",
+    "an optional calculation context requires result source and version provenance",
+    "single-screen consultation exposes only client name method primary data important points and notes",
+    "single-screen consultation declares reduced navigation for live professional use"
+  ],
+  "promotion_ceiling": "IMPLEMENTED",
+  "blockers": [
+    "persistent encrypted client storage and round-trip backup",
+    "rendered TR/EN single-screen UI with phone/tablet navigation evidence",
+    "professional entitlement/access control integration",
+    "privacy/security/accessibility/performance/device and exact-release evidence"
+  ]
+}
