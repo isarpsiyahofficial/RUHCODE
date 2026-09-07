@@ -1,0 +1,23 @@
+{
+  "id": "rc0493-rc0510-client-report",
+  "required_numbered_entries": [493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510],
+  "production_evidence": ["lib/src/professional/client_report_workspace.dart"],
+  "regression_evidence": ["test/professional/client_report_workspace_rc0493_rc0510_test.dart"],
+  "invariants": [
+    "tablet landscape can expose chart technical details and notes on one consultation surface",
+    "client reports are composed from professional-selected sections rather than screenshots",
+    "professional can exclude unwanted report sections and reorder enabled sections in preview",
+    "professional display name is explicit and a custom logo is accepted only for PRO",
+    "Ruh Code advertising is not required in the professional client report branding policy",
+    "technical tables and client-friendly interpretation are optional report sections",
+    "chart plus professional notes can form a valid minimal report",
+    "detailed report target remains within twenty to thirty pages without removing professional control"
+  ],
+  "promotion_ceiling": "IMPLEMENTED",
+  "blockers": [
+    "rendered tablet TR/EN consultation UI and device screenshots",
+    "real PDF pagination/font/embed/export pipeline and round-trip verification",
+    "PRO entitlement wiring for custom logo",
+    "accessibility/security/performance/device and exact-release evidence"
+  ]
+}
