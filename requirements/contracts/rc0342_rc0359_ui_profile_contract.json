@@ -1,0 +1,32 @@
+{
+  "requirement_range": "RC-0342..RC-0359",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/ui/navigation/information_architecture.dart",
+    "lib/src/domain/profile/birth_profile.dart"
+  ],
+  "tests": [
+    "test/ui/information_architecture_rc0342_rc0353_test.dart",
+    "test/domain/birth_profile_rc0354_rc0359_test.dart"
+  ],
+  "claims": [
+    "top-level information architecture is deliberately small and defines Today, Discover, Calculate, Records and Profile destinations",
+    "Western, Vedic, Chinese, Numerology, Spiritual and Personal Growth remain distinct visible domains",
+    "professional tools are hidden from simple mode and become visible only in professional experience mode",
+    "first-launch onboarding is limited to a short sequence rather than exposing the full feature catalog",
+    "birth date is optional and birth time is modeled explicitly as known or unknown",
+    "unknown birth time cannot be replaced by a fabricated default time for time-dependent calculation",
+    "time-dependent features can declare and enforce a birth-time dependency with TR/EN user notice",
+    "birth place stores display identity, coordinates and IANA timezone as separately validated values",
+    "profile fields can be edited while preserving stable profile identity"
+  ],
+  "blocked_until": [
+    "the production MainNavigationShell is wired to the canonical information-architecture policy and rendered in both TR and EN",
+    "real Discover/Calculate domain pages replace remaining feature placeholders",
+    "Expert/Professional preference is persisted and exercised through runtime UI",
+    "onboarding widgets use this policy and pass phone/tablet accessibility tests",
+    "birth-place picker performs real disambiguation and coordinate/timezone verification",
+    "all ascendant/house and other birth-time-dependent production routes consume BirthTimeDependency rather than local ad-hoc defaults",
+    "clean-checkout/device/lifecycle tests prove unknown-time users never receive fabricated ascendant/house results"
+  ]
+}
