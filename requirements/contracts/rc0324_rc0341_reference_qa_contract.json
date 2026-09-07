@@ -1,0 +1,23 @@
+{
+  "requirement_range": "RC-0324..RC-0341",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/calculation/reference_qa.dart",
+  "tests": "test/calculation/reference_qa_rc0324_rc0341_test.dart",
+  "claims": [
+    "reference suites are separated by calculation engine and cannot silently reuse another engine's cases",
+    "reference cases retain calculation manifest, explicit expected values and source provenance",
+    "Western and Vedic release readiness requires at least 1000 reference cases each",
+    "planetary-hour release readiness requires distinct global coordinate and timezone coverage",
+    "zodiac ingress, nakshatra, house cusp, DST, Chinese New Year, BaZi solar term, leap-year, midnight and high-latitude boundaries are explicit coverage classes",
+    "a single source cannot satisfy release readiness; primary mathematical and independent reference evidence are both required",
+    "small regression fixtures can test the harness but cannot be mistaken for production golden evidence"
+  ],
+  "blocked_until": [
+    "production Western reference corpus reaches >=1000 independently sourced date/location/timezone cases",
+    "production Vedic reference corpus reaches >=1000 independently sourced date/location/timezone cases",
+    "planetary-hours global corpus meets production coordinate/timezone coverage and exact AKILES provenance where binding",
+    "BaZi and numerology corpora are populated from authoritative independent references",
+    "all boundary classes are populated with real golden expectations rather than test fixtures",
+    "device, clean-checkout and exact-release runs execute the same golden corpus"
+  ]
+}
