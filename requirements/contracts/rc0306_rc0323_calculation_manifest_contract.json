@@ -1,0 +1,20 @@
+{
+  "requirement_range": "RC-0306..RC-0323",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/calculation/calculation_manifest.dart",
+  "tests": "test/calculation/calculation_manifest_rc0306_rc0323_test.dart",
+  "claims": [
+    "each calculation has an immutable manifest identity and engine/version metadata",
+    "tropical/sidereal, house system, ayanamsha, node system, timezone database, coordinates, UTC/local time and assumptions are reproducible",
+    "historical artifacts retain the engine version that created them",
+    "calculation and interpretation artifacts are separate",
+    "Calculation QA precedes Interpretation QA",
+    "calculation and interpretation verdicts are independent and neither can mask the other"
+  ],
+  "blocked_until": [
+    "production calculation engines persist and retrieve manifests end to end",
+    "independent golden/reference datasets verify calculation outputs",
+    "interpretation provenance and editorial QA are integrated",
+    "backup/PDF/device/exact-release gates preserve manifest fidelity"
+  ]
+}
