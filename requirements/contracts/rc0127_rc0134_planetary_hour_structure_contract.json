@@ -1,0 +1,33 @@
+{
+  "schema": "ruh-code.rc0127-rc0134-planetary-hour-structure.v1",
+  "requirements": [
+    "RC-0127",
+    "RC-0128",
+    "RC-0129",
+    "RC-0130",
+    "RC-0131",
+    "RC-0132",
+    "RC-0133",
+    "RC-0134"
+  ],
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/calculation_core/planetary_hours/planetary_hours.dart",
+  "regression": "test/calculation_core/planetary_hours_rc0127_rc0134_test.dart",
+  "claims": {
+    "day_arc": "sunset - sunrise",
+    "day_hour": "day arc / 12",
+    "night_arc": "next sunrise - sunset",
+    "night_hour": "night arc / 12",
+    "first_hour": "civil weekday classical ruler",
+    "sequence": "Chaldean order",
+    "presentation_shape": "ordered contiguous 24-slot list"
+  },
+  "dependency_blockers": [
+    "RC-0124 AKILES exact algorithm provenance is not yet available",
+    "RC-0125/RC-0126 AKILES sunrise/sunset provenance is not yet available",
+    "Independent AKILES golden/tolerance evidence remains mandatory before VERIFIED/DONE",
+    "RC-0135 interpretation/action/mantra content remains separate and open",
+    "RC-0136 timezone/DST rendered behavior remains separate and open"
+  ],
+  "lifecycle": "TESTED_ONLY_WHEN_DEDICATED_GATE_PASSES"
+}
