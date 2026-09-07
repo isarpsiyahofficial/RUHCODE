@@ -24,30 +24,39 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0135 = TESTED + blocked=YES** (`919afe87d349b4dd61b531830d3927ed43d08aa5`).
 - **RC-0136 = TESTED + blocked=YES** (`cec58ff86d9631ffce36190581e633f5b35f61a4`).
 - **RC-0137→0141 = TESTED + blocked=YES** (`6d639ca3deceeb1b88892e3ca02b02b6cb5fbbfc`).
-- **RC-0142→0148 = TESTED + blocked=YES**; physical promotion `e076b1d4698aee48f3a07f49448a27ebee04afde` doğrulandı. Authoritative BaZi calendar provider + independent goldens açık.
-- **RC-0149→0153 = TESTED + blocked=YES**; physical promotions mevcut (`85edfde6f2064991a47cfef2ee10a6c13d923d7e` latest observed). Seasonal strength değildir; structural occurrence modelidir.
-- **RC-0154→0157 = TESTED + blocked=YES**; physical promotion `d4c6b14bf6c09ea2ae6830d445148850bc8b0048`.
-- **RC-0158→0165 = IMPLEMENTED + blocked=YES**; production boundary commit `49e04735f9a3fb0f9af2467c34b05387dd71b3af`. BaZi compatibility, standalone Zi Wei boundary ve distinct Pythagorean/Chaldean/Lo Shu system identity kuruldu; physical TESTED promotion henüz kanıtlanmadı.
-- **RC-0166→0184 = IMPLEMENTED + blocked=YES**; commit `1b7e85ca1a8b3860b71d7887446bbe11e5d1246e`. Life Path, Expression/Destiny, Soul Urge, Personality, Birthday, Maturity, Balance, Karmic Lessons/Debt, Hidden Passion, Personal Year/Month/Day, Pinnacles, Challenges, source/version-driven compatibility, TR/EN normalization ve Chaldean/Pythagorean mapping ayrımı için production/test/contract/validator/dedicated CI eklendi. Physical promotion sonucu bekleniyor.
-- **RC-0185→0186 = IMPLEMENTED + blocked=YES**; commit `338f8c8aa3b9224f8793efcc442863e691f4f634`. Lo Shu doğum-tarihi digit-grid motoru Pythagorean reduction'dan bağımsız; Kabbalistic numerology ayrı future-system contract. Physical promotion sonucu bekleniyor.
+- **RC-0142→0148 = TESTED + blocked=YES** (`e076b1d4698aee48f3a07f49448a27ebee04afde`).
+- **RC-0149→0153 = TESTED + blocked=YES**; latest observed promotion `85edfde6f2064991a47cfef2ee10a6c13d923d7e`.
+- **RC-0154→0157 = TESTED + blocked=YES** (`d4c6b14bf6c09ea2ae6830d445148850bc8b0048`).
+- **RC-0158→0165 = IMPLEMENTED + blocked=YES**; production boundary commit `49e04735f9a3fb0f9af2467c34b05387dd71b3af`, physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0166→0184 = IMPLEMENTED + blocked=YES**; commit `1b7e85ca1a8b3860b71d7887446bbe11e5d1246e`. Numerology metric core/test/contract/validator/dedicated CI mevcut; physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0185→0186 = TESTED + blocked=YES**; implementation `338f8c8aa3b9224f8793efcc442863e691f4f634`, physical bot promotion `d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`.
+- **RC-0187→0211 = IMPLEMENTED + blocked=YES**; commit `862bcec56eb40c97b37a77add6d79a43aec6a3ba`. Daily Today data/provenance envelope, deterministic message recipe, system identity, Western/Vedic anti-fusion, finite rewarded unlock ve explicit PRO access policy için production/test/contract/validator/dedicated CI eklendi. Physical TESTED promotion sonucu bekleniyor.
 
 ## Bu turdaki gerçek geliştirme
 
 ### RC-0166→0184 numerology core
 
-- `lib/src/calculation_core/numerology/numerology_core.dart` eklendi.
-- Reduction policy explicit/versioned/source-tagged; master-number preservation policy ayrı tanımlı.
-- Pythagorean harf tablosu ve Chaldean harf tablosu iki ayrı `NumerologyAlphabet` olarak tutuluyor; Pythagorean name engine Chaldean alphabet verilirse fail-closed.
-- Türkçe Ç/Ğ/İ/I/ı/Ö/Ş/Ü karakterleri açık transliteration kuralıyla işleniyor; gelişi güzel silinmiyor.
-- Numerology compatibility universal doctrine olarak hard-code edilmedi; version/source-tagged bounded rule engine olarak bırakıldı.
-- Regression, exact contract, fail-closed validator ve unique-concurrency dedicated gate aynı committe kuruldu: `1b7e85ca1a8b3860b71d7887446bbe11e5d1246e`.
+- Life Path, Expression/Destiny, Soul Urge, Personality, Birthday, Maturity, Balance, Karmic Lessons/Debt, Hidden Passion, Personal Year/Month/Day, Pinnacles ve Challenges calculation core eklendi.
+- Reduction policy explicit/version/source-tagged; Pythagorean ve Chaldean tabloları ayrıldı.
+- Türkçe Ç/Ğ/İ/I/ı/Ö/Ş/Ü karakterleri explicit transliteration ile işleniyor; gelişi güzel silinmiyor.
+- Compatibility universal doctrine olarak hard-code edilmedi; version/source-tagged bounded rule engine.
+- Commit: `1b7e85ca1a8b3860b71d7887446bbe11e5d1246e`.
 
 ### RC-0185→0186 Lo Shu + future Kabbalistic boundary
 
-- `lib/src/calculation_core/numerology/lo_shu_grid.dart` eklendi.
-- Lo Shu 1..9 doğum-tarihi digit occurrences ve klasik 4-9-2 / 3-5-7 / 8-1-6 grid düzenini ayrı motor olarak üretir; Life Path/Pythagorean core import etmez.
-- Kabbalistic numerology Pythagorean/Chaldean/Lo Shu alias'ı yapılmadı; source/version-tagged bağımsız engine contract bırakıldı.
-- Regression, exact contract, fail-closed validator ve unique-concurrency gate commit `338f8c8aa3b9224f8793efcc442863e691f4f634` ile eklendi.
+- Lo Shu birth-date digit grid ayrı motor olarak oluşturuldu; Pythagorean reduction import etmiyor.
+- Kabbalistic numerology ayrı source/version-tagged future engine contract.
+- Physical matrix promotion başarılı: `d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`.
+
+### RC-0187→0211 Bugün core
+
+- `lib/src/application/daily/daily_today_core.dart` eklendi.
+- Tarih, Moon sign/phase, current-next planetary hour, Personal Day, transit, retrograde ve günlük görünüm için source/system provenance taşıyan snapshot modeli kuruldu.
+- Günün mesajı random-pool değildir; version/source/system-tagged deterministic recipe ile üretilir.
+- Western ve Vedic yorum aynı recipe içinde tek gerçekmiş gibi birleştirilemez.
+- Rewarded unlock scope + UTC expiry ile sınırlı; PRO erişimi explicit; reklam prompt politikası user-initiated ve session cap kontrollü.
+- Regression, exact contract, fail-closed validator ve unique-concurrency promotion gate aynı committe: `862bcec56eb40c97b37a77add6d79a43aec6a3ba`.
+- Rendered UI, real verified provider wiring, authoritative TR/EN editorial recipes ve gerçek rewarded-ad/PRO integration henüz blocker; bu nedenle TESTED/DONE erken verilmedi.
 
 ## Açık product-facing / global blocker'lar
 
@@ -55,8 +64,8 @@ RC-0042/0044/0046/0048/0049 product-facing açıkları; RC-0061 active house-sys
 
 ## Sonraki devam noktası
 
-1. RC-0158→0186 dedicated workflow sonuçları ve physical bot matrix promotions kontrol edilecek; kırmızıysa validator/test/analyzer root cause aynı hatta düzeltilecek.
-2. Binding sıra **RC-0187→0211 Bugün alanı**: günlük dashboard/data envelope, Moon sign/phase, current-next planetary hour, Personal Day/transit/retrograde feeds, source identity, personalization ve Free/rewarded/PRO unlock semantics. Mevcut astronomy/numerology/planetary-hour core tekrar kullanılacak; duplicate calculation engine oluşturulmayacak.
+1. RC-0158→0184 ve RC-0187→0211 dedicated workflow/physical bot promotion sonuçları kontrol edilecek; kırmızıysa validator/test/analyzer root cause aynı hatta düzeltilecek.
+2. Binding sıra **RC-0212+ Spiritüel araçlar / Tarot** exact spec üzerinden okunup hesaplama çekirdeğinden bağımsız domain sınırıyla ilerletilecek; placeholder kart/metin, telifli içerik veya kanıtsız yöntem DONE sayılmayacak.
 3. RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları ayrıca kapatılacak.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0082/0083, RC-0086/0087 ve RC-0062 eski promotion/root-cause açıkları ayrıca çözülecek.
