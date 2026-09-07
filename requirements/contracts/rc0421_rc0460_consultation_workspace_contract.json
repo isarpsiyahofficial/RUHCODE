@@ -1,0 +1,15 @@
+{
+  "range": "RC-0421..RC-0460",
+  "binding": "RUH_CODE_MASTER_SARTNAME.md",
+  "required_numbered_entries": [421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460],
+  "evidence": {
+    "production": "lib/src/professional/consultation_workspace.dart",
+    "tests": "test/professional/consultation_workspace_rc0421_rc0460_test.dart"
+  },
+  "promotion_ceiling": "IMPLEMENTED",
+  "release_blockers": [
+    "Real persistent client storage and reminder scheduler are not wired.",
+    "Verified transit/numerology production providers and rendered TR/EN professional UI remain required.",
+    "Device, security, accessibility, backup and exact-release evidence remain open."
+  ]
+}
