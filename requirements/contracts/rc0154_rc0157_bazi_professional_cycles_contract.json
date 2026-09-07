@@ -1,0 +1,28 @@
+{
+  "contract_id": "rc0154_rc0157_bazi_professional_cycles",
+  "requirements": ["RC-0154", "RC-0155", "RC-0156", "RC-0157"],
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/bazi/bazi_professional_cycles.dart",
+    "lib/src/calculation_core/bazi/bazi_derived_analysis.dart",
+    "lib/src/calculation_core/bazi/bazi_four_pillars.dart",
+    "lib/src/calculation_core/bazi/sexagenary_cycle.dart"
+  ],
+  "tests": ["test/calculation_core/bazi_professional_cycles_test.dart"],
+  "evidence_policy": {
+    "status_after_machine_gate": "TESTED",
+    "blocked": true,
+    "blockers": [
+      "authoritative seasonal element-strength methodology and independent golden vectors",
+      "authoritative Da Yun direction/start-age convention provider and golden vectors",
+      "authoritative annual/monthly solar-term calendar provider and golden vectors",
+      "rendered TR/EN interpretation, Free/PRO, offline/device and release evidence"
+    ]
+  },
+  "claims": {
+    "RC-0154": "Element balance is analyzable through explicit versioned scoring methods; structural occurrence analysis is clearly not seasonal qi.",
+    "RC-0155": "Da Yun sequence and 10-year ranges are calculated from the Month Pillar once a versioned convention supplies direction and start age.",
+    "RC-0156": "Annual Gan-Zhi influence is resolved by an explicit period provider and related to the natal Day Master.",
+    "RC-0157": "Monthly Gan-Zhi influence is resolved separately by an explicit period provider and related to the natal Day Master."
+  }
+}
