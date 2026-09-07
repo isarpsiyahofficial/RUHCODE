@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/bazi/bazi_four_pillars.dart';
+import 'package:ruh_code/src/calculation_core/bazi/sexagenary_cycle.dart';
 
 final class _FixtureBaziProvider implements BaziFourPillarsProvider {
   @override
@@ -41,20 +42,22 @@ void main() {
     expect(snapshot.hour.sexagenaryCycleIndex, 59);
   });
 
-  test('RC-0147 and RC-0148 map cycle indices to canonical stems and branches', () {
+  test('RC-0147 and RC-0148 reuse canonical Stem Branch cycle primitives', () {
     final snapshot = BaziFourPillarsEngine.calculate(
       birthInstantUtc: DateTime.utc(2026, 1, 1),
       provider: _FixtureBaziProvider(),
     );
 
-    expect(snapshot.year.stem, BaziHeavenlyStem.jia);
-    expect(snapshot.year.branch, BaziEarthlyBranch.chen);
-    expect(snapshot.month.stem, BaziHeavenlyStem.bing);
-    expect(snapshot.month.branch, BaziEarthlyBranch.yin);
-    expect(snapshot.day.stem, BaziHeavenlyStem.jia);
-    expect(snapshot.day.branch, BaziEarthlyBranch.zi);
-    expect(snapshot.hour.stem, BaziHeavenlyStem.gui);
-    expect(snapshot.hour.branch, BaziEarthlyBranch.hai);
+    expect(snapshot.year.stem, HeavenlyStem.jia);
+    expect(snapshot.year.branch, EarthlyBranch.chen);
+    expect(snapshot.month.stem, HeavenlyStem.bing);
+    expect(snapshot.month.branch, EarthlyBranch.yin);
+    expect(snapshot.day.stem, HeavenlyStem.jia);
+    expect(snapshot.day.branch, EarthlyBranch.zi);
+    expect(snapshot.hour.stem, HeavenlyStem.gui);
+    expect(snapshot.hour.branch, EarthlyBranch.hai);
+    expect(snapshot.year.stem, SexagenaryCycle.at(40).stem);
+    expect(snapshot.year.branch, SexagenaryCycle.at(40).branch);
   });
 
   test('BaZi provenance and convention are mandatory', () {
