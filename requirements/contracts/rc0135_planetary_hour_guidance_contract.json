@@ -1,0 +1,32 @@
+{
+  "schema": "ruh-code.rc0135-planetary-hour-guidance.v1",
+  "requirements": ["RC-0135"],
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/calculation_core/planetary_hours/planetary_hour_guidance.dart",
+  "regression": "test/calculation_core/planetary_hour_guidance_test.dart",
+  "required_fields": [
+    "planet",
+    "startUtc",
+    "endUtc",
+    "quality",
+    "interpretation",
+    "proAction",
+    "doNot",
+    "mantra",
+    "sourceId",
+    "version"
+  ],
+  "fail_closed": [
+    "all seven classical planets must have guidance",
+    "editorial and provenance fields must be non-empty",
+    "planetary-hour result must be available with exactly 24 slots",
+    "every slot must have a positive time range"
+  ],
+  "dependency_blockers": [
+    "Authoritative source-tagged TR/EN planetary-hour quality/interpretation/action/do-not/mantra catalog is not yet bound",
+    "RC-0124..RC-0126 AKILES provenance and independent golden/tolerance evidence remain unresolved",
+    "Free/PRO entitlement and rendered product UI remain separate mandatory release evidence",
+    "Device/accessibility/performance/clean-checkout release gates remain mandatory"
+  ],
+  "lifecycle": "TESTED_ONLY_WHEN_DEDICATED_GATE_PASSES"
+}
