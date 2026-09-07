@@ -1,0 +1,28 @@
+{
+  "schema": "ruh-code.rc0149-rc0153-bazi-derived-analysis.v1",
+  "requirements": ["RC-0149", "RC-0150", "RC-0151", "RC-0152", "RC-0153"],
+  "binding_spec_entries": [149, 150, 151, 152, 153],
+  "production": "lib/src/calculation_core/bazi/bazi_derived_analysis.dart",
+  "regression": "test/calculation_core/bazi_derived_analysis_test.dart",
+  "invariants": [
+    "all 12 Earthly Branches have explicit Hidden Stem membership",
+    "Hidden Stem membership is not assigned universal percentage strength or secondary ordering semantics",
+    "Five Elements distribution uses the named visible-plus-hidden occurrence method rather than an undisclosed weighting",
+    "Yin/Yang balance uses the same named occurrence method as Five Elements distribution",
+    "Day Master is the Day Pillar Heavenly Stem",
+    "Ten Gods are classified by Five Element relationship to the Day Master plus same/opposite polarity",
+    "visible stems and Hidden Stem Ten-God evidence retain pillar provenance separately"
+  ],
+  "reference_sources": [
+    "BaziInsight Hidden Stems membership table, retrieved 2026-09-07",
+    "Tao and Form Hidden Stems table, retrieved 2026-09-07",
+    "Yuanzi Zhiyi Ten Gods lookup, retrieved 2026-09-07",
+    "ShenShu Ten Gods overview, retrieved 2026-09-07"
+  ],
+  "dependency_blockers": [
+    "RC-0142..RC-0148 still require an authoritative production BaZi calendar provider and independent golden pillar vectors before downstream analysis can be VERIFIED/DONE.",
+    "Element occurrence distribution is a structural count, not Day-Master strength or seasonal qi weighting; RC-0154 element-balance analysis requires an explicit separately sourced methodology.",
+    "Rendered TR/EN UI, interpretation/editorial, Free/PRO, accessibility, offline/device and release evidence remain required before VERIFIED/DONE."
+  ],
+  "lifecycle": "TESTED_ONLY_WHEN_DEDICATED_GATE_PASSES"
+}
