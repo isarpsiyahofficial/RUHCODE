@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,7 +25,7 @@ def main() -> None:
 
     require(data.get("schema") == "ruh-code.rc0135-planetary-hour-guidance.v1", "contract schema drifted")
     require(data.get("requirements") == ["RC-0135"], "requirement binding drifted")
-    require("RC-0135" in spec, "binding specification no longer contains RC-0135")
+    require(re.search(r"(?m)^\s*135\.\s+", spec) is not None, "binding specification no longer contains numbered requirement 135 for RC-0135")
 
     required_fields = [
         "planet", "startUtc", "endUtc", "quality", "interpretation",
