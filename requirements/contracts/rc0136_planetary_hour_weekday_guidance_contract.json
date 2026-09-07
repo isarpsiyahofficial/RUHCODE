@@ -1,0 +1,14 @@
+{
+  "schema": "ruh-code.rc0136-planetary-hour-weekday-guidance.v1",
+  "requirements": ["RC-0136"],
+  "production": "lib/src/calculation_core/planetary_hours/planetary_hour_guidance.dart",
+  "regression": "test/calculation_core/planetary_hour_weekday_guidance_test.dart",
+  "required_dimensions": ["weekday", "planet"],
+  "required_combinations": 49,
+  "dependency_blockers": [
+    "Authoritative source-tagged TR/EN weekday x planet editorial catalog is still required.",
+    "RC-0124..RC-0126 exact AKILES planetary-hour provenance/golden evidence remains unresolved.",
+    "Rendered Free/PRO UI, accessibility, offline/device and release evidence remain required before VERIFIED/DONE."
+  ],
+  "lifecycle": "TESTED_ONLY_WHEN_DEDICATED_GATE_PASSES"
+}
