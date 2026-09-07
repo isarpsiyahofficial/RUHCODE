@@ -18,8 +18,9 @@ void main() {
       final expectedHourMicros = dayArcMicros / 12.0;
 
       for (final slot in result.slots.take(12)) {
+        final slotMicros = slot.endUtc.difference(slot.startUtc).inMicroseconds;
         expect(
-          (slot.duration.inMicroseconds - expectedHourMicros).abs(),
+          (slotMicros - expectedHourMicros).abs(),
           lessThanOrEqualTo(1.0),
         );
       }
@@ -32,8 +33,9 @@ void main() {
       final expectedHourMicros = nightArcMicros / 12.0;
 
       for (final slot in result.slots.skip(12)) {
+        final slotMicros = slot.endUtc.difference(slot.startUtc).inMicroseconds;
         expect(
-          (slot.duration.inMicroseconds - expectedHourMicros).abs(),
+          (slotMicros - expectedHourMicros).abs(),
           lessThanOrEqualTo(1.0),
         );
       }
