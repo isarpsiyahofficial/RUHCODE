@@ -1,0 +1,25 @@
+{
+  "schema": "ruh-code.rc0142-rc0148-bazi-four-pillars.v1",
+  "requirements": ["RC-0142", "RC-0143", "RC-0144", "RC-0145", "RC-0146", "RC-0147", "RC-0148"],
+  "binding_spec_entries": [142, 143, 144, 145, 146, 147, 148],
+  "production": "lib/src/calculation_core/bazi/bazi_four_pillars.dart",
+  "regression": "test/calculation_core/bazi_four_pillars_test.dart",
+  "invariants": [
+    "BaZi is a standalone calculation domain and does not import the simple Chinese-zodiac engine",
+    "Year Month Day Hour pillars remain distinct values",
+    "each pillar is mapped from an explicit 0..59 sexagenary-cycle index",
+    "Heavenly Stem uses cycleIndex modulo 10 in canonical Jia through Gui order",
+    "Earthly Branch uses cycleIndex modulo 12 in canonical Zi through Hai order",
+    "calendar sourceId version and conventionId provenance are mandatory",
+    "the core never substitutes Gregorian year or lunar-zodiac year for BaZi pillar boundaries"
+  ],
+  "reference_sources": [
+    "Hong Kong Observatory: Heavenly Stems and Earthly Branches"
+  ],
+  "dependency_blockers": [
+    "A production BaZi calendar provider still must resolve Year Month Day Hour cycle indices from authoritative solar-term/day-cycle/hour-boundary rules with location/timezone handling and independent golden vectors.",
+    "Hidden Stems, Five Elements distribution, Yin/Yang balance, Day Master, Ten Gods and later BaZi requirements remain separate follow-on requirements.",
+    "Rendered TR/EN UI, Free/PRO policy, accessibility, offline/device and release evidence remain required before VERIFIED/DONE."
+  ],
+  "lifecycle": "TESTED_ONLY_WHEN_DEDICATED_GATE_PASSES"
+}
