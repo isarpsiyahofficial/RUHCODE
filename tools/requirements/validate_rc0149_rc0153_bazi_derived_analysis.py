@@ -8,6 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / "requirements/contracts/rc0149_rc0153_bazi_derived_analysis_contract.json"
 SOURCE = ROOT / "lib/src/calculation_core/bazi/bazi_derived_analysis.dart"
+HIDDEN = ROOT / "lib/src/calculation_core/bazi/hidden_stems.dart"
 TEST = ROOT / "test/calculation_core/bazi_derived_analysis_test.dart"
 SPEC = ROOT / "RUH_CODE_MASTER_SARTNAME.md"
 
@@ -20,6 +21,7 @@ def require(condition: bool, message: str) -> None:
 def main() -> None:
     data = json.loads(CONTRACT.read_text(encoding="utf-8"))
     source = SOURCE.read_text(encoding="utf-8")
+    hidden = HIDDEN.read_text(encoding="utf-8")
     test = TEST.read_text(encoding="utf-8")
     spec = SPEC.read_text(encoding="utf-8")
     require(data.get("schema") == "ruh-code.rc0149-rc0153-bazi-derived-analysis.v1", "contract schema drifted")
@@ -27,9 +29,10 @@ def main() -> None:
     for number in range(149, 154):
         require(re.search(rf"(?m)^\s*{number}\.\s+", spec) is not None, f"binding spec missing numbered requirement {number}")
     for needle in (
-        "abstract final class BaziHiddenStems",
-        "BaziEarthlyBranch.zi:",
-        "BaziEarthlyBranch.hai:",
+        "import 'hidden_stems.dart';",
+        "import 'sexagenary_cycle.dart';",
+        "BaZiHiddenStems.assertComplete()",
+        "BaZiHiddenStems.of(pillar.branch)",
         "visible-plus-hidden-occurrences-v1",
         "final dayMaster = chart.day.stem",
         "enum BaziTenGod",
@@ -38,8 +41,10 @@ def main() -> None:
         "tenGodFor",
     ):
         require(needle in source, f"production evidence missing: {needle}")
+    for branch in ("zi", "chou", "yin", "mao", "chen", "si", "wu", "wei", "shen", "you", "xu", "hai"):
+        require(f"EarthlyBranch.{branch}:" in hidden, f"canonical Hidden Stems mapping missing branch {branch}")
     for needle in (
-        "RC-0149 maps all twelve Earthly Branches to Hidden Stem membership",
+        "RC-0149 reuses canonical Hidden Stems for all twelve branches",
         "RC-0150 calculates explicit Five Elements occurrence distribution",
         "RC-0151 calculates Yin Yang balance",
         "RC-0152 identifies Day Master",
