@@ -1,0 +1,79 @@
+name: RC-0127 RC-0134 Planetary Hour Structure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/planetary_hours/planetary_hours.dart'
+      - 'test/calculation_core/planetary_hours_rc0127_rc0134_test.dart'
+      - 'requirements/contracts/rc0127_rc0134_planetary_hour_structure_contract.json'
+      - 'tools/requirements/validate_rc0127_rc0134_planetary_hour_structure.py'
+      - '.github/workflows/rc0127-rc0134-planetary-hour-structure.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0127_rc0134_planetary_hour_structure.py
+      - run: flutter test test/calculation_core/planetary_hours_rc0127_rc0134_test.dart
+      - name: Promote RC-0127 through RC-0134 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0127_rc0134_planetary_hour_structure.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p = Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8', newline='') as f:
+            rows = list(csv.DictReader(f))
+          fields = list(rows[0].keys())
+          targets = {f'RC-{n:04d}' for n in range(127, 135)}
+          links = 'requirements/contracts/rc0127_rc0134_planetary_hour_structure_contract.json|tools/requirements/validate_rc0127_rc0134_planetary_hour_structure.py|lib/src/calculation_core/planetary_hours/planetary_hours.dart|test/calculation_core/planetary_hours_rc0127_rc0134_test.dart|.github/workflows/rc0127-rc0134-planetary-hour-structure.yml'
+          found = set()
+          for r in rows:
+            if r['rc_id'] not in targets:
+              continue
+            found.add(r['rc_id'])
+            if r['status'] not in ('VERIFIED', 'DONE'):
+              r['status'] = 'TESTED'
+            r['evidence_links'] = links
+            r['blocked'] = 'YES'
+            r['blocker'] = 'RC-0124..RC-0126 exact AKİLES algorithm/sunrise/sunset provenance and independent AKİLES golden/tolerance evidence remain unresolved; RC-0135 content, RC-0136 timezone/DST rendered behavior and device/release gates remain mandatory before VERIFIED/DONE.'
+            r['notes'] = 'Machine gate proves day/night arc arithmetic, exact 12+12 subdivision, civil-weekday first ruler, Chaldean continuation and contiguous 24-slot output on the current production core. It does not claim AKİLES provenance. TESTED only.'
+          if found != targets:
+            raise SystemExit(f'RC0127_RC0134_FAIL: missing matrix rows: {sorted(targets - found)}')
+          with p.open('w', encoding='utf-8', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
+            w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0127-rc0134): record planetary-hour structure TESTED'
+          git push origin HEAD:main
