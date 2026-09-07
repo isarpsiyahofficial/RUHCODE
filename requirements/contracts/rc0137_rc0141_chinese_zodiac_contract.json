@@ -1,0 +1,25 @@
+{
+  "schema": "ruh-code.rc0137-rc0141-chinese-zodiac.v1",
+  "requirements": ["RC-0137", "RC-0138", "RC-0139", "RC-0140", "RC-0141"],
+  "binding_spec_entries": [137, 138, 139, 140, 141],
+  "production": "lib/src/calculation_core/chinese/chinese_zodiac.dart",
+  "regression": "test/calculation_core/chinese_zodiac_test.dart",
+  "invariants": [
+    "canonical 12-animal Earthly-Branch order is explicit",
+    "animal is derived from the resolved sexagenary cycle branch",
+    "element is derived from the resolved Heavenly Stem",
+    "Yin/Yang alternates with the Heavenly Stem",
+    "birth instant must be contained by an explicit Chinese-calendar year interval",
+    "Gregorian year alone is never accepted as a Chinese-zodiac year boundary",
+    "calendar-boundary provenance sourceId and version are mandatory"
+  ],
+  "reference_sources": [
+    "Hong Kong Observatory: The 12-Year Animal Cycle",
+    "Hong Kong Observatory: Heavenly Stems and Earthly Branches"
+  ],
+  "dependency_blockers": [
+    "A production Chinese-calendar provider with authoritative Chinese New Year boundary data and independent golden vectors is still required.",
+    "Rendered TR/EN UI, Free/PRO policy, accessibility, offline/device and release evidence remain required before VERIFIED/DONE."
+  ],
+  "lifecycle": "TESTED_ONLY_WHEN_DEDICATED_GATE_PASSES"
+}
