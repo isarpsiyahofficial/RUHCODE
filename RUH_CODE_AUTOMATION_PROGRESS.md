@@ -26,27 +26,27 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0187→0211 = TESTED + blocked=YES (`ef1dba9efb73d9ce0c5bc852548f704e5dd26aa4`).
 - RC-0212→0223 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
 - RC-0224→0229 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
-- **RC-0230→0247 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri bu çalıştırmada eklendi. Physical TESTED promotion henüz kanıtlanmadı.
+- RC-0230→0247 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0248→0270 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri bu çalıştırmada eklendi. Physical TESTED promotion henüz kanıtlanmadı.
 
-## Son çalıştırmadaki gerçek geliştirme — RC-0230→0247
+## Son çalıştırmadaki gerçek geliştirme — RC-0248→0270
 
-Bağlayıcı şartnamedeki 230→247 maddeleri yeniden okundu. Kişisel gelişim alanı astroloji kullanmayan kullanıcılar için bağımsız tutuldu; astrolojik dönem bağlantısı yalnız opsiyonel provenance-tagged context olarak modellendi.
+Bağlayıcı 248→270 maddeleri yeniden okundu. Normal kullanıcı için sade deneyim ve aynı uygulama içindeki profesyonel mod explicit ürün sınırı olarak ayrıldı. Profesyonel çalışma alanı PRO + professional mode olmadan açılamıyor; bu ayrım ayrı uygulama üretmiyor.
 
-- `lib/src/application/personal_growth/personal_growth_core.dart` (`254376251621a7a0caf6b30631dd30a6731c163c`): kişisel günlük, hedef/subtask, alışkanlık, haftalık/aylık değerlendirme, yaşam çarkı, kişisel değerler, mood/enerji, sabah/akşam check-in, kişisel notlar, geçmiş tarih sorgusu ve opsiyonel astrology context.
-- `test/application/personal_growth/personal_growth_core_test.dart` (`156475df82546d1eb408d5330313eb05c09ad9ca`): astrolojisiz kullanım, duplicate subtask fail-closed, provenance-tagged opsiyonel context ve invalid tarih/range regressions.
-- `lib/src/application/personal_growth/symbolic_content_disclosure.dart` (`bba44fb0ce3d1ffe00745c5744e788d7427b4613`): RC-0230 için symbolic/traditional/reflective içerik doğasını, locale, notice, policyId ve version ile explicit taşıyan disclosure metadata sınırı.
-- `requirements/contracts/rc0230_rc0247_personal_growth_contract.json` (`fea07f5fbf9117c66a1402faa62614b3e13e1014`).
-- `tools/requirements/validate_rc0230_rc0247_personal_growth.py` oluşturuldu, sonra RC-0230 disclosure evidence doğrudan validator’a bağlandı (`e7b018da84a4bae3121b14baf0b2d28b259f3252`).
-- `.github/workflows/rc0230-rc0247-personal-growth.yml` (`8384243b886986a0468cd6af2a83ead673d0b1fc`): unique concurrency, Flutter regression, fail-closed validator ve yalnız başarılı physical main run sonrası TESTED matrix promotion.
+- `lib/src/application/professional/professional_mode_core.dart` (`76917f04c2ccf037269038a1a3e98e11de61cf25`): simple/pro mode, astrologer/numerologist rolü, çoklu doğum profili, müşteri not/etiket/arama, analiz ve transit geçmişi, iki farklı profil ile Synastry seçimi, profesyonel calculation settings ve önceden hesaplanmış raw-degree/aspect/transit table yüzeyleri.
+- `test/application/professional/professional_mode_core_test.dart` (`5f7727a6dd53e662c42127c9ad9e6d4027d2c9da`): simple-mode izolasyonu, PRO professional access, çoklu profil/history/search, distinct-profile Synastry, invalid settings/duplicate identities fail-closed ve non-recomputing result-table regressions.
+- `requirements/contracts/rc0248_rc0270_professional_mode_contract.json` (`ca6bad619ca4989e771f7702b61a5f0ce897b464`).
+- `tools/requirements/validate_rc0248_rc0270_professional_mode.py` (`08b1b6c6b5fa9b1cd51df3ed7e9adc04881b824c`): binding `248.`→`270.` satırlarını anchored doğrulayan fail-closed validator.
+- `.github/workflows/rc0248-rc0270-professional-mode.yml` (`3ee1bfabb1c6b0638b137157c62534d16694b5bf`): unique concurrency, Flutter regression, validator ve yalnız başarılı physical main run sonrası TESTED matrix promotion.
 
 ## Açık blocker'lar
 
-Rendered TR/EN kişisel gelişim UI’si, disclosure copy review, persistent offline storage, cross-period comparison presentation, optional astrology-context product wiring, backup/restore/export, privacy/security/accessibility/performance/device/clean-checkout/lifecycle ve exact release artifact kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Rendered TR/EN simple/professional UI, persistent offline client/profile storage, PRO kayıt limiti entitlement wiring, verified calculation artifact/manifest bağlantısı, professional PDF, backup/restore/export, privacy/security/accessibility/performance/device/clean-checkout/lifecycle ve exact release artifact kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0212→0229 ve RC-0230→0247 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
-2. Binding sıra RC-0248+ üzerinden devam edecek; normal kullanıcı sade deneyimi ile profesyonel mod ayrı ürün sınırları olarak kurulacak.
+1. RC-0212→0247 ve RC-0248→0270 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
+2. Binding sıra RC-0271+ üzerinden professional PDF ve Free/PRO ürün sınırlarıyla devam edecek.
 3. RC-0158→0184, RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları kapatılacak.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. 1.442 RC tamamı DONE ve tüm final release kapıları green olmadan FINAL denmeyecek.
