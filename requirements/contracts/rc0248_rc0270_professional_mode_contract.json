@@ -1,0 +1,23 @@
+{
+  "requirement_range": "RC-0248..RC-0270",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/application/professional/professional_mode_core.dart",
+  "tests": "test/application/professional/professional_mode_core_test.dart",
+  "claims": [
+    "simple mode remains an explicit product mode",
+    "professional tools require PRO plus professional mode",
+    "professional clients can hold multiple birth profiles, notes, tags, analyses and transit history",
+    "client search can match client name, tags and profile names",
+    "synastry selection requires two distinct stored profiles",
+    "professional calculation settings expose house system, aspect orb, ayanamsha and node method",
+    "raw degree, aspect and transit timeline rows are presentation data and do not recompute astronomy",
+    "astrologer and numerologist roles remain explicit"
+  ],
+  "blocked_until": [
+    "rendered TR/EN simple/professional UI is verified",
+    "persistent offline client/profile storage is verified",
+    "high-or-unlimited PRO record entitlement is wired to product entitlement policy",
+    "stored chart/analysis manifests are backed by verified calculation artifacts",
+    "professional PDF and Free/PRO release gates are completed"
+  ]
+}
