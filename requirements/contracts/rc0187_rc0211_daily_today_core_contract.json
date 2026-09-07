@@ -1,0 +1,23 @@
+{
+  "contract_id": "rc0187_rc0211_daily_today_core",
+  "requirements": ["RC-0187","RC-0188","RC-0189","RC-0190","RC-0191","RC-0192","RC-0193","RC-0194","RC-0195","RC-0196","RC-0197","RC-0198","RC-0199","RC-0200","RC-0201","RC-0202","RC-0203","RC-0204","RC-0205","RC-0206","RC-0207","RC-0208","RC-0209","RC-0210","RC-0211"],
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": ["lib/src/application/daily/daily_today_core.dart"],
+  "tests": ["test/application/daily_today_core_rc0187_rc0211_test.dart"],
+  "evidence_policy": {
+    "status_after_machine_gate": "TESTED",
+    "blocked": true,
+    "blockers": [
+      "rendered Today screen and integration with real astronomy/transit/numerology/planetary-hour providers",
+      "authoritative TR/EN daily editorial recipes and system labels",
+      "real rewarded-ad callback/entitlement persistence and PRO integration",
+      "offline/accessibility/performance/device/clean-checkout/exact-release evidence"
+    ]
+  },
+  "notes": [
+    "Daily message generation is recipe/source/system driven rather than random-pool selection.",
+    "Western and Vedic systems cannot be silently fused into one recipe.",
+    "Rewarded unlock grants are finite by scope and expiry; PRO bypass is explicit.",
+    "The core is an application data/access envelope and must reuse verified calculation providers rather than duplicate astronomy engines."
+  ]
+}

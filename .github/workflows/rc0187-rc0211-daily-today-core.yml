@@ -1,0 +1,75 @@
+name: RC-0187 through RC-0211 Daily Today Core
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/application/daily/daily_today_core.dart'
+      - 'test/application/daily_today_core_rc0187_rc0211_test.dart'
+      - 'requirements/contracts/rc0187_rc0211_daily_today_core_contract.json'
+      - 'tools/requirements/validate_rc0187_rc0211_daily_today_core.py'
+      - '.github/workflows/rc0187-rc0211-daily-today-core.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0187-rc0211
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0187_rc0211_daily_today_core.py
+      - run: flutter test test/application/daily_today_core_rc0187_rc0211_test.dart
+      - name: Promote RC-0187 through RC-0211 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0187_rc0211_daily_today_core.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(187,212)}
+          links='requirements/contracts/rc0187_rc0211_daily_today_core_contract.json|tools/requirements/validate_rc0187_rc0211_daily_today_core.py|lib/src/application/daily/daily_today_core.dart|test/application/daily_today_core_rc0187_rc0211_test.dart|.github/workflows/rc0187-rc0211-daily-today-core.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Rendered Today UI, real verified provider integration, authoritative TR/EN editorial recipes, rewarded-ad/PRO integration and global device/release gates remain required.'
+            r['notes']='Machine gate proves daily data/provenance envelope, deterministic source-driven messaging, Western/Vedic anti-fusion and finite rewarded unlock/access policy. TESTED is not VERIFIED/DONE.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0187_RC0211_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0187-rc0211): record Daily Today core TESTED'
+          git push origin HEAD:main
