@@ -25,39 +25,33 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0185→0186 = TESTED + blocked=YES (`d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`).
 - RC-0187→0211 = TESTED + blocked=YES (`ef1dba9efb73d9ce0c5bc852548f704e5dd26aa4`).
 - RC-0212→0223, RC-0224→0229, RC-0230→0247, RC-0248→0270 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit'leri henüz görülmedi.
-- **RC-0271→0305 = TESTED + blocked=YES** (`18419e674b4603fecdb050a99e4f268ddc3cb95f`).
-- **RC-0306→0323 = TESTED + blocked=YES** (`cee7256c9166b511c61d4cace9dfa053aa27b4bd`).
-- **RC-0324→0341 = IMPLEMENTED + blocked=YES**; reference-QA implementation gate physically passed and matrix evidence was recorded (`2155cfc613f0f5773f277999e8dd21d9f74ee66f`). Production-scale golden corpus blocks TESTED/VERIFIED/DONE.
-- RC-0342→0359 = implementation chain added; physical matrix promotion not yet proven, no TESTED claim.
-- RC-0360→0371 = implementation chain added; physical matrix promotion not yet proven, no TESTED claim.
-- RC-0372→0381 = implementation chain added; physical matrix promotion not yet proven, no TESTED claim.
-- RC-0382→0393 = implementation/test/contract/validator/dedicated-CI chain added; physical matrix promotion not yet proven, no TESTED claim.
+- RC-0271→0305 = TESTED + blocked=YES (`18419e674b4603fecdb050a99e4f268ddc3cb95f`).
+- RC-0306→0323 = TESTED + blocked=YES (`cee7256c9166b511c61d4cace9dfa053aa27b4bd`).
+- RC-0324→0341 = IMPLEMENTED + blocked=YES; physical matrix evidence (`2155cfc613f0f5773f277999e8dd21d9f74ee66f`). Production-scale golden corpus blocks TESTED/VERIFIED/DONE.
+- RC-0342→0359 = implementation chain present; physical matrix promotion commit not yet proven, no TESTED claim.
+- RC-0360→0371 = implementation chain present; physical matrix promotion commit not yet proven, no TESTED claim.
+- RC-0372→0381 = IMPLEMENTED + blocked=YES; physical matrix evidence `8b4bb76d9a0b6e22fdddc2e51060ab7501757ae5`.
+- RC-0382→0393 = IMPLEMENTED + blocked=YES; physical matrix evidence `40bf4d144ece622dacc2a40d929068b198e263d9`.
+- **RC-0394→0420 = IMPLEMENTED + blocked=YES; physical matrix evidence `ed0bd0672af52a073eb841c474494e06d9f31e74`.**
+- **RC-0421→0460 = IMPLEMENTED + blocked=YES; physical matrix evidence `62603b7c49fb3bcb20c2346e263ec6bfdddc2e29`.**
 
 ## Bu çalıştırmadaki gerçek geliştirme
 
-### RC-0324→0341 — reference / golden calculation QA
+### RC-0394→0420 — GitHub/release governance + interpretation boundaries
 
-`lib/src/calculation/reference_qa.dart` ile Western, Vedic, Planetary Hours, BaZi ve Pythagorean/Chaldean/Lo Shu numerology için ayrı reference-suite modeli kuruldu. Her vaka Calculation Manifest + explicit expected values + provenance taşır. Tek kaynak yeterli değildir; primary mathematical + independent reference birlikte zorunludur. Zodiac ingress, Nakshatra, house cusp, DST, Chinese New Year, BaZi solar term, leap-year, midnight ve high-latitude explicit boundary sınıflarıdır. Default release policy Western >=1000 gerçek vaka, Vedic >=1000 gerçek vaka ve Planetary Hours global coordinate/timezone kapsaması ister; küçük fixture'lar production evidence sayılamaz. Physical matrix commit: `2155cfc613f0f5773f277999e8dd21d9f74ee66f`.
+`lib/src/application/release_readiness_policy.dart` release'i fail-closed hale getirir. GitHub canonical repository/dev-test-release yönetimi, calculation-core CI, TR/EN key parity, kritik astronomy regression, AKİLES migration regression, independent reference-engine comparison ve açıklanabilir calculation delta kapılarının tamamı PASS olmadan release allowed değildir.
 
-### RC-0342→0359 — sade IA + bilinmeyen doğum saati
+`lib/src/content/interpretation_catalog_policy.dart` Western, Vedic, BaZi, Numerology ve Daily Message yorum kataloglarını sistem bazında fiziksel olarak ayırır. Yorumlar exact `conditionId` ile bağlanır; duplicate/ambiguous condition ve cross-system catalog mixing reddedilir. Normal kullanıcı özet görür; detailed görünüm technical + raw calculation açar; professional kullanıcı prepared interpretation'ı kapatıp raw calculation'ı koruyabilir.
 
-`lib/src/ui/navigation/information_architecture.dart` Today / Discover / Calculate / Records / Profile ana navigasyonunu, Western/Vedic/Chinese/Numerology/Spiritual/Personal Growth domain ayrımını ve simple/professional görünürlük politikasını tanımlar. Professional araçlar simple modda sızmaz; onboarding kısa tutulur.
+`assets/i18n/system_tr.json` ve `assets/i18n/system_en.json` aynı key setiyle oluşturuldu. Validator key parity/non-empty kontrolünü fail-closed yapar. Dedicated CI + contract + compiled regressions physical matrix promotion üretti: `ed0bd0672af52a073eb841c474494e06d9f31e74`. Promotion ceiling bilinçli olarak IMPLEMENTED; exact AKİLES/reference/runtime/release evidence yokken TESTED/DONE verilmez.
 
-`lib/src/domain/profile/birth_profile.dart` doğum tarihini opsiyonel, doğum saatini explicit known/unknown yapar. Saat bilinmiyorsa yükselen/ev gibi time-dependent hesaplar sahte noon/midnight ile üretilmez; fail-closed. Birth place display identity + coordinate + timezone ile doğrulanır. Runtime shell/onboarding/place-picker/all time-dependent route wiring ve gerçek cihaz kanıtı blocker.
+### RC-0421→0460 — profesyonel danışmanlık hazırlık alanı
 
-### RC-0360→0371 — tenant isolation + offline/remote sınırı
+`lib/src/professional/consultation_workspace.dart` shared client profile, consultation preparation, natal-result reference, important transit listesi, orb/application bilgisi, transit önem nedeni, previous-session notes ve upcoming important dates modellerini kurar. Hesap yeniden yapılmaz; existing calculation result ID'leri tüketilir.
 
-`lib/src/data/profile/profile_storage_contract.dart` self/partner/family/client kayıtlarını owner-scoped tutar; global unscoped repository list API'si yoktur ve cross-owner profil/not erişimi fail-closed. Sensitive birth data ayrıca işaretlenir. Real encryption-at-rest/key management henüz blocker.
+System interpretation ile professional personal note ayrı alanlardır. Reusable `InterpretationTemplate` + searchable `KnowledgeLibrary`, UTC session history/follow-up reminder modeli ve method-specific visibility sağlayan `ClientWorkspace` eklendi. Numerology preparation Life Path, Personal Year/Month/Day, pinnacles ve active periods'ı birlikte taşır.
 
-`lib/src/application/runtime_capability_policy.dart` core calculations, profile, PDF ve backup export'u local-only; premium verification ve optional cloud sync'i remote-required yapar. Launch network allow-list boş. Premium yetkisi local boolean değil; verifier-backed signed assertion + UTC validity window ister. Real backend/store verifier, tamper/replay/expiry ve airplane-mode evidence blocker.
-
-### RC-0372→0381 — reklam ve bildirim politikası
-
-`lib/src/application/engagement_policy.dart` calculation input/result üzerinde reklamı prohibited yapar; daily-message rewarded yalnız user-initiated. Daily Message, Planetary Hour, Important Transit, Retrograde Boundary ve Moon Phase ayrı notification toggle'larıdır; default off + platform permission şarttır. Minimum-gap spam guard vardır. Real SDK/scheduler/channel/device lifecycle wiring blocker.
-
-### RC-0382→0393 — profesyonel chart okunabilirliği
-
-`lib/src/ui/chart/chart_readability_policy.dart` profesyonel/modern ürün tonunu ve calculation ekranlarında readability önceliğini machine-testable hale getirir. Telefonda derece ve gezegen sembolü için minimum okunabilir boyutlar vardır. `CircularLabelLayout` yakın gezegen etiketlerini presentation koordinatında ayırırken gerçek astronomik longitude'u değiştirmez. Aspect çizgileri telefon/tablet density limitleriyle azaltılır ve priority/tighter-orb sırasına göre korunur. Zoom 1x→4x aralığında explicit desteklenir. Android primary olabilir; domain katmanı Flutter üzerinden platform-neutral tutulur. Real chart renderer, professional tables, screenshot overlap/readability, TR/EN a11y ve cihaz evidence blocker.
+Compiled regression + exact contract + fail-closed validator + unique-concurrency CI fiziksel olarak geçti ve matrix promotion commit'i oluştu: `62603b7c49fb3bcb20c2346e263ec6bfdddc2e29`. Persistent storage, gerçek reminder scheduler, verified transit/numerology providers, rendered TR/EN professional UI ve global release evidence eksik olduğu için TESTED/DONE verilmedi.
 
 ## Açık blocker'lar
 
@@ -65,9 +59,9 @@ Independent production golden/reference corpora; exact AKİLES provenance; Panch
 
 ## Sonraki devam noktası
 
-1. RC-0342→0393 dedicated CI + physical matrix commits yeniden okunacak; kırmızıysa exact validator/Flutter root cause düzeltilecek.
-2. Binding sıra RC-0394+ üzerinden ilerleyecek.
-3. RC-0212→0270, RC-0158→0184, RC-0127→0134, RC-0119→0122/Panchanga promotion açıkları tekrar kontrol edilecek.
+1. RC-0342→0371 dedicated CI/matrix sonuçları yeniden okunacak; kırmızıysa exact root cause düzeltilecek.
+2. Binding sıra **RC-0461+** üzerinden profesyonel entegrasyon / backup-export / privacy-security hattında ilerleyecek.
+3. RC-0212→0270, RC-0158→0184, RC-0127→0134 ve RC-0119→0122/Panchanga promotion açıkları yeniden kontrol edilecek.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0001→1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL denmeyecek.
 
