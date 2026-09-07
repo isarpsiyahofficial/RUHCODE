@@ -27,26 +27,28 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0212→0223 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
 - RC-0224→0229 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
 - RC-0230→0247 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
-- **RC-0248→0270 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri bu çalıştırmada eklendi. Physical TESTED promotion henüz kanıtlanmadı.
+- RC-0248→0270 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
+- **RC-0271→0305 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri eklendi. Physical TESTED promotion henüz kanıtlanmadı.
 
-## Son çalıştırmadaki gerçek geliştirme — RC-0248→0270
+## Son çalıştırmadaki gerçek geliştirme — RC-0271→0305
 
-Bağlayıcı 248→270 maddeleri yeniden okundu. Normal kullanıcı için sade deneyim ve aynı uygulama içindeki profesyonel mod explicit ürün sınırı olarak ayrıldı. Profesyonel çalışma alanı PRO + professional mode olmadan açılamıyor; bu ayrım ayrı uygulama üretmiyor.
+Bağlayıcı 271→305 maddeleri yeniden okundu. Professional PDF, TR/EN rapor, PDF'nin uygulama hesaplama sonucuyla aynı kaynaktan beslenmesi, Free/PRO tek-uygulama sınırı, Free temel değer, rewarded günlük premium açılım, reklamsız PRO, gelişmiş PRO yüzeyleri ve monetizasyon/calculation ayrımı machine-testable application contract olarak kuruldu.
 
-- `lib/src/application/professional/professional_mode_core.dart` (`76917f04c2ccf037269038a1a3e98e11de61cf25`): simple/pro mode, astrologer/numerologist rolü, çoklu doğum profili, müşteri not/etiket/arama, analiz ve transit geçmişi, iki farklı profil ile Synastry seçimi, profesyonel calculation settings ve önceden hesaplanmış raw-degree/aspect/transit table yüzeyleri.
-- `test/application/professional/professional_mode_core_test.dart` (`5f7727a6dd53e662c42127c9ad9e6d4027d2c9da`): simple-mode izolasyonu, PRO professional access, çoklu profil/history/search, distinct-profile Synastry, invalid settings/duplicate identities fail-closed ve non-recomputing result-table regressions.
-- `requirements/contracts/rc0248_rc0270_professional_mode_contract.json` (`ca6bad619ca4989e771f7702b61a5f0ce897b464`).
-- `tools/requirements/validate_rc0248_rc0270_professional_mode.py` (`08b1b6c6b5fa9b1cd51df3ed7e9adc04881b824c`): binding `248.`→`270.` satırlarını anchored doğrulayan fail-closed validator.
-- `.github/workflows/rc0248-rc0270-professional-mode.yml` (`3ee1bfabb1c6b0638b137157c62534d16694b5bf`): unique concurrency, Flutter regression, validator ve yalnız başarılı physical main run sonrası TESTED matrix promotion.
+- `lib/src/application/product/report_entitlement_core.dart` (`ba4a4e37d7039e29fffe2d07ccd35007d68a0349`): `CalculationResultRef` + report section/document modeli; rapor katmanında yeniden hesaplama callback/engine'i yok. TR/EN locale explicit. Tek uygulama `AppTier.free/pro`, anlamlı Free temel seti, advanced PRO seti, temporary rewarded daily unlock, reklamsız PRO ve tier'dan bağımsız calculation truth.
+- `test/application/product/report_entitlement_core_test.dart` (`3e9e1d56d7841738238c5bef868a52b939fc3b26`): TR/EN aynı manifest kaynağı, PRO-only PDF, Free temel değer, advanced PRO sınırı, expiry/scoped rewarded unlock ve calculation-result identity regressions.
+- `requirements/contracts/rc0271_rc0305_report_entitlement_contract.json` (`2a89351b1f3099310c27ef6ab3ff86729d25c0c0`).
+- `tools/requirements/validate_rc0271_rc0305_report_entitlement.py` (`a7d5b64deedc9ef450601668392b54e690c72e2e`): binding `271.`→`305.` satırlarını anchored doğrulayan fail-closed validator; report-specific recalculation yüzeylerini yasaklıyor.
+- `.github/workflows/rc0271-rc0305-report-entitlement.yml` (`ab24521e7311d6b22091eb4b987bab22dca5923a`): unique concurrency, validator + Flutter regression ve yalnız başarılı physical main run sonrası TESTED matrix promotion.
+- Physical workflow run `34141015875` oluşturuldu; son kontrolde `queued`, conclusion `null`. Bu nedenle RC-0271→0305 TESTED/DONE yapılmadı.
 
 ## Açık blocker'lar
 
-Rendered TR/EN simple/professional UI, persistent offline client/profile storage, PRO kayıt limiti entitlement wiring, verified calculation artifact/manifest bağlantısı, professional PDF, backup/restore/export, privacy/security/accessibility/performance/device/clean-checkout/lifecycle ve exact release artifact kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Real rendered TR/EN PDF artifacts, production Calculation Manifest storage/wiring, gerçek ad/rewarded ve PRO entitlement sağlayıcıları, rendered Free/PRO UI/store lifecycle, offline/device/accessibility/security/performance/clean-checkout/lifecycle/exact-release kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0212→0247 ve RC-0248→0270 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
-2. Binding sıra RC-0271+ üzerinden professional PDF ve Free/PRO ürün sınırlarıyla devam edecek.
+1. RC-0212→0270 ve RC-0271→0305 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
+2. Binding sıra RC-0306+ Calculation Manifest / reproducibility / Calculation QA ayrımı üzerinden devam edecek.
 3. RC-0158→0184, RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları kapatılacak.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. 1.442 RC tamamı DONE ve tüm final release kapıları green olmadan FINAL denmeyecek.
