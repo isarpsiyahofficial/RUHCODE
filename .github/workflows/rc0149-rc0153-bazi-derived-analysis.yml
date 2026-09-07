@@ -7,6 +7,8 @@ on:
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - 'lib/src/calculation_core/bazi/bazi_four_pillars.dart'
       - 'lib/src/calculation_core/bazi/bazi_derived_analysis.dart'
+      - 'lib/src/calculation_core/bazi/hidden_stems.dart'
+      - 'lib/src/calculation_core/bazi/sexagenary_cycle.dart'
       - 'test/calculation_core/bazi_derived_analysis_test.dart'
       - 'requirements/contracts/rc0149_rc0153_bazi_derived_analysis_contract.json'
       - 'tools/requirements/validate_rc0149_rc0153_bazi_derived_analysis.py'
@@ -18,7 +20,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: requirement-matrix-writers
+  group: requirement-matrix-writers-rc0149-rc0153
   cancel-in-progress: false
 
 jobs:
@@ -53,7 +55,7 @@ jobs:
             rows = list(csv.DictReader(f))
           fields = list(rows[0].keys())
           targets = {f'RC-{i:04d}' for i in range(149, 154)}
-          links = 'requirements/contracts/rc0149_rc0153_bazi_derived_analysis_contract.json|tools/requirements/validate_rc0149_rc0153_bazi_derived_analysis.py|lib/src/calculation_core/bazi/bazi_derived_analysis.dart|test/calculation_core/bazi_derived_analysis_test.dart|.github/workflows/rc0149-rc0153-bazi-derived-analysis.yml'
+          links = 'requirements/contracts/rc0149_rc0153_bazi_derived_analysis_contract.json|tools/requirements/validate_rc0149_rc0153_bazi_derived_analysis.py|lib/src/calculation_core/bazi/bazi_derived_analysis.dart|lib/src/calculation_core/bazi/hidden_stems.dart|lib/src/calculation_core/bazi/sexagenary_cycle.dart|test/calculation_core/bazi_derived_analysis_test.dart|.github/workflows/rc0149-rc0153-bazi-derived-analysis.yml'
           found = set()
           for r in rows:
             if r['rc_id'] not in targets:
@@ -64,7 +66,7 @@ jobs:
             r['evidence_links'] = links
             r['blocked'] = 'YES'
             r['blocker'] = 'Authoritative production BaZi pillar provider/golden vectors and explicit RC-0154 seasonal element-balance methodology, plus rendered TR/EN interpretation, Free/PRO, accessibility, offline/device and release evidence remain required.'
-            r['notes'] = 'Machine gate proves Hidden Stems membership, named unweighted occurrence distributions, Day Master identity and deterministic Ten Gods element/polarity relationships. Occurrence counts are not seasonal strength scores; TESTED only.'
+            r['notes'] = 'Machine gate proves reuse of canonical Hidden Stems/Wu Xing primitives, named unweighted occurrence distributions, Day Master identity and deterministic Ten Gods element/polarity relationships. Occurrence counts are not seasonal strength scores; TESTED only.'
           missing = targets - found
           if missing:
             raise SystemExit(f'RC0149_RC0153_FAIL: missing matrix rows: {sorted(missing)}')
