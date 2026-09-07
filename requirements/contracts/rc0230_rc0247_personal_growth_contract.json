@@ -1,0 +1,33 @@
+{
+  "range": "RC-0230..RC-0247",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0230": "Spiritual content exposes symbolic/traditional nature when needed.",
+    "RC-0231": "Personal-growth area remains useful without astrology.",
+    "RC-0232": "Personal journal exists.",
+    "RC-0233": "Goal-setting exists.",
+    "RC-0234": "Goals can contain subtasks.",
+    "RC-0235": "Habit tracking is supported.",
+    "RC-0236": "Weekly reflection is representable.",
+    "RC-0237": "Monthly reflection is representable.",
+    "RC-0238": "Life-wheel style scores are representable.",
+    "RC-0239": "Personal values are representable.",
+    "RC-0240": "Daily mood/energy recording is supported.",
+    "RC-0241": "Morning check-in is supported.",
+    "RC-0242": "Evening check-in is supported.",
+    "RC-0243": "Personal notes are supported.",
+    "RC-0244": "Historical journal records can be queried by date.",
+    "RC-0245": "Historical periods can be compared from retained records.",
+    "RC-0246": "Optional astrology-period context may be attached.",
+    "RC-0247": "Astrology context is never mandatory."
+  },
+  "evidence": {
+    "production": "lib/src/application/personal_growth/personal_growth_core.dart",
+    "test": "test/application/personal_growth/personal_growth_core_test.dart"
+  },
+  "blockers": [
+    "Rendered TR/EN UI and explicit symbolic-content disclosure copy are not yet product-verified.",
+    "Persistent offline storage, backup/restore, privacy, accessibility and device gates remain open.",
+    "Cross-period comparison presentation and optional astrology-context product wiring remain unverified."
+  ]
+}
