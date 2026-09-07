@@ -1,0 +1,20 @@
+{
+  "requirement_range": "RC-0372..RC-0381",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/application/engagement_policy.dart",
+  "tests": "test/application/engagement_policy_rc0372_rc0381_test.dart",
+  "claims": [
+    "calculation input and calculation result surfaces prohibit ad presentation",
+    "daily-message monetization is modeled as user-initiated rewarded access rather than an interruptive calculation ad",
+    "daily message, planetary hour, important transit, retrograde-boundary and moon-phase notifications are independent categories",
+    "every notification category defaults disabled and cannot fire without platform permission",
+    "notification eligibility is filtered through a minimum-gap spam guard"
+  ],
+  "blocked_until": [
+    "production ad SDK placement is audited against MonetizationPlacementPolicy on every calculation/result route",
+    "real local notification scheduler consumes NotificationPreferences and persists per-user category choices",
+    "Android/iOS permission flows and notification channels are wired and device-tested in TR/EN",
+    "planetary-hour/transit/retrograde/moon-phase triggers consume verified calculation results and timezone-aware schedules",
+    "Free/PRO/rewarded lifecycle tests prove no calculation interruption and no notification spam"
+  ]
+}
