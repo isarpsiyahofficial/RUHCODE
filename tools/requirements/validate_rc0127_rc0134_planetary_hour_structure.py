@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,8 +30,14 @@ def main() -> None:
     require(data.get("production") == "lib/src/calculation_core/planetary_hours/planetary_hours.dart", "production binding drifted")
     require(data.get("regression") == "test/calculation_core/planetary_hours_rc0127_rc0134_test.dart", "regression binding drifted")
 
+    # The binding specification is a numbered list; RC-0127 maps to item 127, etc.
+    # Match line starts so a substring such as 1270 cannot satisfy RC-0127.
     for rc in EXPECTED:
-        require(rc in spec, f"binding specification no longer contains {rc}")
+        number = int(rc.split("-")[1])
+        require(
+            re.search(rf"(?m)^\s*{number}\.\s+", spec) is not None,
+            f"binding specification no longer contains numbered requirement {number} for {rc}",
+        )
 
     for needle in (
         "SolarEvents.forDate",
