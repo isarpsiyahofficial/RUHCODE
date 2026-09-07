@@ -1,0 +1,17 @@
+{
+  "app.title": "Ruh Code",
+  "nav.today": "Bugün",
+  "nav.discover": "Keşfet",
+  "nav.calculate": "Hesapla",
+  "nav.records": "Kayıtlar",
+  "nav.profile": "Profil",
+  "action.moreDetails": "Daha detaylı",
+  "mode.simple": "Sade görünüm",
+  "mode.professional": "Profesyonel görünüm",
+  "label.summary": "Özet",
+  "label.technical": "Teknik detay",
+  "label.rawCalculation": "Ham hesaplama",
+  "release.calculationUnavailable": "Hesaplama doğrulaması tamamlanmadı.",
+  "release.referenceMismatch": "Referans sonuç farkı araştırılmalıdır.",
+  "release.translationMissing": "Sistem metni çevirisi eksik."
+}

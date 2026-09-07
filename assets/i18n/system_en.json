@@ -1,0 +1,17 @@
+{
+  "app.title": "Ruh Code",
+  "nav.today": "Today",
+  "nav.discover": "Discover",
+  "nav.calculate": "Calculate",
+  "nav.records": "Records",
+  "nav.profile": "Profile",
+  "action.moreDetails": "More details",
+  "mode.simple": "Simple view",
+  "mode.professional": "Professional view",
+  "label.summary": "Summary",
+  "label.technical": "Technical detail",
+  "label.rawCalculation": "Raw calculation",
+  "release.calculationUnavailable": "Calculation verification is incomplete.",
+  "release.referenceMismatch": "Reference result difference must be investigated.",
+  "release.translationMissing": "System text translation is missing."
+}

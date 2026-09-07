@@ -1,0 +1,19 @@
+{
+  "range": "RC-0394..RC-0420",
+  "binding": "RUH_CODE_MASTER_SARTNAME.md",
+  "required_numbered_entries": [394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420],
+  "evidence": {
+    "release_policy": "lib/src/application/release_readiness_policy.dart",
+    "interpretation_policy": "lib/src/content/interpretation_catalog_policy.dart",
+    "release_tests": "test/application/release_readiness_rc0394_rc0405_test.dart",
+    "content_tests": "test/content/interpretation_catalog_rc0406_rc0420_test.dart",
+    "tr_catalog": "assets/i18n/system_tr.json",
+    "en_catalog": "assets/i18n/system_en.json"
+  },
+  "release_blockers": [
+    "Exact AKILES regression provenance and golden vectors are not yet available.",
+    "Production-scale independent reference comparison remains required.",
+    "Rendered TR/EN UI and exact-release evidence remain required."
+  ],
+  "promotion_ceiling": "IMPLEMENTED"
+}
