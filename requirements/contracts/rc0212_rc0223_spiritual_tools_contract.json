@@ -1,0 +1,37 @@
+{
+  "contract_id": "rc0212-rc0223-spiritual-tools-v1",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": [
+    {"rc_id":"RC-0212","clause":212,"evidence":"SpiritualToolsRegistry requires every supported spiritual tool kind exactly once."},
+    {"rc_id":"RC-0213","clause":213,"evidence":"SpiritualToolKind.tarot and Tarot domain primitives exist independently."},
+    {"rc_id":"RC-0214","clause":214,"evidence":"TarotSpreadDefinition.oneCard and deterministic draw assembly support a one-card reading."},
+    {"rc_id":"RC-0215","clause":215,"evidence":"TarotSpreadDefinition.threeCard preserves three independent spread positions."},
+    {"rc_id":"RC-0216","clause":216,"evidence":"TarotSpreadDefinition accepts arbitrary non-empty position data for future modular spreads."},
+    {"rc_id":"RC-0217","clause":217,"evidence":"Tarot interpretation entries require source/version/editorial-policy provenance and the draw engine has no hidden RNG or random filler text."},
+    {"rc_id":"RC-0218","clause":218,"evidence":"IChingReadingProvider is a separate provider contract with method/source/version provenance."},
+    {"rc_id":"RC-0219","clause":219,"evidence":"MoonCycleGuidance consumes a pre-resolved phase and keeps astronomy/editorial provenance separate."},
+    {"rc_id":"RC-0220","clause":220,"evidence":"IntentionPractice is an independent spiritual practice primitive."},
+    {"rc_id":"RC-0221","clause":221,"evidence":"DailyIntention binds an intention to an explicit YYYY-MM-DD local date key."},
+    {"rc_id":"RC-0222","clause":222,"evidence":"MeditationContent is a versioned/source-tagged content primitive with positive duration."},
+    {"rc_id":"RC-0223","clause":223,"evidence":"BreathworkContent requires instructions, safety note, version and source provenance."}
+  ],
+  "evidence_paths": [
+    "lib/src/application/spiritual/spiritual_tools_core.dart",
+    "test/application/spiritual_tools_core_rc0212_rc0223_test.dart",
+    "tools/requirements/validate_rc0212_rc0223_spiritual_tools.py",
+    ".github/workflows/rc0212-rc0223-spiritual-tools.yml"
+  ],
+  "verification_policy": {
+    "machine_gate_status": "TESTED_only",
+    "blocked_until": [
+      "rendered_spiritual_tools_ui",
+      "authoritative_TR_EN_tarot_editorial_catalog",
+      "audited_entropy_provider_for_real_tarot_draws",
+      "authoritative_I_Ching_method_and_content",
+      "verified_moon_phase_provider_wiring",
+      "reviewed_meditation_and_breathwork_content",
+      "accessibility_offline_entitlement_device_release_gates"
+    ],
+    "must_not_claim": ["VERIFIED", "DONE"]
+  }
+}
