@@ -1,0 +1,23 @@
+{
+  "requirement_range": "RC-0271..RC-0305",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": "lib/src/application/product/report_entitlement_core.dart",
+  "tests": "test/application/product/report_entitlement_core_test.dart",
+  "claims": [
+    "professional reports support explicit Turkish and English locale selection",
+    "report sections reference already-produced calculation results and calculation manifests",
+    "report generation exposes no report-specific calculation callback or secondary calculation engine",
+    "Free and PRO are tiers of one application policy rather than separate calculation applications",
+    "Free tier exposes meaningful basic Western, Vedic, Chinese zodiac, numerology, Moon phase, planetary-hour and daily-card value",
+    "rewarded access is temporary and scoped to supported premium daily content",
+    "PRO is ad-free and unlocks advanced Western, Vedic, BaZi, advanced numerology, Synastry, Composite, transits, progressions, returns, professional clients, PDF, extended-date and offline-calculation features",
+    "monetization policy gates feature depth and never mutates or degrades calculation truth"
+  ],
+  "blocked_until": [
+    "real PDF renderer and TR/EN rendered artifacts are verified",
+    "calculation result references are wired to production Calculation Manifest storage",
+    "real ad/rewarded and PRO entitlement providers are integrated and tested",
+    "Free/PRO rendered UI and store lifecycle are verified",
+    "offline, device, accessibility, security and exact-release gates are completed"
+  ]
+}
