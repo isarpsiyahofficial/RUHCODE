@@ -1,0 +1,32 @@
+{
+  "requirement_range": "RC-0360..RC-0371",
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/data/profile/profile_storage_contract.dart",
+    "lib/src/application/runtime_capability_policy.dart",
+    "lib/src/entitlements/feature_access_guard.dart"
+  ],
+  "tests": [
+    "test/data/profile_storage_rc0360_rc0365_test.dart",
+    "test/application/runtime_capability_rc0366_rc0371_test.dart"
+  ],
+  "claims": [
+    "multiple self, partner, family and client profiles are representable under an explicit owner scope",
+    "profile repository API has no unscoped global-list method and requires owner identity for reads/deletes",
+    "cross-owner profile and client-note access fails closed",
+    "birth-bearing records are explicitly classified as sensitive and storage tiers require encrypted local/cloud semantics",
+    "core calculations, profile read/write, PDF and backup export are explicit local-only runtime capabilities",
+    "premium verification and optional cloud sync are isolated remote-required capabilities",
+    "app launch network allow-list is empty so startup does not acquire an implicit network dependency",
+    "premium authority is verifier-backed with signed assertion provenance and UTC validity instead of a mutable local boolean",
+    "the existing FeatureAccessGuard resolves access through EntitlementService and does not accept local premium booleans"
+  ],
+  "blocked_until": [
+    "a production encrypted local ProfileRepository implementation is wired and key-management/device tests prove encryption at rest",
+    "optional cloud repository schema enforces the same owner boundary and conflict model",
+    "all existing profile/client-note stores are migrated to the owner-scoped repository without legacy unscoped access",
+    "network inventory and airplane-mode tests prove core calculation/profile/PDF paths remain offline",
+    "premium verifier is wired to the real store/backend assertion flow and tamper/replay/expiry tests pass",
+    "clean-checkout, upgrade and multi-user isolation tests pass on release artifacts"
+  ]
+}
