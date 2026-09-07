@@ -1,0 +1,16 @@
+{
+  "contract_id": "rc0185_rc0186_lo_shu_kabbalistic_boundary",
+  "requirements": ["RC-0185","RC-0186"],
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": ["lib/src/calculation_core/numerology/lo_shu_grid.dart"],
+  "tests": ["test/calculation_core/lo_shu_rc0185_rc0186_test.dart"],
+  "evidence_policy": {
+    "status_after_machine_gate": "TESTED",
+    "blocked": true,
+    "blockers": [
+      "independent Lo Shu reference vectors and rendered grid UI",
+      "future Kabbalistic methodology/source selection before production implementation",
+      "TR/EN/offline/Free-PRO/backup/PDF/accessibility/performance/device/exact-release gates"
+    ]
+  }
+}

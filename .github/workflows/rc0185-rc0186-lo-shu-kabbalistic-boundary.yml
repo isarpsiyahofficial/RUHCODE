@@ -1,0 +1,76 @@
+name: RC-0185 through RC-0186 Lo Shu and Kabbalistic Boundary
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/numerology/lo_shu_grid.dart'
+      - 'test/calculation_core/lo_shu_rc0185_rc0186_test.dart'
+      - 'requirements/contracts/rc0185_rc0186_lo_shu_kabbalistic_boundary_contract.json'
+      - 'tools/requirements/validate_rc0185_rc0186_lo_shu_kabbalistic_boundary.py'
+      - '.github/workflows/rc0185-rc0186-lo-shu-kabbalistic-boundary.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0185-rc0186
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0185_rc0186_lo_shu_kabbalistic_boundary.py
+      - run: flutter test test/calculation_core/lo_shu_rc0185_rc0186_test.dart
+      - name: Promote RC-0185 through RC-0186 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0185_rc0186_lo_shu_kabbalistic_boundary.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p = Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8', newline='') as f:
+            rows = list(csv.DictReader(f))
+          fields = list(rows[0].keys())
+          targets = {'RC-0185','RC-0186'}
+          links = 'requirements/contracts/rc0185_rc0186_lo_shu_kabbalistic_boundary_contract.json|tools/requirements/validate_rc0185_rc0186_lo_shu_kabbalistic_boundary.py|lib/src/calculation_core/numerology/lo_shu_grid.dart|test/calculation_core/lo_shu_rc0185_rc0186_test.dart|.github/workflows/rc0185-rc0186-lo-shu-kabbalistic-boundary.yml'
+          found = set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status'] not in ('VERIFIED','DONE'): r['status'] = 'TESTED'
+            r['evidence_links'] = links
+            r['blocked'] = 'YES'
+            r['blocker'] = 'Independent Lo Shu goldens/rendered grid UI, future Kabbalistic methodology/source selection, and global product/release gates remain required.'
+            r['notes'] = 'Machine gate proves a birth-date-digit Lo Shu grid independent from Pythagorean reduction and a standalone future Kabbalistic system boundary. TESTED is not VERIFIED/DONE.'
+          missing = targets-found
+          if missing: raise SystemExit(f'RC0185_RC0186_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0185-rc0186): record Lo Shu boundary TESTED'
+          git push origin HEAD:main
