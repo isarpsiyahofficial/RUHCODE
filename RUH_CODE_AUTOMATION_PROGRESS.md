@@ -24,47 +24,51 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0158→0165 = IMPLEMENTED + blocked=YES; RC-0166→0184 = IMPLEMENTED + blocked=YES.
 - RC-0185→0186 = TESTED + blocked=YES (`d6413c46c5d7dcf5cd4197f1dbd8a30335db2391`).
 - RC-0187→0211 = TESTED + blocked=YES (`ef1dba9efb73d9ce0c5bc852548f704e5dd26aa4`).
-- RC-0212→0223 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
-- RC-0224→0229 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit’i henüz görülmedi.
-- RC-0230→0247 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
-- RC-0248→0270 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
-- RC-0271→0305 = IMPLEMENTED + blocked=YES; physical TESTED promotion henüz kanıtlanmadı.
-- **RC-0306→0323 = IMPLEMENTED + blocked=YES**; production/test/contract/validator/dedicated CI zinciri eklendi. Physical TESTED promotion henüz kanıtlanmadı.
+- RC-0212→0223 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit'i henüz görülmedi.
+- RC-0224→0229 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit'i henüz görülmedi.
+- RC-0230→0247 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit'i henüz görülmedi.
+- RC-0248→0270 = IMPLEMENTED + blocked=YES; physical TESTED promotion commit'i henüz görülmedi.
+- **RC-0271→0305 = TESTED + blocked=YES** (`18419e674b4603fecdb050a99e4f268ddc3cb95f`).
+- **RC-0306→0323 = TESTED + blocked=YES** (`cee7256c9166b511c61d4cace9dfa053aa27b4bd`).
+- **RC-0324→0341 = IMPLEMENTED + blocked=YES**; reference QA harness gate physically passed and matrix evidence was recorded (`2155cfc613f0f5773f277999e8dd21d9f74ee66f`). Production-scale golden corpus is deliberately still blocking TESTED/VERIFIED/DONE.
+- RC-0342→0359 = production/test/contract/validator/dedicated CI implementation chain added; physical matrix promotion not yet proven, therefore no TESTED claim.
+- RC-0360→0371 = production/test/contract/validator/dedicated CI implementation chain added; physical matrix promotion not yet proven, therefore no TESTED claim.
+- RC-0372→0381 = production/test/contract/validator/dedicated CI implementation chain added; physical matrix promotion not yet proven, therefore no TESTED claim.
 
-## Son çalıştırmadaki gerçek geliştirme
+## Bu çalıştırmadaki gerçek geliştirme
 
-### RC-0271→0305 — professional PDF + Free/PRO boundary
+### RC-0324→0341 — Reference / golden calculation QA
 
-Bağlayıcı 271→305 maddeleri yeniden okundu. Professional PDF, TR/EN rapor, PDF'nin uygulama hesaplama sonucuyla aynı kaynaktan beslenmesi, Free/PRO tek-uygulama sınırı, Free temel değer, rewarded günlük premium açılım, reklamsız PRO, gelişmiş PRO yüzeyleri ve monetizasyon/calculation ayrımı machine-testable application contract olarak kuruldu.
+`lib/src/calculation/reference_qa.dart` ile motor bazlı golden/reference QA modeli kuruldu. Western, Vedic, Planetary Hours, BaZi ve üç numeroloji motoru ayrı tutuluyor. Her vaka Calculation Manifest + explicit expectation + provenance taşıyor. Tek kaynak release için yeterli değil; primary mathematical + independent reference kanıtı zorunlu. Zodiac ingress, Nakshatra, house cusp, DST, Chinese New Year, BaZi solar term, leap year, midnight ve high-latitude durumları explicit boundary sınıflarıdır.
 
-- `lib/src/application/product/report_entitlement_core.dart` (`ba4a4e37d7039e29fffe2d07ccd35007d68a0349`).
-- `test/application/product/report_entitlement_core_test.dart` (`3e9e1d56d7841738238c5bef868a52b939fc3b26`).
-- `requirements/contracts/rc0271_rc0305_report_entitlement_contract.json` (`2a89351b1f3099310c27ef6ab3ff86729d25c0c0`).
-- `tools/requirements/validate_rc0271_rc0305_report_entitlement.py` (`a7d5b64deedc9ef450601668392b54e690c72e2e`).
-- `.github/workflows/rc0271-rc0305-report-entitlement.yml` (`ab24521e7311d6b22091eb4b987bab22dca5923a`). Physical run `34141015875` son kontrolde queued/conclusion=null; TESTED verilmedi.
+Default release policy Western için >=1000 ve Vedic için >=1000 gerçek reference vaka, Planetary Hours için çoklu koordinat/timezone kapsaması ve tüm boundary sınıflarını şart koşuyor. Küçük regression fixture'ları bu eşiği kandıramıyor. Test, exact contract, fail-closed validator ve dedicated gate eklendi. Physical matrix commit: `2155cfc613f0f5773f277999e8dd21d9f74ee66f`.
 
-### RC-0306→0323 — Calculation Manifest + reproducibility + QA separation
+### RC-0342→0359 — sade bilgi mimarisi + birth-time semantics
 
-Bağlayıcı 306→323 maddeleri implementation seviyesine getirildi.
+`lib/src/ui/navigation/information_architecture.dart` ile Today / Discover / Calculate / Records / Profile ana bilgi mimarisi, Western/Vedic/Chinese/Numerology/Spiritual/Personal Growth domain ayrımı ve simple/professional görünürlük politikası oluşturuldu. Expert/Professional domain simple modda sızmıyor; onboarding kısa tutuluyor.
 
-- `lib/src/calculation/calculation_manifest.dart` (`63c2c91ecb83a8269067587d3ad6e11248bb72e1`): engine ID/version, tropical/sidereal, house system, ayanamsha, node system, timezone DB version, coordinate, UTC/local time, timezone ID ve explicit assumptions tek reproducibility record içinde tutuluyor. Historical artifact engineVersion bilgisini kaybetmiyor.
-- Calculation ve interpretation ayrı artifact türleri; biri diğerinin digest/provenance alanı değil.
-- `QaRecord` Calculation QA yapılmadan Interpretation QA'ya izin vermiyor; hesaplama doğru/yorum yanlış ve hesaplama yanlış/yorum doğru durumları birbirini maskelemiyor.
-- `test/calculation/calculation_manifest_rc0306_rc0323_test.dart` (`8207cd0161323f35fa189d4144ede61916d1a238`).
-- `requirements/contracts/rc0306_rc0323_calculation_manifest_contract.json` (`ce99df726e4a36f038cbf70ff69eb3f0477da7f3`).
-- `tools/requirements/validate_rc0306_rc0323_calculation_manifest.py` (`617185f6ded651a30b91bdd367e0cc2ab4bd28c5`).
-- `.github/workflows/rc0306-rc0323-calculation-manifest.yml` (`05086d7317aeae1c8a73e5b7026d37d96e6e8168`): unique concurrency, validator + Flutter regression, successful physical main run sonrası TESTED matrix promotion. Yeni HEAD workflow'ları fiziksel olarak oluştu ancak son kontrolde queued; promotion kanıtlanmadı.
+`lib/src/domain/profile/birth_profile.dart` doğum tarihini opsiyonel, doğum saatini ise explicit `known/unknown` olarak modelliyor. Saat bilinmiyorsa yükselen/ev gibi saat-bağımlı calculation için sahte noon/midnight üretilmiyor; `requireLocalBirthDateTime()` fail-closed. Birth place display name + coordinate + timezone ile ayrı doğrulanıyor. TR/EN feature notice contract'ı mevcut. Runtime shell/onboarding/place picker/all time-dependent route wiring ve gerçek cihaz kanıtı blocker.
+
+### RC-0360→0371 — tenant isolation + offline/online sınırı
+
+`lib/src/data/profile/profile_storage_contract.dart` owner-scoped self/partner/family/client kayıt modeli ve global unscoped listelemeyi dışlayan repository contract'ı ekliyor; cross-owner profil/not erişimi fail-closed. Sensitive birth data ayrı işaretleniyor. Gerçek encryption-at-rest implementation/key management henüz yok ve bu yüzden DONE verilmez.
+
+`lib/src/application/runtime_capability_policy.dart` Western/Vedic/Chinese/BaZi/Numerology/Planetary Hours calculation, profile, PDF ve backup export'u local-only; premium verification ve optional cloud sync'i remote-required olarak ayırıyor. Launch network allow-list boş. Premium authority mutable local boolean değil; verifier-backed signed assertion provenance + UTC validity window istiyor. Production store/backend verifier, tamper/replay/expiry ve airplane-mode/device kanıtları blocker.
+
+### RC-0372→0381 — non-interruptive monetization + notification preferences
+
+`lib/src/application/engagement_policy.dart` calculation input/result yüzeylerinde reklamı explicit `prohibited` yapıyor; daily-message rewarded yalnız user-initiated. Bildirimler Daily Message, Planetary Hour, Important Transit, Retrograde Boundary ve Moon Phase olarak ayrı category toggle'larıdır; varsayılanları kapalıdır ve platform permission olmadan etkinleşmez. Minimum-gap spam guard vardır. Real ad SDK audit, notification scheduler/channels/permissions ve verified trigger/device lifecycle wiring blocker.
 
 ## Açık blocker'lar
 
-Real rendered TR/EN PDF artifacts, production Calculation Manifest persistence/wiring, independent golden/reference datasets, interpretation provenance/editorial QA, gerçek ad/rewarded ve PRO entitlement sağlayıcıları, rendered Free/PRO UI/store lifecycle, offline/device/accessibility/security/performance/clean-checkout/lifecycle/exact-release kapıları açık. Eski AKİLES, Panchanga/Vedic promotion ve RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic eski promotion açıkları; gerçek rendered TR/EN UI ve PDF; production Calculation Manifest persistence; editorial/interpretation QA; encrypted persistence/key management; multi-user tenant/device isolation; real ad/rewarded/PRO verification; offline/airplane-mode; backup round-trip; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact kapıları açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0212→0323 physical CI/promotion sonuçları yeniden okunacak; kırmızıysa exact job/log root-cause düzeltilecek.
-2. Binding sıra RC-0324+ reference/golden calculation QA setleri ve boundary/DST testleri üzerinden devam edecek.
-3. RC-0158→0184, RC-0127→0134, RC-0119→0122 ve Panchanga physical promotion açıkları kapatılacak.
+1. RC-0342→0381 dedicated CI sonuçları ve physical matrix commits yeniden okunacak; kırmızıysa exact validator/Flutter root cause aynı hatta düzeltilecek.
+2. Binding sıra RC-0382+ UI visual/readability/chart policy ile devam edecek.
+3. RC-0212→0270, RC-0158→0184, RC-0127→0134, RC-0119→0122/Panchanga promotion açıkları tekrar kontrol edilip bağımsız blocker dışındakiler kapatılacak.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
-5. 1.442 RC tamamı DONE ve tüm final release kapıları green olmadan FINAL denmeyecek.
+5. RC-0001→1442 tamamı DONE ve tüm release gate'leri green olmadan FINAL denmeyecek.
 
 **FINAL: NO.**
