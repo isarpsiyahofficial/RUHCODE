@@ -1,0 +1,31 @@
+{
+  "contract_id": "rc0158_rc0165_system_boundaries",
+  "requirements": ["RC-0158", "RC-0159", "RC-0160", "RC-0161", "RC-0162", "RC-0163", "RC-0164", "RC-0165"],
+  "binding_spec": "RUH_CODE_MASTER_SARTNAME.md",
+  "production": [
+    "lib/src/calculation_core/bazi/bazi_compatibility.dart",
+    "lib/src/calculation_core/ziwei/zi_wei_engine.dart",
+    "lib/src/calculation_core/numerology/numerology_system.dart"
+  ],
+  "tests": ["test/calculation_core/system_boundaries_rc0158_rc0165_test.dart"],
+  "evidence_policy": {
+    "status_after_machine_gate": "TESTED",
+    "blocked": true,
+    "blockers": [
+      "authoritative BaZi compatibility rule catalog and independent golden vectors",
+      "future Zi Wei Dou Shu production calculation implementation and authoritative references",
+      "production Pythagorean, Chaldean and Lo Shu calculators plus normalization/reference tables",
+      "rendered UI proving exact numerology system identity, TR/EN, offline, Free/PRO and release gates"
+    ]
+  },
+  "claims": {
+    "RC-0158": "BaZi compatibility has an explicit versioned/source-tagged extension engine without embedding an unsupported universal doctrine.",
+    "RC-0159": "Zi Wei Dou Shu has a dedicated future-engine contract.",
+    "RC-0160": "Zi Wei Dou Shu engine contract resides outside BaZi and imports no BaZi types.",
+    "RC-0161": "Numerology is modeled as a family of separately identifiable systems rather than one calculation mode.",
+    "RC-0162": "Pythagorean numerology has a distinct system contract.",
+    "RC-0163": "Chaldean numerology has a distinct system contract.",
+    "RC-0164": "Lo Shu Grid has a distinct grid-system contract.",
+    "RC-0165": "Numerology results carry exact system identity and display name for product presentation."
+  }
+}

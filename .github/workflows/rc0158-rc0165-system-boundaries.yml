@@ -1,0 +1,82 @@
+name: RC-0158 through RC-0165 System Boundaries
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - 'lib/src/calculation_core/bazi/bazi_compatibility.dart'
+      - 'lib/src/calculation_core/ziwei/zi_wei_engine.dart'
+      - 'lib/src/calculation_core/numerology/numerology_system.dart'
+      - 'test/calculation_core/system_boundaries_rc0158_rc0165_test.dart'
+      - 'requirements/contracts/rc0158_rc0165_system_boundaries_contract.json'
+      - 'tools/requirements/validate_rc0158_rc0165_system_boundaries.py'
+      - '.github/workflows/rc0158-rc0165-system-boundaries.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0158-rc0165
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0158_rc0165_system_boundaries.py
+      - run: flutter test test/calculation_core/system_boundaries_rc0158_rc0165_test.dart
+      - name: Promote RC-0158 through RC-0165 to TESTED
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0158_rc0165_system_boundaries.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p = Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8', newline='') as f:
+            rows = list(csv.DictReader(f))
+          fields = list(rows[0].keys())
+          targets = {f'RC-{i:04d}' for i in range(158, 166)}
+          links = 'requirements/contracts/rc0158_rc0165_system_boundaries_contract.json|tools/requirements/validate_rc0158_rc0165_system_boundaries.py|lib/src/calculation_core/bazi/bazi_compatibility.dart|lib/src/calculation_core/ziwei/zi_wei_engine.dart|lib/src/calculation_core/numerology/numerology_system.dart|test/calculation_core/system_boundaries_rc0158_rc0165_test.dart|.github/workflows/rc0158-rc0165-system-boundaries.yml'
+          found = set()
+          for r in rows:
+            if r['rc_id'] not in targets:
+              continue
+            found.add(r['rc_id'])
+            if r['status'] not in ('VERIFIED', 'DONE'):
+              r['status'] = 'TESTED'
+            r['evidence_links'] = links
+            r['blocked'] = 'YES'
+            r['blocker'] = 'Authoritative BaZi compatibility rules/goldens, future standalone Zi Wei production implementation, production Pythagorean/Chaldean/Lo Shu calculators and rendered system-identity UI plus TR/EN/offline/Free-PRO/release evidence remain required.'
+            r['notes'] = 'Machine gate proves separate versioned/source-tagged BaZi compatibility extension, standalone Zi Wei engine boundary with no BaZi import, three distinct numerology system contracts, and visible result system identity. Architecture/extension readiness only; TESTED is not VERIFIED/DONE.'
+          missing = targets - found
+          if missing:
+            raise SystemExit(f'RC0158_RC0165_FAIL: missing matrix rows: {sorted(missing)}')
+          with p.open('w', encoding='utf-8', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
+            w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0158-rc0165): record system boundaries TESTED'
+          git push origin HEAD:main
