@@ -83,7 +83,7 @@ jobs:
           assert ids == expected
           assert len(set(ids)) == 1442
           valid = {'NOT_STARTED','IMPLEMENTED','TESTED','VERIFIED','DONE'}
-          allowed_tags = {'CALC','CONTENT','UI','I18N','OFFLINE','ENTITLEMENT','BACKUP','PDF','SECURITY','A11Y','PERF','RELEASE'}
+          allowed_tags = {'CALC','CONTENT','UI','I18N','OFFLINE','ENTITLEMENT','BACKUP','PDF','SECURITY','A11Y','PERF','RELEASE','TRACE'}
           observed_tags = set()
           for row in rows:
               assert row['status'] in valid, row
