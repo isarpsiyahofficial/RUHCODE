@@ -16,58 +16,46 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0105→0110 = TESTED + blocked=YES** (`4bcd3593b39c7aa1b673178c3755b66ad02065af`).
 - **RC-0112, RC-0114 = TESTED + blocked=YES** (`5c6266c5af635e81c963c3c7255c6973875103fe`).
 - **RC-0118 = TESTED + blocked=YES** (`28c73506c796bb9ab3d045e4ba36ca16ee6b6737`).
-- **RC-0111, RC-0113, RC-0115, RC-0116, RC-0117 = IMPLEMENTED + blocked=YES**; cancelled initial gate was explicitly retriggered at `abda6575a466cb9463dae15957a69a44d195f2dc`. Physical promotion still required before TESTED.
-- **RC-0119 = IMPLEMENTED + blocked=YES**. Production `38a2633f7f6bfca5c72c3fb18568491b05b37694`, regressions `08b64627ebf2b9d36f28e4db5fb4f1aa9b9fec01`, contract `186bb7189ed9d73cc9df02bf2878169aee8f4fe6`, validator `75e2e89cae51049e11da03b36d82d5d904780468`, dedicated gate `29b9ad5d66fa5806a31370fa254cd6903963a52c`, explicit switch fix `1e54c8c41f037f22449ff08a40cbc215b97e6f61`. Physical promotion pending.
-- **RC-0120 = IMPLEMENTED + blocked=YES**. Production `4e42afcc6dbf0e683fb4d79c56764dadcf34832e`, regressions `087da9c2b1baf3a8e345b1684b0ece682ad72670`, contract `0de0ac163d46d5e49424d2f89f465d7037ee6d58`, validator `487d8325fd5d2064bcdeb754d850d503e6bfeb7d`, gate `d13e7bdec28ed7c24f9d6b04546c4be9db817a6e`. Physical promotion pending.
-- **RC-0121 = IMPLEMENTED + blocked=YES**. Production `8d9b050a462dd0106270f370277858b8ba0a56b8`, regressions `70f3ccd04aa405c44671cf192cd17a3846eb0ad1`, contract `e24f540c482c31914bcec8c1afe574692514bbaf`, validator `13b2e6fd4b4251e6c9415d6350c055af0352d3e1`, gate `cfe29e29a7b7f485130ce54b9484bace41ca10ff`. Physical promotion pending.
-- **RC-0122 = IMPLEMENTED + blocked=YES**. Production `32cd45b3c660af4d97c1151c653e967d935641d2`, regressions `f867f91f7623540bcae8c62f227cedcde754387b`, contract `9a068fcb8f45ab4ab14f22622aaf980a4bd5834d`, validator `34469cd5e5f7237041c9ce29841df0f3f43d4140`, gate `7139a6af49b975bd52a1e97693234c62ad592959`. Physical promotion pending.
-- **RC-0123 = IMPLEMENTED + blocked=YES**. Production `c3047d12f3218ac02a0bae75134648353ab068bf`, regressions `7d3505a25678bd5fa0af3616a5c1dda7305e64c0`, contract `e728533ced3e0ccb79188183dd443371894bd5b5`, validator `2afba916c032ea2ab291390bc7a508951d4817b5`, gate `c7f11f0bb3f9b93f0b9b51247bc93120f6cec0f4`. Physical promotion pending.
+- **RC-0111, RC-0113, RC-0115, RC-0116, RC-0117 = IMPLEMENTED + blocked=YES**; cancelled initial gate retriggered at `abda6575a466cb9463dae15957a69a44d195f2dc`; physical promotion still required.
+- **RC-0119 = IMPLEMENTED + blocked=YES**. Gate `29b9ad5d66fa5806a31370fa254cd6903963a52c`; physical promotion still pending.
+- **RC-0120 = IMPLEMENTED + blocked=YES**. Gate `d13e7bdec28ed7c24f9d6b04546c4be9db817a6e`; physical promotion still pending.
+- **RC-0121 = IMPLEMENTED + blocked=YES**. Gate `cfe29e29a7b7f485130ce54b9484bace41ca10ff`; physical promotion still pending.
+- **RC-0122 = IMPLEMENTED + blocked=YES**. Gate `7139a6af49b975bd52a1e97693234c62ad592959`; physical promotion still pending.
+- **RC-0123 = TESTED + blocked=YES**. Physical bot promotion `c29fbb359fee9dd0bf501d8cb7fd195c94a15638`; checkpointteki önceki gate SHA yazımı düzeltilerek gerçek gate `c7f11f0bb3f9b93f0b9b51247bc93120f6cec0f4` olarak doğrulandı.
+- **RC-0124→0126 = NOT_STARTED/blocked**. Exact AKİLES algorithm + sunrise/sunset source/version/hash/golden provenance repository'de henüz yok; mevcut NOAA/GML/Meeus solar core bu requirement'ları AKİLES diye kapatmak için kullanılamaz.
+- **RC-0127→0134 = IMPLEMENTED + blocked=YES**. Existing production planetary-hours core için requirement-specific regression `test/calculation_core/planetary_hours_rc0127_rc0134_test.dart`, contract, fail-closed validator ve dedicated gate eklendi. Gate fix HEAD `315887370b044b516c529de4417c996718120f0c`; physical run `34068566861` son kontrolde queued, bu yüzden TESTED promotion henüz verilmedi.
+- **RC-0135 = IMPLEMENTED + blocked=YES**. Source-tagged complete guidance model + compiled regression + contract + validator + dedicated gate eklendi; gate `435d274dba740b11da7fc1d115ebc53c06494aa1`. Authoritative TR/EN editorial catalog, entitlement/UI ve physical CI promotion açık.
+- **RC-0136 = NOT_STARTED/blocked**; timezone/DST rendered behavior bağımsız requirement olarak korunuyor.
 
 ## Bu turdaki gerçek geliştirme
 
-### RC-0118 promotion doğrulaması
+### RC-0123 physical promotion düzeltmesi
 
-- Physical bot promotion `28c73506c796bb9ab3d045e4ba36ca16ee6b6737` doğrulandı; RC-0118 yalnız TESTED seviyesine yükseltildi.
-- Verified yoga catalog/source evidence, professional rendered UI, entitlement ve device/release kapıları açık olduğundan VERIFIED/DONE verilmedi.
+- Önceki checkpointte gate SHA yanlış kaydedilmişti; gerçek gate `c7f11f0bb3f9b93f0b9b51247bc93120f6cec0f4` ve physical bot promotion `c29fbb359fee9dd0bf501d8cb7fd195c94a15638` doğrulandı.
+- RC-0123 yalnız TESTED seviyesine yükseltildi; authoritative Muhurta rule-data/golden, UI/entitlement/device/release kapıları açık olduğundan VERIFIED/DONE verilmedi.
 
-### RC-0111/0113/0115/0116/0117 Panchanga/Gochara gate retrigger
+### RC-0124→0126 AKİLES blocker doğrulaması
 
-- Önceki cancelled dedicated gate yeniden tetiklendi (`abda6575a466cb9463dae15957a69a44d195f2dc`).
-- Promotion blocker metni RC-0112/RC-0114 artık TESTED olduğu için güncellendi.
-- Bot promotion fiziksel olarak oluşmadan bu beş requirement TESTED ilan edilmeyecek.
+- Existing `planetary_hours.dart` gerçek sunrise/sunset/next-sunrise tabanlı 12+12 calculation yapıyor, ancak solar implementation repository'de NOAA/GML/Meeus-derived olarak tanımlı.
+- `rc0005-akiles-reference.yml` exact AKİLES source/artifact/version/commit/hash/capture reference eksikliğini açık blocker olarak tutuyor.
+- Bu nedenle RC-0124/0125/0126 uydurma eşdeğerlikle TESTED/DONE yapılmadı.
 
-### RC-0119 Ashtakavarga
+### RC-0127→0134 Planetary Hours structure
 
-- Unverified klasik bindu tabloları runtime gerçeği olarak hard-code edilmedi; evaluator explicit `id/version/sourceId` taşıyan rule-set istiyor.
-- Graha/Lagna contributor-relative favorable-house kurallarından Bhinna binduları, aynı satırlardan Sarvashtakavarga toplamlarını deterministic üretiyor.
-- Missing contributor, duplicate subject/contributor rule, invalid relative house ve invalid chart provenance fail-closed.
-- Authoritative classical rule-data provenance + independent golden/reference karşılaştırması bulunmadan VERIFIED/DONE verilmeyecek.
+- Day arc = sunset − sunrise ve day hour = day arc / 12 compiled regression ile bağlandı.
+- Night arc = next sunrise − sunset ve night hour = night arc / 12 compiled regression ile bağlandı.
+- Monday fixture'ında first-hour ruler Moon ve tüm 24 slot boyunca Chaldean continuation doğrulanacak şekilde test eklendi.
+- Exact 24 contiguous ordered slot listesi test ediliyor.
+- İlk regression yazımında production modelinde olmayan `.duration` alanına yanlış başvuru fark edilip aynı turda `endUtc.difference(startUtc)` kullanacak şekilde düzeltildi (`315887370b044b516c529de4417c996718120f0c`).
+- Contract/validator AKİLES blocker'ını özellikle koruyor; dedicated workflow physical success olmadan matrix promotion yok.
 
-### RC-0120 Shadbala
+### RC-0135 Planetary-hour guidance
 
-- Sthana, Dig, Kala, Cheshta, Naisargika ve Drik altı ayrı component grubu olarak modellendi.
-- Her component method id/version/source ve Rupa değeri taşımak zorunda.
-- Eksik veya duplicate component seti professional toplam üretmiyor; fail-closed.
-- Exact klasik formüller uydurulmadı; her component formula provider/golden kanıtı gelene kadar yalnız provenance-first aggregation architecture kabul edildi.
-
-### RC-0121 Vedik gezegen güçleri
-
-- Shadbala ile RC-0121 birleştirilmedi; ayrı `VedicPlanetStrength` değerlendirme katmanı oluşturuldu.
-- Shadbala yalnız provenance-tagged bir metric olarak taşınabiliyor; başka Vedik strength doktrinleri future explicit method/source ile eklenebilecek.
-- Hidden weighting veya synthetic combined score yok.
-
-### RC-0122 Vedik compatibility
-
-- Western compatibility mantığından ayrı versioned/source-tagged Vedic rule evaluator kuruldu.
-- Per-rule relative Rashi sonucu ve awarded/max points görünür; missing body/duplicate rule/invalid distance fail-closed.
-- Kanıtsız Kuta tablosu universal truth olarak gömülmedi.
-
-### RC-0123 Muhurta
-
-- Muhurta bağımsız tool boundary olarak `VedicPanchangaSnapshot` tüketiyor.
-- Tithi, Vara, Nakshatra, Yoga ve Karana üzerinden explicit versioned/source-tagged electional rules değerlendiriliyor.
-- Her rule gözlenen değeri ve awarded/max sonucu ile görünür; duplicate rule ve eksik Panchanga provenance fail-closed.
-- Universal/kanıtsız Muhurta doktrini hard-code edilmedi.
+- Authoritative yorum/mantra metni hard-code edilmedi.
+- `PlanetaryHourGuidanceCatalog` yedi klasik gezegenin tamamını zorunlu tutuyor; duplicate/missing planet ve boş editorial/provenance alanları fail-closed.
+- 24 slotun her biri planet, start/end, quality, interpretation, PRO action, do-not, mantra, sourceId ve version ile deterministic olarak birleştiriliyor.
+- Fixture strings yalnız compiled regression içindir; authoritative TR/EN content evidence yerine geçmez.
+- Production `c0c8a3ec55257d709a767570e67494cc65969414`, regressions `58d458ba3b9bf28f146660099173d39ede6b24b3`, contract `a509f689c2c51e48001c1dacc69efdbfcdea3ad1`, validator `060154b99591cc0c0b5ffe72b1ee5c6ad2473238`, gate `435d274dba740b11da7fc1d115ebc53c06494aa1`.
 
 ## Açık product-facing / global blocker'lar
 
@@ -75,10 +63,11 @@ RC-0042/0044/0046/0048/0049 product-facing açıkları; RC-0061 active house-sys
 
 ## Sonraki devam noktası
 
-1. RC-0119→0123 exact CI/promotion sonuçları okunacak; kırmızıysa validator/test/analyzer kök nedeni aynı hatta düzeltilecek.
-2. RC-0111/0113/0115/0116/0117 retrigger sonucunda physical promotion doğrulanacak; kırmızıysa job/log kök nedeni kapatılacak.
-3. RC-0124→RC-0136 gezegen saatleri hattında bağlayıcı şartnamenin istediği AKİLES doğrulanmış algoritma/provenance önce repository içinde bulunup hash/source olarak bağlanacak; exact referans olmadan algoritma uydurulmayacak.
-4. RC-0082/0083 kırmızı Analyze/validator sorunu ve RC-0086/0087/RC-0062 physical promotion açıkları ayrıca çözülecek.
-5. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
+1. RC-0127→0135 dedicated workflow/promotion sonuçları fiziksel olarak okunacak; kırmızıysa exact validator/test/analyzer root cause aynı hatta düzeltilecek.
+2. RC-0119→0122 exact CI/promotion ve RC-0111/0113/0115/0116/0117 retrigger sonucu okunacak; physical promotion olmadan TESTED verilmeyecek.
+3. RC-0136 timezone/DST behavior product/runtime altyapısı incelenip requirement-specific evidence eklenecek.
+4. RC-0124→0126 exact AKİLES source/version/hash/golden provenance bulunmadan AKİLES claim yapılmayacak.
+5. RC-0082/0083 kırmızı Analyze/validator sorunu ve RC-0086/0087/RC-0062 physical promotion açıkları ayrıca çözülecek.
+6. 1.442 RC tamamı DONE ve bütün final release kapıları green olmadan FINAL denmeyecek.
 
 **FINAL: NO.**
