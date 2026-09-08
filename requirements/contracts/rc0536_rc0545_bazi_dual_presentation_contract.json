@@ -1,0 +1,26 @@
+{
+  "range": "RC-0536..RC-0545",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0536": "BaZi Four Pillars tek profesyonel ekranda",
+    "RC-0537": "Luck Pillars zaman çizelgesi",
+    "RC-0538": "Annual Pillar ile Natal/Luck Pillar ilişkisi",
+    "RC-0539": "Element dağılımını yalnız pasta grafiğe indirgememe",
+    "RC-0540": "Ham Stem/Branch ilişkileri için teknik görünüm",
+    "RC-0541": "Normal kullanıcı için sade açıklama",
+    "RC-0542": "Aynı veri, iki sunum seviyesi",
+    "RC-0543": "Başlangıç kullanıcısı için anlaşılır Western anlam",
+    "RC-0544": "Profesyonel için derece/aspect/orb/dispositor teknik ayrıntıları",
+    "RC-0545": "Tek veri kaynağıyla iki kullanıcı kitlesi"
+  },
+  "evidence": [
+    "lib/src/professional/bazi_workspace.dart",
+    "test/professional/bazi_workspace_rc0536_rc0545_test.dart"
+  ],
+  "blockers": [
+    "authoritative BaZi relation/strength provider and golden corpus",
+    "rendered simple/professional TR/EN UI and accessibility/device evidence",
+    "exact release artifact and global release gates"
+  ]
+}
