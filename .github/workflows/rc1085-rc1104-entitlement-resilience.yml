@@ -1,0 +1,69 @@
+name: RC1085-RC1104 Entitlement Resilience
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/entitlements/**'
+      - 'test/entitlements/**'
+      - 'requirements/contracts/rc1085_rc1104_entitlement_resilience_contract.json'
+      - 'tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py'
+      - '.github/workflows/rc1085-rc1104-entitlement-resilience.yml'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1085-rc1104
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py
+      - run: flutter test test/entitlements
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(1085,1105)}
+          links='requirements/contracts/rc1085_rc1104_entitlement_resilience_contract.json|tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py|lib/src/entitlements/feature_catalog.dart|lib/src/entitlements/entitlement_service.dart|lib/src/entitlements/feature_access_guard.dart|lib/src/entitlements/rewarded_temporary_unlock.dart|lib/src/entitlements/local_entitlement_time_anchor.dart|lib/src/entitlements/google_play_lifetime_ownership.dart|lib/src/entitlements/monetization_resilience.dart|test/entitlements|.github/workflows/rc1085-rc1104-entitlement-resilience.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Real Play purchase/restore device evidence, ad SDK integration, offline device testing and exact-release verification remain open.'
+            r['notes']='Central Feature ID matrix now gates UI/menu/route/service; temporary UTC grants, rollback-resistant local clock, Play ownership cache and monetization-failure isolation are regression-covered.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1085_RC1104_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1085-rc1104): record entitlement resilience IMPLEMENTED'
+          git push origin HEAD:main
