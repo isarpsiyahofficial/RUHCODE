@@ -1,0 +1,25 @@
+{
+  "range": "RC-0527..RC-0535",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0527": "Vedik astrolog için aynı profesyonel zamanlama mantığının Vedik karşılığı",
+    "RC-0528": "Aktif Dasha dönemleri tek ekranda",
+    "RC-0529": "Antardasha değişimleri zaman çizelgesinde",
+    "RC-0530": "Gochara ile Dasha birlikte inceleme",
+    "RC-0531": "Varga haritaları arasında hızlı geçiş",
+    "RC-0532": "D1 ve D9 yan yana",
+    "RC-0533": "D1 ve D10 yan yana",
+    "RC-0534": "Üç farklı haritayı birlikte görüntüleme",
+    "RC-0535": "Farklı uygulamalar arasında geçiş ihtiyacını azaltan tek workspace"
+  },
+  "evidence": [
+    "lib/src/professional/vedic_workspace.dart",
+    "test/professional/vedic_workspace_rc0527_rc0535_test.dart"
+  ],
+  "blockers": [
+    "authoritative production Dasha/Varga/Gochara provider and golden corpus",
+    "rendered TR/EN professional UI and device evidence",
+    "offline persistence, backup, security and exact release artifact"
+  ]
+}
