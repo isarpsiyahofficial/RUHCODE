@@ -1,0 +1,70 @@
+name: RC0895-RC0905 PDF Cover Composition
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/pdf/pdf_cover_composition.dart'
+      - 'lib/src/pdf/pdf_report_contract.dart'
+      - 'test/pdf/pdf_cover_composition_rc0895_rc0905_test.dart'
+      - 'requirements/contracts/rc0895_rc0905_pdf_cover_composition_contract.json'
+      - 'tools/requirements/validate_rc0895_rc0905_pdf_cover_composition.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0895-rc0905-pdf-cover-composition.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0895-rc0905
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0895_rc0905_pdf_cover_composition.py
+      - run: flutter test test/pdf/pdf_cover_composition_rc0895_rc0905_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0895_rc0905_pdf_cover_composition.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(895,906)}
+          links='requirements/contracts/rc0895_rc0905_pdf_cover_composition_contract.json|tools/requirements/validate_rc0895_rc0905_pdf_cover_composition.py|lib/src/pdf/pdf_cover_composition.dart|lib/src/pdf/pdf_report_contract.dart|test/pdf/pdf_cover_composition_rc0895_rc0905_test.dart|.github/workflows/rc0895-rc0905-pdf-cover-composition.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Production local logo asset resolver, rendered TR/EN cover goldens and exact-release PDF inspection remain open.'
+            r['notes']='Optional vector logo composition reserves no empty slot when absent; cover style and report-system identity are explicit; combined reports require unique clearly headed systems.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0895_RC0905_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0895-rc0905): record PDF cover composition IMPLEMENTED'
+          git push origin HEAD:main
