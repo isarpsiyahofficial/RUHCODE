@@ -1,0 +1,27 @@
+{
+  "range": "RC-0895..RC-0905",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0895": "Logo use is optional.",
+    "RC-0896": "A missing logo leaves no empty or ugly area.",
+    "RC-0897": "Professional users can produce logo and no-logo variants.",
+    "RC-0898": "Cover rendering is a dedicated professional composition.",
+    "RC-0899": "The selected professional/client-friendly cover style is retained.",
+    "RC-0900": "Western reports retain a Western visual identity.",
+    "RC-0901": "Vedic reports retain a Vedic visual identity.",
+    "RC-0902": "Numerology reports retain a Numerology visual identity.",
+    "RC-0903": "Combined reports can contain multiple calculation systems.",
+    "RC-0904": "Combined systems require explicit separate headings/sections.",
+    "RC-0905": "Western content cannot be silently relabelled as Vedic content."
+  },
+  "production": [
+    "lib/src/pdf/pdf_cover_composition.dart",
+    "lib/src/pdf/pdf_report_contract.dart"
+  ],
+  "regression": "test/pdf/pdf_cover_composition_rc0895_rc0905_test.dart",
+  "remaining_release_evidence": [
+    "Production local logo asset resolver wiring",
+    "Rendered TR/EN cover golden verification for every report kind",
+    "Exact release artifact PDF inspection"
+  ]
+}
