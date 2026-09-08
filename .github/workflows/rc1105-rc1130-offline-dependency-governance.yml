@@ -1,0 +1,85 @@
+name: RC1105-RC1130 Offline Dependency Governance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/architecture/local_first_runtime_contract.dart'
+      - 'lib/src/architecture/offline_startup_and_dependency_governance.dart'
+      - 'governance/runtime_license_inventory.json'
+      - 'assets/data/cities/**'
+      - 'assets/data/eop/**'
+      - 'assets/data/ephemeris/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - 'test/architecture/offline_startup_dependency_governance_rc1105_rc1130_test.dart'
+      - 'requirements/contracts/rc1105_rc1130_offline_dependency_governance_contract.json'
+      - 'tools/requirements/validate_rc1105_rc1130_offline_dependency_governance.py'
+      - '.github/workflows/rc1105-rc1130-offline-dependency-governance.yml'
+      - '.github/workflows/materialize-pubspec-lock.yml'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1105-rc1130
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc1105_rc1130_offline_dependency_governance.py
+      - run: flutter test test/architecture/offline_startup_dependency_governance_rc1105_rc1130_test.dart
+      - name: Calculation regression gate
+        run: flutter test test/calculation_core/calculation_validity_rc1004_rc1039_test.dart
+      - name: PDF regression gate
+        run: flutter test test/pdf/pdf_output_inspector_generated_pdf_test.dart
+      - name: Backup round-trip gate
+        run: flutter test test/backup/backup_full_lifecycle_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          flutter pub get
+          python tools/requirements/validate_rc1105_rc1130_offline_dependency_governance.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(1105,1131)}
+          links='requirements/contracts/rc1105_rc1130_offline_dependency_governance_contract.json|tools/requirements/validate_rc1105_rc1130_offline_dependency_governance.py|lib/src/architecture/local_first_runtime_contract.dart|lib/src/architecture/offline_startup_and_dependency_governance.dart|governance/runtime_license_inventory.json|assets/data/cities/ATTRIBUTION.txt|pubspec.yaml|pubspec.lock|test/architecture/offline_startup_dependency_governance_rc1105_rc1130_test.dart|test/calculation_core/calculation_validity_rc1004_rc1039_test.dart|test/pdf/pdf_output_inspector_generated_pdf_test.dart|test/backup/backup_full_lifecycle_test.dart|.github/workflows/rc1105-rc1130-offline-dependency-governance.yml|.github/workflows/materialize-pubspec-lock.yml'
+          found=set()
+          lock_exists=Path('pubspec.lock').exists()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='EOP/DE440s and package license reviews, physical offline startup/device proof and exact-release verification remain open.' + ('' if lock_exists else ' Committed pubspec.lock is still missing.')
+            r['notes']='Offline local-ready boundary, bundled city attribution/license inventory, dependency governance and calculation/PDF/backup update gates are implemented and regression-gated. Release licensing remains fail-closed.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1105_RC1130_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1105-rc1130): record offline dependency governance IMPLEMENTED'
+          git push origin HEAD:main
