@@ -11,10 +11,14 @@ final class PdfReportOptions {
     required this.sectionIds,
     this.professionalName,
     this.brandName,
+    this.subjectName,
+    this.generatedAtUtc,
   });
 
   final String localeTag;
   final List<String> sectionIds;
   final String? professionalName;
   final String? brandName;
+  final String? subjectName;
+  final DateTime? generatedAtUtc;
 }
