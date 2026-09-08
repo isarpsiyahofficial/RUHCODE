@@ -1,0 +1,29 @@
+name: RC0536-RC0545 BaZi Dual Presentation
+
+on:
+  push:
+    paths:
+      - 'lib/src/professional/bazi_workspace.dart'
+      - 'test/professional/bazi_workspace_rc0536_rc0545_test.dart'
+      - 'requirements/contracts/rc0536_rc0545_bazi_dual_presentation_contract.json'
+      - 'tools/requirements/validate_rc0536_rc0545_bazi_dual_presentation.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0536-rc0545-bazi-dual-presentation.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0536-rc0545-bazi-dual-presentation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0536_rc0545_bazi_dual_presentation.py
+      - run: flutter pub get
+      - run: flutter test test/professional/bazi_workspace_rc0536_rc0545_test.dart
