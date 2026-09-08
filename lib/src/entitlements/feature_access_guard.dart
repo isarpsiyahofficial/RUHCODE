@@ -1,7 +1,7 @@
 import 'entitlement_service.dart';
 import 'feature_catalog.dart';
 
-enum FeatureAccessSurface { ui, route, service }
+enum FeatureAccessSurface { ui, menu, route, service }
 
 enum FeatureAccessOutcome { allowed, locked }
 
@@ -19,9 +19,9 @@ final class FeatureAccessDecision {
   bool get allowed => outcome == FeatureAccessOutcome.allowed;
 }
 
-/// Single access gate for UI visibility/interaction, route entry and service
-/// execution. All three surfaces resolve through the same EntitlementService;
-/// local premium booleans are deliberately not accepted here.
+/// Single access gate for UI visibility/interaction, menu visibility, route
+/// entry and service execution. All surfaces resolve through the same
+/// EntitlementService; local premium booleans are deliberately not accepted.
 final class FeatureAccessGuard {
   const FeatureAccessGuard({required this.entitlements});
 
@@ -29,6 +29,9 @@ final class FeatureAccessGuard {
 
   Future<FeatureAccessDecision> forUi(String featureId) =>
       _check(featureId, FeatureAccessSurface.ui);
+
+  Future<FeatureAccessDecision> forMenu(String featureId) =>
+      _check(featureId, FeatureAccessSurface.menu);
 
   Future<FeatureAccessDecision> forRoute(String featureId) =>
       _check(featureId, FeatureAccessSurface.route);
@@ -51,8 +54,6 @@ final class FeatureAccessGuard {
     String featureId,
     FeatureAccessSurface surface,
   ) async {
-    // Fail closed before consulting entitlement state if a caller invents a
-    // feature ID instead of using the canonical catalog.
     RuhFeatureCatalog.policyFor(featureId);
     final allowed = await entitlements.canUse(featureId);
     return FeatureAccessDecision(
