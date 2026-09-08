@@ -1,0 +1,21 @@
+{
+  "range": "RC-0890..RC-0894",
+  "source": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0890": "Sayfa numaraları bulunacak.",
+    "RC-0891": "İstenirse rapor oluşturma tarihi bulunacak.",
+    "RC-0892": "Müşteri adı bulunabilecek.",
+    "RC-0893": "Profesyonel adı bulunabilecek.",
+    "RC-0894": "Profesyonel marka adı bulunabilecek."
+  },
+  "evidence": [
+    "lib/src/pdf/pdf_service.dart",
+    "lib/src/pdf/pdf_local_service.dart",
+    "lib/src/pdf/pdf_local_renderer.dart",
+    "test/pdf/pdf_metadata_rc0890_rc0894_test.dart"
+  ],
+  "release_blockers": [
+    "Generated TR/EN golden PDFs must verify footer date/page rendering and cover metadata visually.",
+    "Exact release artifact evidence remains required before DONE."
+  ]
+}
