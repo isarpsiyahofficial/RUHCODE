@@ -1,0 +1,36 @@
+{
+  "range": "RC-0613..RC-0632",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0613":"Hızlı Hesaplama alanı",
+    "RC-0614":"Müşteri kaydetmeden geçici harita",
+    "RC-0615":"Hızlı doğum verisiyle chart açma yolu",
+    "RC-0616":"Geçici chartı daha sonra müşteri profiline kaydetme",
+    "RC-0617":"Hızlı numeroloji hesaplaması",
+    "RC-0618":"Tekrarlı form girişini azaltma",
+    "RC-0619":"Son kullanılan şehirleri hatırlama",
+    "RC-0620":"Son hesaplama ayarlarını hatırlama",
+    "RC-0621":"Varsayılan profesyonel preset",
+    "RC-0622":"Profesyonelin zamanını kurtaran ve normal kullanıcının rutinine giren ürün amacı",
+    "RC-0623":"Normal kullanıcı Today ihtiyacı",
+    "RC-0624":"Astrolog hızlı ve doğru müşteri analizi ihtiyacı",
+    "RC-0625":"Vedik astrolog Dasha/Gochara/Varga ihtiyacı",
+    "RC-0626":"Numerolog yeniden hesaplama ihtiyacını kaldırma",
+    "RC-0627":"Spiritüel danışman seans ve danışan geçmişi",
+    "RC-0628":"Kişisel gelişim uzmanı danışan/hedef/not yönetimi",
+    "RC-0629":"Öğrenciye sonucu nedenleriyle öğretme",
+    "RC-0630":"İçerik üreticisine doğru günlük veriyi paylaşılabilir yapma",
+    "RC-0631":"Son kullanıcıya kişisel veri deneyimi",
+    "RC-0632":"Hesapla, yorumla, takip et, danışanları yönet ve günlük çalışmaları tek yerde yürüt"
+  },
+  "evidence": [
+    "lib/src/professional/quick_calculation_workspace.dart",
+    "test/professional/quick_calculation_workspace_rc0613_rc0632_test.dart"
+  ],
+  "blockers": [
+    "real calculation-core wiring and performance evidence for fast chart opening",
+    "encrypted local persistence of recent state/presets and rendered TR/EN quick-calculation UI",
+    "offline/device/accessibility/performance and exact release artifact"
+  ]
+}
