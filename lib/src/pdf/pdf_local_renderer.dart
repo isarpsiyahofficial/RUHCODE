@@ -72,6 +72,8 @@ final class PdfRenderPayload {
     required this.documentTitle,
     required this.sections,
     required this.fonts,
+    this.subjectName,
+    this.generatedAtUtc,
   });
 
   final PdfReportPlan plan;
@@ -79,6 +81,8 @@ final class PdfRenderPayload {
   final String documentTitle;
   final List<PdfRenderSection> sections;
   final PdfFontBundle fonts;
+  final String? subjectName;
+  final DateTime? generatedAtUtc;
 }
 
 /// Pure section-contract validation shared by the byte renderer and unit tests.
@@ -101,6 +105,10 @@ final class PdfRenderContractValidator {
     payload.fonts.validate();
     if (payload.documentTitle.trim().isEmpty) {
       throw const FormatException('PDF document title cannot be blank.');
+    }
+    final subjectName = payload.subjectName;
+    if (subjectName != null && subjectName.trim().isEmpty) {
+      throw const FormatException('PDF subject name cannot be blank when supplied.');
     }
     final projected = dataValidator.validateAndProject(payload.dataset);
     if (payload.dataset.origin != payload.plan.dataOrigin) {
@@ -190,12 +198,18 @@ final class PdfLocalRenderer {
         pageFormat: pageFormat,
         theme: theme,
         maxPages: maxReportPages,
-        footer: (context) => pw.Align(
-          alignment: pw.Alignment.centerRight,
-          child: pw.Text(
-            '${context.pageNumber} / ${context.pagesCount}',
-            style: pw.TextStyle(fontSize: payload.plan.typography.captionPt),
-          ),
+        footer: (context) => pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: <pw.Widget>[
+            pw.Text(
+              _generatedDateLabel(payload),
+              style: pw.TextStyle(fontSize: payload.plan.typography.captionPt),
+            ),
+            pw.Text(
+              '${context.pageNumber} / ${context.pagesCount}',
+              style: pw.TextStyle(fontSize: payload.plan.typography.captionPt),
+            ),
+          ],
         ),
         build: (context) {
           final widgets = <pw.Widget>[];
@@ -220,6 +234,15 @@ final class PdfLocalRenderer {
     return bytes;
   }
 
+  String _generatedDateLabel(PdfRenderPayload payload) {
+    final generatedAt = payload.generatedAtUtc;
+    if (generatedAt == null) {
+      return '';
+    }
+    final date = generatedAt.toUtc().toIso8601String().substring(0, 10);
+    return payload.plan.localeTag == 'tr' ? 'Rapor tarihi: $date' : 'Report date: $date';
+  }
+
   List<pw.Widget> _coverWidgets(PdfRenderPayload payload, PdfRenderSection section) {
     final tokens = payload.plan.typography;
     return <pw.Widget>[
@@ -228,6 +251,10 @@ final class PdfLocalRenderer {
         payload.documentTitle,
         style: pw.TextStyle(fontSize: tokens.coverTitlePt, fontWeight: pw.FontWeight.bold),
       ),
+      if (payload.subjectName?.trim().isNotEmpty == true) ...<pw.Widget>[
+        pw.SizedBox(height: 10),
+        pw.Text(payload.subjectName!.trim(), style: pw.TextStyle(fontSize: tokens.h2Pt)),
+      ],
       pw.SizedBox(height: 14),
       if (payload.plan.branding.brandName?.trim().isNotEmpty == true)
         pw.Text(payload.plan.branding.brandName!.trim(), style: pw.TextStyle(fontSize: tokens.h2Pt)),
