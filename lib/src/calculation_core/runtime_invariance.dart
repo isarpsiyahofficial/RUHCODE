@@ -4,7 +4,7 @@
 /// decimal separator and ambient system timezone are deliberately absent from
 /// this boundary so they cannot silently influence mathematical results.
 class StoredCalculationContext {
-  const StoredCalculationContext({
+  StoredCalculationContext({
     required this.subjectId,
     required this.localDateTimeIso,
     required this.timezoneId,
@@ -42,7 +42,7 @@ class StoredCalculationContext {
 /// Callers must resolve the current timezone and UTC instant before entering
 /// the calculation core. The core never reaches into platform/system state.
 class CurrentCalculationContext {
-  const CurrentCalculationContext({
+  CurrentCalculationContext({
     required this.timezoneId,
     required this.utcNow,
   }) {
@@ -86,7 +86,7 @@ class CanonicalDecimal {
 }
 
 /// Snapshot used to prove that platform presentation settings are not part of
-/// calculation identity. These fields may vary while [calculationKey] remains
+/// calculation identity. These fields may vary while the calculation key stays
 /// unchanged for the same stored calculation.
 class PresentationEnvironment {
   const PresentationEnvironment({
@@ -135,9 +135,6 @@ class LocalizationCatalogPair {
   void _validate() {
     final trKeys = tr.keys.toSet();
     final enKeys = en.keys.toSet();
-    if (trKeys.length != tr.length || enKeys.length != en.length) {
-      throw StateError('duplicate localization keys are forbidden');
-    }
     final missingInEnglish = trKeys.difference(enKeys);
     final missingInTurkish = enKeys.difference(trKeys);
     if (missingInEnglish.isNotEmpty || missingInTurkish.isNotEmpty) {
