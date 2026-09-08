@@ -1,0 +1,29 @@
+name: RC0546-RC0584 Personal Today Calendar
+
+on:
+  push:
+    paths:
+      - 'lib/src/daily/personal_today_calendar.dart'
+      - 'test/daily/personal_today_calendar_rc0546_rc0584_test.dart'
+      - 'requirements/contracts/rc0546_rc0584_personal_today_contract.json'
+      - 'tools/requirements/validate_rc0546_rc0584_personal_today.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0546-rc0584-personal-today.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0546-rc0584-personal-today-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0546_rc0584_personal_today.py
+      - run: flutter pub get
+      - run: flutter test test/daily/personal_today_calendar_rc0546_rc0584_test.dart
