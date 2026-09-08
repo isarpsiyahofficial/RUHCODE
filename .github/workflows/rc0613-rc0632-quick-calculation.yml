@@ -1,0 +1,29 @@
+name: RC0613-RC0632 Quick Calculation
+
+on:
+  push:
+    paths:
+      - 'lib/src/professional/quick_calculation_workspace.dart'
+      - 'test/professional/quick_calculation_workspace_rc0613_rc0632_test.dart'
+      - 'requirements/contracts/rc0613_rc0632_quick_calculation_contract.json'
+      - 'tools/requirements/validate_rc0613_rc0632_quick_calculation.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0613-rc0632-quick-calculation.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0613-rc0632-quick-calculation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0613_rc0632_quick_calculation.py
+      - run: flutter pub get
+      - run: flutter test test/professional/quick_calculation_workspace_rc0613_rc0632_test.dart
