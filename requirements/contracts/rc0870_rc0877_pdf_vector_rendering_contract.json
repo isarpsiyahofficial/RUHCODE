@@ -1,0 +1,26 @@
+{
+  "range": "RC-0870..RC-0877",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0870": "Western astrology charts use vector PDF primitives.",
+    "RC-0871": "Low-resolution JPEG/screenshots are forbidden as chart sources.",
+    "RC-0872": "Planet symbols are rendered as vector text/geometry in the SVG chart.",
+    "RC-0873": "Aspect lines are vector lines.",
+    "RC-0874": "SVG viewBox/vector primitives preserve sharpness at PDF zoom.",
+    "RC-0875": "Numerology uses rectangular package:pdf table data rather than screenshots.",
+    "RC-0876": "BaZi table data enforces aligned four-or-more-column structure.",
+    "RC-0877": "Vedic charts use fixed square vector geometry and exactly twelve house labels."
+  },
+  "production": [
+    "lib/src/pdf/pdf_vector_rendering.dart",
+    "lib/src/pdf/pdf_vector_widget.dart",
+    "lib/src/pdf/pdf_local_renderer.dart",
+    "lib/src/pdf/pdf_table_layout.dart"
+  ],
+  "regression": "test/pdf/pdf_vector_rendering_rc0870_rc0877_test.dart",
+  "remaining_release_evidence": [
+    "Rendered TR/EN golden PDF visual inspection",
+    "Exact release artifact zoom/print inspection",
+    "Production chart data projection into these primitives"
+  ]
+}
