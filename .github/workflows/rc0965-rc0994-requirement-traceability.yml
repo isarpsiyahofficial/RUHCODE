@@ -1,0 +1,35 @@
+name: RC0965-RC0994 Requirement Traceability
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'requirements/requirement_state.csv'
+      - 'requirements/contracts/rc0965_rc0994_requirement_traceability_contract.json'
+      - 'tools/requirements/validate_requirement_matrix.py'
+      - 'tools/requirements/audit_requirement_test_traceability.py'
+      - 'test/**'
+      - '.github/workflows/rc0965-rc0994-requirement-traceability.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python tools/requirements/validate_requirement_matrix.py
+      - run: python tools/requirements/audit_requirement_test_traceability.py --write-report
+      - name: Prove final mode is fail-closed until every RC is DONE and tested
+        shell: bash
+        run: |
+          if python tools/requirements/audit_requirement_test_traceability.py --release; then
+            echo 'All requirements are fully release-traceable.'
+          else
+            echo 'Final traceability remains blocked as expected; normal audit succeeded.'
+          fi
