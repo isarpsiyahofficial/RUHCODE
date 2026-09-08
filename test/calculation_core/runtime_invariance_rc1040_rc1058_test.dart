@@ -3,7 +3,7 @@ import 'package:ruh_code/src/calculation_core/runtime_invariance.dart';
 
 void main() {
   test('device model and presentation locale cannot affect stored calculation key', () {
-    const context = StoredCalculationContext(
+    final context = StoredCalculationContext(
       subjectId: 'subject-1',
       localDateTimeIso: '1990-05-17T14:30:00',
       timezoneId: 'Europe/Istanbul',
@@ -12,13 +12,13 @@ void main() {
     final input = CanonicalDecimal.parse('12.5');
     const keyBuilder = RuntimeInvariantCalculationKey();
 
-    final trEnvironment = const PresentationEnvironment(
+    const trEnvironment = PresentationEnvironment(
       languageCode: 'tr',
       systemTimezoneId: 'Europe/Istanbul',
       deviceModel: 'Android-A',
       decimalSeparator: ',',
     );
-    final enEnvironment = const PresentationEnvironment(
+    const enEnvironment = PresentationEnvironment(
       languageCode: 'en',
       systemTimezoneId: 'America/New_York',
       deviceModel: 'Android-B',
@@ -45,7 +45,7 @@ void main() {
   });
 
   test('stored calculation keeps its own timezone instead of ambient system timezone', () {
-    const context = StoredCalculationContext(
+    final context = StoredCalculationContext(
       subjectId: 'subject-2',
       localDateTimeIso: '1984-01-02T03:04:05',
       timezoneId: 'Asia/Kathmandu',
@@ -57,7 +57,7 @@ void main() {
   });
 
   test('now calculations require explicit current timezone and UTC instant', () {
-    const context = CurrentCalculationContext(
+    final context = CurrentCalculationContext(
       timezoneId: 'Pacific/Kiritimati',
       utcNow: DateTime.utc(2026, 9, 8, 21, 0),
     );
