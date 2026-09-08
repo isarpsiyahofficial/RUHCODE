@@ -1,0 +1,48 @@
+name: Materialize pubspec.lock
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pubspec.yaml'
+      - '.github/workflows/materialize-pubspec-lock.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pubspec-lock-materializer
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Resolve exact dependency graph
+        run: flutter pub get
+      - name: Require generated lockfile
+        run: test -s pubspec.lock
+      - name: Commit lockfile when changed
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          flutter pub get
+          test -s pubspec.lock
+          if git diff --quiet -- pubspec.lock && git ls-files --error-unmatch pubspec.lock >/dev/null 2>&1; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pubspec.lock
+          git commit -m 'build(rc1123): materialize dependency lockfile'
+          git push origin HEAD:main
