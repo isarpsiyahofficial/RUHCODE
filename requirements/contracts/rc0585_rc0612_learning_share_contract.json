@@ -1,0 +1,44 @@
+{
+  "range": "RC-0585..RC-0612",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0585":"Öğrenme Modu",
+    "RC-0586":"Haritadaki gezegene dokunarak öğrenme",
+    "RC-0587":"Gezegen açıklaması",
+    "RC-0588":"Burç açıklaması",
+    "RC-0589":"Ev açıklaması",
+    "RC-0590":"Aspect açıklaması",
+    "RC-0591":"Kendi haritasındaki kombinasyon açıklaması",
+    "RC-0592":"Uygulama öğrenme aracıdır",
+    "RC-0593":"Profesyonel öğrenciye örnek chart gösterebilir",
+    "RC-0594":"Öğretim görünümünde öğeler gizlenebilir",
+    "RC-0595":"Sadece evler",
+    "RC-0596":"Sadece gezegenler",
+    "RC-0597":"Sadece aspectler",
+    "RC-0598":"Ders sırasında kullanılabilir teaching view",
+    "RC-0599":"Paylaşım Kartı",
+    "RC-0600":"Güncel gökyüzü sosyal medya kartı",
+    "RC-0601":"Elle yazılmış derece yerine calculation core çıktısı",
+    "RC-0602":"Profesyonel kendi metnini ekleyebilir",
+    "RC-0603":"Günlük içerik hazırlama kolaylığı",
+    "RC-0604":"Personal Day/Universal Day kartı",
+    "RC-0605":"Spiritüel günlük içerik kartı",
+    "RC-0606":"Başka tasarım uygulamasına bağımlılığı azaltma",
+    "RC-0607":"Bugün ne paylaşsam içerik yardım alanı",
+    "RC-0608":"Gerçek astrolojik/numerolojik verileri sıralar",
+    "RC-0609":"Profesyonel veri seçer",
+    "RC-0610":"Paylaşılabilir veri/görsel draftı",
+    "RC-0611":"Otomatik yorum zorunlu değildir",
+    "RC-0612":"Kullanıcı kendi profesyonel yorumunu yazabilir"
+  },
+  "evidence": [
+    "lib/src/learning/learning_and_share.dart",
+    "test/learning/learning_and_share_rc0585_rc0612_test.dart"
+  ],
+  "blockers": [
+    "rendered interactive chart learning/teaching UI with TR/EN and accessibility evidence",
+    "real image renderer/export pipeline and social-card reference assets",
+    "production calculation providers and exact release artifact"
+  ]
+}
