@@ -1,0 +1,30 @@
+name: RC0849-RC0858 Backup Stress
+
+on:
+  push:
+    paths:
+      - 'lib/src/backup/**'
+      - 'test/backup/backup_stress_rc0849_rc0858_test.dart'
+      - 'test/backup/legacy_backup_v0_migrator_test.dart'
+      - 'requirements/contracts/rc0849_rc0858_backup_stress_contract.json'
+      - 'tools/requirements/validate_rc0849_rc0858_backup_stress.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0849-rc0858-backup-stress.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0849-rc0858-backup-stress-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0849_rc0858_backup_stress.py
+      - run: flutter pub get
+      - run: flutter test test/backup/backup_stress_rc0849_rc0858_test.dart test/backup/legacy_backup_v0_migrator_test.dart
