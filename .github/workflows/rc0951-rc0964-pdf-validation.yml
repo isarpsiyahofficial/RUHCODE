@@ -1,0 +1,70 @@
+name: RC0951-RC0964 PDF Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/pdf/pdf_release_validation.dart'
+      - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'test/pdf/pdf_release_validation_rc0951_rc0964_test.dart'
+      - 'requirements/contracts/rc0951_rc0964_pdf_validation_contract.json'
+      - 'tools/requirements/validate_rc0951_rc0964_pdf_validation.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0951-rc0964-pdf-validation.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0951-rc0964
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0951_rc0964_pdf_validation.py
+      - run: flutter test test/pdf/pdf_release_validation_rc0951_rc0964_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0951_rc0964_pdf_validation.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(951,965)}
+          links='requirements/contracts/rc0951_rc0964_pdf_validation_contract.json|tools/requirements/validate_rc0951_rc0964_pdf_validation.py|lib/src/pdf/pdf_release_validation.dart|lib/src/pdf/pdf_output_inspector.dart|test/pdf/pdf_release_validation_rc0951_rc0964_test.dart|.github/workflows/rc0951-rc0964-pdf-validation.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Deterministic CI PDF renderer/parser adapter, versioned TR/EN visual reference corpus, and exact-release artifact validation remain open.'
+            r['notes']='Release validation core fail-closes on missing required text/chart, page-count mismatch, text overflow, chart clipping, broken symbols, missing Turkish glyphs, subject-data leakage, and meaningful layout shifts; raw pixel delta alone is not a failure.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0951_RC0964_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0951-rc0964): record PDF validation IMPLEMENTED'
+          git push origin HEAD:main
