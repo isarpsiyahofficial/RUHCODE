@@ -1,0 +1,25 @@
+{
+  "range": "RC-0849..RC-0858",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0849": "backup release validation is not limited to five sample records",
+    "RC-0850": "backup stress validation uses thousands of records",
+    "RC-0851": "Turkish characters are included in stress validation",
+    "RC-0852": "English characters are included in stress validation",
+    "RC-0853": "very long notes are included in stress validation",
+    "RC-0854": "emoji notes are included in stress validation",
+    "RC-0855": "embedded line breaks are included in stress validation",
+    "RC-0856": "same-name clients/profiles are included in stress validation",
+    "RC-0857": "unknown birth times are included in stress validation",
+    "RC-0858": "older-schema backups are covered by migration regressions"
+  },
+  "evidence": {
+    "stress": "test/backup/backup_stress_rc0849_rc0858_test.dart",
+    "legacy_schema": "test/backup/legacy_backup_v0_migrator_test.dart",
+    "package_reader": "lib/src/backup/backup_package_codec.dart"
+  },
+  "blockers": [
+    "exact release artifact clean-install round-trip remains open",
+    "physical device storage/process-kill/update survival evidence remains open"
+  ]
+}
