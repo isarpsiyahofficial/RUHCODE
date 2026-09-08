@@ -1,0 +1,43 @@
+{
+  "range": "RC-0674..RC-0694",
+  "binding_source": "RUH_CODE_MASTER_SARTNAME.md",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0674":"Günün mesajı deterministik veri üzerine kurulur",
+    "RC-0675":"Aynı hesaplama koşulları aynı temel astrolojik gerçekleri üretir",
+    "RC-0676":"Dil anlatımı hesaplama sonucunu değiştirmez",
+    "RC-0677":"Günlük mesajın hesaplanmış faktörleri dahili tutulur",
+    "RC-0678":"Yorum motoru olmayan transit uyduramaz",
+    "RC-0679":"Yorum motoru olmayan Dasha uyduramaz",
+    "RC-0680":"Yorum motoru olmayan numeroloji değerini kullanamaz",
+    "RC-0681":"Yorum motoru yalnız doğrulanmış hesaplama nesneleri alır",
+    "RC-0682":"Yorum motoru ham formdan astrolojik sonuç üretmez",
+    "RC-0683":"Matematik ve yorum motoru sınırı kod seviyesinde kesindir",
+    "RC-0684":"Ortak motorlar calculation_core katmanındadır",
+    "RC-0685":"Batı astrolojisi bağımsız modüldedir",
+    "RC-0686":"Vedik astroloji bağımsız modüldedir",
+    "RC-0687":"Gezegen saatleri bağımsız modüldedir",
+    "RC-0688":"Çin astrolojisi bağımsız modüldedir",
+    "RC-0689":"BaZi bağımsız modüldedir",
+    "RC-0690":"Numeroloji sistemleri bağımsız hesaplama modüllerindedir",
+    "RC-0691":"Tarot/sembolik sistemler matematik çekirdeğinin dışındadır",
+    "RC-0692":"Kişisel gelişim kayıtları hesaplama motorlarından bağımsızdır",
+    "RC-0693":"Monetizasyon calculation_core içine yazılmaz",
+    "RC-0694":"PDF calculation_core içine yazılmaz"
+  },
+  "evidence": [
+    "lib/src/architecture/calculation_interpretation_boundary.dart",
+    "lib/src/calculation_core/western",
+    "lib/src/calculation_core/vedic",
+    "lib/src/calculation_core/planetary_hours",
+    "lib/src/calculation_core/chinese",
+    "lib/src/calculation_core/bazi",
+    "lib/src/calculation_core/numerology",
+    "test/architecture/calculation_interpretation_boundary_rc0674_rc0694_test.dart"
+  ],
+  "blockers": [
+    "authoritative production engine wiring and golden corpus",
+    "static dependency/lint proof that UI/PDF/monetization never enter calculation_core",
+    "TR/EN/offline/device/performance and exact release artifact"
+  ]
+}
