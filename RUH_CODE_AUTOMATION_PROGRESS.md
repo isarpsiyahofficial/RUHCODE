@@ -42,6 +42,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - **RC-0546→0584 = IMPLEMENTED + blocked=YES; personal Today/calendar production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
 - **RC-0585→0612 = IMPLEMENTED + blocked=YES; learning/teaching/share-card production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
 - **RC-0613→0632 = IMPLEMENTED + blocked=YES; quick-calculation production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
+- **RC-0633→0673 = IMPLEMENTED + blocked=YES; local-first runtime contract + regression + exact contract + fail-closed validator + dedicated CI gate present; matrix/global CI promotion queued.**
+- **RC-0674→0694 = IMPLEMENTED + blocked=YES; deterministic calculation/interpretation boundary + regression + exact contract + fail-closed validator + dedicated CI gate present; matrix/global CI promotion queued.**
 
 ## Bu çalıştırmadaki gerçek geliştirme
 
@@ -69,14 +71,30 @@ Regression, exact RC-0585→0612 contract, fail-closed validator ve dedicated Fl
 
 Production commit `0d810e9320ca03fe61cc24d9f1e8cf4fb43419a8`; regression `6245b8c8cb13b11e496c0921bdb0d37543d25142`; exact contract `3228d4bb8f5c1701acbf2e97d4f4866b8b254546`; validator `28966d8ee820ee29887fd6eb2cad11037fbe1d8f`; dedicated gate `1f4bbe130922960c839c438d93d71349a3269d91`. Yeni HEAD için Actions fiziksel olarak oluştu ancak kapanış kontrolünde queued olduğundan TESTED/DONE yükseltilmedi.
 
+### RC-0633→0673 — Local-first / server maliyetsiz çekirdek sözleşmesi
+
+`lib/src/architecture/local_first_runtime_contract.dart` Western, Vedic, Numerology, BaZi, planetary hours, daily data, profiles, clients, consultation notes, personal-growth/Tarot records, favorites, notification planning, PDF ve CSV çekirdeğini explicit on-device capability olarak tanımlar. Çekirdek için owned API/VPS/database server/Firebase/Supabase/AWS/Cloudflare DB veya ücretli astroloji/numeroloji/timezone/city/PDF/AI bağımlılığı verilirse fail-closed davranır.
+
+`CoreCostModel` per-user server işini çekirdek mimaride reddeder. `DailyInterpretationRuntimePolicy` günlük yorumun verified calculation + local rule engine + bundled catalog üzerinden çalışmasını zorunlu tutar; her görüntülemede network download veya AI isteğini çekirdek çalışma olarak kabul etmez. Production `44fabacfbb61f577a0ffd8458cf6e2212723ef6a`; regression `d63b4123a3957bcc15db3c35b860c1a4af40fefd`; contract `344395df91173512aa45cf0b2703ca4cd3cfa658`; validator `abbfc4227996f6ffa0edef5661d6049e6175b023`; CI `4260661f3eed33fa4ce78c9ab14c38369c07e9e7`.
+
+Matrix henüz global promotion tamamlanmadan NOT_STARTED kaydını taşıyordu; yeni CI/global matrix çalışmaları queued olduğundan bu run içinde matrix satırları elle TESTED/DONE yükseltilmedi. Gerçek airplane-mode/device persistence, on-device PDF/CSV ve scheduler kanıtı eksik olduğundan status ceiling IMPLEMENTED.
+
+### RC-0674→0694 — Deterministik calculation / interpretation sınırı
+
+`lib/src/architecture/calculation_interpretation_boundary.dart` doğrulanmış hesaplama faktını provenance ile temsil eder; interpretation katmanı yalnız bu nesneleri tüketir. İstenen transit/Dasha/numeroloji faktı girişte yoksa `requireFact` fail-closed davranır. `DeterministicDailyMessageTrace` aynı calculation input + fact IDs + rule/catalog sürümleri için aynı trace key'i üretir; dil varyasyonu calculation facts'i değiştiremez.
+
+`CalculationLayerContract` mevcut `calculation_core/western`, `vedic`, `planetary_hours`, `chinese`, `bazi`, `numerology` modüllerini explicit sınır olarak kaydeder. Tarot, personal-growth, monetization, PDF ve UI calculation core concern değildir. Production `cf542d6fe7da3cb11f320313130d397e2edb110d`; regression `ba1fbb496df2a021c241e7d3bb16512472feb8fd`; contract `54a7667d215b19ea937344755cd3e383691455f4`; validator `50a54f26f1100c9b121f4e26c9b374427e151b1f`; CI `d6f50befbd2147b1fd6fca8cfea39ffbda973ca8`.
+
+Yeni HEAD için Actions fiziksel olarak oluştu ancak kapanışta queued. Authoritative engine/golden corpus, static dependency proof ve exact release evidence olmadan TESTED/VERIFIED/DONE verilmez.
+
 ## Açık blocker'lar
 
 Independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion açıkları; authoritative Dasha/Varga/Gochara, BaZi relation/strength ve Today runtime providers; rendered TR/EN UI/PDF/share cards; real PDF pagination/font/embed/export; production Calculation Manifest persistence; interpretation/editorial QA; encrypted persistence/key management; tenant/device isolation; real ad/rewarded/PRO verifier; gerçek notification scheduler; offline/airplane-mode; backup round-trip; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact kapıları açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0493→0510, RC-0511→0526, RC-0527→0535, RC-0536→0545, RC-0546→0584, RC-0585→0612 ve RC-0613→0632 dedicated CI sonuçları fiziksel olarak okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
-2. Binding sıra **RC-0633+ offline/local-first mühendislik sözleşmesi** hattında ilerleyecek: temel fonksiyonlar bizim API'mize/VPS/veritabanına bağımlı olmayacak; calculation/profile/client/note/journal/favorites/PDF/CSV çekirdeği cihaz üzerinde kalacak.
+1. RC-0493→0510, RC-0511→0526, RC-0527→0535, RC-0536→0545, RC-0546→0584, RC-0585→0612, RC-0613→0632, RC-0633→0673 ve RC-0674→0694 dedicated/global CI sonuçları fiziksel olarak okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
+2. Binding sıra **RC-0695+ merkezi veri modeli / benzersiz ID / createdAt-updatedAt / timezone-safe doğum verisi / Calculation Manifest bağlama** hattında ilerleyecek.
 3. RC-0342→0371 ve RC-0212→0270, RC-0158→0184, RC-0127→0134, RC-0119→0122/Panchanga promotion açıkları tekrar kontrol edilecek.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0001→1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL denmeyecek.
