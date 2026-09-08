@@ -20,45 +20,54 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0859→0950 = PDF release/vector/layout/metadata/content/delivery/performance implementation zincirleri mevcut + blocked=YES; önceki physical promotions korunuyor.
 - RC-0951→0964 = IMPLEMENTED + blocked=YES; physical matrix promotion `5f08942462a0b3784725b9fd7e65de0cc22eb50e` doğrulandı.
 - RC-0965→0994 = requirement/test traceability audit ve CI hattı mevcut; tüm 1.442 RC doğrudan test/evidence ile kapanmadığı için release-mode bilinçli olarak kırmızı.
-- RC-0995→1003 = authoritative golden corpus sözleşmesi henüz tamamlanmış değil. `GoldenDatasetPolicy` domain/provenance/edge coverage'ı fail-closed tanımlar; ancak exact AKİLES ve bağımsız production golden değerleri bulunmadan lifecycle promotion yapılmayacak.
-- RC-1004→1039 = production edge/validity core + regression + exact contract + fail-closed validator + dedicated matrix-writing CI eklendi. CI/promotion sonucu görülmeden lifecycle yükseltilmeyecek.
+- RC-0995→1003 = authoritative golden corpus sözleşmesi var ancak exact AKİLES ve bağımsız production golden değerleri eksik; promotion yapılmayacak.
+- RC-1004→1039 = IMPLEMENTED + blocked=YES; physical matrix promotion `fb71d1b9703f35a4dec499e7d7de33151d57a75e` doğrulandı.
+- RC-1040→1058 = runtime invariance/localization boundary + regression + exact contract + fail-closed validator + dedicated matrix-writing CI eklendi; CI/promotion sonucu görülmeden lifecycle yükseltilmeyecek.
+- RC-1059→1084 = terminology/versioned interpretation matching/safety boundary + regression + exact contract + fail-closed validator + dedicated matrix-writing CI eklendi; CI/promotion sonucu görülmeden lifecycle yükseltilmeyecek.
 
 ## Son çalıştırmada yapılan gerçek geliştirme
 
-### RC-0951→0964 physical promotion
+### RC-1004→1039 physical promotion
 
-Önceki PDF validation gate'i GitHub Actions tarafından başarıyla matrix'e yazıldı: `5f08942462a0b3784725b9fd7e65de0cc22eb50e` (`requirements(rc0951-rc0964): record PDF validation IMPLEMENTED`). Bu yalnız IMPLEMENTED kanıtıdır; parser/rasterizer, versioned TR/EN golden ve exact-release evidence açık olduğundan TESTED/VERIFIED/DONE değildir.
+Önceki edge-validity gate'i GitHub Actions tarafından başarıyla matrix'e yazıldı: `fb71d1b9703f35a4dec499e7d7de33151d57a75e` (`requirements(rc1004-rc1039): record edge validity IMPLEMENTED`). Bu yalnız IMPLEMENTED kanıtıdır; authoritative golden/reference corpus, exact AKİLES provenance, historical timezone/polar fixtures, rendered UI ve exact-release evidence açık olduğundan TESTED/VERIFIED/DONE değildir.
 
-### RC-0995→1003 authoritative golden corpus sınırı
+### RC-1040→1058 runtime calculation invariance + localization isolation
 
-`lib/src/calculation_core/golden/golden_dataset_policy.dart` eklendi. Western, Vedic, planetary hours, BaZi, Pythagorean, Chaldean ve Lo Shu için bağımsız golden domain zorunluluğu; AKİLES regression case'leri için exact source/version provenance; bütün edge-case coverage ve authoritative fingerprint zorunluluğu tanımlandı. Non-authoritative veya provenance eksik case release corpus'a giremez.
+`lib/src/calculation_core/runtime_invariance.dart` eklendi. Stored calculation context kendi subject/local datetime/IANA timezone/UTC instant değerini taşır; ambient cihaz timezone'u calculation identity'ye giremez. `CurrentCalculationContext` yalnız gerçekten “şimdi” hesaplarında explicit timezone + UTC instant kabul eder. `CanonicalDecimal` calculation core sınırında yalnız locale-independent noktalı canonical decimal kabul eder; `12,50` gibi locale sunum metni core içinde yorumlanmaz. Device model, UI language, system timezone ve decimal separator presentation environment olarak calculation key'in dışında tutulur.
 
-Bu blok bilinçli olarak promotion almıyor: repository'de exact AKİLES source/version değerleri ve bağımsız authoritative Western/Vedic/BaZi/numerology golden corpus tamamlanmadan RC-0995→1003 DONE/IMPLEMENTED sayılmayacak.
+TR/EN system text için `LocalizationCatalogPair` exact key parity ister ve eksik key'de fail-closed davranır. `UserDataLocalizationBoundary` müşteri adı/not/kullanıcı metnini localization key resolver'a sokmadan verbatim korur.
 
-### RC-1004→1039 edge-case + fail-closed calculation validity
+Regression: `test/calculation_core/runtime_invariance_rc1040_rc1058_test.dart`.
+Contract: `requirements/contracts/rc1040_rc1058_runtime_invariance_contract.json`.
+Validator: `tools/requirements/validate_rc1040_rc1058_runtime_invariance.py`.
+CI: `.github/workflows/rc1040-rc1058-runtime-invariance.yml`.
 
-`lib/src/calculation_core/calculation_validity.dart` eklendi. Burç/0°/29°59′/Nakshatra/Pada/house cusp/retrograde station/sunrise/sunset/DST/historical timezone/30-45 dakikalık timezone/UTC+14/date-line/polar edge taxonomy production seviyesinde tanımlandı.
+Ana commitler: production `40ad23a74b0b8e029f95ce46c9e5420d26f1729e`; compile-safe correction `ae648969685c49a990e698f0d7b00cd0ca3a0c97`; regression `0fda2b3298d49ac2e39b6893f06e8577e925d71a` + const fix `c0797b22d225a1b21f3834c85a9784506b185dc0`; contract `11b29e654287b55c25a376e8d385d7bab69339a7`; validator `faff7f57b34ee246aaeca8314722be3b50578c9a`; CI `c46c0e4af58c282cfc0c5e916eac87d948f89025`.
 
-`CalculationOutcome<T>` sonucu `valid / partial / unavailable / error` olarak explicit taşır. `unavailable/error` durumunda sahte değer üretilemez; `valid/partial` değer gerektirir. `null`/`NaN` teknik metinleri kullanıcı mesajına sızdırılmaz. `MissingBirthTimePolicy`, doğum saati bilinmiyorsa ascendant, houses ve saat isteyen Vedik sonuçları `unavailable` yapar; saat gerektirmeyen hesaplar yalnız `partial` olarak sunulur. `PlanetaryHourAvailabilityPolicy`, güvenilir sunrise/sunset sınırı yoksa özellikle polar koşullarda gezegen saati uydurmaz ve TR/EN açıklama verir. `CalculationDeterminismKey` + `DeterminismGuard`, aynı input/config/engine sürümünün farklı sonucu sessizce üretmesini reddeder.
+Yeni workflow fiziksel olarak tetiklendi ve checkpoint anında queued durumundaydı; bu nedenle matrix elle yükseltilmedi.
 
-Regression: `test/calculation_core/calculation_validity_rc1004_rc1039_test.dart`.
-Contract: `requirements/contracts/rc1004_rc1039_edge_validity_contract.json`.
-Validator: `tools/requirements/validate_rc1004_rc1039_edge_validity.py`.
-CI: `.github/workflows/rc1004-rc1039-edge-validity.yml`.
+### RC-1059→1084 terminology + interpretation safety
 
-Ana commitler: production `bb3754925e513421a852098af1d1687294bdcd6b` + compile-safe fix `028a769d3809ea790d9e3bbdd63c8926d1b2dd2d`; golden policy `a595cac23df90ada47382ebfe81e98d371cd8f52`; regression `3f44f9eff4bd5b5dbd0ede06632519f1bba7f27d`; contract `afec502773219a4c3a77c215098106180cf1a59a`; validator `f4fa7e672f2de939f03b671bdc4ea8f4604571ca`; CI `42b5c517f98d29d14041d993048b5992d1e23a10`.
+`lib/src/interpretation/terminology_and_safety.dart` eklendi. Merkezi glossary `Ascendant/Yükselen`, `House/Ev` ve Vedik teknik terimlerini tek key üzerinden tutar. `InterpretationRule` explicit `interpretationVersion`, subject ve condition taşır; `InterpretationRuleMatcher` Sun/Moon gibi yanlış subject eşleşmesini fail-closed reddeder. Placeholder'lar allow-list ile doğrulanır ve doldurulmamış placeholder render edilemez. `InterpretationComposer` tekrarları kaldırır fakat çelişkili faktörleri tek kesin hükme sıkıştırmadan ayrı korur. Astronomik/numerolojik veri ile geleneksel yorum ayrı etiketlenir.
 
-Yeni CI çalışmaları fiziksel olarak oluştu ancak checkpoint anında queued durumundaydı; bu nedenle RC-1004→1039 lifecycle elle yükseltilmedi.
+`InterpretationSafetyPolicy` medical diagnosis, legal certainty, financial guarantee ve death prediction certainty kategorilerini fail-closed yasaklar.
+
+Regression: `test/interpretation/terminology_and_safety_rc1059_rc1084_test.dart`.
+Contract: `requirements/contracts/rc1059_rc1084_interpretation_safety_contract.json`.
+Validator: `tools/requirements/validate_rc1059_rc1084_interpretation_safety.py`.
+CI: `.github/workflows/rc1059-rc1084-interpretation-safety.yml`.
+
+Ana commitler: production `f77cb92f9ee11ef81c7b86f19b15b89bf99a3769`; regression `17c8f0084955c4f7a153e1adc2bdbd132c925344`; contract `8556d422258bcc04b17d4788d3433f9337614411`; validator `1ce30a139fa3a5f5cfaa3a73860c1e5dd7853b30`; CI `4c6a590598a67106900b623668b0e20a192b019b`.
 
 ## Açık blocker'lar
 
-Authoritative independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion; authoritative Dasha/Varga/Gochara ve BaZi providers; historical timezone/DST/polar golden fixtures; rendered TR/EN UI/PDF/share cards; encrypted persistence/key management; production migration corpus; interpretation/editorial QA; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Authoritative independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion; authoritative Dasha/Varga/Gochara ve BaZi providers; historical timezone/DST/polar golden fixtures; production localization catalog integration; rendered TR/EN UI/PDF/share cards; interpretation/editorial QA; encrypted persistence/key management; production migration corpus; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-1004→1039 dedicated CI/matrix sonucunu fiziksel olarak yeniden oku; kırmızıysa root-cause düzelt, yeşil promotion varsa yalnız kanıtlanan lifecycle seviyesini kaydet.
+1. RC-1040→1058 ve RC-1059→1084 dedicated CI/matrix sonuçlarını fiziksel olarak yeniden oku; kırmızıysa root-cause düzelt, yeşil promotion varsa yalnız kanıtlanan lifecycle seviyesini kaydet.
 2. RC-0995→1003 için exact AKİLES provenance ve bağımsız authoritative golden değerleri bulunmadan promotion yapma; blocker dışındaki bağımsız işi sürdür.
-3. Binding sırada RC-1040+ maddelerini exact şartnameden yeniden oku ve bağımlılık sırasıyla gerçek kod/test/CI üret.
+3. Binding sırada RC-1085+ entitlement/Free-PRO maddelerini exact şartnameden yeniden oku ve bağımlılık sırasıyla gerçek kod/test/CI üret.
 4. RC-0965→0994 traceability açığını requirement-by-requirement azalt.
 5. RC-0001→RC-1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL deme.
 
