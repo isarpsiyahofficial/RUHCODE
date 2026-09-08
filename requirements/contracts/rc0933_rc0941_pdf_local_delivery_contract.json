@@ -1,0 +1,20 @@
+{
+  "scope": "RC-0933..RC-0941 local PDF filename/share/offline delivery",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0933": "PDF file name can be generated automatically.",
+    "RC-0934": "Operating-system-invalid filename characters are sanitized.",
+    "RC-0935": "Existing PDF is never silently overwritten; collision-safe suffixing is used.",
+    "RC-0936": "System share-sheet delivery target is represented.",
+    "RC-0937": "Email application delivery target is represented.",
+    "RC-0938": "Messaging application delivery target is represented.",
+    "RC-0939": "Device files destination is represented.",
+    "RC-0940": "Delivery does not route through an owned server.",
+    "RC-0941": "PDF generation/delivery policy does not require internet."
+  },
+  "open_evidence": [
+    "Android/iOS platform share-sheet and files adapter wiring",
+    "Airplane-mode device integration test",
+    "Exact release artifact delivery verification"
+  ]
+}
