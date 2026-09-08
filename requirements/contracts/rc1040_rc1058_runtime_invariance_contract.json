@@ -1,0 +1,32 @@
+{
+  "range": "RC-1040..RC-1058",
+  "title": "Runtime calculation invariance and TR/EN localization boundary",
+  "requirements": {
+    "RC-1040": "device model cannot affect calculation identity or math",
+    "RC-1041": "phone language cannot affect mathematical result",
+    "RC-1042": "decimal separator cannot affect mathematical result",
+    "RC-1043": "ambient device timezone cannot mutate stored calculation identity",
+    "RC-1044": "stored calculation uses its explicit IANA timezone",
+    "RC-1045": "now calculations receive explicit current timezone and UTC instant",
+    "RC-1046": "TR presentation environment is covered by regression",
+    "RC-1047": "EN presentation environment is covered by regression",
+    "RC-1048": "different system timezones are covered by regression",
+    "RC-1049": "same canonical stored input has locale-independent calculation key",
+    "RC-1050": "TR and EN system localization keys have exact parity",
+    "RC-1051": "TR-visible system key cannot be missing in EN",
+    "RC-1052": "EN-visible system key cannot be missing in TR",
+    "RC-1053": "missing system localization fails closed rather than falling back silently",
+    "RC-1054": "TR system text is resolved from TR catalog only",
+    "RC-1055": "EN system text is resolved from EN catalog only",
+    "RC-1056": "user-authored notes are preserved verbatim across language changes",
+    "RC-1057": "client/user names are preserved verbatim",
+    "RC-1058": "user data never crosses the system localization-key resolver"
+  },
+  "evidence": [
+    "lib/src/calculation_core/runtime_invariance.dart",
+    "test/calculation_core/runtime_invariance_rc1040_rc1058_test.dart",
+    "tools/requirements/validate_rc1040_rc1058_runtime_invariance.py",
+    ".github/workflows/rc1040-rc1058-runtime-invariance.yml"
+  ],
+  "promotion_policy": "CI may promote NOT_STARTED to IMPLEMENTED only. Device/locale integration, rendered TR/EN UI, production localization catalogs and exact-release evidence remain blockers for TESTED/VERIFIED/DONE."
+}
