@@ -1,0 +1,30 @@
+{
+  "range": "RC-0878..RC-0889",
+  "source": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0878": "PDF’in telefon ekranına göre değil A4/Letter benzeri gerçek belge ölçülerine göre layout’u olacak.",
+    "RC-0879": "Varsayılan profesyonel rapor A4 formatında olabilir.",
+    "RC-0880": "İleride Letter seçeneği eklenebilir.",
+    "RC-0881": "PDF’de güvenli kenar boşlukları kullanılacak.",
+    "RC-0882": "Başlıklar sayfanın dışına taşmayacak.",
+    "RC-0883": "Uzun müşteri adları layout’u bozmayacak.",
+    "RC-0884": "Uzun İngilizce başlıklar layout’u bozmayacak.",
+    "RC-0885": "Türkçe ve İngilizce metin uzunluk farkı ayrı test edilecek.",
+    "RC-0886": "Bir paragraf sayfanın altında anlamsız biçimde iki satıra bölünmeyecek.",
+    "RC-0887": "Başlık tek başına sayfa sonunda bırakılmayacak.",
+    "RC-0888": "Tablo satırlarının yanlış yerden kesilmesi engellenecek.",
+    "RC-0889": "Bölüm başlangıçlarında kontrollü pagination kullanılacak."
+  },
+  "evidence": [
+    "lib/src/pdf/pdf_document_layout_safety.dart",
+    "lib/src/pdf/pdf_local_renderer.dart",
+    "lib/src/pdf/pdf_table_layout.dart",
+    "lib/src/pdf/pdf_local_service.dart",
+    "test/pdf/pdf_document_layout_rc0878_rc0889_test.dart",
+    "test/pdf/pdf_table_layout_test.dart"
+  ],
+  "release_blockers": [
+    "Rendered TR/EN golden PDFs must be inspected for real long-title/long-name overflow and widow/orphan behavior.",
+    "Exact release artifact must verify pagination on supported Android devices."
+  ]
+}
