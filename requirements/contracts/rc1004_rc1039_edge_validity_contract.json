@@ -1,0 +1,17 @@
+{
+  "range": "RC-1004..RC-1039",
+  "source": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": [
+    "RC-1004","RC-1005","RC-1006","RC-1007","RC-1008","RC-1009","RC-1010","RC-1011","RC-1012","RC-1013","RC-1014","RC-1015","RC-1016","RC-1017","RC-1018","RC-1019","RC-1020","RC-1021","RC-1022","RC-1023","RC-1024","RC-1025","RC-1026","RC-1027","RC-1028","RC-1029","RC-1030","RC-1031","RC-1032","RC-1033","RC-1034","RC-1035","RC-1036","RC-1037","RC-1038","RC-1039"
+  ],
+  "evidence": [
+    "lib/src/calculation_core/calculation_validity.dart",
+    "lib/src/calculation_core/golden/golden_dataset_policy.dart",
+    "test/calculation_core/calculation_validity_rc1004_rc1039_test.dart"
+  ],
+  "release_blockers": [
+    "authoritative independent Western/Vedic/planetary-hours/BaZi/numerology golden values",
+    "exact AKILES source/version provenance and matching regression cases",
+    "historical timezone/DST/polar production corpus and rendered TR/EN UI verification"
+  ]
+}
