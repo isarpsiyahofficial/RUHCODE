@@ -1,0 +1,29 @@
+name: RC0527-RC0535 Vedic Professional
+
+on:
+  push:
+    paths:
+      - 'lib/src/professional/vedic_workspace.dart'
+      - 'test/professional/vedic_workspace_rc0527_rc0535_test.dart'
+      - 'requirements/contracts/rc0527_rc0535_vedic_professional_contract.json'
+      - 'tools/requirements/validate_rc0527_rc0535_vedic_professional.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0527-rc0535-vedic-professional.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0527-rc0535-vedic-professional-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0527_rc0535_vedic_professional.py
+      - run: flutter pub get
+      - run: flutter test test/professional/vedic_workspace_rc0527_rc0535_test.dart
