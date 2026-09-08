@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
 import 'package:ruh_code/src/backup/backup_package_codec.dart';
 import 'package:ruh_code/src/backup/backup_package_manifest.dart';
+import 'package:ruh_code/src/backup/backup_schema_validator.dart';
 import 'package:ruh_code/src/backup/backup_service.dart';
 import 'package:ruh_code/src/backup/verified_backup_restore.dart';
 
@@ -50,7 +51,9 @@ void main() {
       manifest: _manifest(),
       rowsByTable: const {},
       recordCounts: const {},
-      issues: const [BackupValidationIssue(code: 'invalid', message: 'invalid')],
+      issues: const [
+        BackupValidationIssue(table: 'clients.csv', message: 'invalid'),
+      ],
     );
 
     expect(
