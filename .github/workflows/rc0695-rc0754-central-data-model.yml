@@ -1,0 +1,29 @@
+name: RC0695-RC0754 Central Data Model
+
+on:
+  push:
+    paths:
+      - 'lib/src/data/central_record_model.dart'
+      - 'test/data/central_record_model_rc0695_rc0754_test.dart'
+      - 'requirements/contracts/rc0695_rc0754_central_data_model_contract.json'
+      - 'tools/requirements/validate_rc0695_rc0754_central_data_model.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0695-rc0754-central-data-model.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0695-rc0754-central-data-model-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0695_rc0754_central_data_model.py
+      - run: flutter pub get
+      - run: flutter test test/data/central_record_model_rc0695_rc0754_test.dart
