@@ -2,6 +2,7 @@ name: RC0755-RC0773 Transactional Data Safety
 
 on:
   push:
+    branches: [main]
     paths:
       - 'lib/src/data/local/data_safety_coordinator.dart'
       - 'lib/src/data/local/local_database.dart'
@@ -12,21 +13,60 @@ on:
       - 'tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py'
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - '.github/workflows/rc0755-rc0773-transactional-data-safety.yml'
+  pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
-  group: rc0755-rc0773-transactional-data-safety-${{ github.ref }}
-  cancel-in-progress: true
+  group: requirement-matrix-writers-rc0755-rc0773
+  cancel-in-progress: false
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
       - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-      - run: python3 tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
       - run: flutter pub get
+      - run: python tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py
       - run: flutter test test/data/data_safety_coordinator_rc0755_rc0773_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(755,774)}
+          links='requirements/contracts/rc0755_rc0773_transactional_data_safety_contract.json|tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py|lib/src/data/local/data_safety_coordinator.dart|test/data/data_safety_coordinator_rc0755_rc0773_test.dart|.github/workflows/rc0755-rc0773-transactional-data-safety.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Device update/process-kill survival, encrypted persistent snapshot/recovery UI, clean-install and exact-release evidence remain open.'
+            r['notes']='Non-destructive app/locale/theme/tier transitions, atomic related writes, startup integrity reporting and local snapshot restore are implemented and regression-gated.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0755_RC0773_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0755-rc0773): record transactional safety IMPLEMENTED'
+          git push origin HEAD:main
