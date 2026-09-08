@@ -129,6 +129,7 @@ class CalculationOutcome<T> {
         if (reasonCode != null || messageTr != null || messageEn != null) {
           throw ArgumentError('valid outcome cannot carry an error reason');
         }
+        break;
       case CalculationValidity.partial:
         if (value == null ||
             reasonCode == null ||
@@ -136,6 +137,7 @@ class CalculationOutcome<T> {
             messageEn == null) {
           throw ArgumentError('partial outcome requires value and reason');
         }
+        break;
       case CalculationValidity.unavailable:
       case CalculationValidity.error:
         if (value != null ||
@@ -146,6 +148,7 @@ class CalculationOutcome<T> {
             'unavailable/error outcome requires no value and a reason',
           );
         }
+        break;
     }
   }
 
