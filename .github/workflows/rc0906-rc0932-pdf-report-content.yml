@@ -1,0 +1,71 @@
+name: RC0906-RC0932 PDF Report Content
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/data/central_record_model.dart'
+      - 'lib/src/pdf/pdf_report_content.dart'
+      - 'lib/src/pdf/pdf_report_contract.dart'
+      - 'test/pdf/pdf_report_content_rc0906_rc0932_test.dart'
+      - 'requirements/contracts/rc0906_rc0932_pdf_report_content_contract.json'
+      - 'tools/requirements/validate_rc0906_rc0932_pdf_report_content.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0906-rc0932-pdf-report-content.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0906-rc0932
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0906_rc0932_pdf_report_content.py
+      - run: flutter test test/pdf/pdf_report_content_rc0906_rc0932_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0906_rc0932_pdf_report_content.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(906,933)}
+          links='requirements/contracts/rc0906_rc0932_pdf_report_content_contract.json|tools/requirements/validate_rc0906_rc0932_pdf_report_content.py|lib/src/pdf/pdf_report_content.dart|lib/src/pdf/pdf_report_contract.dart|lib/src/data/central_record_model.dart|test/pdf/pdf_report_content_rc0906_rc0932_test.dart|.github/workflows/rc0906-rc0932-pdf-report-content.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Rendered TR/EN preview-to-final goldens, production UI wiring and exact-release PDF inspection remain open.'
+            r['notes']='PDF subject data preserves birth date/time/place/timezone and optional technical Calculation Manifest; selectable sections share one ordered preview/final composition and omit empty sections.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0906_RC0932_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0906-rc0932): record PDF report content IMPLEMENTED'
+          git push origin HEAD:main
