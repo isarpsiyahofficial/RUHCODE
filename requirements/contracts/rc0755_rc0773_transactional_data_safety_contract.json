@@ -1,0 +1,36 @@
+{
+  "range": "RC-0755..RC-0773",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0755": "app update cannot delete client records",
+    "RC-0756": "app update cannot delete journal records",
+    "RC-0757": "PRO state changes cannot delete user records",
+    "RC-0758": "language changes cannot mutate user data",
+    "RC-0759": "theme changes cannot mutate calculation data",
+    "RC-0760": "Free to PRO does not require recreating old records",
+    "RC-0761": "PRO to Free preserves professional data",
+    "RC-0762": "professional data remains reachable after PRO is restored",
+    "RC-0763": "local database supports transactions",
+    "RC-0764": "failed writes cannot leave half-created client records",
+    "RC-0765": "related records update atomically",
+    "RC-0766": "process interruption must not commit a partial transaction",
+    "RC-0767": "database startup applies integrity check",
+    "RC-0768": "detected corruption exposes recovery choices",
+    "RC-0769": "automatic local snapshot capability exists",
+    "RC-0770": "snapshots are stored entirely on device",
+    "RC-0771": "user can restore an older local snapshot",
+    "RC-0772": "snapshot system requires no cloud",
+    "RC-0773": "portable export remains visibly available because uninstall can remove local data"
+  },
+  "evidence": {
+    "production": "lib/src/data/local/data_safety_coordinator.dart",
+    "transaction_backend": "lib/src/data/local/sqflite_local_database.dart",
+    "portable_export": "lib/src/backup/backup_application_service.dart",
+    "regression": "test/data/data_safety_coordinator_rc0755_rc0773_test.dart"
+  },
+  "blockers": [
+    "real device process-kill and update-survival evidence is still required",
+    "encrypted persistent snapshot storage and recovery UI are not yet proven",
+    "clean-install export/import and exact release artifact gates remain open"
+  ]
+}
