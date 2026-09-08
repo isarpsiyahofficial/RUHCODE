@@ -41,6 +41,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0536→0545 = IMPLEMENTED + blocked=YES; production + regression + exact contract + fail-closed validator + dedicated CI gate present.
 - **RC-0546→0584 = IMPLEMENTED + blocked=YES; personal Today/calendar production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
 - **RC-0585→0612 = IMPLEMENTED + blocked=YES; learning/teaching/share-card production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
+- **RC-0613→0632 = IMPLEMENTED + blocked=YES; quick-calculation production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
 
 ## Bu çalıştırmadaki gerçek geliştirme
 
@@ -50,7 +51,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Tarihli `PersonalCalendar` geçmiş güne dönüldüğünde o güne ait journal kayıtlarını geri verir. Favori tarih ve transit exact / Personal Month / full moon / planetary-hour reminder türleri ayrı yönetilebilir. `HistoricalCorrelationPolicy` TR/EN açık disclaimer ile geçmiş notlarının nedensellik kanıtı olmadığını zorunlu biçimde belirtir.
 
-Regression, exact RC-0546→0584 contract, fail-closed validator ve dedicated Flutter CI gate eklendi. Authoritative runtime providers, gerçek scheduler, rendered TR/EN UI/device, offline persistence ve global release evidence eksik olduğu için status ceiling IMPLEMENTED tutulur.
+Regression, exact RC-0546→0584 contract, fail-closed validator ve dedicated Flutter CI gate eklendi. Free effect limitinde Dart `num`/`int` uyumsuzluğu riski ayrıca `b4075cf033c507f793a2ddf45349b9c6dc004283` ile düzeltildi. Authoritative runtime providers, gerçek scheduler, rendered TR/EN UI/device, offline persistence ve global release evidence eksik olduğu için status ceiling IMPLEMENTED tutulur.
 
 ### RC-0585→0612 — Öğrenme Modu / Öğretim görünümü / Paylaşım Kartı
 
@@ -60,14 +61,22 @@ Paylaşım kartı verisi `ShareDataPoint.calculationResultRef` olmadan oluşturu
 
 Regression, exact RC-0585→0612 contract, fail-closed validator ve dedicated Flutter CI gate eklendi. Gerçek renderer/export, reference asset, TR/EN interactive UI/accessibility ve exact release evidence eksik olduğu için status ceiling IMPLEMENTED tutulur.
 
+### RC-0613→0632 — Hızlı Hesaplama / profesyonel zaman kazancı
+
+`lib/src/professional/quick_calculation_workspace.dart` müşteri kaydetmeden geçici astroloji chart session'ı veya ayrı hızlı numeroloji session'ı oluşturur. Astroloji ve numeroloji input/result türleri karıştırılırsa fail-closed davranır. Geçici sonuç yalnız provenance taşıyan verified result bağlandıktan sonra müşteri profiline dönüştürülebilir.
+
+`ProfessionalRecentState` son şehir ve son calculation settings kayıtlarını sınırlı, de-duplicate edilmiş MRU yapısında tutar; `ProfessionalPreset` varsayılan profesyonel çalışma ayarını tekrar kullanılabilir hale getirir. `ProductUtilityContract` RC-0623→0632’deki normal kullanıcı, astrolog, Vedik astrolog, numerolog, spiritüel danışman, coach, öğrenci ve içerik üreticisi fayda sınırlarını kod seviyesinde görünür tutar.
+
+Production commit `0d810e9320ca03fe61cc24d9f1e8cf4fb43419a8`; regression `6245b8c8cb13b11e496c0921bdb0d37543d25142`; exact contract `3228d4bb8f5c1701acbf2e97d4f4866b8b254546`; validator `28966d8ee820ee29887fd6eb2cad11037fbe1d8f`; dedicated gate `1f4bbe130922960c839c438d93d71349a3269d91`. Yeni HEAD için Actions fiziksel olarak oluştu ancak kapanış kontrolünde queued olduğundan TESTED/DONE yükseltilmedi.
+
 ## Açık blocker'lar
 
 Independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion açıkları; authoritative Dasha/Varga/Gochara, BaZi relation/strength ve Today runtime providers; rendered TR/EN UI/PDF/share cards; real PDF pagination/font/embed/export; production Calculation Manifest persistence; interpretation/editorial QA; encrypted persistence/key management; tenant/device isolation; real ad/rewarded/PRO verifier; gerçek notification scheduler; offline/airplane-mode; backup round-trip; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact kapıları açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0493→0510, RC-0511→0526, RC-0527→0535, RC-0536→0545, RC-0546→0584 ve RC-0585→0612 dedicated CI sonuçları fiziksel olarak okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
-2. Binding sıra **RC-0613+ Hızlı Hesaplama / geçici chart / hızlı numeroloji / son şehir-ayar-preset** hattında ilerleyecek.
+1. RC-0493→0510, RC-0511→0526, RC-0527→0535, RC-0536→0545, RC-0546→0584, RC-0585→0612 ve RC-0613→0632 dedicated CI sonuçları fiziksel olarak okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
+2. Binding sıra **RC-0633+ offline/local-first mühendislik sözleşmesi** hattında ilerleyecek: temel fonksiyonlar bizim API'mize/VPS/veritabanına bağımlı olmayacak; calculation/profile/client/note/journal/favorites/PDF/CSV çekirdeği cihaz üzerinde kalacak.
 3. RC-0342→0371 ve RC-0212→0270, RC-0158→0184, RC-0127→0134, RC-0119→0122/Panchanga promotion açıkları tekrar kontrol edilecek.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0001→1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL denmeyecek.
