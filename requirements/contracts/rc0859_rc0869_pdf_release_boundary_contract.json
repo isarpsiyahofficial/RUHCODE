@@ -19,7 +19,8 @@
     "lib/src/pdf/pdf_local_service.dart",
     "lib/src/pdf/pdf_local_renderer.dart",
     "lib/src/pdf/pdf_asset_font_provider.dart",
-    "lib/src/backup/relational_csv_backup.dart",
+    "lib/src/backup/local_database_backup_exporter.dart",
+    "lib/src/backup/csv_codec.dart",
     "test/pdf/pdf_release_boundary_rc0859_rc0869_test.dart",
     "test/pdf/pdf_asset_font_provider_test.dart",
     "test/pdf/pdf_output_inspector_generated_pdf_test.dart"
