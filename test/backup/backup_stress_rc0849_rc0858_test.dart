@@ -9,6 +9,7 @@ void main() {
     final profiles = <List<String?>>[];
     final clients = <List<String?>>[];
     final notes = <List<String?>>[];
+    final longTail = List<String>.filled(40, 'Uzun not, virgül ve "tırnak" içerir. ').join();
 
     for (var i = 0; i < 1500; i++) {
       final sameName = i.isEven ? 'İbrahim Şahin' : 'Alex Smith';
@@ -37,8 +38,7 @@ void main() {
       notes.add(<String?>[
         'note-$i',
         'client-$i',
-        'Türkçe: ç, ğ, ı, İ, ö, ş, ü. English text. Emoji 😀✨.\n'
-            '${'Uzun not, virgül ve "tırnak" içerir. ' * 40}',
+        'Türkçe: ç, ğ, ı, İ, ö, ş, ü. English text. Emoji 😀✨.\n$longTail',
         '2026-09-08T09:00:00.000Z',
         '2026-09-08T09:00:00.000Z',
       ]);
