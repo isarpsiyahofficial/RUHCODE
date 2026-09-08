@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "freeAloneIsNotLicenseApproval": true,
+    "runtimeRedistributionRequiresExplicitApproval": true,
+    "reviewSensitiveLicenses": ["GPL-3.0", "AGPL-3.0", "commercial-restricted"],
+    "qaReferenceDoesNotImplyRuntimeApproval": true
+  },
+  "datasets": [
+    {
+      "id": "geonames-cities500",
+      "path": "assets/data/cities/cities500.catalog.jsonl.gz",
+      "source": "GeoNames",
+      "license": "CC BY 4.0",
+      "licenseStatus": "approved",
+      "commercialRedistributionApproved": true,
+      "attributionRequired": true,
+      "attributionPath": "assets/data/cities/ATTRIBUTION.txt",
+      "runtimeRole": "bundled-city-country-timezone-catalog"
+    },
+    {
+      "id": "iers-finals2000a",
+      "path": "assets/data/eop/finals2000A.all",
+      "source": "unresolved-in-repository",
+      "license": "unresolved",
+      "licenseStatus": "review_required",
+      "commercialRedistributionApproved": false,
+      "attributionRequired": null,
+      "attributionPath": null,
+      "runtimeRole": "earth-orientation-data"
+    },
+    {
+      "id": "de440s-ephemeris",
+      "path": "assets/data/ephemeris/de440s.bsp",
+      "source": "unresolved-in-repository",
+      "license": "unresolved",
+      "licenseStatus": "review_required",
+      "commercialRedistributionApproved": false,
+      "attributionRequired": null,
+      "attributionPath": null,
+      "runtimeRole": "astronomical-ephemeris"
+    }
+  ],
+  "dependencies": [
+    {"id":"archive","constraint":"^4.0.9","licenseStatus":"review_required"},
+    {"id":"crypto","constraint":"^3.0.7","licenseStatus":"review_required"},
+    {"id":"file_picker","constraint":"^12.0.0","licenseStatus":"review_required"},
+    {"id":"flutter_timezone","constraint":"^5.1.0","licenseStatus":"review_required"},
+    {"id":"in_app_purchase","constraint":"^3.3.0","licenseStatus":"review_required"},
+    {"id":"in_app_purchase_android","constraint":"^0.5.2","licenseStatus":"review_required"},
+    {"id":"path","constraint":"^1.9.1","licenseStatus":"review_required"},
+    {"id":"pdf","constraint":"^3.13.0","licenseStatus":"review_required"},
+    {"id":"share_plus","constraint":"^13.3.0","licenseStatus":"review_required"},
+    {"id":"sqflite","constraint":"^2.4.3","licenseStatus":"review_required"},
+    {"id":"timezone","constraint":"^0.11.1","licenseStatus":"review_required"},
+    {"id":"flutter_lints","constraint":"^5.0.0","licenseStatus":"review_required","scope":"dev"},
+    {"id":"sqflite_common_ffi","constraint":"^2.4.2","licenseStatus":"review_required","scope":"dev"}
+  ],
+  "sdkDependencies": [
+    {"id":"flutter","source":"Flutter SDK","licenseStatus":"sdk_managed_review_required"},
+    {"id":"flutter_localizations","source":"Flutter SDK","licenseStatus":"sdk_managed_review_required"},
+    {"id":"flutter_test","source":"Flutter SDK","licenseStatus":"sdk_managed_review_required","scope":"dev"}
+  ],
+  "verificationReferences": [
+    {"id":"AKILES","role":"development_qa_reference_only","runtimeApproved":false},
+    {"id":"Swiss Ephemeris","role":"development_qa_reference_only","runtimeApproved":false}
+  ]
+}
