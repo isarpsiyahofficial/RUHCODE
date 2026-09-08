@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "requirementRange": ["RC-1131", "RC-1144"],
+  "defaultBranch": "main",
+  "dailyDevelopmentOnMainAllowed": false,
+  "featureBranchRequired": true,
+  "pullRequestRequired": true,
+  "calculationCoreReviewRequired": true,
+  "requiredCalculationCoreReviewPath": "lib/src/calculation_core/**",
+  "requiredCiBeforeMerge": true,
+  "releaseOnlyAfterFinalGates": true,
+  "releaseManifestRequired": true,
+  "releaseManifestFields": [
+    "commitSha",
+    "artifactName",
+    "artifactSha256",
+    "buildMode",
+    "requirementsClosed",
+    "ciRunUrl",
+    "minificationEnabled",
+    "obfuscationEnabled"
+  ],
+  "allowedFinalBuildModes": ["release"],
+  "debugArtifactMayBeFinal": false,
+  "releaseBuildRequiresSeparateTest": true,
+  "minifiedBuildRequiresBehaviorParity": true,
+  "r8ReflectionRegressionRequired": true,
+  "branchProtectionExternalSettingRequired": true,
+  "notes": "Repository policy is fail-closed. File-level policy and CI can validate process evidence, but GitHub branch protection/ruleset enforcement must also be enabled at repository level before RC-1132/1135/1136 can be VERIFIED/DONE."
+}
