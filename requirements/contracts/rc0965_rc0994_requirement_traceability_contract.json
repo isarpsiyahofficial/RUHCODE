@@ -1,0 +1,21 @@
+{
+  "contract_id": "rc0965_rc0994_requirement_traceability",
+  "status_ceiling": "IMPLEMENTED",
+  "range": "RC-0965..RC-0994",
+  "evidence": {
+    "canonical_matrix": "requirements/requirement_state.csv",
+    "matrix_validator": "tools/requirements/validate_requirement_matrix.py",
+    "test_traceability_audit": "tools/requirements/audit_requirement_test_traceability.py"
+  },
+  "release_rules": [
+    "Matrix must contain exactly ordered RC-0001..RC-1442 bound to canonical source hashes",
+    "Lifecycle is NOT_STARTED/IMPLEMENTED/TESTED/VERIFIED/DONE and IMPLEMENTED alone is not completion",
+    "Normal CI reports unbound test files and requirements without test evidence",
+    "Final traceability mode fails unless every requirement is DONE and linked to at least one test path"
+  ],
+  "blocking_release_evidence": [
+    "Current repository still contains requirements without direct test evidence links",
+    "Current repository still contains requirements below DONE",
+    "Per-requirement UI/data-model/Free-PRO/TR/EN applicability must be fully evidenced before release"
+  ]
+}
