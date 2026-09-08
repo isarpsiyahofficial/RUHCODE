@@ -95,7 +95,9 @@ abstract final class PdfSectionIds {
   static const placements = 'placements';
   static const houses = 'houses';
   static const aspects = 'aspects';
+  static const transits = 'transits';
   static const interpretation = 'interpretation';
+  static const preparedInterpretations = 'prepared_interpretations';
   static const vedicCharts = 'vedic_charts';
   static const dasha = 'dasha';
   static const panchanga = 'panchanga';
@@ -112,7 +114,9 @@ abstract final class PdfSectionIds {
     placements,
     houses,
     aspects,
+    transits,
     interpretation,
+    preparedInterpretations,
     vedicCharts,
     dasha,
     panchanga,
@@ -124,29 +128,17 @@ abstract final class PdfSectionIds {
 }
 
 final class PdfSectionInput {
-  const PdfSectionInput({
-    required this.id,
-    required this.hasContent,
-  });
-
+  const PdfSectionInput({required this.id, required this.hasContent});
   final String id;
   final bool hasContent;
 }
 
 final class PdfBranding {
-  const PdfBranding({
-    this.professionalName,
-    this.brandName,
-    this.logoAssetId,
-  });
-
+  const PdfBranding({this.professionalName, this.brandName, this.logoAssetId});
   final String? professionalName;
   final String? brandName;
   final String? logoAssetId;
-
-  bool get hasAny =>
-      _nonBlank(professionalName) || _nonBlank(brandName) || _nonBlank(logoAssetId);
-
+  bool get hasAny => _nonBlank(professionalName) || _nonBlank(brandName) || _nonBlank(logoAssetId);
   static bool _nonBlank(String? value) => value != null && value.trim().isNotEmpty;
 }
 
@@ -161,7 +153,6 @@ final class PdfReportRequest {
     this.pageSpec = PdfPageSpec.a4,
     this.typography = const PdfTypographyTokens(),
   });
-
   final PdfReportKind kind;
   final PdfDataOrigin dataOrigin;
   final String localeTag;
@@ -183,7 +174,6 @@ final class PdfReportPlan {
     required this.pageSpec,
     required this.typography,
   });
-
   final PdfReportKind kind;
   final PdfDataOrigin dataOrigin;
   final String localeTag;
@@ -197,45 +187,23 @@ final class PdfReportPlan {
 final class PdfReportPlanner {
   const PdfReportPlanner();
 
-  PdfReportPlan build({
-    required PdfReportRequest request,
-    required List<PdfSectionInput> availableSections,
-  }) {
+  PdfReportPlan build({required PdfReportRequest request, required List<PdfSectionInput> availableSections}) {
     _validateRequest(request);
-
     final availability = <String, bool>{};
     for (final section in availableSections) {
-      if (!PdfSectionIds.all.contains(section.id)) {
-        throw FormatException('Unknown PDF section id: ${section.id}.');
-      }
-      if (availability.containsKey(section.id)) {
-        throw FormatException('Duplicate PDF section availability: ${section.id}.');
-      }
+      if (!PdfSectionIds.all.contains(section.id)) throw FormatException('Unknown PDF section id: ${section.id}.');
+      if (availability.containsKey(section.id)) throw FormatException('Duplicate PDF section availability: ${section.id}.');
       availability[section.id] = section.hasContent;
     }
-
     final selected = <String>[];
     final seen = <String>{};
     for (final id in request.requestedSectionIds) {
-      if (!PdfSectionIds.all.contains(id)) {
-        throw FormatException('Unknown requested PDF section id: $id.');
-      }
-      if (!seen.add(id)) {
-        throw FormatException('Duplicate requested PDF section id: $id.');
-      }
-      if (availability[id] == true) {
-        selected.add(id);
-      }
+      if (!PdfSectionIds.all.contains(id)) throw FormatException('Unknown requested PDF section id: $id.');
+      if (!seen.add(id)) throw FormatException('Duplicate requested PDF section id: $id.');
+      if (availability[id] == true) selected.add(id);
     }
-
-    if (availability[PdfSectionIds.cover] == true && !selected.contains(PdfSectionIds.cover)) {
-      selected.insert(0, PdfSectionIds.cover);
-    }
-
-    if (selected.where((id) => id != PdfSectionIds.cover).isEmpty) {
-      throw const FormatException('PDF report has no non-empty content section.');
-    }
-
+    if (availability[PdfSectionIds.cover] == true && !selected.contains(PdfSectionIds.cover)) selected.insert(0, PdfSectionIds.cover);
+    if (selected.where((id) => id != PdfSectionIds.cover).isEmpty) throw const FormatException('PDF report has no non-empty content section.');
     return PdfReportPlan(
       kind: request.kind,
       dataOrigin: request.dataOrigin,
@@ -249,22 +217,14 @@ final class PdfReportPlanner {
   }
 
   void _validateRequest(PdfReportRequest request) {
-    if (request.localeTag != 'tr' && request.localeTag != 'en') {
+    final locale = request.localeTag.toLowerCase();
+    if (!(locale == 'tr' || locale.startsWith('tr-') || locale == 'en' || locale.startsWith('en-'))) {
       throw FormatException('Unsupported PDF locale: ${request.localeTag}.');
     }
-    if (request.kind == PdfReportKind.sample && request.dataOrigin != PdfDataOrigin.demo) {
-      throw const FormatException('Sample PDF must use demo data only.');
-    }
-    if (request.kind != PdfReportKind.sample && request.dataOrigin != PdfDataOrigin.user) {
-      throw const FormatException('Non-sample PDF must use user data origin.');
-    }
-    if (request.pageSpec.widthMm != PdfPageSpec.a4.widthMm ||
-        request.pageSpec.heightMm != PdfPageSpec.a4.heightMm) {
-      throw const FormatException('Ruh Code professional PDF v1 supports A4 only.');
-    }
-    if (request.pageSpec.contentWidthMm <= 0 || request.pageSpec.contentHeightMm <= 0) {
-      throw const FormatException('PDF page margins leave no usable content area.');
-    }
+    if (request.kind == PdfReportKind.sample && request.dataOrigin != PdfDataOrigin.demo) throw const FormatException('Sample PDF must use demo data only.');
+    if (request.kind != PdfReportKind.sample && request.dataOrigin != PdfDataOrigin.user) throw const FormatException('Non-sample PDF must use user data origin.');
+    if (request.pageSpec.widthMm != PdfPageSpec.a4.widthMm || request.pageSpec.heightMm != PdfPageSpec.a4.heightMm) throw const FormatException('Ruh Code professional PDF v1 supports A4 only.');
+    if (request.pageSpec.contentWidthMm <= 0 || request.pageSpec.contentHeightMm <= 0) throw const FormatException('PDF page margins leave no usable content area.');
     request.typography.validate();
   }
 }
