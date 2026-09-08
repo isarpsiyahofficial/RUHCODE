@@ -1,0 +1,39 @@
+{
+  "range": "RC-1059..RC-1084",
+  "title": "Central terminology, versioned interpretation rules and safety constraints",
+  "requirements": {
+    "RC-1059": "central terminology glossary exists",
+    "RC-1060": "Ascendant/Yükselen mapping is stable",
+    "RC-1061": "House/Ev mapping is stable",
+    "RC-1062": "Vedic transliteration keys are centralized",
+    "RC-1063": "same terminology key resolves consistently across surfaces",
+    "RC-1064": "professional technical terms may remain untranslated",
+    "RC-1065": "technical term and localized explanation can coexist",
+    "RC-1066": "interpretation rules are versioned",
+    "RC-1067": "interpretationVersion is explicit and traceable",
+    "RC-1068": "interpretation version is independent from calculation engine version",
+    "RC-1069": "math changes cannot silently mutate interpretation catalog",
+    "RC-1070": "every interpretation rule has explicit calculation condition",
+    "RC-1071": "rule subject must match calculation subject",
+    "RC-1072": "rule matching is automated-test covered",
+    "RC-1073": "placeholder values are validated",
+    "RC-1074": "unresolved placeholders fail closed",
+    "RC-1075": "combined interpretations are deduplicated",
+    "RC-1076": "same sentence is not repeated uncontrolled",
+    "RC-1077": "conflicting factors are not collapsed into an uncontrolled claim",
+    "RC-1078": "conflicting factors remain separately visible",
+    "RC-1079": "calculated evidence and traditional interpretation are labeled separately",
+    "RC-1080": "medical diagnosis certainty is forbidden",
+    "RC-1081": "legal certainty is forbidden",
+    "RC-1082": "financial guarantee is forbidden",
+    "RC-1083": "death-date prediction certainty is forbidden",
+    "RC-1084": "professional interpretation safety policy fails closed on unsafe certainty"
+  },
+  "evidence": [
+    "lib/src/interpretation/terminology_and_safety.dart",
+    "test/interpretation/terminology_and_safety_rc1059_rc1084_test.dart",
+    "tools/requirements/validate_rc1059_rc1084_interpretation_safety.py",
+    ".github/workflows/rc1059-rc1084-interpretation-safety.yml"
+  ],
+  "promotion_policy": "CI may promote NOT_STARTED to IMPLEMENTED only; editorial catalog QA, rendered TR/EN surfaces and exact-release evidence remain blockers."
+}
