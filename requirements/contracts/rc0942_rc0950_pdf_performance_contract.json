@@ -1,0 +1,25 @@
+{
+  "contract_id": "rc0942_rc0950_pdf_performance",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0942": "Çok uzun raporlar performans testinden geçirilecek.",
+    "RC-0943": "5 sayfalık rapor test edilecek.",
+    "RC-0944": "25 sayfalık rapor test edilecek.",
+    "RC-0945": "50+ sayfalık rapor test edilecek.",
+    "RC-0946": "Yüzlerce tablo satırı içeren profesyonel rapor test edilecek.",
+    "RC-0947": "PDF üretimi sırasında RAM taşması test edilecek.",
+    "RC-0948": "Eski veya orta sınıf Android cihazlarda PDF üretimi test edilecek.",
+    "RC-0949": "PDF üretiminde kullanıcı arayüzünün kilitlenmesi önlenecek.",
+    "RC-0950": "PDF üretimi tamamlanmadıysa yarım dosya başarılı rapor olarak gösterilmeyecek."
+  },
+  "evidence": {
+    "production": "lib/src/pdf/pdf_generation_performance.dart",
+    "regression": "test/pdf/pdf_generation_performance_rc0942_rc0950_test.dart",
+    "existing_structural_inspector": "lib/src/pdf/pdf_output_inspector.dart"
+  },
+  "blocking_release_evidence": [
+    "Measured peak-RSS run on supported old/mid-range Android device classes",
+    "Physical-device UI responsiveness/heartbeat evidence while a 50+ page report is generated",
+    "Exact release-artifact performance run"
+  ]
+}
