@@ -1,0 +1,69 @@
+name: RC1059-RC1084 Interpretation Safety
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/interpretation/terminology_and_safety.dart'
+      - 'test/interpretation/terminology_and_safety_rc1059_rc1084_test.dart'
+      - 'requirements/contracts/rc1059_rc1084_interpretation_safety_contract.json'
+      - 'tools/requirements/validate_rc1059_rc1084_interpretation_safety.py'
+      - '.github/workflows/rc1059-rc1084-interpretation-safety.yml'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1059-rc1084
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc1059_rc1084_interpretation_safety.py
+      - run: flutter test test/interpretation/terminology_and_safety_rc1059_rc1084_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc1059_rc1084_interpretation_safety.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(1059,1085)}
+          links='requirements/contracts/rc1059_rc1084_interpretation_safety_contract.json|tools/requirements/validate_rc1059_rc1084_interpretation_safety.py|lib/src/interpretation/terminology_and_safety.dart|test/interpretation/terminology_and_safety_rc1059_rc1084_test.dart|.github/workflows/rc1059-rc1084-interpretation-safety.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Production interpretation catalog integration/editorial QA, rendered TR/EN surfaces and exact-release verification remain open.'
+            r['notes']='Central terminology, versioned rule matching, placeholder validation, deduplication/conflict preservation and unsafe-certainty fail-closed policy are implemented and regression-covered.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1059_RC1084_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1059-rc1084): record interpretation safety IMPLEMENTED'
+          git push origin HEAD:main
