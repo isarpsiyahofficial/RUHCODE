@@ -1,0 +1,31 @@
+{
+  "range": "RC-0859..RC-0869",
+  "source": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-0859": "PDF, Ruh Code’un geri yüklenebilir teknik yedeğinin yerine geçmeyecek.",
+    "RC-0860": "PDF’nin görevi insan tarafından okunabilir rapor ve arşiv oluşturmak olacak.",
+    "RC-0861": "CSV’nin görevi veriyi tekrar uygulamaya aktarabilmek olacak.",
+    "RC-0862": "PDF rapor sistemi tamamen cihaz üzerinde çalışacak.",
+    "RC-0863": "PDF oluşturmak için bizim sunucumuza veri gönderilmeyecek.",
+    "RC-0864": "Müşterinin doğum bilgileri PDF üretmek amacıyla dış servise gönderilmeyecek.",
+    "RC-0865": "PDF motoru Türkçe ve İngilizce Unicode desteğine sahip olacak.",
+    "RC-0866": "PDF’de Türkçe karakter bozulması release blocker olacak.",
+    "RC-0867": "PDF’de font fallback problemi test edilecek.",
+    "RC-0868": "PDF çıktı tasarımı uygulamadaki ekran görüntülerini PDF’e yapıştırmaktan ibaret olmayacak.",
+    "RC-0869": "Profesyonel PDF için özel layout motoru kullanılacak."
+  },
+  "evidence": [
+    "lib/src/pdf/pdf_release_boundary.dart",
+    "lib/src/pdf/pdf_local_service.dart",
+    "lib/src/pdf/pdf_local_renderer.dart",
+    "lib/src/pdf/pdf_asset_font_provider.dart",
+    "lib/src/backup/relational_csv_backup.dart",
+    "test/pdf/pdf_release_boundary_rc0859_rc0869_test.dart",
+    "test/pdf/pdf_asset_font_provider_test.dart",
+    "test/pdf/pdf_output_inspector_generated_pdf_test.dart"
+  ],
+  "release_blockers": [
+    "Generated TR/EN release PDFs must pass physical glyph/fallback inspection with the exact bundled production font bytes.",
+    "Exact release artifact must prove PDF generation remains on-device and CSV remains the restorable backup format."
+  ]
+}
