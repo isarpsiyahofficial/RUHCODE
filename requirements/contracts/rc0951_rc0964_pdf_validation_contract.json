@@ -1,0 +1,30 @@
+{
+  "contract_id": "rc0951_rc0964_pdf_validation",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0951": "PDF doğrulama testi oluşturulacak.",
+    "RC-0952": "Oluşan PDF’nin gerçekten açılabildiği otomatik kontrol edilecek.",
+    "RC-0953": "Sayfa sayısının sıfır olmadığı kontrol edilecek.",
+    "RC-0954": "Gerekli metinlerin PDF’de bulunduğu kontrol edilecek.",
+    "RC-0955": "Grafik/chart alanının gerçekten üretildiği kontrol edilecek.",
+    "RC-0956": "PDF render edilip görsel regresyon testine alınabilecek.",
+    "RC-0957": "Referans PDF sayfaları ile yeni sürüm karşılaştırılabilecek.",
+    "RC-0958": "Büyük layout kaymaları CI tarafından yakalanabilecek.",
+    "RC-0959": "Her piksel farkı hata sayılmayacak; anlamlı layout toleransı tanımlanacak.",
+    "RC-0960": "Metnin sayfa dışına taşması kesin hata kabul edilecek.",
+    "RC-0961": "Chart kırpılması kesin hata kabul edilecek.",
+    "RC-0962": "Bozuk sembol kesin hata kabul edilecek.",
+    "RC-0963": "Eksik Türkçe karakter kesin hata kabul edilecek.",
+    "RC-0964": "Yanlış müşteri verisinin başka raporda çıkması kritik güvenlik hatası kabul edilecek."
+  },
+  "evidence": {
+    "production": "lib/src/pdf/pdf_release_validation.dart",
+    "structural_inspector": "lib/src/pdf/pdf_output_inspector.dart",
+    "regression": "test/pdf/pdf_release_validation_rc0951_rc0964_test.dart"
+  },
+  "blocking_release_evidence": [
+    "A deterministic CI PDF renderer/parser adapter must populate parsed text, chart objects and page raster evidence from produced report bytes",
+    "Versioned TR and EN reference PDF page/raster corpus must be committed and compared on CI",
+    "Exact release artifact must pass parser, visual regression, subject-isolation and device report tests"
+  ]
+}
