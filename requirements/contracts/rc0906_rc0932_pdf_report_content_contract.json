@@ -1,0 +1,38 @@
+{
+  "scope": "RC-0906..RC-0932 PDF customer/calculation details and selectable report composition",
+  "status_ceiling": "IMPLEMENTED",
+  "requirements": {
+    "RC-0906": "First report content section is customer/account information.",
+    "RC-0907": "Used birth date is reportable.",
+    "RC-0908": "Used birth time is reportable.",
+    "RC-0909": "Unknown birth time renders explicitly as Bilinmiyor/Unknown and is never invented.",
+    "RC-0910": "Used birth place is reportable.",
+    "RC-0911": "Coordinates can appear in optional technical details.",
+    "RC-0912": "Used IANA timezone is reportable.",
+    "RC-0913": "Calculation/zodiac system is reportable.",
+    "RC-0914": "House system is reportable.",
+    "RC-0915": "Ayanamsha is reportable for sidereal calculations and remains mandatory there.",
+    "RC-0916": "Technical reports can include a Calculation Manifest summary.",
+    "RC-0917": "Client-friendly reports can hide unnecessary technical details.",
+    "RC-0918": "Professionals can enable or disable selectable report sections.",
+    "RC-0919": "Report section order is explicitly reorderable.",
+    "RC-0920": "Chart section is selectable.",
+    "RC-0921": "Planet placements section is selectable.",
+    "RC-0922": "Houses section is selectable.",
+    "RC-0923": "Aspects section is selectable.",
+    "RC-0924": "Transits section is selectable.",
+    "RC-0925": "Numerology section is selectable.",
+    "RC-0926": "Professional custom notes are selectable.",
+    "RC-0927": "Prepared interpretations are a distinct selectable section.",
+    "RC-0928": "Prepared interpretations can be fully disabled.",
+    "RC-0929": "A preview section model exists before final PDF creation.",
+    "RC-0930": "Preview and final PDF consume the same ordered section model.",
+    "RC-0931": "Sections without content are not emitted.",
+    "RC-0932": "No empty transit pages are emitted when transit content is absent."
+  },
+  "open_evidence": [
+    "Rendered TR/EN preview-to-final PDF golden comparison",
+    "Production UI wiring for section toggle/reorder controls",
+    "Exact release artifact PDF inspection"
+  ]
+}
