@@ -34,40 +34,38 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0394→0420 = IMPLEMENTED + blocked=YES; physical matrix evidence `ed0bd0672af52a073eb841c474494e06d9f31e74`.
 - RC-0421→0460 = IMPLEMENTED + blocked=YES; physical matrix evidence `62603b7c49fb3bcb20c2346e263ec6bfdddc2e29`.
 - RC-0461→0480 = IMPLEMENTED + blocked=YES; physical matrix evidence `ab7014a9880e3e8b3d221f36843e16a56920715c`.
-- **RC-0481→0492 = IMPLEMENTED + blocked=YES; physical matrix evidence `c63a3ce30315157b7f99beec7017af4a8966e15b`.**
-- **RC-0493→0510 = production + regression + exact contract + fail-closed validator + dedicated CI gate present; physical matrix promotion not yet proven.**
-- **RC-0511→0526 = production + regression + exact contract + fail-closed validator + dedicated CI gate present; physical matrix promotion not yet proven.**
+- RC-0481→0492 = IMPLEMENTED + blocked=YES; physical matrix evidence `c63a3ce30315157b7f99beec7017af4a8966e15b`.
+- RC-0493→0510 = production + regression + exact contract + fail-closed validator + dedicated CI gate present; physical matrix promotion not yet proven.
+- RC-0511→0526 = production + regression + exact contract + fail-closed validator + dedicated CI gate present; physical matrix promotion not yet proven.
+- **RC-0527→0535 = IMPLEMENTED + blocked=YES; production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
+- **RC-0536→0545 = IMPLEMENTED + blocked=YES; production + regression + exact contract + fail-closed validator + dedicated CI gate present.**
 
 ## Bu çalıştırmadaki gerçek geliştirme
 
-### RC-0481→0492 — physical promotion doğrulaması
+### RC-0527→0535 — Vedik profesyonel zamanlama / Dasha-Gochara / Varga
 
-Dedicated coach/single-screen workflow'un fiziksel matrix commit'i artık kanıtlandı: `c63a3ce30315157b7f99beec7017af4a8966e15b`. Promotion ceiling IMPLEMENTED olduğundan TESTED/DONE yapılmadı; encrypted persistence, rendered TR/EN UI, entitlement, backup/security/device ve exact-release evidence açık.
+`lib/src/professional/vedic_workspace.dart` Vedik profesyonel çalışma alanını ayrı domain olarak kurar. Dasha ve Antardasha dönemleri UTC aralıkları ve source/version provenance ile taşınır; aktif dönemler tek workspace'te sorgulanır ve Antardasha değişimleri kronolojik zaman çizelgesi olarak alınır. Gochara kayıtları aynı zamanlama çalışma alanında Dasha/Antardasha ile birlikte incelenebilir ancak calculation result referansları yeniden hesaplanmaz.
 
-### RC-0493→0510 — tablet profesyonel görünüm + Danışan Raporu
+D1 zorunludur. D1+D9, D1+D10 ve üçlü D1+D9+D10 karşılaştırması desteklenir. İstenen Varga sonucu yoksa sistem sahte/varsayılan chart üretmek yerine fail-closed davranır.
 
-`lib/src/professional/client_report_workspace.dart` tablet yatay görünümde chart + teknik bilgiler + danışmanlık notlarını aynı consultation surface üzerinde tutan layout policy oluşturur. Danışan Raporu ekran görüntüsü değildir: profesyonelin seçtiği `ClientReportSection` kayıtlarından oluşur, istenmeyen bölümler kapatılabilir, enabled bölümler preview aşamasında yeniden sıralanabilir. Teknik derece tabloları ve müşteriye yönelik sade yorumlar opsiyoneldir; chart + profesyonel notlar tek başına geçerli minimal rapor olabilir.
+Regression, exact 527→535 contract, fail-closed validator ve dedicated Flutter CI gate eklendi. Authoritative production Dasha/Varga/Gochara provider, golden corpus, rendered TR/EN professional UI/device ve global release evidence eksik olduğu için status ceiling IMPLEMENTED tutulur.
 
-`ProfessionalIdentity` profesyonel adını explicit tutar; custom logo yalnız PRO policy ile kabul edilir. `ProfessionalReportBrandingPolicy.requiresRuhCodeAdvertising == false`, yani profesyonel rapor Ruh Code reklam yüzeyi olmak zorunda değildir. Ayrıntılı rapor hedefi requirement'a uygun biçimde 20–30 sayfa bandında açık policy olarak sınırlandırılmıştır; gerçek pagination/render pipeline henüz blocker'dır.
+### RC-0536→0545 — BaZi profesyonel çalışma alanı + aynı veri / iki sunum seviyesi
 
-Regression + exact 493→510 contract + fail-closed validator + unique-concurrency Flutter/matrix gate eklendi. Physical matrix commit henüz kanıtlanmadığı için bu blok IMPLEMENTED iddiasının üstüne çıkarılmadı.
+`lib/src/professional/bazi_workspace.dart` Four Pillars için tam dört natal pillar zorunluluğu uygular; Luck Pillars UTC zaman çizelgesi, Annual Pillar kaydı ve source/version provenance taşıyan raw Stem/Branch ilişkileri oluşturur. İstenen yıl için exact Annual Pillar bulunmazsa fail-closed davranır.
 
-### RC-0511→0526 — profesyonel zaman çizelgesi + timed-hit filtre/preset çekirdeği
+Normal kullanıcı ve profesyonel kullanıcı aynı hesaplanmış veri nesnesini kullanır. `BaziPresentationLevel.simple` teknik satırları gizleyerek sade açıklama verir; `professional` aynı veri üzerinden Stem/Branch ve ilişki satırlarını açar. Western örneği için de tek veri nesnesinde sade anlam ile degree/aspect/orb/dispositor teknik alanları birlikte tutulur; iki ayrı calculation truth üretilmez.
 
-`lib/src/professional/timeline_workspace.dart` gelecekteki transit/timed-hit kayıtlarını UTC zamanında, result/source/version provenance ile taşır ve kronolojik sıralar. Kullanıcı 30 gün, 3 ay veya 1 yıl penceresini seçebilir; yüksek önem, yalnız Satürn, ilişki ve kariyer filtreleri birbirinden bağımsızdır.
-
-TR/EN disclosure policy bu filtrelerin kesin olay tahmini olmadığını açıkça söyler. `TimelineFilterPreset` ve `TimelinePresetLibrary` profesyonelin ilişki, kariyer, yıllık danışmanlık veya kendi adlandırdığı filtre ayarlarını tekrar kullanılabilir şekilde saklaması için domain sınırı sağlar. Production astronomy/timed-hit provider, persistence ve rendered UI henüz bağlanmadığı için promotion ceiling IMPLEMENTED tutulur.
-
-Regression + exact 511→526 contract + fail-closed validator + unique-concurrency Flutter/matrix gate eklendi. Physical matrix promotion sonraki çalıştırmada yeniden okunacak.
+Regression, exact 536→545 contract, fail-closed validator ve dedicated Flutter CI gate eklendi. Authoritative BaZi relation/strength provider, production golden corpus, rendered simple/professional TR/EN UI, accessibility/device ve exact release evidence eksik olduğu için status ceiling IMPLEMENTED tutulur.
 
 ## Açık blocker'lar
 
-Independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion açıkları; rendered TR/EN UI/PDF; real PDF pagination/font/embed/export; production Calculation Manifest persistence; interpretation/editorial QA; encrypted persistence/key management; tenant/device isolation; real ad/rewarded/PRO verifier; offline/airplane-mode; backup round-trip; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact kapıları açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion açıkları; authoritative Dasha/Varga/Gochara ve BaZi relation/strength providers; rendered TR/EN UI/PDF; real PDF pagination/font/embed/export; production Calculation Manifest persistence; interpretation/editorial QA; encrypted persistence/key management; tenant/device isolation; real ad/rewarded/PRO verifier; offline/airplane-mode; backup round-trip; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact kapıları açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0493→0510 ve RC-0511→0526 dedicated CI/matrix sonuçları fiziksel olarak okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
-2. Binding sıra **RC-0527+ Vedik profesyonel zamanlama / Dasha-Gochara / Varga karşılaştırma** hattında ilerleyecek.
+1. RC-0493→0510, RC-0511→0526, RC-0527→0535 ve RC-0536→0545 dedicated CI sonuçları fiziksel olarak okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
+2. Binding sıra **RC-0546+ Bugün ekranı / değişen kişisel veri / haftalık-aylık-yıllık görünüm / favori tarih ve bildirim takvimi** hattında ilerleyecek.
 3. RC-0342→0371 ve RC-0212→0270, RC-0158→0184, RC-0127→0134, RC-0119→0122/Panchanga promotion açıkları tekrar kontrol edilecek.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0001→1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL denmeyecek.
