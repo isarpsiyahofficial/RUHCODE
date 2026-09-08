@@ -1,0 +1,29 @@
+name: RC0774-RC0848 Portable Backup
+
+on:
+  push:
+    paths:
+      - 'lib/src/backup/**'
+      - 'test/backup/**'
+      - 'requirements/contracts/rc0774_rc0848_portable_backup_contract.json'
+      - 'tools/requirements/validate_rc0774_rc0848_portable_backup.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0774-rc0848-portable-backup.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0774-rc0848-portable-backup-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0774_rc0848_portable_backup.py
+      - run: flutter pub get
+      - run: flutter test test/backup/csv_codec_test.dart test/backup/backup_package_codec_test.dart test/backup/backup_import_coordinator_test.dart test/backup/verified_backup_restore_rc0774_rc0848_test.dart test/backup/backup_full_lifecycle_test.dart
