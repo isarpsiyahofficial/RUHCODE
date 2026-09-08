@@ -1,0 +1,70 @@
+name: RC1004-RC1039 Edge Validity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/calculation_core/calculation_validity.dart'
+      - 'lib/src/calculation_core/golden/golden_dataset_policy.dart'
+      - 'test/calculation_core/calculation_validity_rc1004_rc1039_test.dart'
+      - 'requirements/contracts/rc1004_rc1039_edge_validity_contract.json'
+      - 'tools/requirements/validate_rc1004_rc1039_edge_validity.py'
+      - '.github/workflows/rc1004-rc1039-edge-validity.yml'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1004-rc1039
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc1004_rc1039_edge_validity.py
+      - run: flutter test test/calculation_core/calculation_validity_rc1004_rc1039_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc1004_rc1039_edge_validity.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(1004,1040)}
+          links='requirements/contracts/rc1004_rc1039_edge_validity_contract.json|tools/requirements/validate_rc1004_rc1039_edge_validity.py|lib/src/calculation_core/calculation_validity.dart|lib/src/calculation_core/golden/golden_dataset_policy.dart|test/calculation_core/calculation_validity_rc1004_rc1039_test.dart|.github/workflows/rc1004-rc1039-edge-validity.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Authoritative production golden corpus, exact AKILES provenance, historical timezone/polar fixtures, rendered TR/EN UI and exact-release verification remain open.'
+            r['notes']='Edge-case taxonomy, unknown-birth-time fail-closed behavior, polar solar-boundary handling, validity states and deterministic outcome guard are implemented and regression-tested.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1004_RC1039_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1004-rc1039): record edge validity IMPLEMENTED'
+          git push origin HEAD:main
