@@ -1,0 +1,30 @@
+name: RC0674-RC0694 Calculation Boundary
+
+on:
+  push:
+    paths:
+      - 'lib/src/architecture/calculation_interpretation_boundary.dart'
+      - 'lib/src/calculation_core/**'
+      - 'test/architecture/calculation_interpretation_boundary_rc0674_rc0694_test.dart'
+      - 'requirements/contracts/rc0674_rc0694_calculation_boundary_contract.json'
+      - 'tools/requirements/validate_rc0674_rc0694_calculation_boundary.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0674-rc0694-calculation-boundary.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0674-rc0694-calculation-boundary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0674_rc0694_calculation_boundary.py
+      - run: flutter pub get
+      - run: flutter test test/architecture/calculation_interpretation_boundary_rc0674_rc0694_test.dart
