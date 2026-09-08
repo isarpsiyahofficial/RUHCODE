@@ -42,7 +42,8 @@ final class PersonalTodaySnapshot {
   List<PersonalSignal> importantEffects(TodayEntitlement entitlement, {int freeLimit = 3}) {
     final sorted = [...signals]..sort((a, b) => b.importance.compareTo(a.importance));
     if (entitlement == TodayEntitlement.pro) return List.unmodifiable(sorted);
-    return List.unmodifiable(sorted.take(freeLimit.clamp(0, sorted.length)));
+    final limit = freeLimit < 0 ? 0 : (freeLimit > sorted.length ? sorted.length : freeLimit);
+    return List.unmodifiable(sorted.take(limit));
   }
 }
 
