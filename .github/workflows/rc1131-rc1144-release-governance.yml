@@ -1,0 +1,112 @@
+name: RC1131-RC1144 Release Governance
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - 'governance/release_governance_policy.json'
+      - '.github/CODEOWNERS'
+      - 'requirements/contracts/rc1131_rc1144_release_governance_contract.json'
+      - 'tools/requirements/validate_rc1131_rc1144_release_governance.py'
+      - 'test/governance/test_rc1131_rc1144_release_governance.py'
+      - '.github/workflows/rc1131-rc1144-release-governance.yml'
+      - 'android/**'
+      - 'lib/src/calculation_core/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1131-rc1144-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate static release governance and CI context
+        run: python tools/requirements/validate_rc1131_rc1144_release_governance.py --ci-context
+      - name: Run fail-closed governance regression
+        run: python -m unittest test/governance/test_rc1131_rc1144_release_governance.py -v
+
+  release-build-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: Calculation regression before release build
+        run: flutter test test/calculation_core/calculation_validity_rc1004_rc1039_test.dart
+      - name: Build minified and obfuscated release APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
+      - name: Reject debug artifact and assert release artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s build/app/outputs/flutter-apk/app-release.apk
+          if find build/app/outputs -type f -iname '*debug*.apk' | grep -q .; then
+            echo 'RC1141_FAIL: debug APK present in final release-build job'
+            exit 1
+          fi
+      - name: Record exact artifact digest for CI evidence
+        shell: bash
+        run: sha256sum build/app/outputs/flutter-apk/app-release.apk | tee build/app-release.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rc1131-rc1144-release-build-evidence
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app-release.sha256
+            build/symbols/
+          retention-days: 7
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor == 'github-actions[bot]'
+    needs: [governance, release-build-regression]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1131_rc1144_release_governance.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1131,1145)}
+          links='governance/release_governance_policy.json|.github/CODEOWNERS|requirements/contracts/rc1131_rc1144_release_governance_contract.json|tools/requirements/validate_rc1131_rc1144_release_governance.py|test/governance/test_rc1131_rc1144_release_governance.py|.github/workflows/rc1131-rc1144-release-governance.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Repository-level branch protection/ruleset evidence, independent review, device-level minified behavior parity, and exact final release artifact traceability remain required before VERIFIED/DONE.'
+            r['notes']='Feature-branch/PR policy, CODEOWNERS, fail-closed release manifest validation and minified release-build CI are implemented. Static CI evidence is not sufficient for DONE.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1131_RC1144_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1131-rc1144): record release governance IMPLEMENTED'
+          git push origin HEAD:main
