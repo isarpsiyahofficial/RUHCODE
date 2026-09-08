@@ -1,0 +1,27 @@
+{
+  "range": {"from": "RC-1131", "to": "RC-1144"},
+  "requirements": {
+    "RC-1131": ["GitHub is the authoritative development repository"],
+    "RC-1132": ["main is not the daily development branch"],
+    "RC-1133": ["feature branches are used"],
+    "RC-1134": ["changes are tracked through pull requests"],
+    "RC-1135": ["calculation core changes require review and CODEOWNERS coverage"],
+    "RC-1136": ["merge is blocked when required CI is red"],
+    "RC-1137": ["release branch/tag is produced only after final gates"],
+    "RC-1138": ["release manifest reports requirements closed by the release"],
+    "RC-1139": ["release manifest records exact commit SHA"],
+    "RC-1140": ["delivered APK is traceable by artifact SHA-256 to exact commit SHA"],
+    "RC-1141": ["debug APK cannot be a final artifact"],
+    "RC-1142": ["release build has separate test evidence"],
+    "RC-1143": ["minification/obfuscation release behavior parity is verified"],
+    "RC-1144": ["R8/ProGuard reflection regressions are exercised by CI"]
+  },
+  "evidence": [
+    "governance/release_governance_policy.json",
+    ".github/CODEOWNERS",
+    "tools/requirements/validate_rc1131_rc1144_release_governance.py",
+    "test/governance/test_rc1131_rc1144_release_governance.py",
+    ".github/workflows/rc1131-rc1144-release-governance.yml"
+  ],
+  "promotionRule": "Static policy/test/CI evidence may promote only to IMPLEMENTED+blocked=YES. RC-1132, RC-1135 and RC-1136 require repository-level branch protection/ruleset evidence; RC-1137..1144 additionally require exact release artifact/build evidence before VERIFIED/DONE."
+}
