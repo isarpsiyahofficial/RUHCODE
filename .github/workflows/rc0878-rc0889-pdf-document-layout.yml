@@ -1,0 +1,70 @@
+name: RC0878-RC0889 PDF Document Layout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/pdf/**'
+      - 'test/pdf/pdf_document_layout_rc0878_rc0889_test.dart'
+      - 'test/pdf/pdf_table_layout_test.dart'
+      - 'requirements/contracts/rc0878_rc0889_pdf_document_layout_contract.json'
+      - 'tools/requirements/validate_rc0878_rc0889_pdf_document_layout.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0878-rc0889-pdf-document-layout.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0878-rc0889
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0878_rc0889_pdf_document_layout.py
+      - run: flutter test test/pdf/pdf_document_layout_rc0878_rc0889_test.dart test/pdf/pdf_table_layout_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0878_rc0889_pdf_document_layout.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(878,890)}
+          links='requirements/contracts/rc0878_rc0889_pdf_document_layout_contract.json|tools/requirements/validate_rc0878_rc0889_pdf_document_layout.py|lib/src/pdf/pdf_document_layout_safety.dart|lib/src/pdf/pdf_local_renderer.dart|lib/src/pdf/pdf_table_layout.dart|test/pdf/pdf_document_layout_rc0878_rc0889_test.dart|test/pdf/pdf_table_layout_test.dart|.github/workflows/rc0878-rc0889-pdf-document-layout.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Rendered TR/EN golden PDF visual inspection and exact-release device pagination evidence remain open.'
+            r['notes']='A4 physical geometry, >=12mm safety margin, Unicode long-text preservation, heading+first-paragraph keep-together, controlled section breaks and bounded table chunks are enforced.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0878_RC0889_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0878-rc0889): record PDF document layout IMPLEMENTED'
+          git push origin HEAD:main
