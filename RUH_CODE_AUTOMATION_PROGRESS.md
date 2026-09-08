@@ -42,31 +42,48 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0613→0632 = IMPLEMENTED + blocked=YES; quick-calculation chain present.
 - RC-0633→0673 = IMPLEMENTED + blocked=YES; local-first runtime chain present; bot promotion commit henüz kanıtlanmadı.
 - RC-0674→0694 = IMPLEMENTED + blocked=YES; deterministic calculation/interpretation chain present; bot promotion commit henüz kanıtlanmadı.
-- **RC-0695→0754 = IMPLEMENTED + blocked=YES; central data model + timezone-safe birth data + Calculation Manifest persistence model + versioned export envelope + copy-first migration production/regression/contract/validator/CI chain present. Physical CI result not yet proven.**
+- RC-0695→0754 = IMPLEMENTED + blocked=YES; central/versioned data model chain present; matrix satırları physical promotion olmadan yükseltilmeyecek.
+- **RC-0755→0773 = IMPLEMENTED + blocked=YES; transactional persistence/data-safety production + regression + exact contract + fail-closed validator + matrix-writing CI gate present; physical green/promotion henüz kanıtlanmadı.**
+- **RC-0774→0848 = IMPLEMENTED + blocked=YES; portable relational CSV backup/import + manifest/checksum/schema/FK validation + merge/replace + safety snapshot + new post-import rollback boundary present; exact clean-install round-trip RC-0848 açık, physical green/promotion henüz kanıtlanmadı.**
+- **RC-0849→0858 = IMPLEMENTED + blocked=YES; 4.500+ record Unicode/long-note/emoji/newline/same-name/unknown-time stress corpus + legacy schema regression chain present; physical green/promotion henüz kanıtlanmadı.**
 
 ## Bu çalıştırmadaki gerçek geliştirme
 
-### RC-0695→0754 — Merkezi veri modeli / kimlik / timezone / Calculation Manifest / migration
+### RC-0755→0773 — transactional persistence / veri güvenliği
 
-`lib/src/data/central_record_model.dart` ortak kayıt omurgasını kurdu. `OpaqueLocalId` ile user/profile/client/consultation/calculation/note/journal/Tarot-session kimlikleri görünen addan bağımsız tutuluyor. `RecordMetadata` her kayda UTC `createdAt`/`updatedAt` yaşam döngüsü ekliyor ve ters zaman sırasını fail-closed reddediyor.
+`lib/src/data/local/data_safety_coordinator.dart` eklendi. App update, dil, tema ve Free↔PRO geçişleri kullanıcı verisini değiştiren bir mutation yüzeyi almıyor. Related writes tek `LocalDatabase.transaction` içinde atomik uygulanıyor; batch'in sonraki adımı kırılırsa önceki yazılar commit edilmiyor. Startup integrity kontrolü local recovery snapshot kimliklerini döndürüyor. Snapshot oluşturma transactionally consistent; restore öncesi zorunlu safety snapshot alınıyor, restore sonrası integrity tekrar doğrulanıyor ve bozuk sonuçta safety snapshot geri yükleniyor.
 
-`BirthData` doğum tarihi ile kayıt zamanını ayırıyor. Doğum saati `unknown / approximate / exact` üç ayrı state; bilinmeyen saat için `00:00` veya başka bir saat uydurulması reddediliyor. Doğum yeri metni, ülke kodu, şehir adı, koordinatlar ve IANA timezone ID ayrı alanlar. Böylece şehir etiketi değişse bile timezone/koordinat provenance kaybolmuyor.
+Regression: `test/data/data_safety_coordinator_rc0755_rc0773_test.dart`. Exact contract: `requirements/contracts/rc0755_rc0773_transactional_data_safety_contract.json`. Validator: `tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py`. CI gate başarılı olduğunda yalnız `NOT_STARTED→IMPLEMENTED`, `blocked=YES` promotion yapacak şekilde fail-closed matrix writer'a çevrildi; TESTED/VERIFIED/DONE yükseltmiyor.
 
-`CalculationManifestRecord` engineVersion, algorithmVersion, dataVersion, timezoneDatabaseVersion, house system, zodiac system, ayanamsha, node mode, koordinat, UTC/local zaman ve profesyonel ayarları saklıyor. Sidereal manifest ayanamsha olmadan fail-closed. `SavedCalculationRecord` eski calculation sonucunu manifestiyle saklıyor; `RecalculationComparison` yeni motorla yeniden hesaplanan sonucu eskiyi silmeden karşılaştırmaya izin veriyor.
+Ana commitler: `3cce176688d8479cd22db4efbad61ec5c729476f`, `c58fb490da3631ed8ec22169be41f1d957aa7c62`, `f6651fe075bdf308822575679f5335e0525056df`, `18afe974e2c95467e9c1c649ac2949ace7f6b064`, CI promotion düzeltmesi `ec912cd1d00c04ab0ecc802c18e8979a7a952b3b`.
 
-`DataEnvelope` schemaVersion, appVersion, engineVersion, exportedAt, language ve platform metadata'sını taşıyor. `CopyFirstMigrationEngine` migration'ı kaynak verinin kopyası üzerinde çalıştırıyor, her adımın schema'yı tam bir sürüm ilerletmesini zorunlu kılıyor ve ara migration eksikse fail-closed davranıyor. Gerçek persistence activation işlemi henüz bağlanmadığından RC-0754 dahil bu blok DONE değil; activation yalnız başarılı validation sonrası yapılmalı.
+### RC-0774→0848 — portable CSV backup / verified restore
 
-Production commit `a0a9b88a053ca405206640f6bc19a42b8b50051a`; regression `6a18f2a010bfde9a7ec4f75286bb824c7ad9d635`; exact contract `adde44b206865aadca21dfa555631b4cacaf5e17`; validator `7cd3cc63566757099b7a2609cc5b3cc78fc39568`; dedicated CI gate `1e8e772a165b46c7d551d343aab09608c9c2ae21`.
+Mevcut relational CSV backup yapısı yeniden doğrulandı: profiles/clients/consultations/notes/calculations/calculation_manifests/journal/goals/habits/tarot/favorites/settings ayrı CSV'ler, UTF-8 codec, null sentinel, CSV escaping, locale-independent machine values, manifest/count/checksum, schema/FK/required-id/date/manifest validation, preview, merge/replace ve rollback altyapısı mevcut.
+
+Yeni `lib/src/backup/verified_backup_restore.dart` merge ve replace'in üstüne ortak post-import integrity sınırı ekledi. Invalid preview hiçbir mutation/snapshot başlatmıyor. Valid import öncesi safety snapshot alınıyor; import commit olsa bile post-import bütünlük doğrulaması kırılırsa pre-import snapshot geri yükleniyor. Rollback da kırılırsa ikinci hata yutulmuyor.
+
+Regression: `test/backup/verified_backup_restore_rc0774_rc0848_test.dart`. Exact contract/validator/CI: `requirements/contracts/rc0774_rc0848_portable_backup_contract.json`, `tools/requirements/validate_rc0774_rc0848_portable_backup.py`, `.github/workflows/rc0774-rc0848-portable-backup.yml`. Matrix writer yalnız IMPLEMENTED ceiling ile çalışıyor.
+
+Ana commitler: `ad44244c07aa671bdf39dac4ec12e3e853312ebb`, test fix dahil `60bc24d997b15193355855e6b98084672a5db6d6`, `2f7647a599c85a1fdacb9e1f092283235528630a`, `c42b1007fe7088b0620f245a2d87b2c764a679fa`, CI promotion düzeltmesi `0353b789a2479e0a238472cab2ee5805fa5b5439`.
+
+### RC-0849→0858 — backup stress corpus
+
+`test/backup/backup_stress_rc0849_rc0858_test.dart` 1.500 profil + 1.500 müşteri + 1.500 uzun not ile 4.500+ kayıtlık stress corpus kurdu. Türkçe özel karakterler, English text, emoji, embedded newline, virgül/tırnak içeren uzun notlar, aynı görünen adlar, unknown birth time + null time birlikte round-trip preview'da doğrulanıyor. Eski schema requirement'ı mevcut `legacy_backup_v0_migrator_test.dart` ile contract'a bağlandı.
+
+İlk fixture'daki geçersiz Dart string repetition aynı çalıştırmada fark edilip `3b90341f504727ffa550580a32c15aa2be71a932` ile düzeltildi. Exact contract `e3b7d8f6a4616f706895abb7f6e0575bbd233180`, validator `9b36c9eb83abd410566b7c242fe67fc5ff239bd8`, matrix-writing CI gate son hali `61c16a70b9458e6b35b1f4c58b43a7949f13e1f6`.
 
 ## Açık blocker'lar
 
-Independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion açıkları; authoritative Dasha/Varga/Gochara, BaZi relation/strength ve Today runtime providers; rendered TR/EN UI/PDF/share cards; real PDF pagination/font/embed/export; production persistence adapter; encrypted persistence/key management; production migration corpus ve backup round-trip; interpretation/editorial QA; tenant/device isolation; real ad/rewarded/PRO verifier; gerçek notification scheduler; offline/airplane-mode; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact kapıları açık. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
+Yeni üç blok için GitHub Actions çalışmaları son kontrolde queued; bu nedenle matrix bot commit'i ve TESTED statüsü henüz iddia edilmiyor. RC-0755→0773 için gerçek cihaz process-kill/update-survival, encrypted snapshot storage ve recovery UI; RC-0774→0848 için exact release artifact üzerinde export → clean install → import → veri/calculation equality; RC-0849→0858 için CI physical green ve device-scale evidence açık.
+
+Global blocker'lar da korunuyor: independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion; authoritative Dasha/Varga/Gochara ve BaZi providers; rendered TR/EN UI/PDF/share cards; true text/vector PDF pagination/font embedding; encrypted persistence/key management; production migration corpus; interpretation/editorial QA; tenant/device isolation; real ad/rewarded/PRO verifier; gerçek notification scheduler; offline/airplane-mode; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact. RC-0062/0082/0083/0086/0087 açıkları korunuyor.
 
 ## Sonraki devam noktası
 
-1. RC-0633→0673, RC-0674→0694 ve RC-0695→0754 dedicated/global CI sonuçları fiziksel olarak yeniden okunacak; kırmızıysa root cause aynı blokta düzeltilecek.
-2. Binding sıra **RC-0755+ migration activation / transactional persistence / backup-restore güvenliği** hattından devam edecek.
-3. Eski physical promotion açıkları (RC-0493→0545, RC-0342→0371, RC-0212→0270, RC-0158→0184, RC-0127→0134, RC-0119→0122/Panchanga) tekrar kontrol edilecek.
+1. RC-0755→0773, RC-0774→0848 ve RC-0849→0858 dedicated CI/matrix sonuçları fiziksel olarak yeniden okunacak; kırmızıysa root cause aynı çalıştırmada düzeltilecek, yeşil matrix bot commit'i varsa yalnız kanıtlanan lifecycle seviyesi kaydedilecek.
+2. Binding sıra **RC-0859+ PDF REQUIREMENTS** hattından devam edecek: gerçek text/vector PDF, TR/EN karakter/font embedding, vector chart/symbol, layout/overflow/page-break ve uygulamanın aynı verified calculation result'larını tüketen non-recomputing PDF pipeline.
+3. Eski physical promotion açıkları ayrıca korunacak ve bağımsız fırsatta yeniden kontrol edilecek.
 4. RC-0124→0126 exact AKİLES provenance bulunmadan AKİLES claim yapılmayacak.
 5. RC-0001→1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL denmeyecek.
 
