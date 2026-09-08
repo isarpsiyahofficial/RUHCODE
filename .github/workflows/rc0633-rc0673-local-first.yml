@@ -1,0 +1,29 @@
+name: RC0633-RC0673 Local First
+
+on:
+  push:
+    paths:
+      - 'lib/src/architecture/local_first_runtime_contract.dart'
+      - 'test/architecture/local_first_runtime_contract_rc0633_rc0673_test.dart'
+      - 'requirements/contracts/rc0633_rc0673_local_first_contract.json'
+      - 'tools/requirements/validate_rc0633_rc0673_local_first.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0633-rc0673-local-first.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0633-rc0673-local-first-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0633_rc0673_local_first.py
+      - run: flutter pub get
+      - run: flutter test test/architecture/local_first_runtime_contract_rc0633_rc0673_test.dart
