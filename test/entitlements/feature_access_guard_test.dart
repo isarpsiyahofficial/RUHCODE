@@ -5,25 +5,29 @@ import 'package:ruh_code/src/entitlements/feature_access_guard.dart';
 import 'package:ruh_code/src/entitlements/feature_catalog.dart';
 
 void main() {
-  test('UI route and service surfaces use the same EntitlementService result', () async {
+  test('UI menu route and service surfaces use the same EntitlementService result', () async {
     final service = _RecordingEntitlementService(
       allowed: <String, bool>{RuhFeatureIds.pdfProfessionalExport: false},
     );
     final guard = FeatureAccessGuard(entitlements: service);
 
     final ui = await guard.forUi(RuhFeatureIds.pdfProfessionalExport);
+    final menu = await guard.forMenu(RuhFeatureIds.pdfProfessionalExport);
     final route = await guard.forRoute(RuhFeatureIds.pdfProfessionalExport);
     final backend = await guard.forService(RuhFeatureIds.pdfProfessionalExport);
 
     expect(ui.allowed, isFalse);
+    expect(menu.allowed, isFalse);
     expect(route.allowed, isFalse);
     expect(backend.allowed, isFalse);
     expect(ui.surface, FeatureAccessSurface.ui);
+    expect(menu.surface, FeatureAccessSurface.menu);
     expect(route.surface, FeatureAccessSurface.route);
     expect(backend.surface, FeatureAccessSurface.service);
     expect(
       service.canUseCalls,
       <String>[
+        RuhFeatureIds.pdfProfessionalExport,
         RuhFeatureIds.pdfProfessionalExport,
         RuhFeatureIds.pdfProfessionalExport,
         RuhFeatureIds.pdfProfessionalExport,
