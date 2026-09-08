@@ -1,0 +1,29 @@
+name: RC0585-RC0612 Learning Share
+
+on:
+  push:
+    paths:
+      - 'lib/src/learning/learning_and_share.dart'
+      - 'test/learning/learning_and_share_rc0585_rc0612_test.dart'
+      - 'requirements/contracts/rc0585_rc0612_learning_share_contract.json'
+      - 'tools/requirements/validate_rc0585_rc0612_learning_share.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0585-rc0612-learning-share.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0585-rc0612-learning-share-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0585_rc0612_learning_share.py
+      - run: flutter pub get
+      - run: flutter test test/learning/learning_and_share_rc0585_rc0612_test.dart
