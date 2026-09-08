@@ -1,0 +1,32 @@
+name: RC0755-RC0773 Transactional Data Safety
+
+on:
+  push:
+    paths:
+      - 'lib/src/data/local/data_safety_coordinator.dart'
+      - 'lib/src/data/local/local_database.dart'
+      - 'lib/src/data/local/sqflite_local_database.dart'
+      - 'lib/src/backup/**'
+      - 'test/data/data_safety_coordinator_rc0755_rc0773_test.dart'
+      - 'requirements/contracts/rc0755_rc0773_transactional_data_safety_contract.json'
+      - 'tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0755-rc0773-transactional-data-safety.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rc0755-rc0773-transactional-data-safety-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: python3 tools/requirements/validate_rc0755_rc0773_transactional_data_safety.py
+      - run: flutter pub get
+      - run: flutter test test/data/data_safety_coordinator_rc0755_rc0773_test.dart
