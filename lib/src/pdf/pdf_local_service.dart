@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'pdf_data_contract.dart';
+import 'pdf_document_layout_safety.dart';
 import 'pdf_local_renderer.dart';
 import 'pdf_page_geometry_inspector.dart';
 import 'pdf_release_boundary.dart';
@@ -32,6 +33,7 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
     this.renderer = const PdfLocalRenderer(),
     this.pageGeometryInspector = const PdfPageGeometryInspector(),
     this.releaseBoundary = const PdfReleaseBoundary(),
+    this.layoutSafety = const PdfDocumentLayoutSafety(),
   });
 
   static const double _pointsPerMillimeter = 72.0 / 25.4;
@@ -43,6 +45,7 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
   final PdfLocalRenderer renderer;
   final PdfPageGeometryInspector pageGeometryInspector;
   final PdfReleaseBoundary releaseBoundary;
+  final PdfDocumentLayoutSafety layoutSafety;
 
   @override
   Future<List<int>> buildReport({
@@ -67,6 +70,7 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
       availableSections: availableSections,
     );
     releaseBoundary.validate(plan: plan);
+    layoutSafety.validate(plan);
 
     if (dataset.origin != adapter.dataOrigin) {
       throw const FormatException('PDF adapter origin and dataset origin do not match.');
