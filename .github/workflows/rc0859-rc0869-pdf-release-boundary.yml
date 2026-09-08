@@ -1,0 +1,72 @@
+name: RC0859-RC0869 PDF Release Boundary
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/pdf/**'
+      - 'lib/src/backup/**'
+      - 'test/pdf/pdf_release_boundary_rc0859_rc0869_test.dart'
+      - 'test/pdf/pdf_asset_font_provider_test.dart'
+      - 'test/pdf/pdf_output_inspector_generated_pdf_test.dart'
+      - 'requirements/contracts/rc0859_rc0869_pdf_release_boundary_contract.json'
+      - 'tools/requirements/validate_rc0859_rc0869_pdf_release_boundary.py'
+      - 'RUH_CODE_MASTER_SARTNAME.md'
+      - '.github/workflows/rc0859-rc0869-pdf-release-boundary.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc0859-rc0869
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: python tools/requirements/validate_rc0859_rc0869_pdf_release_boundary.py
+      - run: flutter test test/pdf/pdf_release_boundary_rc0859_rc0869_test.dart test/pdf/pdf_asset_font_provider_test.dart test/pdf/pdf_output_inspector_generated_pdf_test.dart
+      - name: Record implementation evidence
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc0859_rc0869_pdf_release_boundary.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(859,870)}
+          links='requirements/contracts/rc0859_rc0869_pdf_release_boundary_contract.json|tools/requirements/validate_rc0859_rc0869_pdf_release_boundary.py|lib/src/pdf/pdf_release_boundary.dart|lib/src/pdf/pdf_local_service.dart|lib/src/pdf/pdf_local_renderer.dart|test/pdf/pdf_release_boundary_rc0859_rc0869_test.dart|test/pdf/pdf_asset_font_provider_test.dart|test/pdf/pdf_output_inspector_generated_pdf_test.dart|.github/workflows/rc0859-rc0869-pdf-release-boundary.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Exact-release TR/EN glyph/fallback inspection and physical on-device/no-network evidence remain open.'
+            r['notes']='Dedicated local PDF boundary forbids off-device generation, recalculation, application screenshots and low-resolution chart JPEG paths; existing A4 MultiPage/embedded-font renderer remains canonical.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC0859_RC0869_FAIL: missing rows {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc0859-rc0869): record PDF release boundary IMPLEMENTED'
+          git push origin HEAD:main
