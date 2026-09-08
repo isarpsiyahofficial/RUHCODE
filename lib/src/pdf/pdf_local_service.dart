@@ -84,6 +84,8 @@ final class PdfLocalReportService<TSnapshot> implements PdfService<TSnapshot> {
         documentTitle: adapter.documentTitle(snapshot, options.localeTag),
         sections: adapter.sections(snapshot),
         fonts: fonts,
+        subjectName: options.subjectName,
+        generatedAtUtc: options.generatedAtUtc,
       ),
     ));
 
