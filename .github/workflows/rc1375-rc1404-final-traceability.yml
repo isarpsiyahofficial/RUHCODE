@@ -1,0 +1,53 @@
+name: RC1375-RC1404 Final Traceability
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'agent/**']
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate canonical 1442-row requirement matrix
+        run: python tools/requirements/validate_requirement_matrix.py
+      - name: Validate requirement-test traceability
+        run: python tools/requirements/audit_requirement_test_traceability.py
+      - name: Validate final traceability dimensions
+        run: python tools/release/validate_final_traceability.py
+      - name: Validate RC-1375 through RC-1404 contract coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('requirements/contracts/rc1375_rc1404_final_traceability_contract.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          expected = [f'RC-{i:04d}' for i in range(1375, 1405)]
+          actual = list(data.get('requirements', {}))
+          if actual != expected:
+              raise SystemExit(f'RC1375_RC1404_CONTRACT_FAIL expected={expected} actual={actual}')
+          print('RC1375_RC1404_CONTRACT_OK')
+          PY
+
+  release-proof-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prove release mode is fail-closed before final completion
+        run: |
+          set +e
+          python tools/release/validate_final_traceability.py --release-manifest governance/nonexistent-final-release.json
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo 'Release mode unexpectedly passed without a final manifest' >&2
+            exit 1
+          fi
+          echo 'Release mode correctly remains blocked until all 1442 RCs and exact artifact evidence are complete.'
