@@ -1,0 +1,80 @@
+name: RC1345-RC1361 Release Cleanliness
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/**'
+      - 'governance/network_call_inventory.json'
+      - 'tools/release/audit_production_cleanliness.py'
+      - 'requirements/contracts/rc1345_rc1361_release_cleanliness_contract.json'
+      - 'tools/requirements/validate_rc1345_rc1361_release_cleanliness.py'
+      - '.github/workflows/rc1345-rc1361-release-cleanliness.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1345-rc1361-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate exact requirement contract
+        run: python tools/requirements/validate_rc1345_rc1361_release_cleanliness.py
+      - name: Audit production cleanliness and direct network inventory
+        run: python tools/release/audit_production_cleanliness.py
+      - name: Keep requirement matrix structurally valid
+        run: python tools/requirements/validate_requirement_matrix.py
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1345_rc1361_release_cleanliness.py
+          python tools/release/audit_production_cleanliness.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1345,1362)}
+          links='governance/network_call_inventory.json|tools/release/audit_production_cleanliness.py|requirements/contracts/rc1345_rc1361_release_cleanliness_contract.json|tools/requirements/validate_rc1345_rc1361_release_cleanliness.py|.github/workflows/rc1345-rc1361-release-cleanliness.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Exact release-binary inspection and physical airplane-mode lifecycle verification remain required before VERIFIED/DONE.'
+            r['notes']='Production source cleanliness and direct-network inventory are fail-closed audited; forbidden core network purposes are rejected.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1345_RC1361_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1345-rc1361): record release cleanliness IMPLEMENTED'
+          git push origin HEAD:main
