@@ -38,7 +38,11 @@ Branch: `agent/rc1421-rc1442-release-closure`, stacked PR #16.
 
 5. **RC-0755→0773 Transactional Data Safety:** üç snapshot/recovery testi `Map.unmodifiable` generic inference nedeniyle runtime'da `UnmodifiableMapView<dynamic,dynamic>` cast hatası veriyordu. Nested snapshot tabloları artık her seviyede explicit typed immutable map olarak oluşturuluyor. Düzeltme `20f2d0b0f30f6eccac68517add4e36b5574c7a71`. Yeni CI sonucu bekleniyor.
 
-6. **RC-0230→0247 Personal Growth:** eski kırmızının validator seviyesinde `production evidence missing token CheckInKind.morning` olduğu tespit edildi. Bu çalıştırmada kanıtsız/acele bir token eklenmedi; production model ile validator semantic ownership'i sonraki devam noktasında birlikte ele alınacak.
+6. **RC-0166→0184 Numerology Core:** dedicated kırmızı production hesap motorundan değil validator'ın API deklarasyonunu yanlış string biçiminde aramasından geliyordu. Production gerçek API `static NumerologyAlphabet pythagorean(...)` ve `static NumerologyAlphabet chaldean(...)`; validator bunları declaration seviyesinde doğrulayacak şekilde düzeltildi. Life Path/Birthday/name/maturity/karmic debt/personal year-month-day/periods/Türkçe normalizasyon ve ayrı Chaldean tablo kontrolleri korunuyor. Yeni CI sonucu bekleniyor; kanıt gelmeden matrix yükseltilmedi.
+
+7. **RC-0230→0247 Personal Growth:** eski `CheckInKind.morning` kırmızısında validator enum üyelerini production'da kullanım ifadesi olarak arıyordu. Yalnız validator düzeltilmedi: production'a `checkInsForDate`, inclusive tarih aralığı özetleri, `GrowthPeriodMetrics`, `GrowthPeriodComparison` ve deterministic tarihsel dönem karşılaştırması eklendi. Regression Ağustos/Eylül dönemlerinde journal/check-in sayıları ile mood/energy ortalama ve delta'larını, sabah/akşam check-in sorgularını ve ters tarih aralığında fail-closed davranışı doğruluyor. Exact RC-0245 historical comparison artık gerçek kod/test yüzeyine sahip. Dedicated run `34398473971` son kontrolde pending; bu yüzden RC-0230→0247 matrix satırları hâlâ yükseltilmedi.
+
+8. **UI runtime theme contract:** `Design tokens` gate'i core + semantic spacing'i doğru şekilde yeşil doğrularken ayrı runtime-theme validator semantic `paragraph=12` değerini eski `spacingParagraph` ismine zorladığı için UI Contracts kırılıyordu. Validator core ve semantic runtime isimlerini ayrı exact map ile doğrulayacak şekilde düzeltildi (`9a98fd58bafc07cec2ed38c4adca2b407bebbf6b`). Aynı düzeltmede dark palette de canonical JSON'a byte-for-byte bağlandı; denetim gevşetilmedi. Yeni UI Contracts run `34398474034` son kontrolde queued.
 
 ### Fiziksel blocker doğrulamaları
 
@@ -47,6 +51,7 @@ Branch: `agent/rc1421-rc1442-release-closure`, stacked PR #16.
 - `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`. RC-1431/1439 ve reference-dependent final UI gate'leri açık.
 - RC-1437 specialist runtime-assets gate yeşil olsa da exact packaged/version/checksum/offline/legal release zincirinin final closure kanıtı ayrıca gereklidir.
 - RC-1442 exact clean-checkout artifact, tested commit SHA ve artifact SHA eşleşmesi tüm 1.442 RC DONE/unblocked olmadan kapanamaz.
+- Çok sayıda eski calculation/Vedic workflow yeni push'larda concurrency nedeniyle `cancelled` görünüyor; cancellation SUCCESS sayılmıyor ve final closure öncesi exact-head yeşil kanıt gerektiriyor.
 
 ## Açık kritik blocker'lar
 
@@ -54,10 +59,11 @@ Exact AKİLES provenance; independent authoritative calculation goldens; Panchan
 
 ## Sonraki devam noktası
 
-1. PR #16'nın güncel HEAD'inde Flutter Quality, Requirements Contract, RC-0859→0869, RC-0360→0371 ve RC-0755→0773 yeni koşularını fiziksel doğrula; kırmızı kalan her gerçek kök nedeni aynı hatta düzelt.
-2. RC-0230→0247 `CheckInKind.morning` validator/production uyuşmazlığını requirement metni ve gerçek modelle semantic olarak çöz; yalnız token enjekte etme.
-3. RC-1362→1374 airplane-mode release/device koşusunun hardware-accelerated rerun sonucunu doğrula ve gerekiyorsa gerçek cihaz akışlarını genişlet.
+1. PR #16 güncel HEAD'inde RC-0166→0184 Numerology, RC-0230→0247 Personal Growth ve UI Contracts yeniden koşularını fiziksel doğrula; kırmızı kalan gerçek kök nedeni aynı branch'te düzelt.
+2. Flutter Quality, Requirements Contract, RC-0859→0869, RC-0360→0371 ve RC-0755→0773 yeni exact-head koşularını doğrula ve yalnız yeşil kanıtı lifecycle state'e taşı.
+3. RC-1362→1374 airplane-mode release/device koşusunun hardware-accelerated sonucunu doğrula ve policy-level launch'tan gerçek production capability instrumentation'a genişlet.
 4. Günlük mesaj strict release audit, RC-1436 independent accuracy goldens, RC-1439 physical reference images ve final packaged dataset/license zincirlerini bağımsız ilerlet.
-5. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
+5. Cancelled Vedic/calculation workflow'larını SUCCESS kabul etme; final exact-head üzerinde zorunlu kritik workflow setini yeniden koşturup fiziksel sonuç üret.
+6. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
 **FINAL: NO.**
