@@ -1,0 +1,99 @@
+name: RC1421-RC1442 Final Release Closure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md'
+      - 'lib/src/application/daily/today_temporal_contract.dart'
+      - 'test/application/today_temporal_contract_rc1421_rc1435_test.dart'
+      - 'requirements/contracts/rc1421_rc1442_release_closure_contract.json'
+      - 'requirements/content_manifests/daily_messages.json'
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - 'requirements/reference_manifests/rc1439_reference_images.json'
+      - 'tools/requirements/validate_rc1421_rc1442_release_closure.py'
+      - '.github/workflows/rc1421-rc1442-release-closure.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1421-rc1442
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Validate final addendum structural evidence
+        run: python tools/requirements/validate_rc1421_rc1442_release_closure.py --json-output build/rc1421_rc1442_structural.json
+      - name: Test Today temporal and Gregorian invariants
+        run: flutter test test/application/today_temporal_contract_rc1421_rc1435_test.dart
+      - name: Validate daily-message structural contract
+        run: python tools/content/validate_daily_message_contract.py
+      - name: Validate 1,442-row requirement matrix
+        run: python tools/requirements/validate_requirement_matrix.py
+      - name: Prove release gate remains fail-closed while blockers exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          if python tools/requirements/validate_rc1421_rc1442_release_closure.py --release --json-output build/rc1421_rc1442_release.json; then
+            echo 'Release validator unexpectedly passed while binding blockers remain.' >&2
+            exit 1
+          fi
+          test -s build/rc1421_rc1442_release.json
+      - name: Upload closure evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1421-rc1442-closure-${{ github.sha }}
+          path: build/rc1421_rc1442_*.json
+          if-no-files-found: error
+      - name: Promote RC-1421 through RC-1442 to IMPLEMENTED only
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          python tools/requirements/validate_rc1421_rc1442_release_closure.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1421,1443)}
+          evidence='requirements/contracts/rc1421_rc1442_release_closure_contract.json|tools/requirements/validate_rc1421_rc1442_release_closure.py|lib/src/application/daily/today_temporal_contract.dart|test/application/today_temporal_contract_rc1421_rc1435_test.dart|.github/workflows/rc1421-rc1442-release-closure.yml'
+          found=set()
+          for row in rows:
+            if row['rc_id'] not in targets: continue
+            found.add(row['rc_id'])
+            if row['status'] == 'NOT_STARTED': row['status']='IMPLEMENTED'
+            row['evidence_links']=evidence
+            row['blocked']='YES'
+            row['blocker']='Final addendum structural implementation is present, but requirement-specific release/device/editorial/golden/reference/clean-checkout evidence remains open; see rc1421_rc1442_release_closure_contract.json.'
+            row['notes']='IMPLEMENTED is not TESTED/VERIFIED/DONE. Release validator is intentionally fail-closed until all declared blockers are physically proven.'
+          missing=targets-found
+          if missing: raise SystemExit(f'missing RC rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1421-rc1442): record final addendum IMPLEMENTED'
+          git push origin HEAD:main
