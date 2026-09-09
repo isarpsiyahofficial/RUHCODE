@@ -1,0 +1,32 @@
+{
+  "range": "RC-1222→RC-1236",
+  "requirements": {
+    "RC-1222": "Calculation cache is an optional derivative optimization behind a cache-store contract.",
+    "RC-1223": "Repeated natal reads reuse a valid cached result instead of recalculating every screen open.",
+    "RC-1224": "Cache identity includes canonical calculation input fingerprint and engineVersion, with subject identity and calculation kind preventing collisions.",
+    "RC-1225": "Changing engineVersion changes cache identity and forces recomputation.",
+    "RC-1226": "Subject identity is part of the key so another client's cached calculation cannot be returned.",
+    "RC-1227": "Cache is derivative only; authoritative source/calculation callback remains required for rebuild.",
+    "RC-1228": "Deleting a cache entry causes deterministic recomputation rather than data loss.",
+    "RC-1229": "Daily cache reuse is bounded by explicit local-day identity.",
+    "RC-1230": "Planetary-hour cache reuse is bounded by explicit planetary-hour window identity.",
+    "RC-1231": "Today data becomes stale when local-day identity changes after midnight.",
+    "RC-1232": "Daily/current cache is reevaluated when the calculation timezone changes.",
+    "RC-1233": "Natal cache validity depends on natal identity, not the user's current travel location/timezone.",
+    "RC-1234": "Transit current-location identity is separate from natal birthplace identity.",
+    "RC-1235": "Solar Return cache context requires an explicit technique location.",
+    "RC-1236": "Non-default user calculation settings can be preserved as explicit Calculation Manifest overrides."
+  },
+  "production_evidence": [
+    "lib/src/calculation_core/calculation_cache_policy.dart"
+  ],
+  "regression_evidence": [
+    "test/calculation_core/calculation_cache_rc1222_rc1236_test.dart"
+  ],
+  "release_blockers": [
+    "Production persistent cache adapter is not yet wired to SQLite.",
+    "Real timezone/DST boundary integration tests remain required.",
+    "Production calculation services must adopt this coordinator before VERIFIED/DONE.",
+    "Exact release/device/performance gates remain open."
+  ]
+}
