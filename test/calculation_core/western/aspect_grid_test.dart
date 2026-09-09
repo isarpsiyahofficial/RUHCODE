@@ -62,6 +62,7 @@ void main() {
       aspect: MajorAspect.square,
       separationDegrees: 90,
       orbDegrees: 0,
+      phase: AspectPhase.exact,
     );
     final aspects = NatalAspectSet(
       jdTt: placements.jdTt,
