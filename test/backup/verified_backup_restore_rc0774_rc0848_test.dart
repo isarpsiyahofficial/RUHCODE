@@ -15,8 +15,8 @@ void main() {
       verifier: _Verifier(false),
     );
 
-    expect(
-      () => verified.apply(preview: _validPreview(), mode: BackupImportMode.merge),
+    await expectLater(
+      verified.apply(preview: _validPreview(), mode: BackupImportMode.merge),
       throwsA(isA<VerifiedBackupRestoreException>()),
     );
     expect(store.snapshotCount, 1);
@@ -55,8 +55,8 @@ void main() {
       ],
     );
 
-    expect(
-      () => verified.apply(preview: invalid, mode: BackupImportMode.replace),
+    await expectLater(
+      verified.apply(preview: invalid, mode: BackupImportMode.replace),
       throwsStateError,
     );
     expect(store.snapshotCount, 0);
