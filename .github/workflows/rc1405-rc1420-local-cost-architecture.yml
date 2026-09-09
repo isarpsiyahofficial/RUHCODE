@@ -1,0 +1,36 @@
+name: RC1405-RC1420 Local Core Cost Architecture
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'agent/**']
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate exact RC-1405 through RC-1420 contract
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('requirements/contracts/rc1405_rc1420_local_cost_contract.json').read_text(encoding='utf-8'))
+          expected=[f'RC-{i:04d}' for i in range(1405,1421)]
+          actual=list(data.get('requirements',{}))
+          if actual != expected:
+              raise SystemExit(f'RC1405_RC1420_CONTRACT_FAIL expected={expected} actual={actual}')
+          print('RC1405_RC1420_CONTRACT_OK')
+          PY
+      - name: Validate zero-backend local core architecture
+        run: python tools/release/validate_local_core_cost_architecture.py
+      - name: Keep canonical requirement matrix structurally valid
+        run: python tools/requirements/validate_requirement_matrix.py
+      - name: Keep final traceability fail-closed
+        run: python tools/release/validate_final_traceability.py
