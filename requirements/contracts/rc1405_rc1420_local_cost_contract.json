@@ -1,0 +1,30 @@
+{
+  "range": "RC-1405..RC-1420",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-1405": "Final report retains git tag, exact commit SHA and APK hash.",
+    "RC-1406": "The exact APK that was tested is unambiguously identifiable.",
+    "RC-1407": "No-cost technical target means zero ongoing backend/API cost for core use.",
+    "RC-1408": "Astrological calculation engines are local.",
+    "RC-1409": "Core user data is local.",
+    "RC-1410": "Interpretation catalog is local.",
+    "RC-1411": "PDF generation is local.",
+    "RC-1412": "CSV backup/restore is local.",
+    "RC-1413": "Search is local.",
+    "RC-1414": "Professional client management is local.",
+    "RC-1415": "Daily personalization is local.",
+    "RC-1416": "Notification scheduling is local.",
+    "RC-1417": "Core city/timezone data is local.",
+    "RC-1418": "No paid third-party service is required by the core product.",
+    "RC-1419": "Core architecture introduces no developer-operated per-user server/API cost as usage scales.",
+    "RC-1420": "Final is forbidden until the complete product/quality scope is closed with traceable evidence."
+  },
+  "productionEvidence": [
+    "governance/local_core_cost_contract.json",
+    "governance/network_call_inventory.json",
+    "tools/release/validate_local_core_cost_architecture.py",
+    "tools/release/validate_final_traceability.py"
+  ],
+  "testEvidence": [".github/workflows/rc1405-rc1420-local-cost-architecture.yml"],
+  "lifecycleRule": "Structural/local architecture evidence may reach IMPLEMENTED/TESTED. RC-1405/1406 and RC-1420 cannot be VERIFIED/DONE before all RC-0001..RC-1442 are DONE/unblocked and the exact release artifact, tag, commit SHA and artifact SHA-256 have been revalidated."
+}
