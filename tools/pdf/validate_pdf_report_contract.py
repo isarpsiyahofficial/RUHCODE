@@ -24,7 +24,7 @@ contracts = (
     (REPORT_SOURCE, [
         'static const a4 = PdfPageSpec(', 'widthMm: 210', 'heightMm: 297',
         'enum PdfDataOrigin', 'enum PdfCoverStyle',
-        "request.localeTag != 'tr' && request.localeTag != 'en'",
+        "locale == 'tr'", "locale.startsWith('tr-')", "locale == 'en'", "locale.startsWith('en-')",
         'Sample PDF must use demo data only.', 'Non-sample PDF must use user data origin.',
         'Duplicate requested PDF section id', 'PDF report has no non-empty content section.', 'selected.add(id)',
     ]),
