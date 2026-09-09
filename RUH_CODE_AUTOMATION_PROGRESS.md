@@ -17,35 +17,14 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-1059→1084 = IMPLEMENTED + blocked=YES (`ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`).
 - RC-1085→1104 = IMPLEMENTED + blocked=YES (`a9c4b832269328935dbf6d4753f603d17fa5b1f7`).
 - RC-1105→1130 dependency/offline governance mevcut; `pubspec.lock` `09cf4da44c63c8031a149a7c555e37362ef194aa` ile fiziksel.
-- PR #1 RC-1131→1144; #2 RC-1145→1160; #3 RC-1161→1174; #4 RC-1175→1196; #5 RC-1197→1205; #6 RC-1206→1221; #7 RC-1222→1236; #8 RC-1237→1248; #9 RC-1249→1272; PR #10 RC-1273→1303 stacked durumda.
+- PR #1 RC-1131→1144; #2 RC-1145→1160; #3 RC-1161→1174; #4 RC-1175→1196; #5 RC-1197→1205; #6 RC-1206→1221; #7 RC-1222→1236; #8 RC-1237→1248; #9 RC-1249→1272; #10 RC-1273→1303; #11 RC-1304→1344; #12 RC-1345→1361 stacked durumda.
 - RC-1206→1221 dedicated run SUCCESS; production SQLite/FTS/device/UI blocker'ları açık.
-- RC-1222→1248 kendi contract/regression zincirleri mevcut; eski upstream deletion compile kırmızısı nedeniyle physical promotion açık.
-- RC-1249→1272 dedicated run kendi exact contract + üç PDF regression testini geçti; upstream RC1197 deletion compile hatasında kırıldı. Hata düzeltildi (`f3eb1a3d32dafe18ff330c844861cb7c6f9acecf`).
+- RC-1222→1248 kendi contract/regression zincirleri mevcut; upstream deletion compile açığı `f3eb1a3d32dafe18ff330c844861cb7c6f9acecf` ile düzeltildi, physical promotion yeniden bekleniyor.
+- RC-1249→1272 dedicated run exact contract + yeni PDF regression'larını geçti; upstream kırmızı yeniden çalışıyor.
 - RC-1273→1285 production token/regression/contract/validator/CI mevcut; rendered/device adoption kapıları açık.
-- RC-1286→1303 production matrix/regression/contract/validator/CI mevcut; lifecycle promotion CI geçmeden yapılmayacak.
-- RC-1304→1344 Golden Lifecycle production gate/regression/contract/validator/CI yeni stacked branch'te mevcut; gerçek release-build lifecycle yürütümü olmadan VERIFIED/DONE olmayacak.
-
-## RC-1249→1272 — PDF export governance
-
-Free demo ile gerçek müşteri export'u fail-closed ayrılır. Free sample demo data + watermark ister; gerçek müşteri PDF'si PRO + stable client ID ister ve demo data kabul etmez. Cancellation/exception partial PDF'yi success yapamaz; output scoped/atomic publish edilir. Aynı müşteri işleri serialize edilir, global concurrency sınırlıdır, deterministic filename collision/content order vardır. Dedicated CI'da exact contract ve bütün yeni PDF regression'ları yeşil oldu; tek kırmızı upstream deletion compile idi.
-
-## RC-1197→1205 compile root-cause düzeltmesi
-
-`ClientDeletionPlan` constructor'ında `deleteIds` ve `archiveIds` parametreleri `Iterable<String>` tipindeyken `.intersection()` çağrılıyordu. CI gerçek Dart derlemesinde bunu reddetti. Overlap doğrulaması normalize edilmiş `Set<String>` field'ları (`this.deleteIds.intersection(this.archiveIds)`) üzerinden çalışacak şekilde düzeltildi: `f3eb1a3d32dafe18ff330c844861cb7c6f9acecf`.
-
-## RC-1273→1285 — typography / spacing / contrast design system
-
-Merkezi semantic `title / section / body / caption` sınıfları, font floors, line-height, paragraph/section/card/screen/PDF/chart spacing tokenları, explicit dark palette ve WCAG-AA light/dark contrast regression'ları mevcut. Production screen/chart/PDF token adoption audit, rendered TR/EN goldens, text-scale/device accessibility ve exact release artifact açık.
-
-## RC-1286→1303 — Feature-ID lifecycle matrix + offline transfer
-
-`lib/src/entitlements/entitlement_scenario_matrix.dart` merkezi `RuhFeatureIds.all` kataloğundaki her feature için yedi ayrı scenario üretir: Free, PRO, rewarded temporary, offline PRO, purchase restore, reinstall restore ve device-change restore. Matrix exact cardinality/uniqueness kontrolüyle fail-closed doğrulanır; rewarded access yalnız catalog tarafından izin verilen PRO feature'ları açabilir.
-
-`OfflineFirstAccountPolicy` core kullanım için Ruh Code account/email-password/account backend zorunluluğunu reddeder. CSV backup cihazlar arası taşımayı destekleyen kaynak kabul edilir; eski cihaz export/yeni cihaz import akışı Ruh Code server'ı gerektirmez. Google Drive/iCloud/USB/e-posta yalnız kullanıcı seçtiği dış transport olarak modellenir; Ruh Code bu servisleri core dependency olarak yönetmez ve automatic cloud backup core requirement değildir.
-
-Production `05e9e8610af367fe07f4d934bd40dc3629eabc81`; regression `e05e8bdc1555afdae794bf06653f2c277921b506`; exact contract `1b85e2d8443af35615b500fd613dbc91e1bb8f76`; validator `2153510f2640966741745f1ca06060461350a754`; dedicated CI `b6fe21ec572a7eadf00292464b2cf3c42e2814f8`.
-
-RC-1286→1303 VERIFIED/DONE değildir: real Play restore across reinstall/device change, physical offline-PRO verification, production CSV export/import device-transfer flow ve exact release artifact gerekir.
+- RC-1286→1303 production matrix/regression/contract/validator/CI mevcut; `Iterable.single` yanlış kullanımı upstream testte `ad8497f694e789cd5312852629bf134b3ee251bd` ile `singleWhere` olarak düzeltildi.
+- RC-1304→1344 Golden Lifecycle production gate/regression/contract/validator/CI mevcut; dedicated run `34348857674` queued. Golden test `void` assertion hatası upstream PR #11'de `00b35d8b61da449cf524e7745e20086ec3a11198` ile düzeltildi.
+- RC-1345→1361 release cleanliness/network inventory audit mevcut; dedicated run `34349075994` queued.
 
 ## RC-1304→1344 — Golden Lifecycle release gate
 
@@ -55,18 +34,32 @@ Golden Lifecycle adımları bağlayıcı sırada fail-closed tutulur: yeni müş
 
 Required scenario matrix tam 16 kombinasyondur: TR/EN × Free/PRO × offline/online × clean-install/upgrade. Debug build, kırmızı critical test veya skip edilmiş critical test Golden Lifecycle validation'ını doğrudan kırar. Bu aşama production gate implementasyonudur; real release APK üzerinde production persistence/calculation/PDF/backup adapter'larıyla 16 fiziksel lifecycle koşusu tamamlanmadan VERIFIED/DONE değildir.
 
-Production `add0a55c8a0e6ecf1febfff500fef94419375cd4`; regression `f61bd21db37e6cb7d2473ad241cbee936aa56bbd`; exact contract `9d777ebde206977a413fd6299b049d4346c5e299`; validator `0acaee0dcfdbf80eb4d75108a0e0c73b4b3ff7bd`; dedicated CI definition `c8fc6d8a31901c1fb1ae39c96fb91c387eb58e7f`.
+Production `add0a55c8a0e6ecf1febfff500fef94419375cd4`; regression `f61bd21db37e6cb7d2473ad241cbee936aa56bbd`; exact contract `9d777ebde206977a413fd6299b049d4346c5e299`; validator `0acaee0dcfdbf80eb4d75108a0e0c73b4b3ff7bd`; dedicated CI definition `c8fc6d8a31901c1fb1ae39c96fb91c387eb58e7f`; test compile fix upstream `00b35d8b61da449cf524e7745e20086ec3a11198`.
+
+## RC-1345→1361 — release cleanliness / network inventory
+
+`governance/network_call_inventory.json` doğrudan uygulama ağ çağrılarını explicit inventory olarak tutar. Mevcut direct application network call listesi boştur; Google Play Billing yalnız SDK-managed, user-initiated purchase/restore capability olarak ayrı belirtilir ve core requirement değildir.
+
+`tools/release/audit_production_cleanliness.py` `lib/` kaynaklarını fail-closed tarar: Lorem ipsum, coming-soon, placeholder interpretation, fake/mock calculation, debug API/menu, production test/demo client marker'ları; ayrıca `package:http`, `package:dio`, `HttpClient`, `Socket`, `WebSocket` ve doğrudan HTTP URL literal'leri. Bulunan direct primitive inventory ile birebir uyuşmazsa gate kırılır. Calculation, PDF, CSV export/restore, profile-open ve local professional-client CRUD amaçlı ağ erişimi inventory'de olsa bile yasaktır.
+
+Static audit exact release-binary inspection değildir. RC-1345→1361 VERIFIED/DONE için release artifact içeriğinin ayrıca denetlenmesi ve RC-1362+ gerçek airplane-mode lifecycle kanıtı gerekir.
+
+Network inventory `c3753ccd53c25038da00d8c49a5c2bc1ada3119e`; source audit `81549c7f4ea90e17ddf1034569530644bdaa6c49`; exact contract `05af62a078803d45a6b03ea3a444d3d14e1ab7bd`; validator `786a9adfd8c5384126b7a2f349640270fa987d5b`; CI `9cbea53ad0a0e94bf8104cfcea37a2f5f62e738b`.
+
+## Genel Flutter Quality açıkları
+
+PR #11 merge HEAD'inde `flutter analyze --fatal-infos` 96 issue ile kırmızıydı. Bu turda doğrudan yeni/komşu üç kök neden kapatıldı: Golden Lifecycle void assertion, RC-1286 Iterable.single invocation ve nullable `BirthTimeValue.known` karşılaştırmaları (`dcee8495ff60dfdb8e17208935a864d007fc6089`). Logda ayrıca eski spiritual test package importları, Lo Shu API/test uyuşmazlıkları, aspect-grid phase parametresi, birkaç unnecessary import/cast ve diğer legacy compile açıkları bulunuyor; critical quality gate kırmızı olduğu sürece FINAL yok.
 
 ## Global blocker'lar
 
-Exact AKİLES provenance; independent authoritative calculation goldens; Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; interpretation/editorial QA; EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode physical proof; security/accessibility/performance; branch/review governance; clean-checkout/lifecycle ve exact release artifact.
+Exact AKİLES provenance; independent authoritative calculation goldens; Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; interpretation/editorial QA; EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode physical proof; security/accessibility/performance; branch/review governance; remaining Flutter analyzer/test failures; clean-checkout/lifecycle ve exact release artifact.
 
 ## Sonraki devam noktası
 
-1. RC-1304→1344 dedicated CI sonucunu fiziksel doğrula; kırmızıysa root-cause düzelt ve yeniden çalıştır.
-2. Binding sırada RC-1345+ final-hygiene / production-cleanliness bloğunu exact sırayla ilerlet.
-3. PR #10 güncel head üzerindeki RC-1197 recheck, RC-1249→1272 PDF, RC-1273→1285 design-system ve RC-1286→1303 dedicated CI sonuçlarını fiziksel doğrula; kırmızıysa root-cause düzelt.
-4. RC-1222→1248 upstream compile kırmızısı yeni fix ile kapanmadan promotion verme.
+1. RC-1304→1344 run `34348857674` ve RC-1345→1361 run `34349075994` sonuçlarını fiziksel doğrula; kırmızıysa root-cause düzelt.
+2. Binding sırada RC-1362→1374 physical airplane-mode lifecycle için otomasyon/device kanıt hattını kur; fiziksel emulator/device kanıtı olmadan DONE verme.
+3. Flutter Quality logundaki remaining compile/analyzer açıklarını mümkün olan dependency sırasıyla kapat.
+4. RC-1222→1303 yeniden çalışan dedicated CI/promotion sonuçlarını doğrula.
 5. RC-0995→1003 provenance/golden ve RC-0965→0994 traceability açıklarını paralel azalt.
 6. RC-0001→RC-1442 tamamı DONE ve bütün release kapıları green olmadan FINAL deme.
 
