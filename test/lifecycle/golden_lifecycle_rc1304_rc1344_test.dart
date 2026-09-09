@@ -108,7 +108,7 @@ void main() {
     expect(scenarios, hasLength(16));
     expect(scenarios.map((e) => e.key).toSet(), hasLength(16));
     expect(
-      matrix.validateExecutions(scenarios.map(passingExecution)),
+      () => matrix.validateExecutions(scenarios.map(passingExecution)),
       returnsNormally,
     );
 
