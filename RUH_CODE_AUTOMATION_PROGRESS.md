@@ -20,9 +20,10 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - PR #1 RC-1131→1144; #2 RC-1145→1160; #3 RC-1161→1174; #4 RC-1175→1196; #5 RC-1197→1205; #6 RC-1206→1221; #7 RC-1222→1236; #8 RC-1237→1248; #9 RC-1249→1272; PR #10 RC-1273→1303 stacked durumda.
 - RC-1206→1221 dedicated run SUCCESS; production SQLite/FTS/device/UI blocker'ları açık.
 - RC-1222→1248 kendi contract/regression zincirleri mevcut; eski upstream deletion compile kırmızısı nedeniyle physical promotion açık.
-- RC-1249→1272 dedicated run kendi exact contract + üç PDF regression testini geçti; upstream RC1197 deletion compile hatasında kırıldı. Hata bu çalıştırmada düzeltildi (`f3eb1a3d32dafe18ff330c844861cb7c6f9acecf`).
+- RC-1249→1272 dedicated run kendi exact contract + üç PDF regression testini geçti; upstream RC1197 deletion compile hatasında kırıldı. Hata düzeltildi (`f3eb1a3d32dafe18ff330c844861cb7c6f9acecf`).
 - RC-1273→1285 production token/regression/contract/validator/CI mevcut; rendered/device adoption kapıları açık.
 - RC-1286→1303 production matrix/regression/contract/validator/CI mevcut; lifecycle promotion CI geçmeden yapılmayacak.
+- RC-1304→1344 Golden Lifecycle production gate/regression/contract/validator/CI yeni stacked branch'te mevcut; gerçek release-build lifecycle yürütümü olmadan VERIFIED/DONE olmayacak.
 
 ## RC-1249→1272 — PDF export governance
 
@@ -46,16 +47,27 @@ Production `05e9e8610af367fe07f4d934bd40dc3629eabc81`; regression `e05e8bdc1555a
 
 RC-1286→1303 VERIFIED/DONE değildir: real Play restore across reinstall/device change, physical offline-PRO verification, production CSV export/import device-transfer flow ve exact release artifact gerekir.
 
+## RC-1304→1344 — Golden Lifecycle release gate
+
+`lib/src/lifecycle/golden_lifecycle.dart` sekiz ana modülü (Western Natal, Vedic, Numerology, BaZi, Planetary Hours, Professional Client, Backup, PDF) merkezi completion checklist'e bağlar. Her modül calculation/UI/interpretation/TR/EN/export/PDF/cache/tests kapılarının tamamını geçmeden complete olamaz; yalnız ekran açılması veya test dosyası bulunması yeterli değildir.
+
+Golden Lifecycle adımları bağlayıcı sırada fail-closed tutulur: yeni müşteri → Natal → Vedik → Numeroloji → not → danışmanlık → PDF → CSV backup → data clear → restore → aynı müşteri → doğum verisi → hesaplama → not → profesyonel ayar → tekrar PDF → restore parity. Stable client identity ve birth/calculation/notes/professional-settings/PDF semantic digest değerleri restore öncesi/sonrası eşleşmelidir.
+
+Required scenario matrix tam 16 kombinasyondur: TR/EN × Free/PRO × offline/online × clean-install/upgrade. Debug build, kırmızı critical test veya skip edilmiş critical test Golden Lifecycle validation'ını doğrudan kırar. Bu aşama production gate implementasyonudur; real release APK üzerinde production persistence/calculation/PDF/backup adapter'larıyla 16 fiziksel lifecycle koşusu tamamlanmadan VERIFIED/DONE değildir.
+
+Production `add0a55c8a0e6ecf1febfff500fef94419375cd4`; regression `f61bd21db37e6cb7d2473ad241cbee936aa56bbd`; exact contract `9d777ebde206977a413fd6299b049d4346c5e299`; validator `0acaee0dcfdbf80eb4d75108a0e0c73b4b3ff7bd`; dedicated CI definition `c8fc6d8a31901c1fb1ae39c96fb91c387eb58e7f`.
+
 ## Global blocker'lar
 
 Exact AKİLES provenance; independent authoritative calculation goldens; Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; interpretation/editorial QA; EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode physical proof; security/accessibility/performance; branch/review governance; clean-checkout/lifecycle ve exact release artifact.
 
 ## Sonraki devam noktası
 
-1. PR #10 güncel head üzerindeki RC-1197 recheck, RC-1249→1272 PDF, RC-1273→1285 design-system ve RC-1286→1303 dedicated CI sonuçlarını fiziksel doğrula; kırmızıysa root-cause düzelt.
-2. Binding sırada RC-1304+ module completion checklist / release-user-flow bloğunu exact sırayla ilerlet.
-3. RC-1222→1248 upstream compile kırmızısı yeni fix ile kapanmadan promotion verme.
-4. RC-0995→1003 provenance/golden ve RC-0965→0994 traceability açıklarını paralel azalt.
-5. RC-0001→RC-1442 tamamı DONE ve bütün release kapıları green olmadan FINAL deme.
+1. RC-1304→1344 dedicated CI sonucunu fiziksel doğrula; kırmızıysa root-cause düzelt ve yeniden çalıştır.
+2. Binding sırada RC-1345+ final-hygiene / production-cleanliness bloğunu exact sırayla ilerlet.
+3. PR #10 güncel head üzerindeki RC-1197 recheck, RC-1249→1272 PDF, RC-1273→1285 design-system ve RC-1286→1303 dedicated CI sonuçlarını fiziksel doğrula; kırmızıysa root-cause düzelt.
+4. RC-1222→1248 upstream compile kırmızısı yeni fix ile kapanmadan promotion verme.
+5. RC-0995→1003 provenance/golden ve RC-0965→0994 traceability açıklarını paralel azalt.
+6. RC-0001→RC-1442 tamamı DONE ve bütün release kapıları green olmadan FINAL deme.
 
 **FINAL: NO.**
