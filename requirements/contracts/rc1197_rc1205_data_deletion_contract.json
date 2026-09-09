@@ -1,0 +1,19 @@
+{
+  "range": {"from": "RC-1197", "to": "RC-1205"},
+  "requirements": {
+    "RC-1197": ["all application data has a single explicit destructive-operation plan"],
+    "RC-1198": ["single-client deletion is represented independently from delete-all"],
+    "RC-1199": ["linked records are previewable before client deletion"],
+    "RC-1200": ["client deletion is scoped by stable client identity and cannot include unrelated clients"],
+    "RC-1201": ["cascade delete record kinds are explicit"],
+    "RC-1202": ["note deletion behavior is explicitly included in cascade rules"],
+    "RC-1203": ["client profile deletion may archive consultation reports instead of deleting them"],
+    "RC-1204": ["delete-all, client cascade, archive and restore semantics have regression coverage"],
+    "RC-1205": ["restore defaults to honoring deletion tombstones and can restore deleted records only by explicit user choice"]
+  },
+  "evidence": [
+    "lib/src/data/data_deletion_policy.dart",
+    "test/data/data_deletion_rc1197_rc1205_test.dart"
+  ],
+  "promotionRule": "Policy and regression evidence may promote only to IMPLEMENTED+blocked. Production persistence transaction wiring, UI confirmation/linked-record preview, backup tombstone serialization and clean-install restore integration remain required before VERIFIED/DONE."
+}
