@@ -1,14 +1,7 @@
 import 'dart:async';
 
-/// Release-facing PDF export policy for RC-1249..RC-1272.
-///
-/// This policy deliberately separates demo exports from real-client exports.
-/// The renderer receives an already-authorized [PdfExportRequest] and cannot
-/// silently turn a Free/demo request into a professional client report.
 enum PdfExportAudience { freeDemo, professionalClient }
-
 enum PdfExportRunState { queued, generating, cancelled, failed, completed }
-
 enum PdfAppLifecycleMode { foregroundOnly, continueWhileBackgrounded }
 
 final class PdfExportRequest {
@@ -39,7 +32,7 @@ final class PdfExportRequest {
   final PdfAppLifecycleMode lifecycleMode;
 }
 
-/// Fail-closed authorization and data-isolation boundary.
+/// Fail-closed authorization and data-isolation boundary for PDF export.
 final class PdfExportAuthorizationPolicy {
   const PdfExportAuthorizationPolicy();
 
@@ -77,7 +70,7 @@ final class PdfExportAuthorizationPolicy {
         if (request.clientId == null || request.clientId!.trim().isEmpty) {
           throw StateError('Professional client PDF requires a stable client id.');
         }
-        // Watermark is optional for full professional reports by design.
+        // A full professional report may intentionally disable the watermark.
         break;
     }
 
@@ -90,7 +83,8 @@ final class PdfExportAuthorizationPolicy {
     final normalizedPath = _normalize(path);
     if (normalizedRoot.isEmpty ||
         normalizedPath.isEmpty ||
-        (normalizedPath != normalizedRoot && !normalizedPath.startsWith('$normalizedRoot/'))) {
+        (normalizedPath != normalizedRoot &&
+            !normalizedPath.startsWith('$normalizedRoot/'))) {
       throw StateError('PDF $label path escapes the app sandbox.');
     }
     if (normalizedPath.contains('/../') || normalizedPath.endsWith('/..')) {
@@ -105,10 +99,8 @@ final class PdfExportAuthorizationPolicy {
       .replaceFirst(RegExp(r'/$'), '');
 }
 
-/// Mutable cancellation token owned by the presentation/application layer.
 final class PdfExportCancellationToken {
   bool _cancelled = false;
-
   bool get isCancelled => _cancelled;
   void cancel() => _cancelled = true;
   void throwIfCancelled() {
@@ -122,16 +114,15 @@ final class PdfExportCancelled implements Exception {
   String toString() => 'PdfExportCancelled';
 }
 
-/// Storage adapter used by the export coordinator. Implementations should use
-/// app-private temporary/cache storage and an atomic final publish operation.
+/// Platform storage adapters must use app-private temporary/cache storage and
+/// an atomic publish operation for a successful final report.
 abstract interface class PdfExportStorage {
   Future<void> writeTemporary(String path, List<int> bytes);
   Future<void> publishAtomically(String temporaryPath, String finalPath);
   Future<void> deleteIfExists(String path);
 }
 
-/// A bounded, keyed coordinator: globally limits concurrent PDF jobs and also
-/// serializes jobs for the same client/report key to avoid same-client races.
+/// Globally bounds PDF work and serializes all jobs for the same client/report.
 final class PdfExportCoordinator {
   PdfExportCoordinator({
     required this.storage,
@@ -160,13 +151,12 @@ final class PdfExportCoordinator {
     final key = request.clientId?.trim().isNotEmpty == true
         ? 'client:${request.clientId}'
         : 'report:${request.reportId}';
-
     final previous = _keyTails[key] ?? Future<void>.value();
     final done = Completer<void>();
     _keyTails[key] = done.future;
+
     await previous;
     await _acquireCapacity();
-
     final temporaryPath = '${request.shareCacheRoot}/${request.reportId}.partial.pdf';
     try {
       cancellation.throwIfCancelled();
@@ -176,7 +166,6 @@ final class PdfExportCoordinator {
       await storage.writeTemporary(temporaryPath, bytes);
       cancellation.throwIfCancelled();
       await storage.publishAtomically(temporaryPath, request.outputPath);
-      // Successful publication must not leave a temporary export behind.
       await storage.deleteIfExists(temporaryPath);
       return PdfExportRunState.completed;
     } on PdfExportCancelled {
@@ -199,17 +188,20 @@ final class PdfExportCoordinator {
     }
     final waiter = Completer<void>();
     _capacityWaiters.add(waiter);
+    // The releasing job transfers its permit directly to this waiter, so the
+    // waiter must not increment _activeJobs after resuming.
     await waiter.future;
-    _activeJobs++;
   }
 
   void _releaseCapacity() {
+    if (_capacityWaiters.isNotEmpty) {
+      _capacityWaiters.removeAt(0).complete();
+      return;
+    }
     _activeJobs--;
-    if (_capacityWaiters.isNotEmpty) _capacityWaiters.removeAt(0).complete();
   }
 }
 
-/// Deterministic collision resolver shared by platform adapters.
 final class PdfExportCollisionPolicy {
   const PdfExportCollisionPolicy();
 
