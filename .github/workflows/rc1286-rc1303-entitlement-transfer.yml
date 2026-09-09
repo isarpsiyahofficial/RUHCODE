@@ -1,0 +1,84 @@
+name: RC1286-RC1303 Entitlement Transfer Matrix
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/entitlements/feature_catalog.dart'
+      - 'lib/src/entitlements/entitlement_scenario_matrix.dart'
+      - 'test/entitlements/entitlement_scenario_matrix_rc1286_rc1303_test.dart'
+      - 'requirements/contracts/rc1286_rc1303_entitlement_transfer_contract.json'
+      - 'tools/requirements/validate_rc1286_rc1303_entitlement_transfer.py'
+      - '.github/workflows/rc1286-rc1303-entitlement-transfer.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1286-rc1303-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate exact requirement contract
+        run: python tools/requirements/validate_rc1286_rc1303_entitlement_transfer.py
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: Entitlement lifecycle and offline transfer regression
+        run: flutter test test/entitlements/entitlement_scenario_matrix_rc1286_rc1303_test.dart
+      - name: Keep upstream entitlement and backup contracts green
+        run: |
+          python tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py
+          python tools/requirements/validate_rc1237_rc1248_portable_backup.py
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1286_rc1303_entitlement_transfer.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1286,1304)}
+          links='lib/src/entitlements/feature_catalog.dart|lib/src/entitlements/entitlement_scenario_matrix.dart|test/entitlements/entitlement_scenario_matrix_rc1286_rc1303_test.dart|requirements/contracts/rc1286_rc1303_entitlement_transfer_contract.json|tools/requirements/validate_rc1286_rc1303_entitlement_transfer.py|.github/workflows/rc1286-rc1303-entitlement-transfer.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Real Play restore across reinstall/device change, physical offline-PRO verification, production CSV device-transfer flow and exact release artifact remain required before VERIFIED/DONE.'
+            r['notes']='All canonical Feature IDs are covered by Free/PRO/rewarded/offline/restore scenarios; core usage and portable transfer are explicitly server-account independent.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1286_RC1303_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1286-rc1303): record entitlement transfer IMPLEMENTED'
+          git push origin HEAD:main
