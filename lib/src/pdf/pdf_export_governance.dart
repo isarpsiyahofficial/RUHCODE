@@ -66,6 +66,7 @@ final class PdfExportAuthorizationPolicy {
         if (!request.watermarkEnabled) {
           throw StateError('Free sample PDF must be visibly watermarked as demo.');
         }
+        break;
       case PdfExportAudience.professionalClient:
         if (!request.isPro) {
           throw StateError('Real-client PDF export requires PRO entitlement.');
@@ -77,6 +78,7 @@ final class PdfExportAuthorizationPolicy {
           throw StateError('Professional client PDF requires a stable client id.');
         }
         // Watermark is optional for full professional reports by design.
+        break;
     }
 
     _requireScopedPath(request.outputPath, request.sandboxRoot, label: 'output');
@@ -96,8 +98,11 @@ final class PdfExportAuthorizationPolicy {
     }
   }
 
-  String _normalize(String value) =>
-      value.trim().replaceAll('\\', '/').replaceAll(RegExp('/+'), '/').replaceFirst(RegExp(r'/$'), '');
+  String _normalize(String value) => value
+      .trim()
+      .replaceAll('\\', '/')
+      .replaceAll(RegExp('/+'), '/')
+      .replaceFirst(RegExp(r'/$'), '');
 }
 
 /// Mutable cancellation token owned by the presentation/application layer.
@@ -132,7 +137,11 @@ final class PdfExportCoordinator {
     required this.storage,
     this.maximumConcurrentJobs = 2,
     this.authorization = const PdfExportAuthorizationPolicy(),
-  }) : assert(maximumConcurrentJobs > 0);
+  }) {
+    if (maximumConcurrentJobs <= 0) {
+      throw ArgumentError.value(maximumConcurrentJobs, 'maximumConcurrentJobs');
+    }
+  }
 
   final PdfExportStorage storage;
   final int maximumConcurrentJobs;
@@ -179,7 +188,7 @@ final class PdfExportCoordinator {
     } finally {
       _releaseCapacity();
       done.complete();
-      if (identical(_keyTails[key], done.future)) _keyTails.remove(key);
+      if (_keyTails[key] == done.future) _keyTails.remove(key);
     }
   }
 
@@ -206,11 +215,15 @@ final class PdfExportCollisionPolicy {
 
   String resolve(String desiredPath, Set<String> existingPaths) {
     if (!existingPaths.contains(desiredPath)) return desiredPath;
-    final dot = desiredPath.toLowerCase().endsWith('.pdf') ? desiredPath.length - 4 : desiredPath.length;
+    final dot = desiredPath.toLowerCase().endsWith('.pdf')
+        ? desiredPath.length - 4
+        : desiredPath.length;
     final stem = desiredPath.substring(0, dot);
     final extension = desiredPath.substring(dot);
     var index = 2;
-    while (existingPaths.contains('$stem ($index)$extension')) index++;
+    while (existingPaths.contains('$stem ($index)$extension')) {
+      index++;
+    }
     return '$stem ($index)$extension';
   }
 }
