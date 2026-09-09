@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / 'requirements/contracts/rc1249_rc1272_pdf_export_contract.json'
 POLICY = ROOT / 'lib/src/pdf/pdf_export_governance.dart'
 TEST = ROOT / 'test/pdf/pdf_export_governance_rc1249_rc1272_test.dart'
+CONCURRENCY_TEST = ROOT / 'test/pdf/pdf_export_concurrency_rc1262_test.dart'
 FIXTURE_TEST = ROOT / 'test/pdf/pdf_release_fixture_rc1272_test.dart'
 FIXTURE = ROOT / 'test/fixtures/pdf/rc1272_free_sample_fixture.json'
 
@@ -20,6 +21,7 @@ try:
     contract = json.loads(read(CONTRACT))
     policy = read(POLICY)
     regression = read(TEST)
+    concurrency = read(CONCURRENCY_TEST)
     fixture_test = read(FIXTURE_TEST)
     fixture = json.loads(read(FIXTURE))
 
@@ -41,7 +43,7 @@ try:
         'publishAtomically',
         'deleteIfExists',
         'PdfExportCollisionPolicy',
-        'PDF output path escapes the app sandbox.',
+        'PDF $label path escapes the app sandbox.',
         'shareCacheRoot',
         'PdfAppLifecycleMode',
         'contentOrder.toSet()',
@@ -60,6 +62,9 @@ try:
         'content order is explicit, unique and stable',
     ):
         assert token in regression, f'missing RC1249-RC1272 regression token: {token}'
+
+    for token in ('maximumConcurrentJobs: 2', 'expect(maxActive, 2)'):
+        assert token in concurrency, f'missing RC1262 concurrency proof token: {token}'
 
     assert fixture['fixtureVersion'] == 1
     assert fixture['usesDemoData'] is True
