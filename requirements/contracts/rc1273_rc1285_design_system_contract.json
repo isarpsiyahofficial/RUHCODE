@@ -1,0 +1,30 @@
+{
+  "range": "RC-1273→RC-1285",
+  "requirements": {
+    "RC-1273": "Title, section, body and caption are explicit semantic typography classes.",
+    "RC-1274": "The four typography classes are visually distinct by size and/or weight.",
+    "RC-1275": "Normal body text uses a readable 16sp baseline and caption/chart labels do not become micro-text.",
+    "RC-1276": "Typography classes define baseline line-height values.",
+    "RC-1277": "Paragraph spacing is centralized as a semantic token.",
+    "RC-1278": "Section spacing is centralized as a semantic token.",
+    "RC-1279": "Card padding is standardized.",
+    "RC-1280": "Screen edge padding is standardized.",
+    "RC-1281": "PDF and screen edge padding use an aligned semantic baseline where practical.",
+    "RC-1282": "Chart legend and legend-item spacing are standardized.",
+    "RC-1283": "Chart label minimum font size is explicit and readable.",
+    "RC-1284": "Dark-mode primary and muted text pairs meet WCAG AA normal-text contrast.",
+    "RC-1285": "Light-mode primary and muted text pairs meet WCAG AA normal-text contrast."
+  },
+  "production_evidence": [
+    "lib/src/ui/theme/ruh_design_tokens.dart",
+    "ui/design_tokens.json"
+  ],
+  "regression_evidence": [
+    "test/ui/ruh_design_system_rc1273_rc1285_test.dart"
+  ],
+  "release_blockers": [
+    "Production screens, charts and PDF renderer must be audited for full adoption of the semantic tokens.",
+    "Rendered TR/EN golden UI/PDF evidence at supported text scales remains required before VERIFIED/DONE.",
+    "Accessibility/device and exact release gates remain open."
+  ]
+}

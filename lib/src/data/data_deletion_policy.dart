@@ -61,7 +61,7 @@ final class ClientDeletionPlan {
     if (clientId.trim().isEmpty) {
       throw ArgumentError('Client deletion requires a stable client id');
     }
-    if (deleteIds.intersection(archiveIds).isNotEmpty) {
+    if (this.deleteIds.intersection(this.archiveIds).isNotEmpty) {
       throw StateError('A record cannot be deleted and archived in the same plan');
     }
   }

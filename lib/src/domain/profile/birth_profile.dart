@@ -7,8 +7,10 @@ enum BirthTimeKnowledge { known, unknown }
 enum BirthTimeDependency { notRequired, required }
 
 final class BirthTimeValue {
-  BirthTimeValue.known({required this.hour, required this.minute})
-      : knowledge = BirthTimeKnowledge.known {
+  BirthTimeValue.known({required int hour, required int minute})
+      : knowledge = BirthTimeKnowledge.known,
+        hour = hour,
+        minute = minute {
     if (hour < 0 || hour > 23) throw ArgumentError('hour must be 0..23');
     if (minute < 0 || minute > 59) throw ArgumentError('minute must be 0..59');
   }

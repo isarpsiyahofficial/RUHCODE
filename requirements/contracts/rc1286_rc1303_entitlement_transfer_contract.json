@@ -1,0 +1,32 @@
+{
+  "range": "RC-1286..RC-1303",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-1286": "Every canonical Feature ID is exercised under Free access.",
+    "RC-1287": "Every canonical Feature ID is exercised under PRO access.",
+    "RC-1288": "Rewarded temporary access is a separate scenario.",
+    "RC-1289": "Offline PRO is a separate scenario.",
+    "RC-1290": "Purchase restore is a separate scenario.",
+    "RC-1291": "Reinstall restore is a separate scenario.",
+    "RC-1292": "Device-change store restore is a separate scenario.",
+    "RC-1293": "A Ruh Code user account is not required for core use.",
+    "RC-1294": "Email/password sign-in is not required for core use.",
+    "RC-1295": "Core architecture does not require an account backend.",
+    "RC-1296": "CSV backup supports device-to-device data transfer.",
+    "RC-1297": "The old device can export the portable backup.",
+    "RC-1298": "The new device can import the portable backup.",
+    "RC-1299": "Transfer does not require a Ruh Code internet server.",
+    "RC-1300": "The user may choose external transport such as Drive/iCloud/USB/email.",
+    "RC-1301": "Ruh Code does not manage those external storage services as a core dependency.",
+    "RC-1302": "Automatic cloud backup is optional future scope, not a core requirement.",
+    "RC-1303": "The primary architecture remains full-function offline-first."
+  },
+  "productionEvidence": [
+    "lib/src/entitlements/feature_catalog.dart",
+    "lib/src/entitlements/entitlement_scenario_matrix.dart"
+  ],
+  "testEvidence": [
+    "test/entitlements/entitlement_scenario_matrix_rc1286_rc1303_test.dart"
+  ],
+  "lifecycleRule": "Implementation/test evidence does not imply VERIFIED or DONE; store/device restore, clean reinstall and exact release gates remain required."
+}

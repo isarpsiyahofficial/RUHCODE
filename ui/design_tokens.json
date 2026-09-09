@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "colors": {
     "background": "#FBF8F3",
     "surface": "#FFFFFF",
@@ -12,6 +12,16 @@
     "gold": "#C89338",
     "success": "#12AD62",
     "danger": "#C23B53"
+  },
+  "darkColors": {
+    "background": "#17131F",
+    "surface": "#21192D",
+    "surfaceSoft": "#2B2138",
+    "textPrimary": "#F7F2FC",
+    "textMuted": "#C8BCD5",
+    "line": "#4A3C5D",
+    "primary": "#B79AFF",
+    "gold": "#F0C36A"
   },
   "radiusDp": {
     "xs": 8,
@@ -27,7 +37,14 @@
     "md": 12,
     "lg": 16,
     "xl": 24,
-    "xxl": 32
+    "xxl": 32,
+    "paragraph": 12,
+    "section": 24,
+    "cardPadding": 16,
+    "screenEdgePadding": 16,
+    "pdfEdgePadding": 16,
+    "chartLegendGap": 8,
+    "chartLegendItemGap": 12
   },
   "touch": {
     "minimumTargetDp": 48
@@ -36,8 +53,15 @@
     "uiFontAssetId": "ASSET-FONT-SANS-PRIMARY",
     "reportSerifAssetId": "ASSET-FONT-SERIF-REPORT",
     "symbolFallbackAssetId": "ASSET-FONT-SYMBOL-FALLBACK",
+    "semanticClasses": {
+      "title": {"fontSizeSp": 28, "lineHeight": 1.20, "weight": 700},
+      "section": {"fontSizeSp": 20, "lineHeight": 1.25, "weight": 600},
+      "body": {"fontSizeSp": 16, "lineHeight": 1.50, "weight": 400},
+      "caption": {"fontSizeSp": 13, "lineHeight": 1.35, "weight": 400}
+    },
+    "chartLabelMinimumSp": 13,
     "scale": {
-      "captionSp": 12,
+      "captionSp": 13,
       "bodySmallSp": 14,
       "bodySp": 16,
       "titleSmallSp": 18,
@@ -65,6 +89,12 @@
       ["danger", "background"],
       ["danger", "surface"],
       ["danger", "surfaceSoft"]
+    ],
+    "requiredDarkTextPairs": [
+      ["textPrimary", "background"],
+      ["textPrimary", "surface"],
+      ["textMuted", "background"],
+      ["textMuted", "surface"]
     ],
     "nonTextAccentTokensOnLightSurfaces": ["gold", "success"],
     "lightSurfaceTokens": ["background", "surface", "surfaceSoft"]
