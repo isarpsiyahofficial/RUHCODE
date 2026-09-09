@@ -17,62 +17,54 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-1059→1084 = IMPLEMENTED + blocked=YES (`ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`).
 - RC-1085→1104 = IMPLEMENTED + blocked=YES (`a9c4b832269328935dbf6d4753f603d17fa5b1f7`).
 - RC-1105→1130 dependency/offline governance mevcut; `pubspec.lock` fiziksel.
-- Stacked PR zinciri: #1 RC-1131→1144, #2 RC-1145→1160, #3 RC-1161→1174, #4 RC-1175→1196, #5 RC-1197→1205, #6 RC-1206→1221, #7 RC-1222→1236, #8 RC-1237→1248, #9 RC-1249→1272, #10 RC-1273→1303, #11 RC-1304→1344, #12 RC-1345→1361, #13 RC-1362→1374, #14 RC-1375→1404.
-- RC-1206→1221 dedicated run SUCCESS; production SQLite/FTS/device/UI blocker'ları açık.
-- RC-1197→1205 latest observed dedicated run SUCCESS.
-- RC-1286→1303 latest observed dedicated run SUCCESS.
+- Stacked PR zinciri artık #1→#15. Son halkalar: #13 RC-1362→1374, #14 RC-1375→1404, #15 RC-1405→1420.
+- Son fiziksel gözlemde RC-1197→1205 ve RC-1286→1303 dedicated run'ları SUCCESS idi; yeni stacked commitler sonrası yeniden koşular ayrıca doğrulanmalıdır.
 
-## Bu çalıştırmada doğrulanan/kapatılan kırmızı kök nedenler
+## Bu çalıştırmada kapatılan CI/kod kök nedenleri
 
-PR #13 head `f7901332...` üzerindeki Flutter Quality run `34349744995` analyzer aşamasında kırmızıydı. Log fiziksel olarak incelendi. Bu turda aşağıdaki gerçek kaynak hataları düzeltildi:
+PR #13 eski head üzerindeki Flutter Quality analyzer kırmızısı incelendi ve dört gerçek kaynak uyumsuzluğu düzeltildi:
 
-1. `test/application/spiritual_journal_core_rc0224_rc0229_test.dart` yanlış `package:ruh_code_app/...` importu `package:ruh_code/...` olarak düzeltildi (`153f3759c0441688db47b905dc268dc98ffb183e`).
-2. `test/application/spiritual_tools_core_rc0212_rc0223_test.dart` aynı yanlış paket importu düzeltildi (`85da50d098b8f269de57a7be9dd4e56f8976ac68`).
-3. `test/calculation_core/western/aspect_grid_test.dart` yeni zorunlu `NatalAspectHit.phase` alanını vermiyordu; fixture `AspectPhase.exact` ile güncellendi (`b3c9890bc0af09770380057c4b69ca349216b71a`).
-4. Lo Shu regression'ları `CivilDate`, `countOf` ve `canonicalGrid` API'lerini bekliyordu. Production `LoShuGridEngine` timezone-bağımsız structural date input kabul edecek, `countOf`/`canonicalGrid` compatibility yüzeylerini sağlayacak biçimde düzeltildi (`30a48d5815335799ea5359262e5f1c90e97498f2`).
-5. RC-1345→1361 dedicated run `34349744888` kırmızısının kök nedeni network auditor'ın SVG standard namespace `http://www.w3.org/2000/svg` literalini ağ çağrısı sanmasıydı. Auditor URL stringlerini tek başına network primitive saymayı bıraktı; gerçek `package:http`, `package:dio`, `HttpClient`, `Socket`, `WebSocket.connect` taraması fail-closed kalıyor (`2ac068fb20d09e9dd9cc189a7ce46196d9af003f`).
+1. Spiritual journal testi yanlış `package:ruh_code_app/...` importunu kullanıyordu → `package:ruh_code/...` (`153f3759c0441688db47b905dc268dc98ffb183e`).
+2. Spiritual tools testi aynı yanlış package importunu kullanıyordu → düzeltildi (`85da50d098b8f269de57a7be9dd4e56f8976ac68`).
+3. Aspect-grid duplicate fixture yeni zorunlu `NatalAspectHit.phase` alanını vermiyordu → `AspectPhase.exact` eklendi (`b3c9890bc0af09770380057c4b69ca349216b71a`).
+4. Lo Shu regression API'si `CivilDate`, `countOf` ve `canonicalGrid` bekliyordu. Production Lo Shu engine timezone-bağımsız structural date input kabul edecek ve bu compatibility yüzeylerini sağlayacak şekilde düzeltildi (`30a48d5815335799ea5359262e5f1c90e97498f2`).
 
-Bu düzeltmeler RC statülerini otomatik DONE yapmaz; yeni CI sonucu fiziksel olarak yeşil görülmeden promotion yok.
+RC-1345→1361 run `34349744888` exact contract'ı geçti fakat network auditor SVG standard namespace `http://www.w3.org/2000/svg` literalini ağ çağrısı sandığı için kırmızıydı. Plain URL literal artık tek başına network primitive sayılmıyor; `package:http`, `package:dio`, `HttpClient`, `Socket.connect`, `WebSocket.connect` taraması fail-closed kalıyor (`2ac068fb20d09e9dd9cc189a7ce46196d9af003f`).
 
-## RC-1375→1404 — final Requirement Traceability / exact artifact gate
+RC-1362→1374 run `34349744814` içinde release APK başarıyla üretildi (`97.6 MB`) ve unit/contract job yeşildi. Kırmızı uygulama crash'i değildi: Linux runner KVM erişimi olmadan software emulation kullandı, boot yaklaşık 466 saniye sürdü ve boot sonrası ADB transport `Broken pipe` ile düştü. Airplane emulator job macOS-13 hardware-accelerated runner'a taşındı; macOS SHA komutu `shasum -a 256` olarak düzeltildi (`93dcae4a7eb1b52461907ec81dfa4128a31539f1`). Yeni fiziksel run sonucu görülmeden RC promotion yok.
 
-Binding şartname RC-1375→1404 exact olarak yeniden okundu. Yeni branch `agent/rc1375-rc1404-final-traceability`, PR #13 head `30a48d5815335799ea5359262e5f1c90e97498f2` üzerine kuruldu.
+## RC-1375→1404 — final traceability / exact artifact
 
-Yeni `tools/release/validate_final_traceability.py` mevcut 1.442 satırlık canonical matrix'i fail-closed final gate'e bağlar:
+PR #14: `agent/rc1375-rc1404-final-traceability`.
 
-- Exact sıralı `RC-0001..RC-1442` zorunlu; gap/duplicate kabul edilmez.
-- TESTED/VERIFIED/DONE statüleri somut evidence link ister.
-- DONE satır blocked kalamaz ve regression/test evidence taşımak zorundadır.
-- I18N/OFFLINE/ENTITLEMENT/BACKUP/PDF/CALC/UI tag'leri varsa final DONE için ilgili TR/EN, offline, Free/PRO, backup, PDF, calculation-reference ve UI/device evidence boyutları aranır.
-- Release mode bütün 1.442 RC'nin DONE + unblocked olmasını zorunlu tutar.
-- Final manifest exact 40-char commit SHA, git tag, artifact path, artifact SHA-256 ve `testedCommitSha == commitSha` eşitliği ister; artifact byte hash'i manifest ile uyuşmazsa gate kırılır.
+- `tools/release/validate_final_traceability.py` exact ordered 1.442-row matrix, tested-or-later evidence, DONE/unblocked kuralı ve applicable I18N/OFFLINE/ENTITLEMENT/BACKUP/PDF/CALC/UI evidence boyutlarını fail-closed kontrol eder (`3048ae4de1d2ea5d08c04050830b426c7abe0804`).
+- Release mode bütün 1.442 RC DONE/unblocked olmadan geçmez; exact `gitTag`, 40-char commit SHA, artifact path, artifact SHA-256 ve `testedCommitSha == commitSha` eşleşmesini ister.
+- Exact RC contract: `2f2e0733d4d66bf347c8d2696d0e2a8421a6e2fe`.
+- Dedicated CI: `8bd2fc128b50ef46a4835c15f50b8f9a9efd115c`.
+- PR #14 açıldı. Latest observed dedicated run `34361068380` queued. CI fiziksel başarı vermeden lifecycle yükseltilmeyecek.
 
-Production/final validator commit `3048ae4de1d2ea5d08c04050830b426c7abe0804`.
+## RC-1405→1420 — local zero-backend core / release identity
 
-Exact RC-1375→1404 contract `2f2e0733d4d66bf347c8d2696d0e2a8421a6e2fe`.
+PR #15: `agent/rc1405-rc1420-local-cost-architecture`.
 
-Dedicated CI `8bd2fc128b50ef46a4835c15f50b8f9a9efd115c`:
+Binding RC-1405→1420 exact olarak local/no-cost mimari ve final artifact identity ile bağlandı:
 
-- canonical requirement matrix validator,
-- requirement-test traceability auditor,
-- final dimension validator,
-- exact RC-1375→1404 contract key coverage,
-- release mode'un final manifest/all-DONE olmadan bilinçli olarak fail-closed kalması
-
-kapılarını çalıştırır.
-
-Bu blok şu anda IMPLEMENTED seviyesine adaydır; CI physical success ve matrix-writing promotion olmadan elle lifecycle yükseltilmeyecek. VERIFIED/DONE ise ancak bütün 1.442 RC DONE/unblocked ve exact final artifact/commit/hash kanıtı mevcut olduğunda mümkündür.
+- `governance/local_core_cost_contract.json` çekirdek maliyet hedefini `zero_ongoing_backend_or_paid_api_cost_for_core` olarak tanımlar; calculation, user data, interpretation, PDF, CSV backup/restore, search, professional-client management, daily personalization, notification scheduling ve city/timezone data için local evidence roots tanımlar (`0124be9c6fb103bbd848869a820de63521ba9dc1`).
+- Exact RC-1405→1420 contract: `7800951ed520b8758f632cd56aad45577a3b3301`.
+- `tools/release/validate_local_core_cost_architecture.py` on local capability grubunun fiziksel evidence path'ini, mandatory backend/network dependency bulunmamasını, network inventory'de `coreRequired=true` olmamasını, local core roots altında direct network primitive bulunmamasını ve release identity'nin gitTag/commitSha/artifactSha256 ile exact-tested-commit eşleşmesini fail-closed denetler (`53ffd924237f0a3222acca43026b2d17435b9483`).
+- Dedicated CI: `919e9e658ba8bdb4abcaf37e0f85a051f525f426`.
+- PR #15 açıldı. Bu blok CI sonucu görülmeden IMPLEMENTED promotion almayacak; RC-1405/1406/1420 exact final artifact ve tüm 1.442 RC kapanmadan VERIFIED/DONE olamaz.
 
 ## Açık kritik blocker'lar
 
-Exact AKİLES provenance; independent authoritative calculation goldens; Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; interpretation/editorial QA; EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; real ad/rewarded/PRO verifier; notification scheduler; full airplane-mode production instrumentation; security/accessibility/performance; branch/review governance; remaining Flutter analyzer/test failures; clean-checkout/lifecycle; exact final release artifact.
+Exact AKİLES provenance; independent authoritative calculation goldens; Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; interpretation/editorial QA; EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; real ad/rewarded/PRO verifier; notification scheduler runtime kanıtı; full airplane-mode production instrumentation; security/accessibility/performance; branch/review governance; remaining Flutter analyzer/test failures; clean-checkout/lifecycle; exact final release artifact.
 
 ## Sonraki devam noktası
 
-1. PR #13 güncel Flutter Quality, RC-1345→1361 ve RC-1362→1374 rerun sonuçlarını fiziksel doğrula; kırmızıysa yeni kök nedeni kapat.
-2. PR #14 RC-1375→1404 dedicated CI'ını fiziksel doğrula; validator kendi current-state mode'unda yeşil, release mode all-DONE/exact artifact olmadan bilinçli kırmızı kalmalı.
-3. Flutter analyzer'da kalan warning/info ve legacy compile açıklarını dependency sırasıyla kapat.
-4. Binding sırada RC-1405→1420 final artifact identity + no-cost/offline architecture kapanışına devam et; ardından ek şartname RC-1421→1442'yi exact sırayla ele al.
-5. RC-0001→RC-1442 tamamı DONE ve bütün release kapıları green olmadan FINAL deme.
+1. PR #13 yeni Flutter Quality, RC-1345→1361 ve macOS RC-1362→1374 run'larını fiziksel doğrula; kırmızıysa root-cause düzelt.
+2. PR #14 RC-1375→1404 ve PR #15 RC-1405→1420 dedicated CI sonuçlarını doğrula; yalnız kanıtlanan lifecycle promotion'larını kabul et.
+3. Binding addendum `RC-1421→RC-1442` maddelerini exact sırayla yeniden oku ve sıradaki bağımsız geliştirme bloğunu uygula.
+4. Flutter analyzer/test legacy açıklarını dependency sırasıyla kapat; old critical workflows kırmızı kaldıkça FINAL deme.
+5. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
 **FINAL: NO.**
