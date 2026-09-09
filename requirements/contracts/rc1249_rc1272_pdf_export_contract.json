@@ -31,6 +31,7 @@
   ],
   "regression_evidence": [
     "test/pdf/pdf_export_governance_rc1249_rc1272_test.dart",
+    "test/pdf/pdf_export_concurrency_rc1262_test.dart",
     "test/pdf/pdf_release_fixture_rc1272_test.dart",
     "test/fixtures/pdf/rc1272_free_sample_fixture.json"
   ],
