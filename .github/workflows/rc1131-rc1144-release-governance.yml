@@ -33,7 +33,7 @@ jobs:
       - name: Validate static release governance
         run: python tools/requirements/validate_rc1131_rc1144_release_governance.py
       - name: Run fail-closed governance regression
-        run: python -m unittest test/governance/test_rc1131_rc1144_release_governance.py -v
+        run: python test/governance/test_rc1131_rc1144_release_governance.py -v
 
   release-build-regression:
     runs-on: ubuntu-latest
