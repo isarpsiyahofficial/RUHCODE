@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "requirementRange": "RC-1405..RC-1420",
+  "costTarget": "zero_ongoing_backend_or_paid_api_cost_for_core",
+  "localCoreCapabilities": {
+    "astrologyCalculation": ["lib/src/calculation_core/"],
+    "userData": ["lib/src/storage/"],
+    "interpretationCatalog": ["lib/src/interpretation/", "assets/content/"],
+    "pdf": ["lib/src/pdf/"],
+    "csvBackupRestore": ["lib/src/backup/"],
+    "search": ["lib/src/search/", "lib/src/professional/professional_search.dart"],
+    "professionalClientManagement": ["lib/src/professional/"],
+    "dailyPersonalization": ["lib/src/application/daily/"],
+    "notificationScheduling": ["lib/src/notifications/"],
+    "cityTimezoneData": ["assets/data/cities/", "lib/src/location/"]
+  },
+  "allowedOptionalNetwork": [
+    "user_initiated_store_purchase_or_restore",
+    "advertising",
+    "user_initiated_external_share"
+  ],
+  "forbiddenCoreArchitecture": [
+    "mandatory_backend_login",
+    "mandatory_remote_calculation_api",
+    "mandatory_remote_pdf_service",
+    "mandatory_remote_backup_service",
+    "mandatory_remote_search_service",
+    "paid_third_party_api_required_for_core_use"
+  ],
+  "releaseIdentity": {
+    "required": ["gitTag", "commitSha", "artifactSha256"],
+    "exactArtifactMustMatchTestedCommit": true
+  },
+  "scaleRule": "Core architecture must not introduce developer-operated per-user server/API cost as users scale. Optional store/advertising/external-share provider costs are outside the local core contract."
+}
