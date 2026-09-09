@@ -38,7 +38,11 @@ jobs:
       - run: flutter test test/offline/offline_core_capabilities_rc1362_rc1374_test.dart
 
   airplane-release-launch:
-    runs-on: ubuntu-latest
+    # The previous Linux/TGC runner built the release APK successfully but the
+    # Android emulator lost its ADB transport immediately after a 466s software
+    # boot. macOS provides hardware-accelerated Android virtualization and makes
+    # this gate test the application rather than host-emulator instability.
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -57,7 +61,7 @@ jobs:
             set -euo pipefail
             APK=build/app/outputs/flutter-apk/app-release.apk
             test -s "$APK"
-            sha256sum "$APK" | tee /tmp/ruhcode-release-sha256.txt
+            shasum -a 256 "$APK" | tee /tmp/ruhcode-release-sha256.txt
             adb install -r "$APK"
             adb shell settings put global airplane_mode_on 1
             adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null
