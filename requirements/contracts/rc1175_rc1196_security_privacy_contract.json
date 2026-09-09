@@ -1,0 +1,32 @@
+{
+  "range": {"from": "RC-1175", "to": "RC-1196"},
+  "requirements": {
+    "RC-1175": ["notification permission denial is isolated from non-notification core usage"],
+    "RC-1176": ["PDF export is modeled as local-artifact delivery rather than arbitrary root writes"],
+    "RC-1177": ["arbitrary root-folder writes are prohibited by storage policy"],
+    "RC-1178": ["sensitive local settings can be bound to secure storage adapters"],
+    "RC-1179": ["plaintext database risk is explicit rather than silently assumed safe"],
+    "RC-1180": ["professional customer data has an explicit local-encryption policy boundary"],
+    "RC-1181": ["encryption is device-local and needs no server round trip"],
+    "RC-1182": ["fixed application string keys are prohibited"],
+    "RC-1183": ["platform keystore is an approved key origin"],
+    "RC-1184": ["application-lock policy exists"],
+    "RC-1185": ["PIN and biometric lock methods are represented"],
+    "RC-1186": ["biometric lock requires a secure PIN fallback"],
+    "RC-1187": ["export remains available after successful app unlock"],
+    "RC-1188": ["third-party export requires explicit user initiation"],
+    "RC-1189": ["analytics is not required for core usage"],
+    "RC-1190": ["telemetry is not required for core serverless usage"],
+    "RC-1191": ["privacy-safe logging excludes user birth/profile content"],
+    "RC-1192": ["production logs reject customer/client names"],
+    "RC-1193": ["production logs reject full birth dates"],
+    "RC-1194": ["production logs reject consultation notes"],
+    "RC-1195": ["errors use anonymous technical codes"],
+    "RC-1196": ["release policy rejects debug logging"]
+  },
+  "evidence": [
+    "lib/src/security/privacy_and_storage_policy.dart",
+    "test/security/privacy_and_storage_rc1175_rc1196_test.dart"
+  ],
+  "promotionRule": "Policy and regression evidence may promote only to IMPLEMENTED+blocked. Real secure-storage/keystore/biometric adapters, encrypted database migration, modern platform storage integration and release-binary log inspection remain required before VERIFIED/DONE."
+}
