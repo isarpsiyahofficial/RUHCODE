@@ -1,0 +1,79 @@
+name: RC1206-RC1221 Professional Search
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/data/professional_search.dart'
+      - 'test/data/professional_search_rc1206_rc1221_test.dart'
+      - 'requirements/contracts/rc1206_rc1221_professional_search_contract.json'
+      - 'tools/requirements/validate_rc1206_rc1221_professional_search.py'
+      - '.github/workflows/rc1206-rc1221-professional-search.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1206-rc1221-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate exact requirement contract
+        run: python tools/requirements/validate_rc1206_rc1221_professional_search.py
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: Professional search regression and scale fixture
+        run: flutter test test/data/professional_search_rc1206_rc1221_test.dart
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1206_rc1221_professional_search.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1206,1222)}
+          links='lib/src/data/professional_search.dart|test/data/professional_search_rc1206_rc1221_test.dart|requirements/contracts/rc1206_rc1221_professional_search_contract.json|tools/requirements/validate_rc1206_rc1221_professional_search.py|.github/workflows/rc1206-rc1221-professional-search.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Production SQLite/FTS index wiring, measured cold-start/device memory benchmarks and real professional UI pagination remain required before VERIFIED/DONE.'
+            r['notes']='Local name/tag/date/numerology search, normalized prefix indexing and bounded pagination have regression coverage including 1k/10k fixtures.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1206_RC1221_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1206-rc1221): record professional search IMPLEMENTED'
+          git push origin HEAD:main
