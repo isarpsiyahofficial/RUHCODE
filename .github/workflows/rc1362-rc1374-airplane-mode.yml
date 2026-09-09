@@ -38,7 +38,11 @@ jobs:
       - run: flutter test test/offline/offline_core_capabilities_rc1362_rc1374_test.dart
 
   airplane-release-launch:
-    runs-on: ubuntu-latest
+    # Linux hosted runners currently expose no /dev/kvm in this workflow and
+    # API-35 software emulation has already produced ADB Broken pipe failures
+    # after a successful 97.6 MB release build. macos-13 provides accelerated
+    # x86_64 emulation and makes this a product test rather than a host test.
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -57,7 +61,7 @@ jobs:
             set -euo pipefail
             APK=build/app/outputs/flutter-apk/app-release.apk
             test -s "$APK"
-            sha256sum "$APK" | tee /tmp/ruhcode-release-sha256.txt
+            shasum -a 256 "$APK" | tee /tmp/ruhcode-release-sha256.txt
             adb install -r "$APK"
             adb shell settings put global airplane_mode_on 1
             adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null
