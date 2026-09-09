@@ -1,0 +1,84 @@
+name: RC1161-RC1174 Location Input
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/data/location/city_catalog.dart'
+      - 'lib/src/data/location/location_input_policy.dart'
+      - 'test/data/city_catalog_test.dart'
+      - 'test/data/location_input_rc1161_rc1174_test.dart'
+      - 'requirements/contracts/rc1161_rc1174_location_input_contract.json'
+      - 'tools/requirements/validate_rc1161_rc1174_location_input.py'
+      - '.github/workflows/rc1161-rc1174-location-input.yml'
+      - 'requirements/data_manifests/cities.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1161-rc1174-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate exact requirement contract
+        run: python tools/requirements/validate_rc1161_rc1174_location_input.py
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: Existing city-catalog regression
+        run: flutter test test/data/city_catalog_test.dart
+      - name: RC1161-RC1174 location-input regression
+        run: flutter test test/data/location_input_rc1161_rc1174_test.dart
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1161_rc1174_location_input.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1161,1175)}
+          links='lib/src/data/location/city_catalog.dart|lib/src/data/location/location_input_policy.dart|test/data/city_catalog_test.dart|test/data/location_input_rc1161_rc1174_test.dart|requirements/contracts/rc1161_rc1174_location_input_contract.json|tools/requirements/validate_rc1161_rc1174_location_input.py|.github/workflows/rc1161-rc1174-location-input.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Production form/widget integration, persisted recent locations, physical bundled-catalog device performance, and real permission integration evidence remain required before VERIFIED/DONE.'
+            r['notes']='Indexed offline city search, TR/EN birth-time policy, explicit unknown-time state, stable-id recent locations and GPS-denial manual fallback are implemented with regressions.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1161_RC1174_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1161-rc1174): record location input IMPLEMENTED'
+          git push origin HEAD:main
