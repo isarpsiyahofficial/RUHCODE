@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "policy": "offline-first; every direct application network call must be explicitly inventoried and justified",
+  "directApplicationNetworkCalls": [],
+  "sdkManagedNetworkCapabilities": [
+    {
+      "id": "google_play_billing",
+      "dependency": "in_app_purchase",
+      "reason": "User-initiated purchase and store ownership restore only; never calculation, PDF, CSV, profile or local professional-client access.",
+      "coreRequired": false
+    }
+  ],
+  "forbiddenNetworkPurposes": [
+    "calculation",
+    "pdf_generation",
+    "csv_export",
+    "csv_restore",
+    "profile_open",
+    "professional_client_local_crud"
+  ],
+  "releaseRule": "Any direct application network primitive discovered under lib/ without an exact inventory entry blocks release. Direct network calls for forbidden purposes block release even when inventoried."
+}
