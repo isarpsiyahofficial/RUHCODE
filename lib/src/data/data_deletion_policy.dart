@@ -109,9 +109,12 @@ final class DeletionTombstoneLedger {
     if (policy == RestoreDeletedRecordPolicy.restoreExplicitly) {
       return List.unmodifiable(backupRecords);
     }
-    return List.unmodifiable(
-      backupRecords.where((record) => !_deletedRecordIds.contains(record.id)),
-    );
+    if (policy == RestoreDeletedRecordPolicy.keepDeleted) {
+      return List.unmodifiable(
+        backupRecords.where((record) => !_deletedRecordIds.contains(record.id)),
+      );
+    }
+    throw StateError('Unsupported deleted-record restore policy');
   }
 }
 
