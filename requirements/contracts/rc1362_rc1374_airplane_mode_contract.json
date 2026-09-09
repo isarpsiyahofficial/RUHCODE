@@ -1,0 +1,22 @@
+{
+  "range": "RC-1362..RC-1374",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-1362": "Core product is exercised with airplane mode enabled on a test device/emulator.",
+    "RC-1363": "Western chart remains available in airplane mode.",
+    "RC-1364": "Vedic remains available in airplane mode.",
+    "RC-1365": "Numerology remains available in airplane mode.",
+    "RC-1366": "BaZi remains available in airplane mode.",
+    "RC-1367": "Planetary Hours remains available in airplane mode.",
+    "RC-1368": "Local records open in airplane mode.",
+    "RC-1369": "PDF can be generated in airplane mode.",
+    "RC-1370": "CSV can be exported in airplane mode.",
+    "RC-1371": "CSV can be restored in airplane mode.",
+    "RC-1372": "Local professional client management works in airplane mode.",
+    "RC-1373": "Only advertising, store verification and explicit external sharing may depend on internet.",
+    "RC-1374": "Offline-core acceptance requires end-to-end airplane-mode evidence."
+  },
+  "productionEvidence": ["lib/src/offline/offline_core_capabilities.dart"],
+  "testEvidence": ["test/offline/offline_core_capabilities_rc1362_rc1374_test.dart", ".github/workflows/rc1362-rc1374-airplane-mode.yml"],
+  "lifecycleRule": "The emulator launch proves airplane-mode release startup. VERIFIED/DONE requires instrumentation that exercises each listed production capability end-to-end and records exact artifact/device evidence."
+}

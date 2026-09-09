@@ -1,0 +1,123 @@
+name: RC1362-RC1374 Airplane Mode
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/offline/offline_core_capabilities.dart'
+      - 'test/offline/offline_core_capabilities_rc1362_rc1374_test.dart'
+      - 'requirements/contracts/rc1362_rc1374_airplane_mode_contract.json'
+      - '.github/workflows/rc1362-rc1374-airplane-mode.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  contract-and-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate exact RC range
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('requirements/contracts/rc1362_rc1374_airplane_mode_contract.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          expected=[f'RC-{i:04d}' for i in range(1362,1375)]
+          assert list(d['requirements']) == expected
+          print('RC1362_RC1374_CONTRACT_OK')
+          PY
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: flutter test test/offline/offline_core_capabilities_rc1362_rc1374_test.dart
+
+  airplane-release-launch:
+    # The previous Linux/TGC runner built the release APK successfully but the
+    # Android emulator lost its ADB transport immediately after a 466s software
+    # boot. macOS provides hardware-accelerated Android virtualization and makes
+    # this gate test the application rather than host-emulator instability.
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: Build release APK
+        run: flutter build apk --release
+      - name: Install release APK, enable airplane mode, launch and assert survival
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            APK=build/app/outputs/flutter-apk/app-release.apk
+            test -s "$APK"
+            shasum -a 256 "$APK" | tee /tmp/ruhcode-release-sha256.txt
+            adb install -r "$APK"
+            adb shell settings put global airplane_mode_on 1
+            adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null
+            adb shell svc wifi disable || true
+            adb shell svc data disable || true
+            AIRPLANE="$(adb shell settings get global airplane_mode_on | tr -d '\r')"
+            test "$AIRPLANE" = "1"
+            adb shell monkey -p com.ruhcode.ruh_code -c android.intent.category.LAUNCHER 1
+            sleep 8
+            PID="$(adb shell pidof com.ruhcode.ruh_code | tr -d '\r')"
+            test -n "$PID"
+            if adb logcat -d -t 600 | grep -E 'FATAL EXCEPTION|Process: com\.ruhcode\.ruh_code.*has died'; then
+              echo 'RC1362_RC1374_FAIL: release app crashed in airplane mode'
+              exit 1
+            fi
+            echo "RC1362_AIRPLANE_RELEASE_STARTUP_OK pid=$PID"
+            cat /tmp/ruhcode-release-sha256.txt
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [contract-and-unit, airplane-release-launch]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          contract=json.loads(Path('requirements/contracts/rc1362_rc1374_airplane_mode_contract.json').read_text(encoding='utf-8'))
+          targets=set(contract['requirements'])
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); found=set()
+          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|.github/workflows/rc1362-rc1374-airplane-mode.yml'
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Release APK airplane-mode startup smoke exists, but production instrumentation must exercise Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client flows end-to-end before VERIFIED/DONE.'
+            r['notes']='Offline core capability contract is fail-closed and CI boots exact release APK with airplane mode enabled.'
+          if found != targets: raise SystemExit(f'RC1362_RC1374_FAIL missing={sorted(targets-found)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1362-rc1374): record airplane-mode core IMPLEMENTED'
+          git push origin HEAD:main

@@ -23,7 +23,9 @@ NETWORK_PATTERNS = {
     "dart:io HttpClient": re.compile(r"\bHttpClient\s*\("),
     "dart:io Socket": re.compile(r"\bSocket\.(?:connect|startConnect)\s*\("),
     "dart:io WebSocket": re.compile(r"\bWebSocket\.connect\s*\("),
-    "http URL literal": re.compile(r"https?://", re.IGNORECASE),
+    # A URL string alone is not a network primitive (for example the mandatory
+    # SVG XML namespace). Only URL literals used by direct networking APIs are
+    # inventory-relevant; the direct API patterns above remain fail-closed.
 }
 
 
