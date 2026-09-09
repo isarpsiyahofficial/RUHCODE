@@ -1,0 +1,80 @@
+name: RC1145-RC1160 Android Compatibility
+
+on:
+  pull_request:
+    branches:
+      - main
+      - agent/rc1131-rc1144-release-governance
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate Android compatibility contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib, re
+          p=pathlib.Path('governance/android_compatibility_policy.json')
+          data=json.loads(p.read_text(encoding='utf-8'))
+          assert data['requirementRange']==['RC-1145','RC-1160']
+          assert data['minimumAndroidApi']==21
+          assert data['currentStableAndroidApi']==37
+          assert set(data['locales'])=={'tr','en'}
+          ids={x['id'] for x in data['deviceClasses']}
+          assert {'small_phone','large_phone','tablet','landscape_phone'} <= ids
+          assert max(data['textScales']) >= 2.0
+          gradle=pathlib.Path('android/app/build.gradle.kts').read_text(encoding='utf-8')
+          assert re.search(r'\bminSdk\s*=\s*21\b', gradle)
+          print('RC1145_RC1160_CONTRACT_OK')
+          PY
+
+  emulator-launch:
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [21, 37]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: flutter build apk --debug
+      - name: Boot Android ${{ matrix.api }}, install and launch production package
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            set -euo pipefail
+            adb install -r build/app/outputs/flutter-apk/app-debug.apk
+            adb shell monkey -p com.ruhcode.ruh_code -c android.intent.category.LAUNCHER 1
+            sleep 8
+            PID="$(adb shell pidof com.ruhcode.ruh_code | tr -d '\r')"
+            test -n "$PID"
+            if adb logcat -d -t 500 | grep -E 'FATAL EXCEPTION|Process: com\.ruhcode\.ruh_code.*has died'; then
+              echo 'RC1146_RC1147_FAIL: app crashed during launch smoke test'
+              exit 1
+            fi
+            echo "RC1146_RC1147_OK api=${{ matrix.api }} pid=$PID"
+
+  production-ui-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: Existing production UI regression suite
+        run: flutter test test/ui
