@@ -19,7 +19,7 @@ void main() {
 
   test('approximate/exact times require real local clock values', () {
     expect(
-      () => const BirthDateTimeInput(
+      () => BirthDateTimeInput(
         date: DateTime(2000),
         timePrecision: BirthTimePrecision.exact,
       ).validate(),
