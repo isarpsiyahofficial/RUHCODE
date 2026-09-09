@@ -17,8 +17,9 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-1059→1084 = IMPLEMENTED + blocked=YES (`ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`).
 - RC-1085→1104 = IMPLEMENTED + blocked=YES (`a9c4b832269328935dbf6d4753f603d17fa5b1f7`).
 - RC-1105→1130 dependency/offline governance mevcut; `pubspec.lock` fiziksel.
-- Stacked PR zinciri #1→#16 mevcut. RC-1304→1344, RC-1345→1361, RC-1375→1404 ve RC-1405→1420 dedicated gate'lerinin son doğrulanan koşuları SUCCESS verdi.
-- RC-1437 Runtime Assets dedicated gate'in son doğrulanan koşusu SUCCESS verdi; bu tek başına bütün final packaged/legal/release closure kanıtlarının tamamlandığı anlamına gelmez.
+- Stacked PR zinciri #1→#16 mevcut. RC-1304→1344, RC-1345→1361, RC-1375→1404 ve RC-1405→1420 dedicated gate'lerinin doğrulanmış SUCCESS koşuları mevcut.
+- RC-1437 Runtime Assets dedicated gate'in doğrulanmış SUCCESS koşusu mevcut; bu tek başına bütün final packaged/legal/release closure kanıtlarının tamamlandığı anlamına gelmez.
+- Önceki exact PR #16 HEAD `7b01a96efeb1db58c50d5d3c8388193ee6a5193b` üzerinde Requirements Contract, RC-0166→0184 Numerology Core, RC-0755→0773 Transactional Data Safety, RC-0360→0371 Storage Runtime, UI Contracts, RC-0859→0869 PDF Release Boundary, RC-1197→1205 Data Deletion, RC-1222→1236 Calculation Cache, RC-1237→1248 Portable Backup, RC-1249→1272 PDF Export Governance, RC-1273→1285 Design System, RC-1304→1344 Golden Lifecycle ve RC-1421→1442 Final Release Closure dahil çok sayıda gate fiziksel SUCCESS verdi. Cancellation hiçbir zaman SUCCESS sayılmıyor.
 
 ## RC-1421→1442 — bağlayıcı son ek / final release closure
 
@@ -26,23 +27,31 @@ Branch: `agent/rc1421-rc1442-release-closure`, stacked PR #16.
 
 `lib/src/application/daily/today_temporal_contract.dart`, regression, exact RC-1421→1442 evidence contract, fail-closed release validator ve dedicated CI mevcut. Günlük stok mesaj ile kişisel hesaplanmış etkiler ayrı tiplerdir; Gregorian/leap-year/date-range ve explicit timezone/location sınırları testlidir. Release modu açık blocker'lar varken başarısız olmak zorundadır; TESTED/VERIFIED/DONE otomatik verilmez.
 
-### Bu çalıştırmada kapatılan gerçek kırmızı kök nedenler
+### Kapatılan gerçek kırmızı kök nedenler
 
-1. **Flutter Quality analyzer:** eski koşuda kalan 6 ihlal doğrudan kaynakta temizlendi. Gereksiz backup importları, `clamp` cast'i, Varga non-null assertion'ı ve iki PDF testindeki gereksiz `dart:async` importları kaldırıldı. Commit zinciri: `1132b33756340bbcabe5dd47bb8c862d5293c7ef`, `fa7108a1d75a90af7648e58504bdb5e578aaca05`, `c326fe0f310ccfaf5387db2e45f1f8011c4eb861`, `61925bbab7407e9a9d9878076be94fdb36ad3d64`, `5987cdd01fa79dc4fe7a9ad3f52a277b6bc3b3b7`, `02ddc42e4f92caab0f7bb4e81143b4d6b4552b54`. Yeni HEAD quality sonucu bekleniyor; kanıt gelmeden statü yükseltilmedi.
+1. **Flutter Quality analyzer:** eski koşuda kalan 6 ihlal doğrudan kaynakta temizlendi. Gereksiz backup importları, `clamp` cast'i, Varga non-null assertion'ı ve iki PDF testindeki gereksiz `dart:async` importları kaldırıldı. Commit zinciri: `1132b33756340bbcabe5dd47bb8c862d5293c7ef`, `fa7108a1d75a90af7648e58504bdb5e578aaca05`, `c326fe0f310ccfaf5387db2e45f1f8011c4eb861`, `61925bbab7407e9a9d9878076be94fdb36ad3d64`, `5987cdd01fa79dc4fe7a9ad3f52a277b6bc3b3b7`, `02ddc42e4f92caab0f7bb4e81143b4d6b4552b54`.
 
-2. **Requirements Contract / design tokens:** eski validator yalnız altı core spacing değerine izin verdiği için RC-1273+ semantic spacing tokenlarını yanlışlıkla `spacing grid drift` sayıyordu. Validator artık exact core grid (`4,8,12,16,24,32`) ile semantic spacing (`paragraph`, `section`, card/screen/PDF padding ve chart legend gap'leri) ayrı fail-closed doğruluyor. Düzeltme `de480d49af696b19141c2043a35e4982d4399605`. Yeni CI sonucu bekleniyor.
+2. **Requirements Contract / design tokens:** eski validator yalnız altı core spacing değerine izin verdiği için RC-1273+ semantic spacing tokenlarını yanlışlıkla `spacing grid drift` sayıyordu. Validator artık exact core grid (`4,8,12,16,24,32`) ile semantic spacing (`paragraph`, `section`, card/screen/PDF padding ve chart legend gap'leri) ayrı fail-closed doğruluyor. Düzeltme `de480d49af696b19141c2043a35e4982d4399605`. Sonraki exact-head koşusu SUCCESS verdi.
 
-3. **RC-0859→0869 PDF Release Boundary:** testlerin 11/12'si yeşildi; tek hata filename sanitizer'ın yasak karakterlerden sonra subject sonunda `_` bırakıp build separator'ıyla `__` üretmesiydi. Boundary separator'ları temizleyen düzeltme `80068c44413d5e50b50cb3213d32d88aceb47fb3`. Türkçe harfler korunuyor. Yeni CI sonucu bekleniyor.
+3. **RC-0859→0869 PDF Release Boundary:** testlerin 11/12'si yeşildi; tek hata filename sanitizer'ın yasak karakterlerden sonra subject sonunda `_` bırakıp build separator'ıyla `__` üretmesiydi. Boundary separator'ları temizleyen düzeltme `80068c44413d5e50b50cb3213d32d88aceb47fb3`. Türkçe harfler korunuyor. Sonraki exact-head koşusu SUCCESS verdi.
 
-4. **RC-0360→0371 Storage Runtime:** production entitlement guard doğru `EntitlementService` kullanıyor fakat validator eski comment'in exact `here` kelimesini arıyordu. Validator comment cümlesine değil `FeatureAccessGuard` + `EntitlementService` + local-premium-bypass yasağının semantic tokenlarına bağlandı. Düzeltme `24bacfabaf7beda45a716a70994baec718ad60de`. Yeni CI sonucu bekleniyor.
+4. **RC-0360→0371 Storage Runtime:** production entitlement guard doğru `EntitlementService` kullanıyor fakat validator eski comment'in exact `here` kelimesini arıyordu. Validator comment cümlesine değil `FeatureAccessGuard` + `EntitlementService` + local-premium-bypass yasağının semantic tokenlarına bağlandı. Düzeltme `24bacfabaf7beda45a716a70994baec718ad60de`. Sonraki exact-head koşusu SUCCESS verdi.
 
-5. **RC-0755→0773 Transactional Data Safety:** üç snapshot/recovery testi `Map.unmodifiable` generic inference nedeniyle runtime'da `UnmodifiableMapView<dynamic,dynamic>` cast hatası veriyordu. Nested snapshot tabloları artık her seviyede explicit typed immutable map olarak oluşturuluyor. Düzeltme `20f2d0b0f30f6eccac68517add4e36b5574c7a71`. Yeni CI sonucu bekleniyor.
+5. **RC-0755→0773 Transactional Data Safety:** üç snapshot/recovery testi `Map.unmodifiable` generic inference nedeniyle runtime'da `UnmodifiableMapView<dynamic,dynamic>` cast hatası veriyordu. Nested snapshot tabloları artık her seviyede explicit typed immutable map olarak oluşturuluyor. Düzeltme `20f2d0b0f30f6eccac68517add4e36b5574c7a71`. Sonraki exact-head koşusu SUCCESS verdi.
 
-6. **RC-0166→0184 Numerology Core:** dedicated kırmızı production hesap motorundan değil validator'ın API deklarasyonunu yanlış string biçiminde aramasından geliyordu. Production gerçek API `static NumerologyAlphabet pythagorean(...)` ve `static NumerologyAlphabet chaldean(...)`; validator bunları declaration seviyesinde doğrulayacak şekilde düzeltildi. Life Path/Birthday/name/maturity/karmic debt/personal year-month-day/periods/Türkçe normalizasyon ve ayrı Chaldean tablo kontrolleri korunuyor. Yeni CI sonucu bekleniyor; kanıt gelmeden matrix yükseltilmedi.
+6. **RC-0166→0184 Numerology Core:** dedicated kırmızı production hesap motorundan değil validator'ın API deklarasyonunu yanlış string biçiminde aramasından geliyordu. Production gerçek API `static NumerologyAlphabet pythagorean(...)` ve `static NumerologyAlphabet chaldean(...)`; validator bunları declaration seviyesinde doğrulayacak şekilde düzeltildi. Life Path/Birthday/name/maturity/karmic debt/personal year-month-day/periods/Türkçe normalizasyon ve ayrı Chaldean tablo kontrolleri korunuyor. Sonraki exact-head koşusu SUCCESS verdi.
 
-7. **RC-0230→0247 Personal Growth:** eski `CheckInKind.morning` kırmızısında validator enum üyelerini production'da kullanım ifadesi olarak arıyordu. Yalnız validator düzeltilmedi: production'a `checkInsForDate`, inclusive tarih aralığı özetleri, `GrowthPeriodMetrics`, `GrowthPeriodComparison` ve deterministic tarihsel dönem karşılaştırması eklendi. Regression Ağustos/Eylül dönemlerinde journal/check-in sayıları ile mood/energy ortalama ve delta'larını, sabah/akşam check-in sorgularını ve ters tarih aralığında fail-closed davranışı doğruluyor. Exact RC-0245 historical comparison artık gerçek kod/test yüzeyine sahip. Dedicated run `34398473971` son kontrolde pending; bu yüzden RC-0230→0247 matrix satırları hâlâ yükseltilmedi.
+7. **RC-0230→0247 Personal Growth:** eski `CheckInKind.morning` kırmızısında validator enum üyelerini production'da kullanım ifadesi olarak arıyordu. Yalnız validator düzeltilmedi: production'a `checkInsForDate`, inclusive tarih aralığı özetleri, `GrowthPeriodMetrics`, `GrowthPeriodComparison` ve deterministic tarihsel dönem karşılaştırması eklendi. Regression Ağustos/Eylül dönemlerinde journal/check-in sayıları ile mood/energy ortalama ve delta'larını, sabah/akşam check-in sorgularını ve ters tarih aralığında fail-closed davranışı doğruluyor. Exact RC-0245 historical comparison gerçek kod/test yüzeyine sahip. Matrix kanıt yükseltmesi dedicated exact-head SUCCESS olmadan yapılmayacak.
 
-8. **UI runtime theme contract:** `Design tokens` gate'i core + semantic spacing'i doğru şekilde yeşil doğrularken ayrı runtime-theme validator semantic `paragraph=12` değerini eski `spacingParagraph` ismine zorladığı için UI Contracts kırılıyordu. Validator core ve semantic runtime isimlerini ayrı exact map ile doğrulayacak şekilde düzeltildi (`9a98fd58bafc07cec2ed38c4adca2b407bebbf6b`). Aynı düzeltmede dark palette de canonical JSON'a byte-for-byte bağlandı; denetim gevşetilmedi. Yeni UI Contracts run `34398474034` son kontrolde queued.
+8. **UI runtime theme contract:** `Design tokens` gate'i core + semantic spacing'i doğru şekilde yeşil doğrularken ayrı runtime-theme validator semantic `paragraph=12` değerini eski `spacingParagraph` ismine zorladığı için UI Contracts kırılıyordu. Validator core ve semantic runtime isimlerini ayrı exact map ile doğrulayacak şekilde düzeltildi (`9a98fd58bafc07cec2ed38c4adca2b407bebbf6b`). Aynı düzeltmede dark palette de canonical JSON'a byte-for-byte bağlandı; denetim gevşetilmedi. Sonraki exact-head UI Contracts koşusu SUCCESS verdi.
+
+9. **RC-0158→0165 System Boundaries:** validator RC-0158…RC-0165'in her birini regression dosyasında literal requirement ID ile bağlamakta haklıydı; test ise RC-0161→0164'ü tek toplu başlıkla yazdığı için RC-0162/0163/0164 literal ID'leri yoktu. Davranış veya requirement gevşetilmedi; regression adı dört requirement ID'yi ayrı ayrı taşıyacak şekilde düzeltildi. Commit `f301b23addc6984122137cd85ad98df2ddc7cb75`.
+
+10. **Backup CSV / RC-0774→0848 verified restore:** 150 backup/data/UI testi geçerken tek test, asynchronous `verified.apply(...)` Future'ını beklemeden snapshot/rollback sayaçlarını kontrol ettiği için sahte negatif veriyordu. Exception path'leri `await expectLater(...)` ile gerçekten tamamlanana kadar bekleniyor; invalid-preview async assertion da aynı şekilde düzeltildi. Commit `7435b87f72aa9fe7a125c32339731c79850d3fc0`. Backup structural validator'larının tamamı bu hatadan önce zaten yeşildi.
+
+11. **Professional PDF Contract:** production PDF locale policy `tr`, `tr-*`, `en`, `en-*` değerlerini bilinçli destekliyor ve diğer locale'leri fail-closed reddediyor; eski validator yalnız eski `request.localeTag != 'tr' && request.localeTag != 'en'` source stringini arıyordu. Validator güncel production semantiğine bağlandı; demo/user origin, snapshot parity, A4, xref, page-count, font SHA ve diğer fail-closed kontroller korunuyor. Commit `c478e03f6d733ab2cf186b79605d8ab3d5397750`.
+
+12. **Western Natal Aspects Contract:** production `MajorAspect` altı aspect içeriyor ve `AspectOrbPolicy` her desteklenen aspect için finite orb zorunlu tutuyor. Custom chart-assembly fixture yalnız quincunx orb'unu unutmuştu ve bu nedenle production'ın doğru fail-closed validasyonuna takılıyordu. Fixture'a `MajorAspect.quincunx: 1` eklendi; production kuralı gevşetilmedi. Commit `e9e050661a2c8ed92b1286bb5d15c3bcc6ca6188`.
 
 ### Fiziksel blocker doğrulamaları
 
@@ -51,7 +60,7 @@ Branch: `agent/rc1421-rc1442-release-closure`, stacked PR #16.
 - `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`. RC-1431/1439 ve reference-dependent final UI gate'leri açık.
 - RC-1437 specialist runtime-assets gate yeşil olsa da exact packaged/version/checksum/offline/legal release zincirinin final closure kanıtı ayrıca gereklidir.
 - RC-1442 exact clean-checkout artifact, tested commit SHA ve artifact SHA eşleşmesi tüm 1.442 RC DONE/unblocked olmadan kapanamaz.
-- Çok sayıda eski calculation/Vedic workflow yeni push'larda concurrency nedeniyle `cancelled` görünüyor; cancellation SUCCESS sayılmıyor ve final closure öncesi exact-head yeşil kanıt gerektiriyor.
+- Çok sayıda calculation/Vedic workflow art arda branch push'ları sırasında concurrency nedeniyle `cancelled` görünüyor; cancellation SUCCESS sayılmıyor. Son checkpoint push'undan sonra aynı exact HEAD korunarak bu workflow'ların fiziksel SUCCESS/failure sonucu alınmalıdır.
 
 ## Açık kritik blocker'lar
 
@@ -59,8 +68,8 @@ Exact AKİLES provenance; independent authoritative calculation goldens; Panchan
 
 ## Sonraki devam noktası
 
-1. PR #16 güncel HEAD'inde RC-0166→0184 Numerology, RC-0230→0247 Personal Growth ve UI Contracts yeniden koşularını fiziksel doğrula; kırmızı kalan gerçek kök nedeni aynı branch'te düzelt.
-2. Flutter Quality, Requirements Contract, RC-0859→0869, RC-0360→0371 ve RC-0755→0773 yeni exact-head koşularını doğrula ve yalnız yeşil kanıtı lifecycle state'e taşı.
+1. Bu checkpoint'ten sonra PR #16 exact HEAD'ini değiştirmeden RC-0158→0165, Backup CSV/RC-0774→0848, Professional PDF ve Western Natal Aspects yeniden koşularını fiziksel doğrula; kırmızı kalan gerçek kök nedeni aynı branch'te düzelt.
+2. Flutter Quality ve kalan pending exact-head gate'lerini doğrula; yalnız yeşil requirement-specific kanıtı lifecycle state'e taşı.
 3. RC-1362→1374 airplane-mode release/device koşusunun hardware-accelerated sonucunu doğrula ve policy-level launch'tan gerçek production capability instrumentation'a genişlet.
 4. Günlük mesaj strict release audit, RC-1436 independent accuracy goldens, RC-1439 physical reference images ve final packaged dataset/license zincirlerini bağımsız ilerlet.
 5. Cancelled Vedic/calculation workflow'larını SUCCESS kabul etme; final exact-head üzerinde zorunlu kritik workflow setini yeniden koşturup fiziksel sonuç üret.
