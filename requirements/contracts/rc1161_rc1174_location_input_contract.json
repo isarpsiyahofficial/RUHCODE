@@ -1,0 +1,27 @@
+{
+  "range": {"from": "RC-1161", "to": "RC-1174"},
+  "requirements": {
+    "RC-1161": ["TR and EN date/time presentation is covered by regression evidence"],
+    "RC-1162": ["unknown birth time is an explicit state and must not synthesize a clock time"],
+    "RC-1163": ["city search uses an indexed runtime path"],
+    "RC-1164": ["100000-record search fixture must complete within the bounded regression budget"],
+    "RC-1165": ["Turkish character normalization is deterministic"],
+    "RC-1166": ["Istanbul and İstanbul resolve to the same canonical city"],
+    "RC-1167": ["city aliases are searchable without replacing canonical display names"],
+    "RC-1168": ["same-name cities expose region and country disambiguation"],
+    "RC-1169": ["same-name Springfield records remain separate stable identities"],
+    "RC-1170": ["recent locations are bounded and stable-id based"],
+    "RC-1171": ["GPS is not required for birth-place selection"],
+    "RC-1172": ["manual city selection remains available"],
+    "RC-1173": ["GPS denial offers manual city fallback"],
+    "RC-1174": ["permission denial does not disable core manual location input"]
+  },
+  "evidence": [
+    "lib/src/data/location/city_catalog.dart",
+    "lib/src/data/location/location_input_policy.dart",
+    "test/data/city_catalog_test.dart",
+    "test/data/location_input_rc1161_rc1174_test.dart",
+    "requirements/data_manifests/cities.json"
+  ],
+  "promotionRule": "Static contract plus Flutter regressions may promote only to IMPLEMENTED+blocked. Production form/widget integration, persisted recent locations, bundled-catalog device performance and permission integration evidence remain required before VERIFIED/DONE."
+}
