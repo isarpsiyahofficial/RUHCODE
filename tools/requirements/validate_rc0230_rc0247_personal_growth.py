@@ -30,8 +30,9 @@ for n in range(230, 248):
 required_prod = [
     'PersonalJournalEntry', 'PersonalGoal', 'GoalTask', 'HabitRecord',
     'ReflectionEntry', 'LifeWheelScore', 'PersonalValue', 'MoodEnergyEntry',
-    'DailyCheckIn', 'CheckInKind.morning', 'CheckInKind.evening', 'PersonalNote',
-    'AstrologyContextLink', 'GrowthSnapshot', 'journalForDate', 'moodEnergyForDate'
+    'DailyCheckIn', 'enum CheckInKind { morning, evening }', 'PersonalNote',
+    'AstrologyContextLink', 'GrowthSnapshot', 'journalForDate', 'moodEnergyForDate',
+    'checkInsForDate', 'GrowthPeriodMetrics', 'compareHistoricalPeriods'
 ]
 for token in required_prod:
     if token not in prod: fail(f'production evidence missing token {token}')
@@ -45,5 +46,9 @@ if 'works without astrology context' not in test:
     fail('regression does not prove astrology-independent usage')
 if 'duplicate task ids fail closed' not in test:
     fail('goal-subtask fail-closed regression missing')
+if 'historical periods compare retained mood energy and activity deterministically' not in test:
+    fail('RC-0245 historical-period comparison regression missing')
+if "kind: CheckInKind.morning" not in test or "kind: CheckInKind.evening" not in test:
+    fail('RC-0241/0242 morning/evening check-in regression missing')
 
 print('OK: RC-0230..RC-0247 personal growth contract/evidence validated')
