@@ -28,7 +28,7 @@ try:
         'static const TextStyle caption', 'paragraphSpacing', 'sectionSpacing',
         'cardPadding', 'screenEdgePadding', 'pdfEdgePadding', 'chartLegendGap',
         'chartLegendItemGap', 'chartLabelMinimumFontSize', 'darkBackground',
-        'darkTextPrimary', 'darkTextMuted', 'RuhAppTheme.dark()',
+        'darkTextPrimary', 'darkTextMuted', 'static ThemeData dark()',
     ):
         assert token in dart, f'missing production design-system token: {token}'
 
