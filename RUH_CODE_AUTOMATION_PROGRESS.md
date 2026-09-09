@@ -6,66 +6,67 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 ## Canonical durum özeti
 
-- Erken bloklardaki mevcut status/promotion zincirleri korunuyor; RC-0062/0082/0083/0086/0087, exact AKİLES provenance ve global release blocker'ları açık.
+- Erken bloklardaki status/promotion zincirleri korunuyor; RC-0062/0082/0083/0086/0087, exact AKİLES provenance ve global release blocker'ları açık.
 - RC-0271→0305 = TESTED + blocked=YES (`18419e674b4603fecdb050a99e4f268ddc3cb95f`).
 - RC-0306→0323 = TESTED + blocked=YES (`cee7256c9166b511c61d4cace9dfa053aa27b4bd`).
 - RC-0324→0950 = implementation/matrix zincirleri mevcut; production-scale golden, rendered UI/device, PDF/backup ve diğer global blocker'lar nedeniyle DONE değil.
 - RC-0951→0964 = IMPLEMENTED + blocked=YES; physical matrix promotion `5f08942462a0b3784725b9fd7e65de0cc22eb50e`.
-- RC-0965→0994 = requirement/test traceability audit ve CI hattı mevcut; 1.442 RC'nin tamamı doğrudan evidence ile kapanmadığı için release-mode fail-closed.
+- RC-0965→0994 = requirement/test traceability CI mevcut; 1.442 RC doğrudan evidence ile kapanmadığı için release-mode fail-closed.
 - RC-0995→1003 = authoritative golden corpus sözleşmesi var; exact AKİLES ve bağımsız production golden değerleri eksik olduğu için promotion yok.
 - RC-1004→1039 = IMPLEMENTED + blocked=YES; promotion `fb71d1b9703f35a4dec499e7d7de33151d57a75e`.
 - RC-1040→1058 = IMPLEMENTED + blocked=YES; promotion `d96a3b5c1821d81739b491757795cfced5ba040a`.
-- RC-1059→1084 = IMPLEMENTED + blocked=YES; physical promotion `ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`.
-- RC-1085→1104 = IMPLEMENTED + blocked=YES; physical promotion `a9c4b832269328935dbf6d4753f603d17fa5b1f7`.
-- RC-1105→1130 = offline startup/dependency governance zinciri mevcut; `pubspec.lock` fiziksel olarak `09cf4da44c63c8031a149a7c555e37362ef194aa` ile oluştu. EOP/DE440s/package license/device/exact-release blocker'ları açık.
-- RC-1131→1144 = feature-branch/PR/release governance PR #1'de. Önceki release APK/minified build işi yeşildi; governance regression çağrısındaki Python path hatası `8b71601faaa6cc2d82ef990b18ce0245588d2de8` ile düzeltildi. Yeni dedicated run `34301183122` checkpoint anında queued. Repository-level branch protection/ruleset, independent review, physical/device minified parity ve exact final artifact kanıtı olmadan VERIFIED/DONE yok.
-- RC-1145→1160 = explicit Android API floor + API21/API37 emulator launch gate + production UI compatibility matrisi stacked PR #2'de. UI viewport/font/chart/table/keyboard physical evidence tamamlanmadan VERIFIED/DONE yok.
-- RC-1161→1174 = indexed offline city search + TR/EN birth date/time policy + explicit unknown-time state + stable-id recent locations + GPS-denial manual fallback PR #3'te production/regression/contract/CI olarak uygulandı. Dedicated run `34301408373` checkpoint anında queued; lifecycle yükseltilmedi.
-- RC-1175→1196 = permission isolation + local export/storage privacy + encryption key-origin/app-lock policy + PII-safe production logging production/regression/contract/CI olarak stacked branch'te uygulandı. Real platform adapter/device/release-binary kanıtları eksik olduğu için DONE değil.
+- RC-1059→1084 = IMPLEMENTED + blocked=YES; promotion `ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`.
+- RC-1085→1104 = IMPLEMENTED + blocked=YES; promotion `a9c4b832269328935dbf6d4753f603d17fa5b1f7`.
+- RC-1105→1130 = offline startup/dependency governance zinciri mevcut; `pubspec.lock` fiziksel olarak `09cf4da44c63c8031a149a7c555e37362ef194aa` ile oluştu. EOP/DE440s/package-license/device/exact-release blocker'ları açık.
+- RC-1131→1144 = PR #1 release-governance hattında. Regression invocation düzeltmesi `8b71601faaa6cc2d82ef990b18ce0245588d2de8`; repository-level branch protection/ruleset, independent review, physical/device minified parity ve exact final artifact olmadan VERIFIED/DONE yok.
+- RC-1145→1160 = PR #2 Android compatibility hattında. API21/API37 launch + production UI viewport/font/chart/table/keyboard fiziksel kanıtları tamamlanmadan VERIFIED/DONE yok.
+- RC-1161→1174 = PR #3 indexed city/birth-location input hattında. Dedicated workflow yeni stacked head üzerinde daha önce fiziksel `success` sonucu verdi; production picker/form/permission wiring ve device performance olmadan VERIFIED/DONE yok.
+- RC-1175→1196 = PR #4 security/privacy hattında. Dedicated workflow yeni head üzerinde yeniden queued; real secure-storage/keystore/biometric/encrypted persistence/release-binary log kanıtları eksik.
+- RC-1197→1205 = PR #5 data deletion/restore hattında IMPLEMENTATION+regression+contract+CI oluşturuldu; dedicated run yeni stacked head üzerinde queued. Production transaction/UI confirmation/backup tombstone integration olmadan VERIFIED/DONE yok.
+- RC-1206→1221 = PR #6 professional local search/pagination hattında IMPLEMENTATION+1k/10k regression+contract+CI oluşturuldu; dedicated run `34309365775` checkpoint anında queued. Production SQLite/FTS, device cold-start/memory ve gerçek UI pagination olmadan VERIFIED/DONE yok.
 
-## Son çalıştırmada yapılan gerçek geliştirme
+## Bu çalıştırmada yapılan gerçek geliştirme
 
-### RC-1131→1144 governance CI root-cause düzeltmesi
+### RC-1197→1205 — veri silme / cascade / archive / restore
 
-PR #1 workflow run `34293326532` incelendi. Static release-governance validator başarılıydı; minified/obfuscated release APK build, debug artifact reject ve artifact digest adımları da başarılıydı. Kırmızı sonuç yalnız `python -m unittest test/governance/test_rc1131_rc1144_release_governance.py -v` çağrısının `test.governance` paketini import etmeye çalışıp `ModuleNotFoundError` üretmesinden geliyordu. Workflow test çağrısı doğrudan dosya execution biçimine çevrildi: `python test/governance/test_rc1131_rc1144_release_governance.py -v` (`8b71601faaa6cc2d82ef990b18ce0245588d2de8`). Yeni dedicated run `34301183122` oluştu ancak checkpoint anında queued; promotion/DONE yok.
+Binding şartname bu blokta tüm veriyi tek işlemle silme, tek müşteriyi silme, bağlı kayıtları önceden gösterme, başka müşterileri etkilememe, açık cascade kuralları, not davranışı, profil silip rapor arşivleme, silme regression'ı ve restore sırasında silinmiş kayıtların kullanıcı seçimine göre ele alınmasını ister.
 
-### RC-1161→1174 date/time + city search + manual location
+`lib/src/data/data_deletion_policy.dart` eklendi. `DeleteAllPlan` tüm uygulama verisini silmek için tek explicit destructive operation sınırı sağlar. `ClientDeletionPreview` hedef müşterinin bağlı kayıtlarını mutation öncesi sayılabilir şekilde listeler. `ClientDeletionPlan` stable `clientId` ile yalnız hedef müşterinin profile/consultation/calculation/note/journal/report kayıtlarını kapsar; ilişkisiz müşterilerin kayıtlarını plana alamaz.
 
-Binding şartname RC-1161→1174 TR/EN date/time picker davranışı, açık bilinmeyen doğum saati seçeneği, yaklaşık 100.000 kayıt üzerinde hızlı şehir araması, Türkçe karakter/`Istanbul`↔`İstanbul` normalizasyonu, alias, aynı isimli şehir disambiguation, recent locations, GPS zorunluluğunun kaldırılması ve permission-denied manual fallback ister.
+`ClientDeletionMode.archiveReports` ile müşteri/profile ilişkili kayıtları silinirken danışmanlık raporları archive set'ine ayrılabilir. Delete ve archive set'leri kesişirse plan fail-closed hata verir. `DeletionTombstoneLedger` backup'tan restore sırasında daha sonra silinmiş kayıtları varsayılan olarak geri getirmez; `RestoreDeletedRecordPolicy.restoreExplicitly` seçilirse kullanıcı açık tercihiyle geri alınabilir.
 
-Mevcut `CityCatalog.search()` her sorguda tüm kayıtları lineer geziyordu. Bundled city manifesti 200.000+ kayıt ölçeğini doğrulasa da runtime arama path'i bu ölçeğe özel indeksli değildi. `lib/src/data/location/city_catalog.dart` artık normalized candidate'ları bir kez hazırlar ve üç-karakter prefix bucket index'i üzerinden >=3 karakter sorguları daraltır (`0dc2f1f52bc9175a9f9f4d7c818dd4753ed162f0`). Canonical display, aliases, country/admin region ve stable city identity korunur.
+Regression: `test/data/data_deletion_rc1197_rc1205_test.dart`. Exact contract: `requirements/contracts/rc1197_rc1205_data_deletion_contract.json`. Fail-closed validator: `tools/requirements/validate_rc1197_rc1205_data_deletion.py`. Dedicated matrix gate: `.github/workflows/rc1197-rc1205-data-deletion.yml`. PR #5 açıldı.
 
-`lib/src/data/location/location_input_policy.dart` eklendi (`eef1bb01c3cec5c1b9408d9a52bb11b393664aeb`). `BirthTimePrecision` unknown/approximate/exact ayrıdır; unknown durumda saat/dakika null kalmak zorundadır ve midnight gibi sentetik saat üretilemez. TR/EN date/time sunumu ayrı testlenebilir. `RecentLocationStore` stable city ID bazlı bounded MRU davranışı sağlar. `LocationInputPolicy` birth place için GPS'i zorunlu kılmaz, manual selection'ı her permission state'te açık tutar ve denied/permanentlyDenied durumunda TR/EN manual fallback mesajı üretir.
+### RC-1206→1221 — profesyonel yerel arama / pagination / scale
 
-Regression `test/data/location_input_rc1161_rc1174_test.dart` (`04ec818e6984d07c343c74b81e288d0706563041`, compile-safe fix `2ffc2e58e6668d458be16770dff7b3459d45345f`) TR/EN tarih/unknown-time, approximate/exact validation, 100.001 kayıt fixture üzerinde indexed `istan` araması, `Istanbul`/`İstanbul`/`Constantinople`, iki ayrı Springfield disambiguation, bounded recent locations ve GPS denial manual fallback davranışlarını kapsar.
+Binding şartname müşteri adına, etikete, tarihe ve numeroloji sonucuna göre arama; Saturn-return benzeri profesyonel etiketler; sunucusuz local index; binlerce kayıt performansı; 1.000 müşteri ve mümkün olduğunca 10.000 profil stress; tüm müşterileri başlangıçta RAM'e yüklememe ve pagination/lazy loading ister.
 
-Exact contract `b610a36940924f856b341d9e9a4a7ba277ebe17c`; fail-closed validator `8b3ef279d5e8e4b0cfd05bf6bf734bf9957255d7`; dedicated CI/matrix gate `7d3b37633275df634296dd4d45e80a30e23b0560`; progress checkpoint `d8ae13e268b33124230d82fba7dbf1ecef63cfae`. PR #3 açıldı. Dedicated run `34301408373` queued olduğu için matrix/lifecycle elle yükseltilmedi.
+`lib/src/data/professional_search.dart` eklendi. `ClientSearchDocument` name/tag/date/numerology alanlarını ayrı taşır; TR karakter normalizasyonu arama anahtarına uygulanır. `LocalSearchPageSource` açıkça local paging contract'ıdır; `ProfessionalSearchCoordinator` `requiresServer=true` kaynakları reddeder ve tek isteği 200 kaydın üstüne çıkaramaz.
 
-### RC-1175→1196 permission / storage / encryption / privacy logging
+`InMemoryIndexedSearchSource` deterministic local fixture/adapter olarak normalized 3-char name-prefix bucket index kullanır. Production SQLite/FTS adapter aynı `LocalSearchPageSource` contract'ını uygulayabilir. Search sonuçları offset+limit+hasMore ile sayfalanır; coordinator startup'ta `loadAll` benzeri bir çağrı sunmaz.
 
-`lib/src/security/privacy_and_storage_policy.dart` eklendi (`78bb89b3df05ece7b21d7144d3cacbb91da3fa35`). Notification izni reddi çekirdek kullanım kararından izole; manual location permission reddinde kullanılabilir kalır. Export üçüncü tarafa ancak kullanıcı açıkça başlatır ve local artifact hazırsa çıkabilir; remote upload ve arbitrary root-folder write çekirdek gereksinim değildir.
+Regression `test/data/professional_search_rc1206_rc1221_test.dart` name/tag/date/numerology aramasını, server-required source reddini, 1.000 kayıt bounded-page senaryosunu ve 10.000 kayıt stress fixture'ını kapsar. Exact contract `requirements/contracts/rc1206_rc1221_professional_search_contract.json`; validator `tools/requirements/validate_rc1206_rc1221_professional_search.py`; dedicated CI `.github/workflows/rc1206-rc1221-professional-search.yml`. İlk compile-safety düzeltmesi bounded `int.clamp` sonucuna explicit int cast ekledi (`e7a5c668135e1421031e56677ddd50a41d440b8a`). PR #6 açıldı.
 
-`EncryptionPolicy` profesyonel veri için local encryption sınırını, `platformKeystore` veya user-derived key origin'i ve fixed application string key yasağını açıklar; server round-trip gerektirmez. `AppLockPolicy` PIN/biometric yöntemlerini ayrı tutar ve biometric için secure PIN fallback'i fail-closed zorunlu kılar. Export kilidi atlayamaz; başarılı unlock sonrası çalışabilir.
+## CI / doğrulama durumu
 
-`ProductionLogPolicy` production log payload'larında customer/client name, full birth date, consultation notes ve birth-place gibi kişisel alanları fail-closed reddeder. `PrivacySafeLogEvent` yalnız anonim technical code + UTC timestamp + opsiyonel component taşır. Core kullanım için analytics/telemetry zorunlu değildir ve release debug logs policy seviyesinde kapalıdır.
-
-Regression `9db535fb1a313985dc6d4f3370fbb39b8aaeb10d`; exact contract `3cc3e382cb7fae49a6dc949752e17524645212ab`; fail-closed validator `8a27d98996a7835ee1162081d378e8eff3ad684e`; dedicated CI/matrix gate `d866c6ab7e87cc4f606d1fa6debb4a36a0dbd9f4`.
-
-Bu blok real Android/iOS secure storage/keystore/biometric adapter, encrypted SQLite migration, platform modern-storage integration ve release binary/log inspection olmadan TESTED/VERIFIED/DONE olmayacak.
+- Yeni stacked head `84ff6758c07463c6298859094379a8ccd5b67c17` üzerinde `RC1197-RC1205 Data Deletion` run `34309365556` queued.
+- Aynı head üzerinde `RC1206-RC1221 Professional Search` run `34309365775` queued.
+- `RC1175-RC1196 Security Privacy` run `34309365672` queued.
+- Repository genelinde eski kırmızı workflow'lar hâlâ mevcut; kritik kırmızı kapılar kapanmadan FINAL verilemez.
+- Yeni RC blokları CI green/matrix promotion olmadan elle IMPLEMENTED/TESTED/VERIFIED/DONE yapılmadı.
 
 ## Açık blocker'lar
 
-Authoritative independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion; authoritative Dasha/Varga/Gochara ve BaZi providers; historical timezone/DST/polar goldens; production localization catalog + rendered TR/EN UI/PDF/share cards; interpretation/editorial QA; EOP/DE440s exact redistribution/license evidence; dependency license approvals; encrypted persistence/key management adapter; production migration corpus; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode physical device proof; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact açık.
+Authoritative independent production golden/reference corpora; exact AKİLES provenance; Panchanga/Vedic promotion; authoritative Dasha/Varga/Gochara ve BaZi providers; historical timezone/DST/polar goldens; production localization catalog + rendered TR/EN UI/PDF/share cards; interpretation/editorial QA; EOP/DE440s redistribution/license evidence; dependency license approvals; encrypted persistence/key management adapter; production migration corpus; tenant/device isolation; real ad/rewarded/PRO verifier; notification scheduler; offline/airplane-mode physical device proof; security/accessibility/performance; clean-checkout/lifecycle ve exact release artifact açık.
 
-RC-1132/1135/1136 için repository-level branch protection/ruleset enforcement kanıtı ayrıca gereklidir. RC-1143/1144 için compile-only minified build yeterli değildir; behavior parity/reflection path'leri integration/device seviyesinde doğrulanmalıdır. RC-1148→1160 için compatibility matrix tanımı tek başına yeterli değildir; production UI üzerinde viewport/font/chart/table/keyboard evidence gerekir. RC-1161→1174 için policy/unit testler production picker/form/permission wiring kanıtının yerine geçmez. RC-1175→1196 için policy/unit testler gerçek secure-storage/encryption/biometric/platform-storage ve release-binary log kanıtının yerine geçmez.
+RC-1132/1135/1136 repository-level branch-protection/ruleset enforcement; RC-1143/1144 minified behavior parity; RC-1148→1160 production UI device evidence; RC-1161→1174 real picker/form/permission wiring; RC-1175→1196 real secure-storage/encryption/biometric/platform-storage; RC-1197→1205 persistence transaction + UI preview + tombstone backup serialization; RC-1206→1221 SQLite/FTS + measured startup/memory + real UI paging ayrıca blocker.
 
 ## Sonraki devam noktası
 
-1. PR #1 governance fix sonrası run `34301183122` sonucunu fiziksel doğrula; kırmızıysa aynı branch'te root-cause düzelt.
-2. PR #2 RC-1145→1160 API21/API37 emulator + production UI gate sonucunu fiziksel doğrula ve kırmızıysa düzelt.
-3. PR #3 run `34301408373` sonucunu fiziksel doğrula; indexed search/Flutter compile kırmızıysa aynı branch'te düzelt. Green olsa bile yalnız IMPLEMENTED+blocked promotion yap.
-4. RC-1175→1196 stacked CI sonucunu fiziksel doğrula; sonra binding sırada RC-1197+ tam veri silme / tek müşteri silme / cascade/archive / restore semantics hattını ilerlet.
-5. RC-0995→1003 exact AKİLES provenance/independent goldens ve RC-0965→0994 traceability açıklarını paralel azalt.
-6. RC-0001→RC-1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL deme.
+1. Runs `34309365556`, `34309365775` ve `34309365672` sonuçlarını fiziksel doğrula; kırmızıysa aynı stacked branch'te root-cause düzelt.
+2. Binding sırada RC-1222+ cache anahtarı / engineVersion invalidation / wrong-client cache isolation / cache-rebuild / daily-data expiry hattını gerçek production+regression olarak ilerlet.
+3. PR #1/#2 governance ve Android compatibility kırmızı/pending kapılarını ayrıca azalt; branch-protection admin erişimi yoksa blocker'ı koru.
+4. RC-0995→1003 exact AKİLES provenance/independent goldens ve RC-0965→0994 traceability açıklarını paralel azalt.
+5. RC-0001→RC-1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL deme.
 
 **FINAL: NO.**
