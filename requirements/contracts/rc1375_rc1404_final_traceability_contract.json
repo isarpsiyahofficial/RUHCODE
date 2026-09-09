@@ -1,0 +1,45 @@
+{
+  "range": "RC-1375..RC-1404",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-1375": "Final closure is not equivalent to merely coding a subset of requirements.",
+    "RC-1376": "All product and quality requirements live in one traceability matrix.",
+    "RC-1377": "Every requirement has implementation-state control.",
+    "RC-1378": "Every requirement has test-state control.",
+    "RC-1379": "TR completion is checked where applicable.",
+    "RC-1380": "EN completion is checked where applicable.",
+    "RC-1381": "Offline behavior is checked where applicable.",
+    "RC-1382": "Free behavior is checked where applicable.",
+    "RC-1383": "PRO behavior is checked where applicable.",
+    "RC-1384": "Backup round-trip evidence is checked where applicable.",
+    "RC-1385": "PDF output evidence is checked where applicable.",
+    "RC-1386": "Calculation reference evidence is checked where applicable.",
+    "RC-1387": "UI real-device evidence is checked where applicable.",
+    "RC-1388": "Regression-test evidence is checked.",
+    "RC-1389": "A requirement cannot close until every applicable mandatory dimension is green.",
+    "RC-1390": "Traceability is fail-closed against assumed completion.",
+    "RC-1391": "Final CI checks exact requirement count.",
+    "RC-1392": "Deleting a binding requirement breaks CI through count/order/source binding.",
+    "RC-1393": "Duplicate requirement IDs break CI.",
+    "RC-1394": "Removing required test evidence breaks final traceability.",
+    "RC-1395": "Missing TR evidence breaks applicable final traceability.",
+    "RC-1396": "Missing EN evidence breaks applicable final traceability.",
+    "RC-1397": "Calculation golden/reference changes cannot silently pass final release.",
+    "RC-1398": "Broken backup round-trip blocks final release.",
+    "RC-1399": "Broken/unreadable PDF evidence blocks final release.",
+    "RC-1400": "Broken offline smoke evidence blocks final release.",
+    "RC-1401": "Broken PRO entitlement evidence blocks final release.",
+    "RC-1402": "Broken Free entitlement evidence blocks final release.",
+    "RC-1403": "The release artifact must be produced from the exact commit that passed gates.",
+    "RC-1404": "A later manual commit cannot reuse the same final identity without exact commit/artifact revalidation."
+  },
+  "productionEvidence": [
+    "requirements/requirement_state.csv",
+    "tools/requirements/validate_requirement_matrix.py",
+    "tools/release/validate_final_traceability.py"
+  ],
+  "testEvidence": [
+    ".github/workflows/rc1375-rc1404-final-traceability.yml"
+  ],
+  "lifecycleRule": "IMPLEMENTED may be recorded after the structural and fail-closed traceability gates pass. VERIFIED/DONE requires all RC-0001..RC-1442 DONE/unblocked plus an exact final release manifest whose tested commit SHA, artifact-producing commit SHA and artifact SHA-256 match."
+}
