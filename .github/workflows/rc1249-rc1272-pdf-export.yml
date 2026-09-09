@@ -1,0 +1,90 @@
+name: RC1249-RC1272 PDF Export Governance
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/pdf/pdf_export_governance.dart'
+      - 'test/pdf/pdf_export_governance_rc1249_rc1272_test.dart'
+      - 'test/pdf/pdf_export_concurrency_rc1262_test.dart'
+      - 'test/pdf/pdf_release_fixture_rc1272_test.dart'
+      - 'test/fixtures/pdf/rc1272_free_sample_fixture.json'
+      - 'requirements/contracts/rc1249_rc1272_pdf_export_contract.json'
+      - 'tools/requirements/validate_rc1249_rc1272_pdf_export.py'
+      - '.github/workflows/rc1249-rc1272-pdf-export.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1249-rc1272-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate exact requirement contract
+        run: python tools/requirements/validate_rc1249_rc1272_pdf_export.py
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - name: PDF export governance regression
+        run: |
+          flutter test test/pdf/pdf_export_governance_rc1249_rc1272_test.dart
+          flutter test test/pdf/pdf_export_concurrency_rc1262_test.dart
+          flutter test test/pdf/pdf_release_fixture_rc1272_test.dart
+      - name: Keep upstream PDF and entitlement gates green
+        run: |
+          python tools/requirements/validate_rc0951_rc0964_pdf_validation.py
+          python tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py
+          flutter test test/pdf/pdf_release_validation_rc0951_rc0964_test.dart
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1249_rc1272_pdf_export.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys())
+          targets={f'RC-{i:04d}' for i in range(1249,1273)}
+          links='lib/src/pdf/pdf_export_governance.dart|test/pdf/pdf_export_governance_rc1249_rc1272_test.dart|test/pdf/pdf_export_concurrency_rc1262_test.dart|test/pdf/pdf_release_fixture_rc1272_test.dart|test/fixtures/pdf/rc1272_free_sample_fixture.json|requirements/contracts/rc1249_rc1272_pdf_export_contract.json|tools/requirements/validate_rc1249_rc1272_pdf_export.py|.github/workflows/rc1249-rc1272-pdf-export.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links
+            r['blocked']='YES'
+            r['blocker']='Production renderer/UI wiring, Android scoped-storage/share verification, process-kill lifecycle proof and exact release artifact remain required before VERIFIED/DONE.'
+            r['notes']='Free-demo/PRO authorization, data isolation, cancellation, temp cleanup, bounded/keyed concurrency, scoped paths, deterministic collisions/content order and a real generated sample-PDF fixture have dedicated regression coverage.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1249_RC1272_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1249-rc1272): record PDF export IMPLEMENTED'
+          git push origin HEAD:main
