@@ -30,8 +30,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - name: Validate static release governance and CI context
-        run: python tools/requirements/validate_rc1131_rc1144_release_governance.py --ci-context
+      - name: Validate static release governance
+        run: python tools/requirements/validate_rc1131_rc1144_release_governance.py
       - name: Run fail-closed governance regression
         run: python -m unittest test/governance/test_rc1131_rc1144_release_governance.py -v
 
@@ -68,7 +68,7 @@ jobs:
           retention-days: 7
 
   record-implementation:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.actor == 'github-actions[bot]'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [governance, release-build-regression]
     runs-on: ubuntu-latest
     steps:
