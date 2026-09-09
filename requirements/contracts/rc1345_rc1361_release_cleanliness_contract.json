@@ -1,0 +1,31 @@
+{
+  "range": "RC-1345..RC-1361",
+  "bindingSource": "RUH_CODE_MASTER_SARTNAME.md",
+  "requirements": {
+    "RC-1345": "Skipped critical tests forbid final release.",
+    "RC-1346": "Mandatory requirements with TODO state forbid final release.",
+    "RC-1347": "Production screens may not use fake/mock calculation results.",
+    "RC-1348": "Placeholder interpretations may not remain in production.",
+    "RC-1349": "Lorem ipsum may not remain in production.",
+    "RC-1350": "Mandatory features may not rely on coming-soon placeholders at final release.",
+    "RC-1351": "Unused hidden debug menus may not remain in production.",
+    "RC-1352": "Test customer records may not be embedded in production code/APK inputs.",
+    "RC-1353": "Demo identities must remain separate from real-user production paths.",
+    "RC-1354": "Debug API endpoints may not remain in production.",
+    "RC-1355": "Release audit checks for accidental server dependencies.",
+    "RC-1356": "Direct application network calls are inventoried.",
+    "RC-1357": "Every inventoried network call has an explicit purpose and reason.",
+    "RC-1358": "Unknown or inventoried calculation network calls block release.",
+    "RC-1359": "PDF generation network calls block release.",
+    "RC-1360": "CSV export/restore network calls block release.",
+    "RC-1361": "Opening a local user profile may not require a network call."
+  },
+  "productionEvidence": [
+    "governance/network_call_inventory.json",
+    "tools/release/audit_production_cleanliness.py"
+  ],
+  "testEvidence": [
+    ".github/workflows/rc1345-rc1361-release-cleanliness.yml"
+  ],
+  "lifecycleRule": "Static source/inventory audit is necessary but not sufficient for DONE. Exact release binary inspection and physical airplane-mode lifecycle evidence remain separate required gates."
+}
