@@ -34,7 +34,9 @@ android {
 
     defaultConfig {
         applicationId = "com.ruhcode.ruh_code"
-        minSdk = flutter.minSdkVersion
+        // Binding RC-1145: keep the supported floor explicit instead of silently
+        // inheriting a value that can move when the Flutter SDK is upgraded.
+        minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

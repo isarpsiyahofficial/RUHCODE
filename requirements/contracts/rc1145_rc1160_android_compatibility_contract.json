@@ -1,0 +1,27 @@
+{
+  "range": {"from": "RC-1145", "to": "RC-1160"},
+  "requirements": {
+    "RC-1145": ["minimum Android support is explicitly declared and testable"],
+    "RC-1146": ["app launches on minimum supported Android API"],
+    "RC-1147": ["app launches on current stable Android API"],
+    "RC-1148": ["multiple screen sizes are included in the production UI evidence matrix"],
+    "RC-1149": ["small phone viewport is covered"],
+    "RC-1150": ["large phone viewport is covered"],
+    "RC-1151": ["tablet viewport is covered"],
+    "RC-1152": ["landscape viewport is covered"],
+    "RC-1153": ["large system text scaling is covered"],
+    "RC-1154": ["font scaling must not hide primary actions"],
+    "RC-1155": ["long Turkish strings require overflow evidence"],
+    "RC-1156": ["long English strings require overflow evidence"],
+    "RC-1157": ["chart screens remain usable on small viewports"],
+    "RC-1158": ["professional tables use controlled horizontal scrolling when necessary"],
+    "RC-1159": ["critical information is not available only outside the visible/scrollable flow"],
+    "RC-1160": ["forms remain usable when the software keyboard is visible"]
+  },
+  "evidence": [
+    "android/app/build.gradle.kts",
+    "governance/android_compatibility_policy.json",
+    ".github/workflows/rc1145-rc1160-android-compatibility.yml"
+  ],
+  "promotionRule": "API launch jobs and production UI regressions must pass. Static matrix declaration alone is not VERIFIED/DONE evidence for viewport, font, chart, table, or keyboard behavior."
+}
