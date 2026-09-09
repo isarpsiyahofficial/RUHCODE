@@ -40,6 +40,9 @@ final class CityCatalog {
   CityCatalog(Iterable<CityRecord> records)
       : _records = List<CityRecord>.unmodifiable(records) {
     final ids = <String>{};
+    final normalizedCandidates = <String, List<String>>{};
+    final prefixBuckets = <String, List<CityRecord>>{};
+
     for (final record in _records) {
       if (record.id.trim().isEmpty) {
         throw ArgumentError('City id must not be empty.');
@@ -56,10 +59,38 @@ final class CityCatalog {
       if (record.ianaTimeZoneId.trim().isEmpty) {
         throw ArgumentError('IANA timezone id must not be empty.');
       }
+
+      final candidates = <String>{
+        record.name,
+        record.countryName,
+        record.countryCode,
+        if (record.adminArea != null) record.adminArea!,
+        ...record.aliases,
+        record.disambiguationLabel,
+      }.map(normalizeCitySearchText).where((value) => value.isNotEmpty).toList(growable: false);
+      normalizedCandidates[record.id] = candidates;
+
+      final bucketKeys = <String>{};
+      for (final candidate in candidates) {
+        for (final token in candidate.split(' ')) {
+          if (token.length >= 3) bucketKeys.add(token.substring(0, 3));
+        }
+        if (candidate.length >= 3) bucketKeys.add(candidate.substring(0, 3));
+      }
+      for (final key in bucketKeys) {
+        (prefixBuckets[key] ??= <CityRecord>[]).add(record);
+      }
     }
+
+    _normalizedCandidates = Map<String, List<String>>.unmodifiable(normalizedCandidates);
+    _prefixBuckets = Map<String, List<CityRecord>>.unmodifiable(
+      prefixBuckets.map((key, value) => MapEntry(key, List<CityRecord>.unmodifiable(value))),
+    );
   }
 
   final List<CityRecord> _records;
+  late final Map<String, List<String>> _normalizedCandidates;
+  late final Map<String, List<CityRecord>> _prefixBuckets;
 
   int get length => _records.length;
 
@@ -70,8 +101,12 @@ final class CityCatalog {
     final normalizedQuery = normalizeCitySearchText(query);
     if (normalizedQuery.isEmpty) return const <CitySearchResult>[];
 
+    final source = normalizedQuery.length >= 3
+        ? (_prefixBuckets[normalizedQuery.substring(0, 3)] ?? const <CityRecord>[])
+        : _records;
+
     final results = <CitySearchResult>[];
-    for (final city in _records) {
+    for (final city in source) {
       final score = _score(city, normalizedQuery);
       if (score != null) {
         results.add(CitySearchResult(city: city, score: score));
@@ -92,15 +127,7 @@ final class CityCatalog {
   }
 
   int? _score(CityRecord city, String query) {
-    final candidates = <String>{
-      city.name,
-      city.countryName,
-      city.countryCode,
-      if (city.adminArea != null) city.adminArea!,
-      ...city.aliases,
-      city.disambiguationLabel,
-    }.map(normalizeCitySearchText);
-
+    final candidates = _normalizedCandidates[city.id]!;
     var best = -1;
     for (final candidate in candidates) {
       if (candidate == query) {
