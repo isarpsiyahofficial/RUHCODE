@@ -1,0 +1,10 @@
+# Critical calculation engine changes require explicit owner review.
+/lib/src/calculation_core/ @isarpsiyahofficial
+/tools/astronomy/ @isarpsiyahofficial
+/tools/chinese/ @isarpsiyahofficial
+/tools/numerology/ @isarpsiyahofficial
+
+# Release governance and requirement evidence are owned as well.
+/governance/ @isarpsiyahofficial
+/requirements/ @isarpsiyahofficial
+/.github/workflows/ @isarpsiyahofficial
