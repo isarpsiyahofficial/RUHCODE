@@ -1,0 +1,82 @@
+name: RC1273-RC1285 Design System
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/src/ui/theme/ruh_design_tokens.dart'
+      - 'ui/design_tokens.json'
+      - 'test/ui/ruh_design_system_rc1273_rc1285_test.dart'
+      - 'requirements/contracts/rc1273_rc1285_design_system_contract.json'
+      - 'tools/requirements/validate_rc1273_rc1285_design_system.py'
+      - '.github/workflows/rc1273-rc1285-design-system.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: requirement-matrix-writers-rc1273-rc1285-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python tools/requirements/validate_rc1273_rc1285_design_system.py
+      - uses: subosito/flutter-action@v2
+        with: {flutter-version: '3.44.7', channel: stable, cache: true}
+      - run: flutter pub get
+      - run: flutter test test/ui/ruh_design_system_rc1273_rc1285_test.dart
+      - name: Keep PDF export gate green
+        run: |
+          python tools/requirements/validate_rc1249_rc1272_pdf_export.py
+          flutter test test/pdf/pdf_export_governance_rc1249_rc1272_test.dart
+          flutter test test/pdf/pdf_export_concurrency_rc1262_test.dart
+          flutter test test/pdf/pdf_release_fixture_rc1272_test.dart
+
+  record-implementation:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Promote only to IMPLEMENTED + blocked
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tools/requirements/validate_rc1273_rc1285_design_system.py
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('requirements/requirement_state.csv')
+          with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
+          fields=list(rows[0].keys()); targets={f'RC-{i:04d}' for i in range(1273,1286)}
+          links='lib/src/ui/theme/ruh_design_tokens.dart|ui/design_tokens.json|test/ui/ruh_design_system_rc1273_rc1285_test.dart|requirements/contracts/rc1273_rc1285_design_system_contract.json|tools/requirements/validate_rc1273_rc1285_design_system.py|.github/workflows/rc1273-rc1285-design-system.yml'
+          found=set()
+          for r in rows:
+            if r['rc_id'] not in targets: continue
+            found.add(r['rc_id'])
+            if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
+            r['evidence_links']=links; r['blocked']='YES'
+            r['blocker']='Production screen/chart/PDF token adoption audit, rendered TR/EN goldens, accessibility/device proof and exact release artifact remain required before VERIFIED/DONE.'
+            r['notes']='Semantic typography, readable font floors, spacing/padding/legend tokens and light/dark WCAG-AA contrast have dedicated regression coverage.'
+          missing=targets-found
+          if missing: raise SystemExit(f'RC1273_RC1285_FAIL missing rows: {sorted(missing)}')
+          with p.open('w',encoding='utf-8',newline='') as f:
+            w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
+          PY
+          python tools/requirements/validate_requirement_matrix.py
+          if git diff --quiet -- requirements/requirement_state.csv; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add requirements/requirement_state.csv
+          git commit -m 'requirements(rc1273-rc1285): record design system IMPLEMENTED'
+          git push origin HEAD:main
