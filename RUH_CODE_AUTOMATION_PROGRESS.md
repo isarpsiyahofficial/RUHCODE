@@ -17,34 +17,34 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-1059→1084 = IMPLEMENTED + blocked=YES (`ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`).
 - RC-1085→1104 = IMPLEMENTED + blocked=YES (`a9c4b832269328935dbf6d4753f603d17fa5b1f7`).
 - RC-1105→1130 dependency/offline governance mevcut; `pubspec.lock` `09cf4da44c63c8031a149a7c555e37362ef194aa` ile fiziksel.
-- PR #1 RC-1131→1144 release governance; PR #2 RC-1145→1160 Android compatibility; PR #3 RC-1161→1174 location; PR #4 RC-1175→1196 security/privacy; PR #5 RC-1197→1205 deletion; PR #6 RC-1206→1221 search; PR #7 RC-1222→1236 cache; PR #8 RC-1237→1248 portable backup; PR #9 RC-1249→1272 PDF export.
-- RC-1206→1221 run `34309365775` SUCCESS, fakat production SQLite/FTS/device/UI blocker'ları açık.
-- RC-1222→1236 run `34317258421` FAILURE: exact cache contract + cache regression SUCCESS, eski head üzerindeki RC1197 deletion recheck kırmızı.
-- RC-1237→1248 run `34317258841` FAILURE: portable-backup contract + regression SUCCESS, upstream cache/deletion gate kırmızı.
-- RC-1249→1272 PR #9 açıldı. Lifecycle promotion için dedicated CI sonucu bekleniyor; production renderer/UI, Android scoped-storage/share, process-kill/background ve exact release blocker'ları açık.
-- RC-1273→1285 yeni stacked branch `agent/rc1273-rc1285-design-system`; production tokenlar + regression + exact contract + fail-closed validator + dedicated CI oluşturuldu. CI geçmeden lifecycle promotion yok.
+- PR #1 RC-1131→1144; #2 RC-1145→1160; #3 RC-1161→1174; #4 RC-1175→1196; #5 RC-1197→1205; #6 RC-1206→1221; #7 RC-1222→1236; #8 RC-1237→1248; #9 RC-1249→1272; PR #10 RC-1273→1303 stacked durumda.
+- RC-1206→1221 dedicated run SUCCESS; production SQLite/FTS/device/UI blocker'ları açık.
+- RC-1222→1248 kendi contract/regression zincirleri mevcut; eski upstream deletion compile kırmızısı nedeniyle physical promotion açık.
+- RC-1249→1272 dedicated run kendi exact contract + üç PDF regression testini geçti; upstream RC1197 deletion compile hatasında kırıldı. Hata bu çalıştırmada düzeltildi (`f3eb1a3d32dafe18ff330c844861cb7c6f9acecf`).
+- RC-1273→1285 production token/regression/contract/validator/CI mevcut; rendered/device adoption kapıları açık.
+- RC-1286→1303 production matrix/regression/contract/validator/CI mevcut; lifecycle promotion CI geçmeden yapılmayacak.
 
 ## RC-1249→1272 — PDF export governance
 
-`lib/src/pdf/pdf_export_governance.dart` Free demo ile gerçek müşteri export'unu fail-closed ayırır. Free sample `usesDemoData=true`, watermark açık ve gerçek `clientId` olmadan çalışır; gerçek müşteri PDF'si PRO + stable client ID ister ve demo data kabul etmez. Tam profesyonel raporda watermark kapatılabilir.
+Free demo ile gerçek müşteri export'u fail-closed ayrılır. Free sample demo data + watermark ister; gerçek müşteri PDF'si PRO + stable client ID ister ve demo data kabul etmez. Cancellation/exception partial PDF'yi success yapamaz; output scoped/atomic publish edilir. Aynı müşteri işleri serialize edilir, global concurrency sınırlıdır, deterministic filename collision/content order vardır. Dedicated CI'da exact contract ve bütün yeni PDF regression'ları yeşil oldu; tek kırmızı upstream deletion compile idi.
 
-Cancellation/exception partial PDF'yi success yapamaz; app-private `.partial.pdf` cleanup edilir ve final publish atomic storage adapter sınırından geçer. Output/share-cache sandbox dışına çıkamaz. Aynı müşteri işleri serialize edilir; global eşzamanlılık `maximumConcurrentJobs` ile sınırlandırılır ve permit-transfer yarış koşulu `506a6ca6d221eba75449158313e94f00f62696d8` ile kapatıldı. Deterministic filename collision ve unique content-order policy var.
+## RC-1197→1205 compile root-cause düzeltmesi
 
-RC-1272 için `test/fixtures/pdf/rc1272_free_sample_fixture.json` + `test/pdf/pdf_release_fixture_rc1272_test.dart` gerçek `pw.Document` üretip `%PDF` header'ını doğruluyor. Concurrency regression `test/pdf/pdf_export_concurrency_rc1262_test.dart` 6 job üzerinde configured limit 2'yi ölçüyor. Exact contract/validator/workflow mevcut. PR #9 head checkpoint: `45fb168792e500512e5887c1e21a40dedae95696`.
+`ClientDeletionPlan` constructor'ında `deleteIds` ve `archiveIds` parametreleri `Iterable<String>` tipindeyken `.intersection()` çağrılıyordu. CI gerçek Dart derlemesinde bunu reddetti. Overlap doğrulaması normalize edilmiş `Set<String>` field'ları (`this.deleteIds.intersection(this.archiveIds)`) üzerinden çalışacak şekilde düzeltildi: `f3eb1a3d32dafe18ff330c844861cb7c6f9acecf`.
 
 ## RC-1273→1285 — typography / spacing / contrast design system
 
-`lib/src/ui/theme/ruh_design_tokens.dart` ve canonical `ui/design_tokens.json` genişletildi:
+Merkezi semantic `title / section / body / caption` sınıfları, font floors, line-height, paragraph/section/card/screen/PDF/chart spacing tokenları, explicit dark palette ve WCAG-AA light/dark contrast regression'ları mevcut. Production screen/chart/PDF token adoption audit, rendered TR/EN goldens, text-scale/device accessibility ve exact release artifact açık.
 
-- `title / section / body / caption` dört ayrı semantic text class. Baselines: 28/20/16/13sp; body 16sp, chart label minimum 13sp.
-- Her class explicit line-height taşır; body 1.50, caption 1.35.
-- Paragraph 12, section 24, card padding 16, screen edge 16, PDF edge 16, chart legend 8 ve legend-item 12 semantic token oldu.
-- Light palette korunurken explicit dark palette eklendi; `RuhAppTheme.light()` ve `RuhAppTheme.dark()` aynı semantic text classes'ı kullanır.
-- `test/ui/ruh_design_system_rc1273_rc1285_test.dart` typography ayrımı, font floors, spacing/padding/legend değerleri, theme mapping ve light/dark normal-text contrast >= 4.5 ölçer.
+## RC-1286→1303 — Feature-ID lifecycle matrix + offline transfer
 
-Production commit `f76f479c22fbd34c20106acf6817d5094cc00d73`; canonical token update `b8fe0f85fc80083319937fa48d4cb0875caa6f1d`; regression `ff42bfa7a00df181735d7fc746fa430f73534dbb`; exact contract `6089e5c756238213a5f7b7219a91ee7eea02bbc9`; validator fix `d6d743e9300eeeebdd3503c52cce84607f308075`; dedicated CI `c47af1d0c24b7e13411fcc878b7438eef6c53b4c`.
+`lib/src/entitlements/entitlement_scenario_matrix.dart` merkezi `RuhFeatureIds.all` kataloğundaki her feature için yedi ayrı scenario üretir: Free, PRO, rewarded temporary, offline PRO, purchase restore, reinstall restore ve device-change restore. Matrix exact cardinality/uniqueness kontrolüyle fail-closed doğrulanır; rewarded access yalnız catalog tarafından izin verilen PRO feature'ları açabilir.
 
-RC-1273→1285 VERIFIED/DONE değildir: production screen/chart/PDF token adoption audit, rendered TR/EN goldens, supported text-scale/device accessibility ve exact release artifact gereklidir.
+`OfflineFirstAccountPolicy` core kullanım için Ruh Code account/email-password/account backend zorunluluğunu reddeder. CSV backup cihazlar arası taşımayı destekleyen kaynak kabul edilir; eski cihaz export/yeni cihaz import akışı Ruh Code server'ı gerektirmez. Google Drive/iCloud/USB/e-posta yalnız kullanıcı seçtiği dış transport olarak modellenir; Ruh Code bu servisleri core dependency olarak yönetmez ve automatic cloud backup core requirement değildir.
+
+Production `05e9e8610af367fe07f4d934bd40dc3629eabc81`; regression `e05e8bdc1555afdae794bf06653f2c277921b506`; exact contract `1b85e2d8443af35615b500fd613dbc91e1bb8f76`; validator `2153510f2640966741745f1ca06060461350a754`; dedicated CI `b6fe21ec572a7eadf00292464b2cf3c42e2814f8`.
+
+RC-1286→1303 VERIFIED/DONE değildir: real Play restore across reinstall/device change, physical offline-PRO verification, production CSV export/import device-transfer flow ve exact release artifact gerekir.
 
 ## Global blocker'lar
 
@@ -52,9 +52,9 @@ Exact AKİLES provenance; independent authoritative calculation goldens; Panchan
 
 ## Sonraki devam noktası
 
-1. PR #9 RC-1249→1272 ve yeni RC-1273→1285 dedicated CI'larını fiziksel oku; kırmızıysa kök nedeni aynı stacked hatta düzelt. Güncel RC1197 validator/regression recheck'i özellikle doğrula.
-2. Binding sırada RC-1286+ sonraki requirement bloğunu exact sırayla ilerlet.
-3. RC-1222→1248 kendi contract/regression'ları yeşil olsa da upstream kırmızı kapanmadan promotion verme.
+1. PR #10 güncel head üzerindeki RC-1197 recheck, RC-1249→1272 PDF, RC-1273→1285 design-system ve RC-1286→1303 dedicated CI sonuçlarını fiziksel doğrula; kırmızıysa root-cause düzelt.
+2. Binding sırada RC-1304+ module completion checklist / release-user-flow bloğunu exact sırayla ilerlet.
+3. RC-1222→1248 upstream compile kırmızısı yeni fix ile kapanmadan promotion verme.
 4. RC-0995→1003 provenance/golden ve RC-0965→0994 traceability açıklarını paralel azalt.
 5. RC-0001→RC-1442 tamamı DONE ve bütün release kapıları green olmadan FINAL deme.
 
