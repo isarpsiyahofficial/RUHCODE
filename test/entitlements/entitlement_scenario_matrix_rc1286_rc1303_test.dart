@@ -22,8 +22,8 @@ void main() {
       final rows = RuhEntitlementScenarioMatrix.build();
       for (final featureId in RuhFeatureIds.all) {
         final policy = RuhFeatureCatalog.policyFor(featureId);
-        final free = rows.single((row) => row.featureId == featureId && row.scenario == EntitlementScenario.free);
-        final pro = rows.single((row) => row.featureId == featureId && row.scenario == EntitlementScenario.pro);
+        final free = rows.singleWhere((row) => row.featureId == featureId && row.scenario == EntitlementScenario.free);
+        final pro = rows.singleWhere((row) => row.featureId == featureId && row.scenario == EntitlementScenario.pro);
         expect(free.allowed, policy.baseAccess == FeatureBaseAccess.free);
         expect(pro.allowed, isTrue);
       }
@@ -33,7 +33,7 @@ void main() {
       final rows = RuhEntitlementScenarioMatrix.build();
       for (final featureId in RuhFeatureIds.all) {
         final policy = RuhFeatureCatalog.policyFor(featureId);
-        final rewarded = rows.single((row) => row.featureId == featureId && row.scenario == EntitlementScenario.rewardedTemporary);
+        final rewarded = rows.singleWhere((row) => row.featureId == featureId && row.scenario == EntitlementScenario.rewardedTemporary);
         expect(rewarded.allowed, policy.baseAccess == FeatureBaseAccess.free || policy.temporaryUnlockAllowed);
       }
     });
