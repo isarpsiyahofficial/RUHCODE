@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "requirementRange": ["RC-1145", "RC-1160"],
+  "minimumAndroidApi": 21,
+  "minimumAndroidName": "Android 5.0 Lollipop",
+  "currentStableAndroidApi": 37,
+  "currentStableAndroidName": "Android 17",
+  "currentStableVerifiedDate": "2026-09-09",
+  "currentStableReference": "Android Developers / Android 17 SDK and release notes",
+  "deviceClasses": [
+    {"id": "small_phone", "logicalWidth": 320, "logicalHeight": 568},
+    {"id": "large_phone", "logicalWidth": 430, "logicalHeight": 932},
+    {"id": "tablet", "logicalWidth": 800, "logicalHeight": 1280},
+    {"id": "landscape_phone", "logicalWidth": 800, "logicalHeight": 360}
+  ],
+  "textScales": [1.0, 1.3, 2.0],
+  "locales": ["tr", "en"],
+  "rules": {
+    "largeTextMayHidePrimaryActions": false,
+    "uncontrolledHorizontalTableOverflowAllowed": false,
+    "criticalInformationMayExistOnlyOffscreen": false,
+    "keyboardMayCoverActiveFormField": false,
+    "chartMayClipOnSmallViewport": false
+  },
+  "evidencePolicy": "Static/widget evidence promotes at most IMPLEMENTED. RC-1146 and RC-1147 require real emulator/device launch evidence at API 21 and API 37; viewport/font/keyboard requirements require widget or integration evidence on the production UI before VERIFIED/DONE."
+}
