@@ -1,0 +1,13 @@
+{
+  "fixtureVersion": 1,
+  "reportId": "rc1272-free-sample-v1",
+  "audience": "free_demo",
+  "watermark": "DEMO / SAMPLE",
+  "usesDemoData": true,
+  "clientId": null,
+  "title": "RUH CODE Sample Report",
+  "sections": [
+    {"id": "summary", "text": "Sample calculation summary"},
+    {"id": "chart", "text": "Sample chart placeholder"}
+  ]
+}

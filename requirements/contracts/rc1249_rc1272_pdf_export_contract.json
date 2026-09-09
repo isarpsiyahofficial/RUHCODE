@@ -1,0 +1,44 @@
+{
+  "range": "RC-1249→RC-1272",
+  "requirements": {
+    "RC-1249": "Professional PDF export carries explicit watermark policy state.",
+    "RC-1250": "A full PRO professional report may disable watermarking.",
+    "RC-1251": "A Free sample report requires an enabled demo watermark.",
+    "RC-1252": "A Free user may generate only the isolated demo/sample PDF path.",
+    "RC-1253": "The Free sample is explicitly classified as demo rather than a real-client report.",
+    "RC-1254": "Free entitlement cannot authorize a real-client PDF export.",
+    "RC-1255": "PRO entitlement can authorize a real-client PDF export with stable client identity.",
+    "RC-1256": "Demo export data is isolated from real user/client data.",
+    "RC-1257": "Demo PDF requests cannot carry a real client ID.",
+    "RC-1258": "Failed or cancelled PDF generation cleans its temporary partial file.",
+    "RC-1259": "Successful PDF publication also leaves no temporary partial file.",
+    "RC-1260": "PDF generation has an explicit cancellation token and cancellation checks.",
+    "RC-1261": "Cancellation returns cancelled and can never be reported as completed.",
+    "RC-1262": "Concurrent PDF generation is bounded by a global permit limit.",
+    "RC-1263": "PDF jobs for the same client/report key are serialized to avoid races.",
+    "RC-1264": "Filename collisions resolve deterministically without overwriting the prior path.",
+    "RC-1265": "Output and sharing-cache paths are constrained to the declared app sandbox.",
+    "RC-1266": "Android scoped-storage behavior requires physical/platform verification before DONE.",
+    "RC-1267": "PDF sharing can stage a temporary file in an app-private share cache.",
+    "RC-1268": "The temporary sharing/generation cache has explicit cleanup operations.",
+    "RC-1269": "Foreground/background export behavior is explicit in the export request lifecycle mode.",
+    "RC-1270": "A killed/interrupted process must never promote a partial file as successful output; physical lifecycle verification remains required.",
+    "RC-1271": "Repeated report requests carry an explicit unique deterministic content-section order.",
+    "RC-1272": "Release regression contains a versioned Free sample PDF fixture and renders it as a real PDF document."
+  },
+  "production_evidence": [
+    "lib/src/pdf/pdf_export_governance.dart"
+  ],
+  "regression_evidence": [
+    "test/pdf/pdf_export_governance_rc1249_rc1272_test.dart",
+    "test/pdf/pdf_export_concurrency_rc1262_test.dart",
+    "test/pdf/pdf_release_fixture_rc1272_test.dart",
+    "test/fixtures/pdf/rc1272_free_sample_fixture.json"
+  ],
+  "release_blockers": [
+    "Production PDF renderer/UI must wire the authorization request, demo watermark and cancellation coordinator end-to-end.",
+    "Android scoped-storage/share adapter must be verified on a physical/emulated Android runtime.",
+    "Process-kill/background lifecycle must be exercised against real platform storage to prove no partial file is promoted.",
+    "Exact release artifact and global PDF/Free-PRO gates remain required before VERIFIED/DONE."
+  ]
+}
