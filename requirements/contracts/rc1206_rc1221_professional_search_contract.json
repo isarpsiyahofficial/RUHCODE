@@ -1,0 +1,26 @@
+{
+  "range": {"from": "RC-1206", "to": "RC-1221"},
+  "requirements": {
+    "RC-1206": ["professional client search is represented as a dedicated local search coordinator"],
+    "RC-1207": ["client name search is supported"],
+    "RC-1208": ["tag search is supported"],
+    "RC-1209": ["date-range search is supported"],
+    "RC-1210": ["search query model is extensible without server coupling for future professional indicators"],
+    "RC-1211": ["professional labels such as Saturn return can be searched through tags"],
+    "RC-1212": ["numerology-result filtering is supported"],
+    "RC-1213": ["search source must not require a server"],
+    "RC-1214": ["local indexed search source exists and uses normalized name-prefix buckets"],
+    "RC-1215": ["search behavior has thousand-record performance-oriented regression coverage"],
+    "RC-1216": ["paging contract is designed for professional-scale rather than ten-record-only use"],
+    "RC-1217": ["1000-client scenario is regression tested"],
+    "RC-1218": ["10000-profile stress scenario is regression tested"],
+    "RC-1219": ["large-database startup behavior is separated from page retrieval so startup need not enumerate every client"],
+    "RC-1220": ["coordinator never requests all clients into RAM at startup"],
+    "RC-1221": ["pagination/lazy page retrieval is mandatory and request size is bounded"]
+  },
+  "evidence": [
+    "lib/src/data/professional_search.dart",
+    "test/data/professional_search_rc1206_rc1221_test.dart"
+  ],
+  "promotionRule": "Unit/stress evidence may promote only to IMPLEMENTED+blocked. Production SQLite/FTS index wiring, measured cold-start/device memory benchmarks and real professional UI pagination remain required before VERIFIED/DONE."
+}
