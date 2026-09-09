@@ -98,7 +98,7 @@ void main() {
     expect(engine.calculate(1), 2);
   });
 
-  test('RC-0161 through RC-0164 numerology exposes three distinct systems', () {
+  test('RC-0161 RC-0162 RC-0163 RC-0164 numerology exposes three distinct systems', () {
     final systems = <NumerologySystem<dynamic, dynamic>>[
       _PythagoreanFixture(),
       _ChaldeanFixture(),
