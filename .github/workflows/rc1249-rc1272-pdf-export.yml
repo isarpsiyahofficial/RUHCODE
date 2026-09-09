@@ -39,11 +39,13 @@ jobs:
           flutter test test/pdf/pdf_export_governance_rc1249_rc1272_test.dart
           flutter test test/pdf/pdf_export_concurrency_rc1262_test.dart
           flutter test test/pdf/pdf_release_fixture_rc1272_test.dart
-      - name: Keep upstream PDF and entitlement gates green
+      - name: Keep upstream PDF entitlement and deletion gates green
         run: |
           python tools/requirements/validate_rc0951_rc0964_pdf_validation.py
           python tools/requirements/validate_rc1085_rc1104_entitlement_resilience.py
+          python tools/requirements/validate_rc1197_rc1205_data_deletion.py
           flutter test test/pdf/pdf_release_validation_rc0951_rc0964_test.dart
+          flutter test test/data/data_deletion_rc1197_rc1205_test.dart
 
   record-implementation:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
