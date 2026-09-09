@@ -1,0 +1,30 @@
+{
+  "range": "RC-1237→RC-1248",
+  "requirements": {
+    "RC-1237": "Professional presets are represented as structured export/import data with stable preset identity.",
+    "RC-1238": "Custom orb settings are preserved inside the portable preset payload.",
+    "RC-1239": "User interpretation templates are preserved inside the portable preset payload.",
+    "RC-1240": "Professional logo binary data is rejected when embedded as data/base64 in CSV and is referenced by asset ID instead.",
+    "RC-1241": "Binary backup assets are stored below a separate package assets/ directory.",
+    "RC-1242": "CSV-compatible binary references use a stable asset:<id> reference.",
+    "RC-1243": "A missing optional logo is a non-critical warning and does not invalidate core record restore.",
+    "RC-1244": "A missing referenced client ID is critical relational corruption.",
+    "RC-1245": "Portable backup package layout and reference semantics are documented as versioned format v1.",
+    "RC-1246": "The documented format is designed to remain readable by a future application rewrite.",
+    "RC-1247": "An undocumented opaque proprietary binary is not the sole backup representation.",
+    "RC-1248": "CSV/JSON records provide a machine-readable copy of user data."
+  },
+  "production_evidence": [
+    "lib/src/backup/backup_portability_policy.dart",
+    "docs/backup/portable-backup-format-v1.md"
+  ],
+  "regression_evidence": [
+    "test/backup/backup_portability_rc1237_rc1248_test.dart"
+  ],
+  "release_blockers": [
+    "Production archive writer/reader must physically place binary files in assets/ and connect asset references to exported CSV rows.",
+    "Professional preset UI persistence/export/import wiring remains required.",
+    "Clean-install round-trip with real logo assets remains required.",
+    "Exact release artifact and global backup gates remain open."
+  ]
+}
