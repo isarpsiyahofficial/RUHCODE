@@ -166,6 +166,7 @@ final class De440sEphemerisProvider implements EphemerisProvider {
       longitudeSpeedDegreesPerDay: longitudeSpeedDegreesPerDay,
       sourceId: 'NASA/JPL DE440s',
       dataVersion: 'DE440s',
+      referenceFrame: EclipticReferenceFrame.j2000Geometric,
     );
   }
 }
