@@ -6,7 +6,7 @@
       "source": "NASA/JPL Horizons API",
       "version": "1.2"
     },
-    "capturedAtUtc": "2026-09-10T02:31:59.274960+00:00",
+    "capturedAtUtc": "2026-09-10T18:00:57.664094+00:00",
     "endpoint": "https://ssd.jpl.nasa.gov/api/horizons.api",
     "provider": "NASA/JPL Horizons API",
     "query": {
@@ -26,7 +26,7 @@
       "VEC_TABLE": "'2'",
       "format": "json"
     },
-    "rawResponseSha256": "ece1eb0b1e135267227caeaef02684af79be24af8b3f8d719796a293bef3a83e",
+    "rawResponseSha256": "5a0d49699bdf1132f458fb3f03ff8b3b172d11ddd84906af15e5ae2afa4ba238",
     "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='399'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2451545.0'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
   },
   "status": "OFFICIAL_GOLDEN_CAPTURED",
