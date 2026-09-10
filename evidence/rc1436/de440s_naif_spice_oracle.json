@@ -1,0 +1,118 @@
+{
+  "kernel": {
+    "path": "assets/data/ephemeris/de440s.bsp",
+    "sha256": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2",
+    "sizeBytes": 32726016
+  },
+  "oracle": {
+    "aberrationCorrection": "NONE (geometric state)",
+    "api": "spkgeo",
+    "referenceFrame": "J2000",
+    "spiceypyVersion": "6.0.0"
+  },
+  "provider": "NAIF CSPICE via SpiceyPy",
+  "purpose": "Independent reader oracle for Ruh Code's packaged DE440s SPK; production Dart DAF/SPK evaluator is not reused.",
+  "status": "INDEPENDENT_DE440S_ORACLE_CAPTURED",
+  "vectors": [
+    {
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": -3155716800.0,
+        "jdTdb": 2415020.5
+      },
+      "frame": "J2000",
+      "id": "earth-j1900",
+      "observerNaifId": 0,
+      "state": {
+        "vxKmPerSecond": -29.69865396389229,
+        "vyKmPerSecond": -5.566731997357445,
+        "vzKmPerSecond": -2.416569298430228,
+        "xKm": -28977759.517393578,
+        "yKm": 133090559.81771262,
+        "zKm": 57719873.995547086
+      },
+      "targetNaifId": 399,
+      "units": "KM-S"
+    },
+    {
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 0.0,
+        "jdTdb": 2451545.0
+      },
+      "frame": "J2000",
+      "id": "earth-j2000",
+      "observerNaifId": 0,
+      "state": {
+        "vxKmPerSecond": -29.78494749849545,
+        "vyKmPerSecond": -5.029753814914289,
+        "vzKmPerSecond": -2.1806450690318697,
+        "xKm": -27566740.482806046,
+        "yKm": 132361381.15354352,
+        "zKm": 57418653.286251314
+      },
+      "targetNaifId": 399,
+      "units": "KM-S"
+    },
+    {
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 3155716800.0,
+        "jdTdb": 2488069.5
+      },
+      "frame": "J2000",
+      "id": "earth-j2100",
+      "observerNaifId": 0,
+      "state": {
+        "vxKmPerSecond": -29.885183786762067,
+        "vyKmPerSecond": -4.456920379861245,
+        "vzKmPerSecond": -1.9292040949322053,
+        "xKm": -22290073.395576242,
+        "yKm": 133398450.63846555,
+        "zKm": 57758376.451572075
+      },
+      "targetNaifId": 399,
+      "units": "KM-S"
+    },
+    {
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 0.0,
+        "jdTdb": 2451545.0
+      },
+      "frame": "J2000",
+      "id": "sun-j2000",
+      "observerNaifId": 0,
+      "state": {
+        "vxKmPerSecond": 0.009312571926520472,
+        "vyKmPerSecond": -0.01170150612817771,
+        "vzKmPerSecond": -0.005251266205200356,
+        "xKm": -1067706.8053809535,
+        "yKm": -396036.18479594623,
+        "zKm": -138065.18428688092
+      },
+      "targetNaifId": 10,
+      "units": "KM-S"
+    },
+    {
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 0.0,
+        "jdTdb": 2451545.0
+      },
+      "frame": "J2000",
+      "id": "moon-j2000",
+      "observerNaifId": 0,
+      "state": {
+        "vxKmPerSecond": -29.141416110776415,
+        "vyKmPerSecond": -5.69584149900592,
+        "vzKmPerSecond": -2.481970774014143,
+        "xKm": -27858348.86743948,
+        "yKm": 132094664.32014929,
+        "zKm": 57342550.79915141
+      },
+      "targetNaifId": 301,
+      "units": "KM-S"
+    }
+  ]
+}

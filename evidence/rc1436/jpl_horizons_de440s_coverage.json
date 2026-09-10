@@ -1,0 +1,259 @@
+{
+  "capturedAtUtc": "2026-09-10T02:32:01.412475+00:00",
+  "coverageIntent": {
+    "bodies": [
+      "Earth",
+      "Sun",
+      "Moon"
+    ],
+    "epochs": [
+      "1900",
+      "J2000",
+      "2100"
+    ],
+    "rule": "Every vector must independently pass the repository SPK state tolerance contract."
+  },
+  "endpoint": "https://ssd.jpl.nasa.gov/api/horizons.api",
+  "observerNaifId": 0,
+  "provenanceRule": "Do not edit numeric vector fields manually. Regenerate all vectors from the exact official queries with this materializer.",
+  "provider": "NASA/JPL Horizons API",
+  "schemaVersion": 1,
+  "status": "OFFICIAL_GOLDEN_COVERAGE_CAPTURED",
+  "vectors": [
+    {
+      "centerNaifId": 0,
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": -3155716800.0,
+        "jdTdb": 2415020.5
+      },
+      "id": "earth_1900",
+      "referencePlane": "FRAME",
+      "referenceSystem": "ICRF",
+      "source": {
+        "apiSignature": {
+          "source": "NASA/JPL Horizons API",
+          "version": "1.2"
+        },
+        "query": {
+          "CENTER": "'@0'",
+          "COMMAND": "'399'",
+          "CSV_FORMAT": "'YES'",
+          "EPHEM_TYPE": "'VECTORS'",
+          "MAKE_EPHEM": "'YES'",
+          "OBJ_DATA": "'NO'",
+          "OUT_UNITS": "'KM-S'",
+          "REF_PLANE": "'FRAME'",
+          "REF_SYSTEM": "'ICRF'",
+          "TIME_TYPE": "'TDB'",
+          "TLIST": "'2415020.5'",
+          "TLIST_TYPE": "'JD'",
+          "VEC_CORR": "'NONE'",
+          "VEC_TABLE": "'2'",
+          "format": "json"
+        },
+        "rawCsvRow": "2415020.500000000, A.D. 1900-Jan-01 00:00:00.0000, -2.897775951745683E+07,  1.330905598177084E+08,  5.771987399553914E+07, -2.969865396388122E+01, -5.566731997519346E+00, -2.416569298496656E+00,",
+        "rawResponseSha256": "f56806892f06f19f8b7875187424b738c9e938723a1769a1107a78955c6435e6",
+        "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='399'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2415020.5'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
+      },
+      "state": {
+        "vxKmPerSecond": -29.69865396388122,
+        "vyKmPerSecond": -5.566731997519346,
+        "vzKmPerSecond": -2.416569298496656,
+        "xKm": -28977759.51745683,
+        "yKm": 133090559.8177084,
+        "zKm": 57719873.99553914
+      },
+      "targetNaifId": 399,
+      "units": "KM-S"
+    },
+    {
+      "centerNaifId": 0,
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 0.0,
+        "jdTdb": 2451545.0
+      },
+      "id": "earth_j2000",
+      "referencePlane": "FRAME",
+      "referenceSystem": "ICRF",
+      "source": {
+        "apiSignature": {
+          "source": "NASA/JPL Horizons API",
+          "version": "1.2"
+        },
+        "query": {
+          "CENTER": "'@0'",
+          "COMMAND": "'399'",
+          "CSV_FORMAT": "'YES'",
+          "EPHEM_TYPE": "'VECTORS'",
+          "MAKE_EPHEM": "'YES'",
+          "OBJ_DATA": "'NO'",
+          "OUT_UNITS": "'KM-S'",
+          "REF_PLANE": "'FRAME'",
+          "REF_SYSTEM": "'ICRF'",
+          "TIME_TYPE": "'TDB'",
+          "TLIST": "'2451545.0'",
+          "TLIST_TYPE": "'JD'",
+          "VEC_CORR": "'NONE'",
+          "VEC_TABLE": "'2'",
+          "format": "json"
+        },
+        "rawCsvRow": "2451545.000000000, A.D. 2000-Jan-01 12:00:00.0000, -2.756674048281145E+07,  1.323613811535491E+08,  5.741865328625385E+07, -2.978494749851088E+01, -5.029753814928081E+00, -2.180645069035755E+00,",
+        "rawResponseSha256": "eddd6d731b6f6ffc51587ef4a5f268838a683d90ddd28959649bd3f87948a863",
+        "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='399'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2451545.0'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
+      },
+      "state": {
+        "vxKmPerSecond": -29.78494749851088,
+        "vyKmPerSecond": -5.029753814928081,
+        "vzKmPerSecond": -2.180645069035755,
+        "xKm": -27566740.48281145,
+        "yKm": 132361381.1535491,
+        "zKm": 57418653.28625385
+      },
+      "targetNaifId": 399,
+      "units": "KM-S"
+    },
+    {
+      "centerNaifId": 0,
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 3155716800.0,
+        "jdTdb": 2488069.5
+      },
+      "id": "earth_2100",
+      "referencePlane": "FRAME",
+      "referenceSystem": "ICRF",
+      "source": {
+        "apiSignature": {
+          "source": "NASA/JPL Horizons API",
+          "version": "1.2"
+        },
+        "query": {
+          "CENTER": "'@0'",
+          "COMMAND": "'399'",
+          "CSV_FORMAT": "'YES'",
+          "EPHEM_TYPE": "'VECTORS'",
+          "MAKE_EPHEM": "'YES'",
+          "OBJ_DATA": "'NO'",
+          "OUT_UNITS": "'KM-S'",
+          "REF_PLANE": "'FRAME'",
+          "REF_SYSTEM": "'ICRF'",
+          "TIME_TYPE": "'TDB'",
+          "TLIST": "'2488069.5'",
+          "TLIST_TYPE": "'JD'",
+          "VEC_CORR": "'NONE'",
+          "VEC_TABLE": "'2'",
+          "format": "json"
+        },
+        "rawCsvRow": "2488069.500000000, A.D. 2100-Jan-01 00:00:00.0000, -2.229007339552573E+07,  1.333984506385678E+08,  5.775837645162810E+07, -2.988518378708436E+01, -4.456920379735527E+00, -1.929204094870392E+00,",
+        "rawResponseSha256": "89da595d34a2cf62e592340adcefffcac54e363c3afacaf637a9852f709cbc66",
+        "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='399'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2488069.5'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
+      },
+      "state": {
+        "vxKmPerSecond": -29.88518378708436,
+        "vyKmPerSecond": -4.456920379735527,
+        "vzKmPerSecond": -1.929204094870392,
+        "xKm": -22290073.39552573,
+        "yKm": 133398450.6385678,
+        "zKm": 57758376.4516281
+      },
+      "targetNaifId": 399,
+      "units": "KM-S"
+    },
+    {
+      "centerNaifId": 0,
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 0.0,
+        "jdTdb": 2451545.0
+      },
+      "id": "sun_j2000",
+      "referencePlane": "FRAME",
+      "referenceSystem": "ICRF",
+      "source": {
+        "apiSignature": {
+          "source": "NASA/JPL Horizons API",
+          "version": "1.2"
+        },
+        "query": {
+          "CENTER": "'@0'",
+          "COMMAND": "'10'",
+          "CSV_FORMAT": "'YES'",
+          "EPHEM_TYPE": "'VECTORS'",
+          "MAKE_EPHEM": "'YES'",
+          "OBJ_DATA": "'NO'",
+          "OUT_UNITS": "'KM-S'",
+          "REF_PLANE": "'FRAME'",
+          "REF_SYSTEM": "'ICRF'",
+          "TIME_TYPE": "'TDB'",
+          "TLIST": "'2451545.0'",
+          "TLIST_TYPE": "'JD'",
+          "VEC_CORR": "'NONE'",
+          "VEC_TABLE": "'2'",
+          "format": "json"
+        },
+        "rawCsvRow": "2451545.000000000, A.D. 2000-Jan-01 12:00:00.0000, -1.067706805380953E+06, -3.960361847959462E+05, -1.380651842868809E+05,  9.312571926520472E-03, -1.170150612817771E-02, -5.251266205200356E-03,",
+        "rawResponseSha256": "2e842354ab13224f3f7508f07f5d3ae577047b337f1484315149f53b862316e0",
+        "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='10'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2451545.0'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
+      },
+      "state": {
+        "vxKmPerSecond": 0.009312571926520472,
+        "vyKmPerSecond": -0.01170150612817771,
+        "vzKmPerSecond": -0.005251266205200356,
+        "xKm": -1067706.805380953,
+        "yKm": -396036.1847959462,
+        "zKm": -138065.1842868809
+      },
+      "targetNaifId": 10,
+      "units": "KM-S"
+    },
+    {
+      "centerNaifId": 0,
+      "corrections": "NONE",
+      "epoch": {
+        "etSecondsFromJ2000": 0.0,
+        "jdTdb": 2451545.0
+      },
+      "id": "moon_j2000",
+      "referencePlane": "FRAME",
+      "referenceSystem": "ICRF",
+      "source": {
+        "apiSignature": {
+          "source": "NASA/JPL Horizons API",
+          "version": "1.2"
+        },
+        "query": {
+          "CENTER": "'@0'",
+          "COMMAND": "'301'",
+          "CSV_FORMAT": "'YES'",
+          "EPHEM_TYPE": "'VECTORS'",
+          "MAKE_EPHEM": "'YES'",
+          "OBJ_DATA": "'NO'",
+          "OUT_UNITS": "'KM-S'",
+          "REF_PLANE": "'FRAME'",
+          "REF_SYSTEM": "'ICRF'",
+          "TIME_TYPE": "'TDB'",
+          "TLIST": "'2451545.0'",
+          "TLIST_TYPE": "'JD'",
+          "VEC_CORR": "'NONE'",
+          "VEC_TABLE": "'2'",
+          "format": "json"
+        },
+        "rawCsvRow": "2451545.000000000, A.D. 2000-Jan-01 12:00:00.0000, -2.785834886699916E+07,  1.320946643196950E+08,  5.734255079894725E+07, -2.914141610952193E+01, -5.695841497884601E+00, -2.481970773696848E+00,",
+        "rawResponseSha256": "6754f957194058d40f598700a0a3a1122be962b05864ab62f178e4c9adcd5baa",
+        "requestUrl": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND='301'&OBJ_DATA='NO'&MAKE_EPHEM='YES'&EPHEM_TYPE='VECTORS'&CENTER='@0'&TLIST='2451545.0'&TLIST_TYPE='JD'&TIME_TYPE='TDB'&REF_SYSTEM='ICRF'&REF_PLANE='FRAME'&VEC_TABLE='2'&VEC_CORR='NONE'&OUT_UNITS='KM-S'&CSV_FORMAT='YES'"
+      },
+      "state": {
+        "vxKmPerSecond": -29.14141610952193,
+        "vyKmPerSecond": -5.695841497884601,
+        "vzKmPerSecond": -2.481970773696848,
+        "xKm": -27858348.86699916,
+        "yKm": 132094664.319695,
+        "zKm": 57342550.79894725
+      },
+      "targetNaifId": 301,
+      "units": "KM-S"
+    }
+  ]
+}
