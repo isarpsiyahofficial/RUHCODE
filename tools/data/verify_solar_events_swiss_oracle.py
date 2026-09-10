@@ -11,6 +11,21 @@ from typing import Any
 
 _BINARY_SHA_PATH = "$.providerBinary.sha256"
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+# Swiss Ephemeris is rebuilt from the pinned source distribution on Python 3.13.
+# Cross-build floating-point noise has been observed at only a few microseconds.
+# Keep reproducibility thresholds unit-aware and still >10^5 tighter than the
+# canonical 60-second product accuracy budget.
+_ORACLE_MINUTES_ABS_TOL = 1e-6  # minute = 60 microseconds
+_ORACLE_JD_ABS_TOL = 1e-9  # day = 86.4 microseconds
+_DEFAULT_NUMERIC_ABS_TOL = 1e-9
+
+
+def _numeric_abs_tol(path: str) -> float:
+    if ".oracle." in path and "MinutesFromCivilDateMidnight" in path:
+        return _ORACLE_MINUTES_ABS_TOL
+    if ".oracle." in path and "JulianDayUt" in path:
+        return _ORACLE_JD_ABS_TOL
+    return _DEFAULT_NUMERIC_ABS_TOL
 
 
 def _compare(expected: Any, actual: Any, path: str = "$") -> None:
@@ -19,7 +34,7 @@ def _compare(expected: Any, actual: Any, path: str = "$") -> None:
         # The resulting extension bytes are build-environment dependent, so the
         # binary SHA is provenance/integrity metadata rather than a reproducible
         # equality field. Provider version plus all numerical evidence remain
-        # strict-equality checked below.
+        # tightly drift-checked below.
         if not isinstance(expected, str) or _SHA256_RE.fullmatch(expected) is None:
             raise SystemExit(f"{path}: committed binary SHA-256 is malformed")
         if not isinstance(actual, str) or _SHA256_RE.fullmatch(actual) is None:
@@ -40,8 +55,12 @@ def _compare(expected: Any, actual: Any, path: str = "$") -> None:
     if isinstance(expected, (int, float)) and not isinstance(expected, bool):
         if not isinstance(actual, (int, float)) or isinstance(actual, bool):
             raise SystemExit(f"{path}: numeric type drifted")
-        if not math.isclose(float(expected), float(actual), rel_tol=0.0, abs_tol=1e-9):
-            raise SystemExit(f"{path}: numeric drift {expected!r} != {actual!r}")
+        abs_tol = _numeric_abs_tol(path)
+        if not math.isclose(float(expected), float(actual), rel_tol=0.0, abs_tol=abs_tol):
+            raise SystemExit(
+                f"{path}: numeric drift {expected!r} != {actual!r} "
+                f"(abs_tol={abs_tol})"
+            )
         return
     if expected != actual:
         raise SystemExit(f"{path}: value drift {expected!r} != {actual!r}")
