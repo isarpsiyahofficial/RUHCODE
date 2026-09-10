@@ -1,0 +1,31 @@
+name: RC1436 Lahiri Ayanamsha Independent Oracle
+
+on:
+  push:
+    paths:
+      - 'assets/data/ayanamsha/**'
+      - 'evidence/rc1436/lahiri_ayanamsha_swiss_oracle.json'
+      - 'lib/src/calculation_core/vedic/**'
+      - 'test/calculation_core/lahiri_ayanamsha_independent_oracle_test.dart'
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - '.github/workflows/rc1436-lahiri-ayanamsha-oracle.yml'
+  pull_request:
+    paths:
+      - 'assets/data/ayanamsha/**'
+      - 'evidence/rc1436/lahiri_ayanamsha_swiss_oracle.json'
+      - 'lib/src/calculation_core/vedic/**'
+      - 'test/calculation_core/lahiri_ayanamsha_independent_oracle_test.dart'
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - '.github/workflows/rc1436-lahiri-ayanamsha-oracle.yml'
+
+jobs:
+  lahiri-independent-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - name: Test packaged Lahiri provider against independent Swiss oracle
+        run: flutter test test/calculation_core/lahiri_ayanamsha_independent_oracle_test.dart test/calculation_core/ayanamsha_test.dart
