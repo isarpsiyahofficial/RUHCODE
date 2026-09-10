@@ -20,6 +20,8 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - Stacked PR zinciri #1→#16 mevcut. RC-1304→1344, RC-1345→1361, RC-1375→1404 ve RC-1405→1420 dedicated gate'lerinin doğrulanmış SUCCESS koşuları mevcut.
 - RC-1437 Runtime Assets dedicated gate'in doğrulanmış SUCCESS koşusu mevcut; bu tek başına bütün final packaged/legal/release closure kanıtlarının tamamlandığı anlamına gelmez.
 - Exact PR #16 HEAD `a2d02ecdfa907b81f173ab7bae26a30dfbc3b1a0` üzerinde Requirements Contract, RC-0166→0184 Numerology Core, RC-0230→0247 Personal Growth, RC-0360→0371 Storage Runtime, RC-0755→0773 Transactional Data Safety, RC-0774→0848 Portable Backup, UI Contracts, Western Natal Aspects, RC-1197→1205 Data Deletion, RC-1206→1221 Professional Search, RC-1249→1272 PDF Export Governance, RC-1273→1285 Design System, RC-1286→1303 Entitlement Transfer, RC-1304→1344 Golden Lifecycle, RC-1345→1361 Release Cleanliness, RC-1375→1404 Final Traceability ve RC-1437 Runtime Assets dahil çok sayıda gate fiziksel SUCCESS verdi. Cancellation hiçbir zaman SUCCESS sayılmıyor.
+- `24ff965be4307c30671e6d2faf273c64749807f8` sonrasında workflow'ların büyük bölümü job üretmeden `action_required` durumunda kaldı. Bu durum SUCCESS veya product-test failure sayılmıyor; approval/policy katmanı ile gerçek CI sonucu ayrı tutuluyor.
+- RC-1436 için bağımsız ASC/MC oracle zinciri eklendi. Yeni kod/evidence/CI canonical bütçeyi değiştirmiyor; global astronomy proof hâlâ `proven=false` ve RC-1436 DONE değildir.
 
 ## RC-1421→1442 — bağlayıcı son ek / final release closure
 
@@ -59,26 +61,29 @@ Branch: `agent/rc1421-rc1442-release-closure`, stacked PR #16.
 
 15. **RC-0870→0877 PDF Vector Rendering gerçek runtime bug:** validator yeşildi fakat gerçek `pw.Document.save()` testi Western chart içindeki `☉`, `☽`, `♄` SVG `<text>` glyph'lerini built-in Helvetica/Latin-1 ile encode edemediği için çöküyordu. Vektör/raster kuralı gevşetilmedi. Production SVG builder artık standard planetary glyph'leri deterministic ASCII abbreviations (`Su/Mo/Me/Ve/Ma/Ju/Sa/Ur/Ne/Pl/No/So`) olarak PDF-safe SVG text'e dönüştürüyor; kalan Latin-1 dışı label'lar sessiz bozulmak yerine fail-closed `FormatException` veriyor. Chart SVG/vector aspect lines korunuyor ve raster payload yasağı değişmedi. Commit `fac4b9840ba24268368723cf22b73b1e8bcf5488`. Yeni exact-head gerçek document-save CI sonucu bekleniyor.
 
+16. **RC-1436 ASC/MC independent accuracy proof:** canonical `ascendantLongitudeMaxAbsErrorDegrees=0.05` ve `mcLongitudeMaxAbsErrorDegrees=0.05` toleransları değiştirilmeden, production `WesternAscMc.calculate` bağımsız Swiss Ephemeris/pyswisseph oracle'ına bağlandı. Beş vaka 1900/2000/2026/2050/2100 tarihlerini; kuzey/güney ve doğu/batı boylamlarını; >60° enlem vakasını kapsıyor. Evidence materializer `b9ff49452f6cad0f1fca56701459fac6d03b2a6e`, checked-in evidence `81bb8c6fb9598b1b7194bbf91be25898a4f6d9cb`, production regression `76cf55b9d8feecf01926fd5a236b18b7215fa630`, fail-closed regeneration verifier `e908ca751366b39ab0540bd229e3857e4326d28e` ve pinned `pyswisseph==2.10.3.2` dedicated workflow `337cc52cbb344dd060d653efe28c356398d28bc3` olarak eklendi. Oracle evidence `providerVersion=2.10.03` ve provider binary SHA-256 provenance taşıyor. Lokal bağımsız sanity karşılaştırmasında ASC yaklaşık 3.9–20.0 arcsec, MC yaklaşık 4.2–14.7 arcsec sapma verdi; her ikisi de 0.05°/180 arcsec canonical bütçenin altında. Workflow fiziksel SUCCESS vermeden TESTED/VERIFIED/DONE promotion yapılmaz; global RC-1436 proof hâlâ diğer accuracy sınıfları nedeniyle açıktır.
+
 ### Fiziksel blocker doğrulamaları
 
 - Günlük mesaj manifesti 2026-01-01→2036-12-31, 4.018 gün / 8.036 TR+EN kayıt taşıyor; lifecycle status hâlâ `EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT`. RC-1425/1426/1433/1434 release-DONE değildir.
-- `astronomy_accuracy_budgets.json` ölçülebilir toleransları tanımlıyor ancak `proven=false`. RC-1436 DONE değildir.
+- `astronomy_accuracy_budgets.json` ölçülebilir toleransları tanımlıyor ancak `proven=false`. RC-1436 DONE değildir. ASC/MC için independent evidence eklendi; house cusp, sunrise/sunset, planetary-hour boundary, Nakshatra ve Pada precision kanıtları hâlâ eksik.
 - `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`. RC-1431/1439 ve reference-dependent final UI gate'leri açık.
 - RC-1437 specialist runtime-assets gate yeşil olsa da exact packaged/version/checksum/offline/legal release zincirinin final closure kanıtı ayrıca gereklidir.
 - RC-1442 exact clean-checkout artifact, tested commit SHA ve artifact SHA eşleşmesi tüm 1.442 RC DONE/unblocked olmadan kapanamaz.
-- Çok sayıda calculation/Vedic workflow art arda branch push'ları sırasında concurrency nedeniyle `cancelled` görünüyor; cancellation SUCCESS sayılmıyor. Son progress checkpoint push'undan sonra aynı exact HEAD korunarak bu workflow'ların fiziksel SUCCESS/failure sonucu alınmalıdır.
+- Çok sayıda calculation/Vedic workflow art arda branch push'ları sırasında concurrency nedeniyle `cancelled` görünüyor; cancellation SUCCESS sayılmıyor. Son yeni HEAD'de workflow'ların job üretmeden `action_required` kalması da SUCCESS sayılmıyor.
 
 ## Açık kritik blocker'lar
 
-Exact AKİLES provenance; independent authoritative calculation goldens; Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; günlük mesaj exact release audit; physical UI reference images; approved static visual-source inventory; final EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; real ad/rewarded/PRO verifier; full airplane-mode production instrumentation; security/accessibility/performance; branch/review governance; kalan kırmızı/cancelled calculation ve lifecycle workflow'ları; clean-checkout/lifecycle; exact final release artifact.
+Exact AKİLES provenance; remaining independent authoritative calculation goldens (özellikle house cusp, sunrise/sunset, planetary-hour boundaries, Nakshatra/Pada); Panchanga/Vedic ve Dasha/Varga/Gochara/BaZi providers; historical timezone/DST/polar goldens; rendered TR/EN UI/PDF; günlük mesaj exact release audit; physical UI reference images; approved static visual-source inventory; final EOP/DE440s/package license evidence; encrypted persistence/key management/migrations; real ad/rewarded/PRO verifier; full airplane-mode production instrumentation; security/accessibility/performance; branch/review governance; kalan kırmızı/cancelled/action_required calculation ve lifecycle workflow'ları; clean-checkout/lifecycle; exact final release artifact.
 
 ## Sonraki devam noktası
 
-1. Progress checkpoint sonrası exact PR #16 HEAD'ini değiştirmeden Professional PDF, RC-0511→0526 Professional Timeline ve RC-0870→0877 PDF Vector Rendering yeni koşularını fiziksel doğrula; kırmızı kalan gerçek kök nedeni aynı branch'te düzelt.
-2. RC-1362→1374 airplane-mode release/device koşusunun hardware-accelerated sonucunu doğrula ve policy-level launch'tan gerçek production capability instrumentation'a genişlet.
-3. Günlük mesaj strict release audit, RC-1436 independent accuracy goldens, RC-1439 physical reference images ve final packaged dataset/license zincirlerini bağımsız ilerlet.
-4. Cancelled Vedic/calculation workflow'larını SUCCESS kabul etme; final exact-head üzerinde zorunlu kritik workflow setini yeniden koşturup fiziksel sonuç üret.
-5. Yalnız dedicated exact-head SUCCESS ve requirement-specific evidence mevcutsa matrix lifecycle state'ini yükselt; global blocker mevcutken DONE verme.
-6. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
+1. Yeni exact PR #16 HEAD üzerinde `RC1436 ASC MC Independent Oracle` workflow'unun fiziksel job/SUCCESS sonucunu doğrula; `action_required` devam ederse bunu product failure veya SUCCESS sayma.
+2. RC-1436 için sıradaki bağımsız accuracy sınıfı olarak house cusp ve sunrise/sunset kanıt zincirini canonical bütçelere bağla; toleransları test geçsin diye gevşetme.
+3. RC-1362→1374 airplane-mode release/device koşusunu policy-level launch'tan gerçek production capability instrumentation'a genişlet.
+4. Günlük mesaj strict release audit, RC-1439 physical reference images ve final packaged dataset/license zincirlerini bağımsız ilerlet.
+5. Cancelled/action_required Vedic/calculation workflow'larını SUCCESS kabul etme; final exact-head üzerinde zorunlu kritik workflow seti fiziksel çalışmadan lifecycle yükseltme.
+6. Yalnız dedicated exact-head SUCCESS ve requirement-specific evidence mevcutsa matrix lifecycle state'ini yükselt; global blocker mevcutken DONE verme.
+7. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
 **FINAL: NO.**
