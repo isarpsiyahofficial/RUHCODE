@@ -1,0 +1,25 @@
+name: RC1436 Nakshatra Pada Independent Oracle
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  nakshatra-pada-independent-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned independent oracle
+        run: python -m pip install --disable-pip-version-check pyswisseph==2.10.3.2
+      - name: Regenerate independent Nakshatra Pada evidence
+        run: python tools/astronomy/materialize_nakshatra_pada_swiss_oracle.py --output /tmp/nakshatra_pada_swiss_oracle.json
+      - name: Verify committed evidence is reproducible
+        run: python tools/astronomy/verify_nakshatra_pada_swiss_oracle.py --actual /tmp/nakshatra_pada_swiss_oracle.json
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test production DE440s Vedic Moon against canonical budgets
+        run: flutter test test/calculation_core/nakshatra_pada_independent_oracle_test.dart
