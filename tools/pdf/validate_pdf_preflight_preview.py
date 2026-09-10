@@ -11,7 +11,8 @@ SOURCE = ROOT / 'lib/src/pdf/pdf_preflight_preview.dart'
 BUILDER = ROOT / 'lib/src/ui/pdf/pdf_reports_pages.dart'
 UI_ACTIONS = ROOT / 'lib/src/ui/pdf/professional_pdf_ui_actions.dart'
 ACTIONS = ROOT / 'lib/src/ui/actions/ruh_action_ids.dart'
-REGISTRY = ROOT / 'ui/action_registry_runtime_extensions.csv'
+BASE_REGISTRY = ROOT / 'ui/action_registry.csv'
+EXTENSION_REGISTRY = ROOT / 'ui/action_registry_runtime_extensions.csv'
 BINDINGS = ROOT / 'ui/runtime_action_bindings.csv'
 NUMEROLOGY_HANDLER = ROOT / 'lib/src/pdf/persisted_pythagorean_numerology_pdf.dart'
 WESTERN_HANDLER = ROOT / 'lib/src/pdf/persisted_western_natal_pdf_service.dart'
@@ -21,9 +22,9 @@ WIDGET_TEST = ROOT / 'test/ui/professional_pdf_builder_page_test.dart'
 RENDER_CONTRACT_TEST = ROOT / 'test/pdf/pdf_render_contract_validator_test.dart'
 
 for path in (
-    EVIDENCE, MASTER, ADDENDUM, SOURCE, BUILDER, UI_ACTIONS, ACTIONS, REGISTRY,
-    BINDINGS, NUMEROLOGY_HANDLER, WESTERN_HANDLER, RENDERER, TEST, WIDGET_TEST,
-    RENDER_CONTRACT_TEST,
+    EVIDENCE, MASTER, ADDENDUM, SOURCE, BUILDER, UI_ACTIONS, ACTIONS, BASE_REGISTRY,
+    EXTENSION_REGISTRY, BINDINGS, NUMEROLOGY_HANDLER, WESTERN_HANDLER, RENDERER,
+    TEST, WIDGET_TEST, RENDER_CONTRACT_TEST,
 ):
     if not path.exists():
         raise SystemExit(f'missing required file: {path.relative_to(ROOT)}')
@@ -83,11 +84,16 @@ for forbidden in ('PdfSectionIds.chart', 'PdfSectionIds.interpretation', 'PdfSec
 if "pdfPreflight = 'ACTION-PDF-BUILDER-PREVIEW'" not in ACTIONS.read_text(encoding='utf-8'):
     raise SystemExit('canonical professional PDF preflight action constant is missing')
 
-with REGISTRY.open(newline='', encoding='utf-8') as handle:
-    rows = {row['action_id']: row for row in csv.DictReader(handle)}
-row = rows.get('ACTION-PDF-BUILDER-PREVIEW')
-if row is None:
-    raise SystemExit('ACTION-PDF-BUILDER-PREVIEW is missing from runtime extension registry')
+registry_rows = []
+for registry_path in (BASE_REGISTRY, EXTENSION_REGISTRY):
+    with registry_path.open(newline='', encoding='utf-8') as handle:
+        registry_rows.extend(csv.DictReader(handle))
+preflight_rows = [row for row in registry_rows if row['action_id'] == 'ACTION-PDF-BUILDER-PREVIEW']
+if len(preflight_rows) != 1:
+    raise SystemExit(
+        'ACTION-PDF-BUILDER-PREVIEW must exist exactly once across base/extension registries'
+    )
+row = preflight_rows[0]
 if row['source_screen_id'] != 'SCR-PDF-BUILDER-001' or row['entitlement'] != 'PRO' or row['status'] != 'ACTIVE':
     raise SystemExit('professional PDF preflight registry row drifted')
 if row['a11y_label_required'].lower() != 'true':
@@ -142,11 +148,12 @@ for token in ('preserves exact planned section order', 'empty plan fails closed'
 widget_test = WIDGET_TEST.read_text(encoding='utf-8')
 for token in (
     'requires current preview before PDF generation',
-    'numerology preview and build use handler-supported canonical sections only',
+    'builder invokes application actions with typed selected record and section order',
     'western record exposes only persisted western handler sections',
     'changing a section invalidates preview and blocks stale-plan build',
     'unsupported calculation records are not advertised as buildable',
     'RuhActionIds.pdfPreflight',
+    'PdfSectionIds.numerology',
     'PdfSectionIds.technicalManifest',
 ):
     if token not in widget_test:
