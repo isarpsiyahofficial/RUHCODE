@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: materialize-rc1436-jpl-golden
+  group: materialize-rc1436-jpl-golden-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -25,7 +25,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -99,7 +100,9 @@ jobs:
         run: flutter test test/calculation_core/de440s_jpl_horizons_accuracy_test.dart --reporter expanded
       - name: Compare packaged DE440s against official JPL coverage set
         run: flutter test test/calculation_core/de440s_jpl_horizons_coverage_test.dart --reporter expanded
-      - name: Commit canonical golden evidence
+      - name: Commit canonical golden evidence to triggering branch
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
         run: |
           files=(
             'evidence/rc1436/jpl_horizons_earth_ssb_j2000.json'
@@ -114,4 +117,4 @@ jobs:
             exit 0
           fi
           git commit -m 'data(rc1436): capture verified multi-vector JPL coverage'
-          git push origin HEAD:main
+          git push origin "HEAD:${TARGET_BRANCH}"
