@@ -67,6 +67,14 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 - `8f289ad590df576b5044503f0d5dbcbbf5865ce2` / `7a29595fc7fa71a713b6767875f04d33f204ea95` reproducibility verifier + pinned CI zincirini bağladı.
 - Dedicated `RC1436 Lahiri Ayanamsha Independent Oracle` run **34525091663 = SUCCESS**. Lahiri alt-kanıtı VERIFIED kabul edilebilir; global RC-1436 değildir.
 
+### Lunar node accuracy
+- Production `LunarNodeCalculator` iki farklı çıktı taşır: Meeus polynomial **mean ascending node** ve leading-periodic-correction tabanlı **true ascending node**; descending node ascending +180° olarak deterministic üretilir.
+- Canonical `nodeLongitudeMaxAbsErrorDegrees=0.02`; değiştirilmemiştir.
+- `b7efefa25170e90ba5d547bd006b30ffeaaa04e7` pinned Swiss Ephemeris `MEAN_NODE` üzerinden 1900/2000/2026/2050/2100 independent mean-node materializer ekledi.
+- `7ec392e0959dc5d761529a5bcf9a6b6c390286e8` real production `LunarNodeCalculator.meanAscendingNodeDegrees` sonucunu canonical `0.02°` bütçeye bağlayan regression ekledi.
+- `85b20622f2e9e5559f37dd2eb322db0a8dc6466d` dedicated `RC1436 Mean Lunar Node Independent Oracle` gate'ini ekledi. Physical SUCCESS vermeden mean-node alt-kanıtı VERIFIED değildir.
+- True-node alt-kanıtı intentionally açık tutulur: mevcut leading-term approximation independent Swiss true-node karşılaştırmasında canonical `0.02°` sınırını bazı epochlarda aşabildiği için tolerans yükseltilmedi ve kanıtsız promotion yapılmadı. Sonraki çalışma true-node hesap modelini daha yüksek doğruluğa taşımalı ve ayrı independent oracle ile kanıtlamalıdır.
+
 ## CI / entitlement düzeltmesi
 
 - Exact `7a29595f...` HEAD'de `Feature Entitlement Contract` run `34525089261` yalnız source validator'ın stale test-title tokenı nedeniyle kırmızıydı; gerçek test artık menu yüzeyini de kapsayan `UI menu route and service surfaces use the same EntitlementService result` adını taşıyor.
@@ -75,7 +83,7 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 ## Açık blocker'lar
 
 - Daily-message strict editorial release audit kapanmadan RC-1425/1426/1433/1434 release-DONE değildir.
-- Astronomy manifest `proven=false`; DE440s geocentric longitude gate sonucu ve node longitude bağımsız accuracy proof'u açık olduğundan RC-1436 DONE değildir.
+- Astronomy manifest `proven=false`; DE440s geocentric longitude gate, mean-node gate ve high-accuracy true-node independent proof açık olduğundan RC-1436 DONE değildir.
 - `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`; physical reference-dependent UI release gate'leri açıktır.
 - RC-1437 specialist runtime-assets SUCCESS olsa da packaged/version/checksum/offline/legal final closure ayrıca gereklidir.
 - Exact AKİLES provenance/independent authoritative values açık.
@@ -84,8 +92,8 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 
 ## Sonraki devam noktası
 
-1. Exact HEAD üzerinde `Feature Entitlement Contract` düzeltmesini ve `RC1436 DE440s Geocentric Longitude Independent Oracle` dedicated sonucunu fiziksel doğrula; kırmızıysa canonical bütçeleri gevşetmeden kök nedeni düzelt.
-2. Sun/Moon/planet longitude physical SUCCESS sonrası `nodeLongitudeMaxAbsErrorDegrees=0.02` için production lunar-node motorunu bağımsız oracle ile kapat; kanıtsız `proven=true` yapma.
+1. Exact HEAD üzerinde `Feature Entitlement Contract`, `RC1436 DE440s Geocentric Longitude Independent Oracle` ve `RC1436 Mean Lunar Node Independent Oracle` sonuçlarını fiziksel doğrula; kırmızıysa canonical bütçeleri gevşetmeden kök nedeni düzelt.
+2. Mean node physical SUCCESS sonrası true ascending node hesabını canonical `0.02°` sınırına taşı; mean ve true semantiğini birleştirme veya approximate true-node sonucunu verified sayma.
 3. RC-1362→1374 airplane-mode release/device koşusunu gerçek production capability instrumentation'a genişlet.
 4. Daily-message strict audit, RC-1439 physical references, encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
 5. Cancelled Vedic/calculation workflow'larını SUCCESS kabul etme; exact final HEAD üzerinde zorunlu kritik workflow seti fiziksel çalışmadan lifecycle yükseltme.
