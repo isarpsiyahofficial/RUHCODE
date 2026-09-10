@@ -33,18 +33,20 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 ### ASC / MC
 - Independent Swiss Ephemeris/pyswisseph oracle 1900/2000/2026/2050/2100 ve cross-hemisphere/longitude/high-latitude kapsamına sahiptir.
 - Canonical ASC/MC toleransları `0.05°`; değiştirilmemiştir.
-- `RC1436 ASC MC Independent Oracle` run `34443503983` fiziksel SUCCESS verdi.
+- İlk bağımsız run `34443503983` SUCCESS verdi; exact `d5a3f9456b34f3854f979c6b6bef8af7220d3ae5` üzerinde run `34485985331` de fiziksel **SUCCESS** verdi.
 
 ### Placidus house cusps
 - Canonical house cusp toleransı `0.05°`; değiştirilmemiştir.
 - Production strict solver + fail-closed polar davranışını korur.
-- Exact `91b9894daed74c8108c1f05f8c7dccf210e9a7af` HEAD üzerindeki `RC1436 Placidus Independent Oracle` run `34464643535` **SUCCESS** verdi.
+- İlk doğrulanan run `34464643535` SUCCESS verdi; exact `d5a3f9456b34f3854f979c6b6bef8af7220d3ae5` üzerinde run `34485985767` de fiziksel **SUCCESS** verdi.
 
 ### Sunrise / sunset
 - Canonical `sunriseSunsetMaxAbsErrorSeconds=60`; değiştirilmemiştir.
 - `a676d123f11065c28a9183f60ad0605eb6730c32` ile independent Swiss `swe.rise_trans` materializer, provider version/binary SHA evidence, fail-closed drift verifier, real `SolarEvents.forDate` regression ve dedicated CI eklendi.
 - Beş vaka 1900/2000/2026/2050/2100, N/S hemisphere, E/W longitude, farklı fixed UTC offset ve >60° non-polar latitude kapsar.
-- Yerel independent karşılaştırma tüm sunrise/sunset sapmalarını 60 s altında gösterdi; exact-head dedicated Actions SUCCESS görülmeden VERIFIED değildir.
+- İlk dedicated run `34475515969` FAILURE verdi. Log kök nedeni astronomik/sayısal sapma değil, Python 3.13 runner'ın pinned `pyswisseph==2.10.3.2` source distribution'ından yeniden derlediği C-extension `.so` byte SHA'sının build ortamına göre değişmesi nedeniyle verifier'ın `providerBinary.sha256` equality kontrolüydü.
+- `d5a3f9456b34f3854f979c6b6bef8af7220d3ae5` ile verifier yalnız bu build-dependent SHA alanında iki tarafın da geçerli 64-hex SHA-256 olmasını zorunlu tutacak şekilde düzeltildi; provider version, schema, vaka seti ve bütün numerical evidence strict equality/`1e-9` absolute drift kontrolünde kaldı. Astronomi toleransı gevşetilmedi.
+- Exact-head bağımsız dedicated CI SUCCESS fiziksel görülmeden bu alt-kanıt VERIFIED değildir. Generic `Solar Events Contract` run `34485985580` SUCCESS olsa da independent-oracle gate yerine geçmez.
 
 ### Planetary-hour boundaries
 - Canonical `planetaryHourBoundaryMaxAbsErrorSeconds=60`; değiştirilmemiştir.
@@ -52,14 +54,20 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 - `tools/data/materialize_planetary_hours_swiss_oracle.py` production `PlanetaryHours`/`SolarEvents` çağırmadan Swiss sunrise/sunset/next-sunrise anchor'ları üretir ve 12 day + 12 night unequal-hour intervalini bağımsız biçimde böler.
 - `evidence/rc1436/planetary_hours_swiss_oracle.json` aynı cross-range/cross-hemisphere/cross-timezone beş vaka için 25 unique boundary taşır; provider version + binary SHA provenance bağlıdır.
 - `test/calculation_core/planetary_hours_independent_oracle_test.dart` gerçek production `PlanetaryHours.forDate` sonucundaki 24 slotun 25 sınırının tamamını canonical 60 s bütçeye karşı doğrular ve strict monotonicity/day-night join şartını kontrol eder.
-- `tools/data/verify_planetary_hours_swiss_oracle.py` deterministic metadata/numerical drift'i fail-closed reddeder.
-- `.github/workflows/rc1436-planetary-hours-oracle.yml` Python 3.13 + pinned `pyswisseph==2.10.3.2`, regenerate+verify ve Flutter production regression'ını aynı dedicated gate'e bağlar.
-- Exact-head CI SUCCESS görülmeden bu alt-kanıt VERIFIED değildir.
+- İlk dedicated run `34475516124` FAILURE verdi; kök neden Solar Events ile aynı build-dependent compiled-extension SHA equality kontrolüydü, numerical boundary evidence değildi.
+- `d5a3f9456b34f3854f979c6b6bef8af7220d3ae5` aynı fail-closed provenance düzeltmesini planetary-hour verifier'a da uyguladı; yalnız binary byte equality kaldırıldı, geçerli SHA biçimi zorunlu kaldı ve diğer bütün metadata/numerical drift alanları strict kaldı.
+- Exact-head independent dedicated CI SUCCESS görülmeden bu alt-kanıt VERIFIED değildir. Generic `Planetary Hours Contract` run `34485985793` SUCCESS olsa da independent-oracle gate yerine geçmez.
+
+### Nakshatra / Pada
+- Canonical accuracy budget yeniden okundu: Nakshatra `0.02°`, Pada `0.02°`; sınıflandırma rounded/display değerden değil ham sidereal longitude'dan yapılmalıdır.
+- Production `VedicAyanamshaCatalog` varsayılanı `lahiri-chitrapaksha` olarak fail-closed bağlar.
+- Production `VedicNakshatra.fromSnapshot` ham normalize sidereal Moon longitude'u 27 Nakshatra ve her Nakshatra içinde 4 Pada olarak partition eder; explicit provenance ve tam bir Moon placement zorunludur.
+- Independent Swiss/Lahiri end-to-end oracle eklenmeden önce production DE440s state'in J2000-ecliptic frame semantiği ile Vedic tropical-of-date/sidereal dönüşüm zinciri ayrıca doğrulanmalıdır. Yanlış frame/ayanamsha varsayımıyla sahte green üretmek yasaktır; bu alt-kanıt halen açıktır.
 
 ## Açık blocker'lar
 
 - Daily-message strict editorial release audit kapanmadan RC-1425/1426/1433/1434 release-DONE değildir.
-- Astronomy manifest `proven=false`; solar-events ve planetary-hours exact-head CI sonuçları ile Nakshatra/Pada ve diğer applicable precision kanıtları açık olduğundan RC-1436 DONE değildir.
+- Astronomy manifest `proven=false`; solar-events ve planetary-hours exact-head independent CI sonuçları ile Nakshatra/Pada ve diğer applicable precision kanıtları açık olduğundan RC-1436 DONE değildir.
 - `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`; physical reference-dependent UI release gate'leri açıktır.
 - RC-1437 specialist runtime-assets SUCCESS olsa da packaged/version/checksum/offline/legal final closure ayrıca gereklidir.
 - Exact AKİLES provenance/independent authoritative values açık.
@@ -69,7 +77,7 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 ## Sonraki devam noktası
 
 1. Exact final HEAD üzerinde `RC1436 Solar Events Independent Oracle` ve `RC1436 Planetary Hours Independent Oracle` dedicated sonuçlarını fiziksel doğrula; kırmızıysa toleransı gevşetmeden kök nedeni düzelt.
-2. Nakshatra (`0.02°`) ve Pada (`0.02°`) independent oracle/boundary kanıtlarını tamamla.
+2. Nakshatra/Pada için önce DE440s J2000-ecliptic → Vedic tropical-of-date/sidereal frame zincirini authoritative independent oracle'a karşı doğrula; ardından Nakshatra `0.02°` ve Pada `0.02°` evidence/boundary gate'ini kur.
 3. RC-1362→1374 airplane-mode release/device koşusunu gerçek production capability instrumentation'a genişlet.
 4. Daily-message strict audit, RC-1439 physical references, encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
 5. Cancelled Vedic/calculation workflow'larını SUCCESS kabul etme; exact final HEAD üzerinde zorunlu kritik workflow seti fiziksel çalışmadan lifecycle yükseltme.
