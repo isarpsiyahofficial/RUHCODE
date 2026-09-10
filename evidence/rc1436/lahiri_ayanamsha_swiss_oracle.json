@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "status": "INDEPENDENT_LAHIRI_AYANAMSHA_ORACLE_CAPTURED",
+  "provider": {"name":"Swiss Ephemeris","mode":"SIDM_LAHIRI","version":"pyswisseph-2.10.3.2"},
+  "cases": [
+    {"id":"j1900","julianDayTt":2415185.999983178,"lahiriAyanamshaDegrees":22.466857315163},
+    {"id":"j2000","julianDayTt":2451637.7507396163,"lahiriAyanamshaDegrees":23.860639552334},
+    {"id":"modern2026","julianDayTt":2461294.000796571,"lahiriAyanamshaDegrees":24.229961887144},
+    {"id":"future2050","julianDayTt":2470010.2508650823,"lahiriAyanamshaDegrees":24.563368931558},
+    {"id":"future2100","julianDayTt":2488377.626083028,"lahiriAyanamshaDegrees":25.266057626537}
+  ]
+}
