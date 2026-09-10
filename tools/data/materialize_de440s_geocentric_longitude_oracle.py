@@ -4,8 +4,8 @@
 Production Ruh Code evaluates the packaged DE440s kernel with its own Dart
 DAF/SPK reader. This oracle intentionally uses NAIF CSPICE through SpiceyPy,
 reads the exact packaged kernel independently, converts TT Julian dates to ET
-with CSPICE, and asks SPICE for geometric Earth-observed states directly in
-its built-in ECLIPJ2000 frame.
+with CSPICE using a pinned NAIF time kernel, and asks SPICE for geometric
+Earth-observed states directly in its built-in ECLIPJ2000 frame.
 """
 from __future__ import annotations
 
@@ -18,9 +18,9 @@ import spiceypy as spice
 
 ROOT = Path(__file__).resolve().parents[2]
 KERNEL = ROOT / "assets/data/ephemeris/de440s.bsp"
+LSK = ROOT / "tools/data/kernels/naif0012_minimal.tls"
 OUTPUT = ROOT / "evidence/rc1436/de440s_geocentric_longitude_spice_oracle.json"
 
-# Match the physical targets intentionally exposed by De440sEphemerisProvider.
 TARGETS = (
     ("sun", 10),
     ("moon", 301),
@@ -34,8 +34,6 @@ TARGETS = (
     ("pluto", 9),
 )
 
-# TT Julian dates distributed through supported DE440s coverage. The dates are
-# deliberately multi-century rather than a single modern-year sample.
 EPOCHS = (
     ("1900-01-01", 2415020.5),
     ("2000-01-01T12", 2451545.0),
@@ -61,14 +59,19 @@ def normalize_degrees(value: float) -> float:
 def main() -> None:
     if not KERNEL.is_file() or KERNEL.stat().st_size < 1_000_000:
         raise SystemExit(f"packaged DE440s kernel is missing or implausibly small: {KERNEL}")
+    if not LSK.is_file() or LSK.stat().st_size < 500:
+        raise SystemExit(f"pinned NAIF time kernel is missing or implausibly small: {LSK}")
 
     kernel_sha = sha256(KERNEL)
+    lsk_sha = sha256(LSK)
+    spice.furnsh(str(LSK))
     spice.furnsh(str(KERNEL))
     try:
         cases = []
         for epoch_id, jd_tt in EPOCHS:
             # UNITIM provides an oracle-side TT/JDTDT -> ET conversion instead
-            # of copying Ruh Code's low-order TT->TDB approximation.
+            # of copying Ruh Code's low-order TT->TDB approximation. CSPICE's
+            # required DELTET constants are supplied by the pinned LSK above.
             et = float(spice.unitim(jd_tt, "JDTDT", "ET"))
             for body, target in TARGETS:
                 state, light_time = spice.spkgeo(target, et, "ECLIPJ2000", 399)
@@ -107,6 +110,11 @@ def main() -> None:
             "sha256": kernel_sha,
             "sizeBytes": KERNEL.stat().st_size,
         },
+        "timeKernel": {
+            "path": "tools/data/kernels/naif0012_minimal.tls",
+            "sha256": lsk_sha,
+            "source": "NAIF naif0012.tls",
+        },
         "oracle": {
             "spiceypyVersion": getattr(spice, "__version__", "unknown"),
             "stateApi": "spkgeo",
@@ -128,7 +136,7 @@ def main() -> None:
     OUTPUT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(
         f"wrote {OUTPUT.relative_to(ROOT)} with {len(cases)} cases; "
-        f"kernel sha256={kernel_sha}"
+        f"kernel sha256={kernel_sha}; lsk sha256={lsk_sha}"
     )
 
 
