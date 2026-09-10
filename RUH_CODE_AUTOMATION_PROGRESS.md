@@ -19,7 +19,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-1105→1130 dependency/offline governance mevcut; `pubspec.lock` fiziksel.
 - Stacked PR zinciri #1→#16 mevcut. Branch `agent/rc1421-rc1442-release-closure`, PR #16.
 - Fiziksel SUCCESS ile doğrulanan kritik gate'ler arasında RC-1304→1344 Golden Lifecycle, RC-1345→1361 Release Cleanliness, RC-1375→1404 Final Traceability, RC-1405→1420 Local Core Cost Architecture ve RC-1437 Runtime Assets vardır; bunlar global DONE değildir.
-- RC-1436 alt-kanıtlarında ASC/MC, Placidus, Solar Events, Planetary Hours ve Nakshatra/Pada independent oracle gate'leri fiziksel SUCCESS ile doğrulanmıştır. Legacy `cancelled` workflow'lar SUCCESS değildir.
+- RC-1436 alt-kanıtlarında ASC/MC, Placidus, Solar Events, Planetary Hours, Nakshatra/Pada ve Lahiri Ayanamsha independent oracle gate'leri fiziksel SUCCESS ile doğrulanmıştır. Legacy `cancelled` workflow'lar SUCCESS değildir.
 
 ## RC-1436 — independent astronomy accuracy proof
 
@@ -29,6 +29,9 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 - Resmi JPL Horizons cross-model/provenance evidence ile strict same-DE440s bağımsız NAIF CSPICE/SpiceyPy oracle zinciri mevcut.
 - Same-kernel regression production Dart SPK Type-2 evaluator'a bağlıdır.
 - DE440s runtime kontratı geometric geocentric **J2000-ecliptic** state üretir; bu semantik `EclipticReferenceFrame.j2000Geometric` ile explicit taşınır (`37b2ff4f7fc2adbcc022a37095a3c84e942e611e`, `74300d755efbf3fd020a5443130dfdf9ba93ccbb`).
+- `2953598cb6b147be8b8970754a044029eb9eb033` ile independent CSPICE `ECLIPJ2000` geocentric longitude materializer eklendi. Oracle, CSPICE `unitim(JDTDT -> ET)` + `spkgeo(... observer=399, frame=ECLIPJ2000)` kullanır; production TT→TDB ve ecliptic rotation kodunu reuse etmez.
+- `40bee6682e7f6f7fefedf007f94b89f3e1ba0bf5` ile packaged `De440sEphemerisProvider` için 10 fiziksel gövde × 5 epoch = 50 vaka regression eklendi. Test canonical Sun `0.01°`, Moon `0.02°`, planet `0.02°` bütçelerini manifestten okur ve 1900/2000/2026/2050/2100 aralığını kapsar.
+- `928fb7e1d630e21fd070d20ff614c383767ed714` dedicated `RC1436 DE440s Geocentric Longitude Independent Oracle` CI gate'ini ekledi. Gate physical SUCCESS vermeden Sun/Moon/planet longitude alt-kanıtları VERIFIED değildir.
 
 ### ASC / MC
 - Independent Swiss Ephemeris/pyswisseph oracle 1900/2000/2026/2050/2100 ve cross-hemisphere/longitude/high-latitude kapsamına sahiptir.
@@ -50,7 +53,7 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 - Canonical budget Nakshatra `0.02°`, Pada `0.02°`; classification raw/unrounded sidereal longitude kullanır.
 - J2000-ecliptic → tropical-of-date Vedic frame normalization (`4ace136ef408403206230f4509238f5aa5282c86`, `22f2ab682f53bc898a4252090209ec1290f1d1d6`) shared DE440s kontratını değiştirmeden production Vedic path'e bağlıdır.
 - Pinned Swiss Ephemeris/Moshier + `SIDM_LAHIRI`, `FLG_TRUEPOS`, `FLG_NONUT` oracle/evidence ve packaged DE440s production regression zinciri mevcuttur.
-- Dedicated `RC1436 Nakshatra Pada Independent Oracle` run **34512014336 = SUCCESS**. Bu alt-kanıt VERIFIED kabul edilebilir; RC-1436 bütünü değildir.
+- Dedicated `RC1436 Nakshatra Pada Independent Oracle` physical SUCCESS vermiştir. Bu alt-kanıt VERIFIED kabul edilebilir; RC-1436 bütünü değildir.
 
 ### Lahiri / Chitrapaksha ayanamsha
 - Canonical `ayanamshaLongitudeMaxAbsErrorDegrees=0.02`; değiştirilmemiştir.
@@ -61,12 +64,18 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 - `009323944f2385d951bcd1ec07e3ef09cc71f5d8` ile 1900/2000/2026/2050/2100 independent Swiss Lahiri oracle cases fiziksel evidence olarak eklendi. Oracle tarihler tablonun 5-year Jan-01 örnekleri değildir; böylece interpolation gerçek bağımsız ara noktalar üzerinden sınanır.
 - `9b018481f16d1c3b83dc0ae035f42fb4f221b21b` real packaged `BundledLahiriAyanamsha.load()` sonuçlarını canonical `0.02°` budget'a bağlayan regression ekledi.
 - `3f309fd4cd59fc207df2e9560d1b41a5fe70bf8b` dedicated `RC1436 Lahiri Ayanamsha Independent Oracle` CI gate'ini ekledi.
-- Bu yeni Lahiri gate fiziksel SUCCESS vermeden Lahiri alt-kanıtı VERIFIED/DONE değildir.
+- `8f289ad590df576b5044503f0d5dbcbbf5865ce2` / `7a29595fc7fa71a713b6767875f04d33f204ea95` reproducibility verifier + pinned CI zincirini bağladı.
+- Dedicated `RC1436 Lahiri Ayanamsha Independent Oracle` run **34525091663 = SUCCESS**. Lahiri alt-kanıtı VERIFIED kabul edilebilir; global RC-1436 değildir.
+
+## CI / entitlement düzeltmesi
+
+- Exact `7a29595f...` HEAD'de `Feature Entitlement Contract` run `34525089261` yalnız source validator'ın stale test-title tokenı nedeniyle kırmızıydı; gerçek test artık menu yüzeyini de kapsayan `UI menu route and service surfaces use the same EntitlementService result` adını taşıyor.
+- `ab34e71d95142bb4aadf6918ba1468196f56e82a` validator tokenını gerçek regression adıyla hizaladı. Requirement/evidence semantiği veya entitlement policy gevşetilmedi. Yeni exact-head CI fiziksel SUCCESS vermeden bu kırmızı kapı kapanmış sayılmaz.
 
 ## Açık blocker'lar
 
 - Daily-message strict editorial release audit kapanmadan RC-1425/1426/1433/1434 release-DONE değildir.
-- Astronomy manifest `proven=false`; Lahiri exact-head gate sonucu ve remaining applicable precision kanıtları açık olduğundan RC-1436 DONE değildir.
+- Astronomy manifest `proven=false`; DE440s geocentric longitude gate sonucu ve node longitude bağımsız accuracy proof'u açık olduğundan RC-1436 DONE değildir.
 - `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`; physical reference-dependent UI release gate'leri açıktır.
 - RC-1437 specialist runtime-assets SUCCESS olsa da packaged/version/checksum/offline/legal final closure ayrıca gereklidir.
 - Exact AKİLES provenance/independent authoritative values açık.
@@ -75,8 +84,8 @@ Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budge
 
 ## Sonraki devam noktası
 
-1. Yeni exact HEAD üzerinde `RC1436 Lahiri Ayanamsha Independent Oracle` dedicated sonucunu fiziksel doğrula; kırmızıysa canonical `0.02°` budget'ı gevşetmeden kök nedeni düzelt ve yeniden doğrula.
-2. Lahiri physical SUCCESS sonrası astronomy manifestte kalan Sun/Moon/planet/node longitude budget sınıflarını independent packaged-runtime oracle zincirleriyle tek tek kapat; kanıtsız `proven=true` yapma.
+1. Exact HEAD üzerinde `Feature Entitlement Contract` düzeltmesini ve `RC1436 DE440s Geocentric Longitude Independent Oracle` dedicated sonucunu fiziksel doğrula; kırmızıysa canonical bütçeleri gevşetmeden kök nedeni düzelt.
+2. Sun/Moon/planet longitude physical SUCCESS sonrası `nodeLongitudeMaxAbsErrorDegrees=0.02` için production lunar-node motorunu bağımsız oracle ile kapat; kanıtsız `proven=true` yapma.
 3. RC-1362→1374 airplane-mode release/device koşusunu gerçek production capability instrumentation'a genişlet.
 4. Daily-message strict audit, RC-1439 physical references, encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
 5. Cancelled Vedic/calculation workflow'larını SUCCESS kabul etme; exact final HEAD üzerinde zorunlu kritik workflow seti fiziksel çalışmadan lifecycle yükseltme.
