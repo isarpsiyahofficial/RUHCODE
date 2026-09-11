@@ -25,6 +25,10 @@ jobs:
         run: flutter --version
       - name: Resolve dependencies
         run: flutter pub get
+      - name: Install pinned independent NAIF SPICE reader
+        run: python3 -m pip install --disable-pip-version-check spiceypy==6.0.0
+      - name: Materialize RC1436 independent DE440s longitude evidence
+        run: python3 tools/data/materialize_de440s_geocentric_longitude_oracle.py
       - name: Analyze
         shell: bash
         run: |
@@ -48,7 +52,7 @@ jobs:
               ('test', Path('flutter-test.log')),
           ]
           needles = re.compile(
-              r'(FAILED|Test failed|EXCEPTION CAUGHT|Expected:|Actual:|Which:|Error:|Exception:|Failure|warning|info|\[E\])',
+              r'(FAILED|Test failed|EXCEPTION CAUGHT|Expected:|Actual:|Which:|Error:|Exception:|Failure|\bwarning\b|\binfo\b|\[E\])',
               re.IGNORECASE,
           )
           emitted_any = False
