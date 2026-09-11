@@ -21,9 +21,12 @@
   ],
   "testEvidence": [
     "test/offline/offline_core_capabilities_rc1362_rc1374_test.dart",
+    "integration_test/offline_calculation_capabilities_test.dart",
     "tools/offline/validate_airplane_release_evidence.py",
+    "tools/offline/validate_airplane_capability_evidence.py",
     ".github/workflows/rc1362-rc1374-airplane-mode.yml"
   ],
   "startupEvidenceRule": "The release startup manifest must bind the checked-out commit SHA to the APK SHA-256, emulator/device identity, airplane/Wi-Fi/mobile-data state, running package PID and crash result. Startup evidence must explicitly keep exercisedCapabilities empty, endToEndCapabilitiesComplete=false and verifiableAsDone=false.",
-  "lifecycleRule": "The emulator launch proves airplane-mode release startup only. VERIFIED/DONE requires production instrumentation that exercises each listed production capability end-to-end on the release artifact and records exact artifact/device evidence."
+  "partialCapabilityEvidenceRule": "The Android integration harness may prove Western/Vedic/Numerology/BaZi/Planetary Hours production calculation code executes while airplane mode, Wi-Fi and mobile data are disabled. Because Flutter integration_test installs a test artifact rather than exercising the exact release APK, its manifest must set releaseArtifact=false, list records/PDF/CSV/restore/professional-client as remaining, and keep endToEndCapabilitiesComplete=false and verifiableAsDone=false.",
+  "lifecycleRule": "VERIFIED/DONE requires production instrumentation that exercises all ten listed production capabilities end-to-end on the exact release artifact and records exact artifact/device evidence. Neither release startup smoke nor the partial calculation integration harness may substitute for that final proof."
 }
