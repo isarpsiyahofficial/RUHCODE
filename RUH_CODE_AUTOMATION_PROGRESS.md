@@ -39,7 +39,7 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 - Diagnostics log kök nedeni ürün astronomy hesabı değil `test/calculation_core/true_lunar_node_independent_oracle_test.dart` içindeki üç `--fatal-infos` ihlaliydi: gereksiz `dart:typed_data` importu ve deprecated binary-messenger test API kullanımları.
 - `fae0a1e9d85b6ada49304549542f3ef67bc78ae7` (`fix(test): remove fatal Flutter analyzer infos`) ile test güncel `TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger` API'sine geçirildi ve gereksiz import kaldırıldı.
 - True-node evidence, packaged DE440s yolu ve `nodeLongitudeMaxAbsErrorDegrees=0.02` aynen korunur; requirement/tolerans gevşetilmedi.
-- Bu düzeltmenin yeni exact-head Flutter Quality SUCCESS'i henüz fiziksel olarak doğrulanmadan quality gate DONE/VERIFIED yükseltilmez.
+- Exact head `270fcc99882f49718418273d656ead080634988f` üzerinde Flutter Quality run `34576947043` oluşturuldu ve son kontrolde `queued`; fiziksel SUCCESS gelmeden quality gate yükseltilmez.
 
 ## Daily Message strict editorial/release audit
 
@@ -47,6 +47,9 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 - `Daily Message APK Packaging` run `34560868637` fiziksel `SUCCESS`: release APK build, packaged TR/EN asset doğrulaması ve digest adımı yeşil.
 - `Daily Message Editorial Contract` run `34568048635` fiziksel `SUCCESS`: structural lifecycle, committed editorial ledger, schema normalization, leap-date, rolling release horizon, catalog auditor, sharded pipeline, packaged offline Flutter catalog loader, deterministic complete catalog ve strict 8036-record release audit aynı run içinde yeşil.
 - `evidence/content/daily_messages_editorial_progress.json` bu fiziksel CI kanıtlarıyla `EDITORIAL_RELEASE_AUDIT_VERIFIED_DEVICE_PROOF_PENDING` durumuna yükseltildi (`f2108f84219154741a3b8fe2d94f2b875c29a631`). `done=false` korunur.
+- Sonraki exact-head run `34568742483` lifecycle mismatch nedeniyle `FAILURE` verdi: validator yalnız pre-audit `EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT` durumunu kabul ederken evidence haklı olarak post-audit/device-pending duruma yükselmişti; içerik/catalog doğruluğu kırılmamıştı.
+- `67fd5e5a2e1c6751f21d40818738e66aa11b6db2` ile validator post-audit/device-pending non-DONE lifecycle çiftini fail-closed olarak kabul edecek şekilde genişletildi; `done=false` zorunluluğu korunur.
+- `270fcc99882f49718418273d656ead080634988f` ile bu lifecycle geçişi için dedicated regression testi eklendi. Exact-head Daily Message Editorial run `34576946861` son kontrolde `queued`; fiziksel SUCCESS gelmeden yeni run VERIFIED sayılmaz.
 - Kalan: final approved Today/Daily Message UI bağlantısı, gerçek Android cihaz/emülatörde airplane-mode release APK open/serve kanıtı ve rolling future-stock maintenance.
 
 ## RC-1439 physical references
@@ -58,7 +61,7 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 ## Açık blocker'lar
 
 - Flutter Quality düzeltmesinin exact-head fiziksel SUCCESS kanıtı alınmalı.
-- Daily Message için gerçek airplane-mode Android device/emulator proof ve final approved UI binding açık; strict editorial/release audit ve APK packaging alt-kanıtları VERIFIED durumdadır.
+- Daily Message lifecycle validator repair'inin exact-head strict Editorial SUCCESS'i alınmalı; gerçek airplane-mode Android device/emulator proof ve final approved UI binding ayrıca açık kalır.
 - RC-1439 project-owner physical reference evidence açık.
 - Exact AKİLES provenance/independent authoritative values açık.
 - Encrypted persistence/key management/migrations, full airplane-mode production instrumentation/device evidence, rendered TR/EN UI/PDF, accessibility/performance, real entitlement/ad/rewarded verifier ve remaining Vedic/Panchanga/Dasha/Varga/Gochara/BaZi proof zincirleri açık.
@@ -67,7 +70,7 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 
 ## Sonraki devam noktası
 
-1. `fae0a1e9...` analyzer repair sonrası Flutter Quality'nin exact-head sonucunu fiziksel doğrula; kırmızıysa diagnostics logdan kök nedeni aynı çalıştırmada düzelt.
+1. Exact head üzerindeki Flutter Quality run `34576947043` ve Daily Message Editorial run `34576946861` sonuçlarını fiziksel doğrula; kırmızıysa logdan kök nedeni aynı çalıştırmada düzelt.
 2. Daily Message final Today/UI binding ve gerçek Android airplane-mode release APK catalog open/serve proof zincirini kur; strict audit veya APK packaging SUCCESS'i device proof yerine sayma.
 3. Astronomy accuracy manifestte henüz independent/boundary proof taşımayan applicable sınıfları tek tek kapat; global `proven=true` yalnız bütün zorunlu sınıflar gerçekten kanıtlandığında verilir.
 4. RC-1362→1374 airplane-mode gate'ini gerçek production capability/device instrumentation'a genişlet.
