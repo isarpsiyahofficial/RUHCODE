@@ -16,7 +16,14 @@
     "RC-1373": "Only advertising, store verification and explicit external sharing may depend on internet.",
     "RC-1374": "Offline-core acceptance requires end-to-end airplane-mode evidence."
   },
-  "productionEvidence": ["lib/src/offline/offline_core_capabilities.dart"],
-  "testEvidence": ["test/offline/offline_core_capabilities_rc1362_rc1374_test.dart", ".github/workflows/rc1362-rc1374-airplane-mode.yml"],
-  "lifecycleRule": "The emulator launch proves airplane-mode release startup. VERIFIED/DONE requires instrumentation that exercises each listed production capability end-to-end and records exact artifact/device evidence."
+  "productionEvidence": [
+    "lib/src/offline/offline_core_capabilities.dart"
+  ],
+  "testEvidence": [
+    "test/offline/offline_core_capabilities_rc1362_rc1374_test.dart",
+    "tools/offline/validate_airplane_release_evidence.py",
+    ".github/workflows/rc1362-rc1374-airplane-mode.yml"
+  ],
+  "startupEvidenceRule": "The release startup manifest must bind the checked-out commit SHA to the APK SHA-256, emulator/device identity, airplane/Wi-Fi/mobile-data state, running package PID and crash result. Startup evidence must explicitly keep exercisedCapabilities empty, endToEndCapabilitiesComplete=false and verifiableAsDone=false.",
+  "lifecycleRule": "The emulator launch proves airplane-mode release startup only. VERIFIED/DONE requires production instrumentation that exercises each listed production capability end-to-end on the release artifact and records exact artifact/device evidence."
 }
