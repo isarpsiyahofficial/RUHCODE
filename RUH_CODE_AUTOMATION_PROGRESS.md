@@ -30,27 +30,33 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 - Nakshatra/Pada — packaged DE440s + Vedic frame normalization + Swiss/Lahiri, canonical `0.02° / 0.02°`.
 - Lahiri/Chitrapaksha — packaged 1895→2105 table + independent Swiss, canonical `0.02°`.
 - Mean lunar node — independent Swiss, canonical `0.02°`.
-- DE440s geocentric longitude — dedicated independent run `34577015349` fiziksel SUCCESS; Sun `0.01°`, Moon `0.02°`, gezegenler `0.02°`.
-- True lunar node — run `34577017537` ve önceki `34553042823` fiziksel SUCCESS; canonical `0.02°`. Global RC-1436 yine DONE değildir.
+- DE440s geocentric longitude — exact head `3c9c87339d05c9298ee3b9c654441c5a522a27cf` üzerinde dedicated run `34586949674` fiziksel SUCCESS; Sun `0.01°`, Moon `0.02°`, gezegenler `0.02°`.
+- True lunar node — önceki dedicated run'lar fiziksel SUCCESS; canonical `0.02°`. Global RC-1436 yine DONE değildir.
 
 ### DE440s evidence lifecycle / Flutter Quality
 
-- Exact head `0e123be49d1cd0e8d3e1ad8fc2abf50b8508b6a5` üzerinde Flutter Quality run `34577015998` fiziksel `FAILURE` verdi.
-- `Analyze` adımı SUCCESS idi; tek kırmızı `Test` adımıydı. Kök neden hesap doğruluğu değil `test/calculation_core/de440s_geocentric_longitude_oracle_test.dart` tarafından gereken `evidence/rc1436/de440s_geocentric_longitude_spice_oracle.json` dosyasının full-suite checkout'ta bulunmamasıydı.
-- Aynı exact branch için dedicated `RC1436 DE440s Geocentric Longitude Independent Oracle` run `34577015349` bu evidence'ı deterministik olarak üretti, 50 vakayı doğruladı ve production regression'ı SUCCESS verdi; ancak workflow içindeki `Commit canonical independent longitude evidence to triggering branch` adımı PR eventinde `skipped` kaldığı için full Flutter Quality workspace'i evidence'sız kaldı.
-- `f450e1cfdef026c23ba52c10534e9c075d2e8cd8` (`fix(ci): materialize RC1436 longitude evidence before full tests`) ile Flutter Quality artık full testten önce pinned `spiceypy==6.0.0` kurup aynı canonical materializer'ı çalıştırıyor. Böylece full suite bağımsız evidence lifecycle'ını kendi workspace'inde reproducible şekilde kuruyor; Sun/Moon/planet toleransları veya production hesap kodu değiştirilmedi.
-- Aynı değişiklik diagnostics regex'indeki geniş `info` eşleşmesini `\binfo\b`/`\bwarning\b` ile daraltır; bu yalnız hata görünürlüğünü temizler, gate seviyesini düşürmez.
-- Yeni exact head üzerinde Flutter Quality fiziksel SUCCESS gelmeden quality gate VERIFIED/DONE yükseltilmez.
+- `f450e1cfdef026c23ba52c10534e9c075d2e8cd8` (`fix(ci): materialize RC1436 longitude evidence before full tests`) ile Flutter Quality full testten önce pinned `spiceypy==6.0.0` kurup canonical DE440s materializer'ı çalıştırıyor; Sun/Moon/planet toleransları veya production hesap kodu değiştirilmedi.
+- Repair exact head `3c9c87339d05c9298ee3b9c654441c5a522a27cf` üzerinde Flutter Quality run `34586952087` fiziksel `SUCCESS` verdi. Böylece önceki full-suite evidence lifecycle blocker'ı bu head için kapandı.
+- Aynı head üzerinde RC1436 Nakshatra/Pada run `34586952057`, DE440s run `34586949674`, Solar Events run `34586951855`, ASC/MC run `34586950781` ve Lahiri run `34586950553` fiziksel `SUCCESS` durumundadır. Legacy `cancelled` calculation/Vedic workflow'ları bunların yerine veya SUCCESS olarak sayılmaz.
 
 ## Daily Message strict editorial/release audit
 
 - TR `4018` + EN `4018` = `8036` reviewed exact-date kayıt korunuyor; runtime AI generation/random fallback yasakları korunuyor.
-- `Daily Message APK Packaging` run `34577017798` fiziksel `SUCCESS`: release APK build ve packaged TR/EN asset doğrulaması green.
-- `Daily Message Editorial Contract` run `34576946861` fiziksel `SUCCESS`: lifecycle validator repair sonrası strict editorial zinciri yeniden yeşil doğrulandı.
-- Önceki `Daily Message Editorial Contract` run `34568048635` de fiziksel `SUCCESS`: structural lifecycle, committed editorial ledger, schema normalization, leap-date, rolling release horizon, catalog auditor, sharded pipeline, packaged offline Flutter catalog loader, deterministic complete catalog ve strict 8036-record release audit aynı run içinde yeşil.
+- `Daily Message APK Packaging` önceki fiziksel SUCCESS ile release APK build ve packaged TR/EN asset doğrulamasını kapattı.
+- `Daily Message Editorial Contract` run `34586951903` exact `3c9c873...` head üzerinde de fiziksel `SUCCESS`; structural lifecycle, committed editorial ledger, schema normalization, leap-date, rolling release horizon, catalog auditor, packaged offline Flutter catalog loader ve strict catalog zinciri yeşil kalıyor.
 - `evidence/content/daily_messages_editorial_progress.json` `EDITORIAL_RELEASE_AUDIT_VERIFIED_DEVICE_PROOF_PENDING` durumunda ve `done=false`; strict CI SUCCESS gerçek Android device proof yerine sayılmaz.
-- `67fd5e5a2e1c6751f21d40818738e66aa11b6db2` validator'ı post-audit/device-pending non-DONE lifecycle ile hizaladı; `270fcc99882f49718418273d656ead080634988f` dedicated regression ile bu geçişi test ediyor.
-- Kalan: final approved Today/Daily Message UI bağlantısı, gerçek Android cihaz/emülatörde airplane-mode release APK open/serve kanıtı ve rolling future-stock maintenance.
+- Kalan: final approved Today/Daily Message UI bağlantısı, Android airplane-mode release APK open/serve kanıtı ve rolling future-stock maintenance.
+
+## RC-1362→1374 airplane-mode lifecycle
+
+- Bağlayıcı contract açıkça RC-1362 test device/emulator airplane-mode egzersizi ile RC-1363→1372 Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client gerçek offline akışlarını ve RC-1374 end-to-end evidence'ı ayrı ayrı ister.
+- Önceki workflow yalnız release APK build + emulator install + airplane-mode launch + process-survival smoke sağlıyordu; bu nedenle VERIFIED/DONE için yeterli sayılmadı.
+- `58285c3f76385fb68cbc53a2efde42656d8cc9f0` ile `tools/offline/validate_airplane_release_evidence.py` eklendi. Validator startup kanıtını full capability kanıtından fail-closed ayırır.
+- `11748535121bb8915b450f9f4062ac44aa671a04` ile airplane workflow exact runtime provenance üretir: checked-out commit SHA, release APK SHA-256/path, emulator serial/model/API, airplane/Wi-Fi/mobile-data state, package PID ve crash log sonucu. JSON + APK checksum + logcat Actions artifact olarak yüklenir ve manifest ikinci kez doğrulanır.
+- Startup manifest bilinçli olarak `evidenceScope=startup-smoke`, `exercisedCapabilities=[]`, `endToEndCapabilitiesComplete=false`, `verifiableAsDone=false` taşır. Böylece startup smoke hiçbir zaman RC-1363→1374 E2E kanıtı gibi yanlış yükseltilemez.
+- `3b3e8b6bd90380ed0fac9606ce3fb928d70ffb3d` contract'a provenance validator'ı ve bu fail-closed lifecycle kuralını bağladı.
+- Eski exact head `3c9c873...` üzerindeki airplane run `34586950838` son kontrolde hâlâ `queued`; queued SUCCESS değildir. Yeni provenance değişikliklerinin exact-head run'ı fiziksel SUCCESS vermeden startup evidence TESTED/VERIFIED yükseltilmez.
+- Kalan esas blocker: production instrumentation release artifact üzerinde RC-1363→1372'nin on offline kabiliyetini gerçekten end-to-end çalıştırmalı ve capability-level evidence kaydetmelidir.
 
 ## RC-1439 physical references
 
@@ -60,22 +66,21 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 
 ## Açık blocker'lar
 
-- `f450e1cf...` Flutter Quality evidence-lifecycle repair'inin exact-head fiziksel SUCCESS kanıtı alınmalı.
-- Daily Message strict editorial ve APK packaging yeşil olsa da gerçek airplane-mode Android device/emulator proof ve final approved UI binding açık kalır.
-- RC-1362→1374 Airplane Mode run `34577014740` son kontrolde hâlâ `queued`; queued hiçbir zaman SUCCESS sayılmaz ve gerçek device/instrumentation proof yerine geçmez.
+- RC-1362→1374 yeni exact startup provenance workflow'u fiziksel SUCCESS ile doğrulanmalı; sonrasında RC-1363→1372 capability-level production instrumentation kurulmalı.
+- Daily Message strict editorial ve APK packaging yeşil olsa da gerçek airplane-mode Android catalog open/serve proof ve final approved UI binding açık kalır.
 - RC-1439 project-owner physical reference evidence açık.
 - Exact AKİLES provenance/independent authoritative values açık.
-- Encrypted persistence/key management/migrations, full airplane-mode production instrumentation/device evidence, rendered TR/EN UI/PDF, accessibility/performance, real entitlement/ad/rewarded verifier ve remaining Vedic/Panchanga/Dasha/Varga/Gochara/BaZi proof zincirleri açık.
+- Encrypted persistence/key management/migrations, rendered TR/EN UI/PDF, accessibility/performance, real entitlement/ad/rewarded verifier ve remaining Vedic/Panchanga/Dasha/Varga/Gochara/BaZi proof zincirleri açık.
 - RC-1442 exact clean-checkout artifact + tested commit SHA + artifact SHA eşleşmesi bütün 1.442 RC DONE/unblocked olmadan kapanamaz.
 - Legacy `cancelled` calculation/Vedic workflow'ları SUCCESS sayılmaz.
 
 ## Sonraki devam noktası
 
-1. `f450e1cfdef026c23ba52c10534e9c075d2e8cd8` sonrası Flutter Quality run'ını fiziksel doğrula; kırmızıysa diagnostics/logdan kök nedeni aynı çalıştırmada düzelt.
-2. Daily Message final Today/UI binding ve gerçek Android airplane-mode release APK catalog open/serve proof zincirini kur; strict audit veya APK packaging SUCCESS'i device proof yerine sayma.
-3. Astronomy accuracy manifestte henüz independent/boundary proof taşımayan applicable sınıfları tek tek kapat; global `proven=true` yalnız bütün zorunlu sınıflar gerçekten kanıtlandığında verilir.
-4. RC-1362→1374 airplane-mode gate'ini gerçek production capability/device instrumentation'a genişlet; queued/cancelled run'ları SUCCESS sayma.
-5. RC-1439 physical references dış blocker'ını açık tutarken encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
+1. Yeni RC-1362→1374 exact-head workflow run'ını fiziksel doğrula; kırmızıysa startup provenance koşusunun gerçek root cause'unu düzelt. Green olsa bile yalnız startup evidence olarak say.
+2. RC-1363→1372 için release APK üzerinde Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV restore+export/professional-client akışlarını gerçekten çalıştıran production integration/instrumentation harness kur; capability kanıtı olmayan akışı complete sayma.
+3. Daily Message final Today/UI binding ve airplane-mode release APK catalog open/serve proof zincirini aynı cihaz kanıt modeline bağla.
+4. Astronomy accuracy manifestte henüz independent/boundary proof taşımayan applicable sınıfları tek tek kapat; global `proven=true` yalnız bütün zorunlu sınıflar gerçekten kanıtlandığında verilir.
+5. RC-1439 physical references dış blocker'ını açık tutarken encrypted persistence/key-management/migrations, accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
 6. Yalnız requirement-specific evidence + physical CI SUCCESS varsa matrix state yükselt; global blocker varken DONE verme.
 7. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
