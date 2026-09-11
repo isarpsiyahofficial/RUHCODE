@@ -1,0 +1,63 @@
+name: RC1436 True Lunar Node Independent Oracle
+
+on:
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/ephemeris/lunar_node_calculator.dart'
+      - 'lib/src/calculation_core/ephemeris/de440s_ephemeris_provider.dart'
+      - 'lib/src/calculation_core/ephemeris/**'
+      - 'assets/data/ephemeris/de440s.bsp'
+      - 'evidence/rc1436/true_lunar_node_swiss_oracle.json'
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - 'test/calculation_core/true_lunar_node_independent_oracle_test.dart'
+      - 'tools/data/materialize_true_lunar_node_swiss_oracle.py'
+      - '.github/workflows/rc1436-true-lunar-node-oracle.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Install pinned independent Swiss oracle
+        run: python -m pip install --disable-pip-version-check pyswisseph==2.10.3.2
+      - name: Reproduce true-node oracle and reject drift
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp evidence/rc1436/true_lunar_node_swiss_oracle.json /tmp/true-node-expected.json
+          python tools/data/materialize_true_lunar_node_swiss_oracle.py
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          expected=json.loads(Path('/tmp/true-node-expected.json').read_text())
+          actual=json.loads(Path('evidence/rc1436/true_lunar_node_swiss_oracle.json').read_text())
+          if expected.keys() != actual.keys(): raise SystemExit('true-node oracle top-level schema drift')
+          for key in expected:
+              if key == 'cases': continue
+              if expected[key] != actual[key]: raise SystemExit(f'true-node oracle metadata drift: {key}')
+          if len(expected['cases']) != len(actual['cases']): raise SystemExit('true-node case-count drift')
+          for a,b in zip(expected['cases'], actual['cases']):
+              if a.keys()!=b.keys(): raise SystemExit('true-node case schema drift')
+              for key in a:
+                  av,bv=a[key],b[key]
+                  if isinstance(av,(int,float)) and isinstance(bv,(int,float)):
+                      if not math.isclose(float(av),float(bv),rel_tol=0.0,abs_tol=1e-9):
+                          raise SystemExit(f'true-node numeric drift {a["id"]}:{key}: {av} != {bv}')
+                  elif av != bv:
+                      raise SystemExit(f'true-node metadata drift {a["id"]}:{key}')
+          PY
+      - run: flutter pub get
+      - name: Execute packaged DE440s true-node regression
+        run: flutter test test/calculation_core/true_lunar_node_independent_oracle_test.dart
