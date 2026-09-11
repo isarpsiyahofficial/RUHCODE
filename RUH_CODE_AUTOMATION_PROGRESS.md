@@ -31,28 +31,31 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 - Lahiri/Chitrapaksha — packaged 1895→2105 table + independent Swiss, canonical `0.02°`.
 - Mean lunar node — independent Swiss, canonical `0.02°`.
 - DE440s geocentric longitude — run `34544790040` fiziksel SUCCESS; Sun `0.01°`, Moon `0.02°`, gezegenler `0.02°`. LSK/DELTET provenance fix zinciri `685b2bff...`, `68bd838e...`, `b2fbf088...` ile korunur.
+- True lunar node — dedicated `RC1436 True Lunar Node Independent Oracle` run `34553042823` fiziksel SUCCESS; canonical `nodeLongitudeMaxAbsErrorDegrees=0.02` bütçesi değiştirilmedi. Production/high-accuracy yol `5686d7820311426a0a6f615fd2a08f03633f3d6a`, independent Swiss evidence/materializer ve packaged DE440s regression zinciriyle kanıtlandı. Bu alt-kanıt **VERIFIED**; global RC-1436 yine DONE değildir.
 
-### True lunar node — current work
+## Flutter Quality — analyzer diagnostics repair
 
-Eski `LunarNodeCalculator.trueAscendingNodeDegrees` yalnız leading periodic terms kullanıyordu ve independent Swiss TRUE_NODE ile bazı epochlarda canonical `0.02°` bütçeyi aşıyordu. Tolerans büyütülmedi.
+- True-node kod dalındaki Flutter Quality run `34553041562` fiziksel `FAILURE` verdi; `Analyze` aşamasında kırıldığı için test aşaması çalışmadı.
+- Önceki run `34544788584` üzerinde analyzer yeşildi; o tarihte test failure yalnız henüz materialize edilmemiş DE440s oracle evidence'dı ve sonraki DE440s dedicated SUCCESS ile kapanmıştır. Bu karşılaştırma yeni kırmızının true-node değişiklikleri sonrasında analyzer katmanında olduğunu izole eder.
+- Eski `.github/workflows/flutter-quality.yml` analyzer çıktısını dosyaya almıyor; failure parser yalnız `flutter-test.log` okuyordu. Bu yüzden analyzer kırmızısının gerçek satırı artifact/annotation olarak kayboluyordu.
+- `f39f9bc9551384e6fd9c8489c980024b99be3a92` (`ci: preserve Flutter analyzer diagnostics`): analyzer ve test ayrı loglara `tee` edilir, `pipefail` korunur, failure annotation parser her iki logu okur ve `flutter-quality-diagnostics` artifact'i her koşuda yüklenir. Bu requirement/tolerans gevşetmesi değildir; fail-closed teşhis zincirini güçlendirir.
+- Bu commit sonrası exact-head CI dalgası başladı. Analyzer'ın yeni görünür çıktısı fiziksel olarak alınmadan quality gate yeşil sayılmaz; gerçek lint/compile kök nedeni görünür olduğunda aynı requirement korunarak düzeltilecektir.
 
-Bu çalıştırmada:
+## Daily Message strict editorial/release audit — current work
 
-- `5686d7820311426a0a6f615fd2a08f03633f3d6a`: production/high-accuracy `trueAscendingNodeFromEphemerisDegrees` eklendi. Moon'un fiziksel ephemeris konumları mean ecliptic/equinox-of-date frame'ine taşınıp central-difference velocity ile `h = r × v` osculating orbital plane çıkarılır; ascending node `atan2(h.x, -h.y)` ile hesaplanır. Legacy analytical API compatibility için korunur fakat RC-1436 high-accuracy path değildir.
-- `d7a2e85b5cdc5dad74810f4516edefa532e0d9a2`: pinned Swiss TRUE_NODE independent materializer.
-- `4be463482bbab72c1250039e66b5f3205963e73c`: 1900/2000/2026/2050/2100 physical oracle evidence.
-- `7b8b4e00f6e55dc3b85cd0718ee3ace9e0379025` + `c6a7597ad70c998d343a84a883f30b2b9df25ffd`: packaged DE440s production regression; canonical `nodeLongitudeMaxAbsErrorDegrees=0.02` budgetunu manifestten okur.
-- `f6bbf354817575261379e76aa8c98cf0a69ffb2f`: dedicated `RC1436 True Lunar Node Independent Oracle` workflow.
-- Exact `f6bbf354...` üzerinde dedicated run `34553042823` fiziksel olarak oluşturuldu; checkpoint anında `queued`. SUCCESS gelmeden true-node VERIFIED değildir.
+`evidence/content/daily_messages_editorial_progress.json` 2026-01-01→2036-12-31 aralığında TR `4018` + EN `4018` = `8036` reviewed record taşıyor ve strict catalog audit için missing/near-duplicate/repetitive-opening/unsafe-certainty sayaçlarını sıfır raporluyor; buna rağmen ledger `done=false` ve özellikle rolling ten-year horizon + packaged asset-loader görünür CI SUCCESS'ini bekliyor.
 
-## Flutter Quality
+Bu çalıştırmada gerçek CI boşluğu kapatılmaya başlandı:
 
-Önceki missing-evidence failures için mean-node evidence fiziksel eklendi ve DE440s longitude dedicated gate artık SUCCESS verdi. Yeni exact `f6bbf354...` Flutter Quality run `34553041562` checkpoint anında queued; fiziksel sonuç gelmeden global quality green kabul edilmez.
+- Eski `Daily Message Editorial Contract` yalnız Python schema/catalog/horizon auditlerini çalıştırıyordu; ledger'da listelenen `test/content/daily_message_catalog_test.dart` ve `test/content/daily_message_asset_loader_test.dart` strict editorial gate'in içinde fiziksel olarak çalışmıyordu.
+- `3642892e15ea64666f3fba49d3f29eb3032ee2f1` (`ci(daily-message): prove packaged catalog loader in strict audit`): strict editorial workflow'a Flutter `3.44.7`, `flutter pub get` ve iki packaged/offline catalog testini ekledi. Workflow path filters artık production daily-message loader kodu, iki Flutter testi ve `pubspec.yaml` değişimlerini de kapsıyor. Böylece catalog structural audit + exact-date/ten-year horizon + packaged loader aynı görünür fail-closed CI zincirinde doğrulanabilir.
+- Aynı commit üzerinde `Daily Message APK Packaging` run `34560868637` fiziksel olarak oluşturuldu ve checkpoint anında `queued`; exact release APK asset kanıtı SUCCESS olmadan DONE verilmez.
+- Strict `Daily Message Editorial Contract` yeni workflow değişikliği nedeniyle tetiklenmek zorundadır; checkpoint anında commit-workflow ilk sayfasında henüz görünür run ID üretmemişti. Fiziksel SUCCESS görülmeden ledger `done=true` yapılmadı.
 
 ## Açık blocker'lar
 
-- True-node dedicated gate fiziksel SUCCESS bekliyor; astronomy manifest bundan ve diğer applicable accuracy sınıflarından önce `proven=true` olamaz.
-- Daily-message strict editorial release audit kapanmadan RC-1425/1426/1433/1434 release-DONE değildir.
+- Flutter Quality analyzer kırmızısı fiziksel olarak kök-neden satırıyla kapatılmalı; diagnostics-preserving workflow bunun için eklendi.
+- Daily-message strict editorial + rolling release-horizon + packaged loader ve APK/offline kanıt zinciri fiziksel SUCCESS olmadan RC-1425/1426/1433/1434 release-DONE değildir.
 - `requirements/reference_manifests/rc1439_reference_images.json` halen physical reference evidence gerektirir.
 - Exact AKİLES provenance/independent authoritative values açık.
 - Encrypted persistence/key management/migrations, full airplane-mode production instrumentation/device evidence, rendered TR/EN UI/PDF, accessibility/performance, real entitlement/ad/rewarded verifier ve remaining Vedic/Panchanga/Dasha/Varga/Gochara/BaZi proof zincirleri açık.
@@ -61,11 +64,11 @@ Bu çalıştırmada:
 
 ## Sonraki devam noktası
 
-1. Exact HEAD'de `RC1436 True Lunar Node Independent Oracle` run `34553042823` sonucunu fiziksel doğrula. Kırmızıysa `0.02°` bütçeyi değiştirmeden root-cause düzelt; yeşilse true-node alt-kanıtını VERIFIED kabul et.
-2. Exact HEAD Flutter Quality run sonucunu doğrula ve kalan test failure varsa aynı çalıştırmada kök nedenini gider.
+1. `f39f9bc...` sonrası Flutter Quality'nin yeni diagnostics artifact/annotation'ından gerçek analyzer failure satırını al; requirementları gevşetmeden kod/test kök nedenini düzelt ve exact-head SUCCESS ile doğrula.
+2. `3642892e...` strict Daily Message Editorial Contract ve APK Packaging sonuçlarını fiziksel doğrula. Editorial kırmızıysa schema/horizon/packaged-loader kök nedenini aynı strict kapsamla düzelt; yeşilse ilgili alt-kanıtı VERIFIED yükselt fakat device/offline APK kanıtı eksikse DONE verme.
 3. Astronomy accuracy manifestte henüz independent proof taşımayan applicable sınıfları tek tek kapat; hiçbirini birleştirip kaybetme.
 4. RC-1362→1374 airplane-mode gate'ini gerçek production capability/device instrumentation'a genişlet.
-5. Daily-message strict audit, RC-1439 physical references, encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
+5. RC-1439 physical references, encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
 6. Yalnız requirement-specific evidence + exact-head SUCCESS varsa matrix state yükselt; global blocker varken DONE verme.
 7. RC-0001→RC-1442 tamamı DONE, bütün release kapıları green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
