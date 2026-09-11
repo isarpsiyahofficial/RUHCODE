@@ -10,68 +10,50 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 - RC-0306→0323 = TESTED + blocked=YES (`cee7256c9166b511c61d4cace9dfa053aa27b4bd`).
 - RC-0324→0950 implementation/matrix zincirleri mevcut; global golden/device/PDF/backup blocker'ları nedeniyle toplu DONE değildir.
 - RC-0951→0964 = IMPLEMENTED + blocked=YES (`5f08942462a0b3784725b9fd7e65de0cc22eb50e`).
-- RC-0965→0994 traceability release-mode fail-closed; 1.442 requirement doğrudan evidence ile kapanmış değildir.
+- RC-0965→0994 traceability fail-closed; 1.442 requirement doğrudan evidence ile kapanmış değildir.
 - RC-0995→1003 authoritative golden contract mevcut; exact AKİLES provenance/independent values eksik.
-- RC-1004→1039 = IMPLEMENTED + blocked=YES (`fb71d1b9703f35a4dec499e7d7de33151d57a75e`).
-- RC-1040→1058 = IMPLEMENTED + blocked=YES (`d96a3b5c1821d81739b491757795cfced5ba040a`).
-- RC-1059→1084 = IMPLEMENTED + blocked=YES (`ed87a5c385425a0c3e7f59f7f884c8dc55cab8f6`).
-- RC-1085→1104 = IMPLEMENTED + blocked=YES (`a9c4b832269328935dbf6d4753f603d17fa5b1f7`).
+- RC-1004→1104 implementation/test zincirleri mevcut fakat global blocker'lar açıktır.
 - RC-1105→1130 dependency/offline governance mevcut; `pubspec.lock` fiziksel.
-- Stacked PR zinciri #1→#16 mevcut. Branch `agent/rc1421-rc1442-release-closure`, PR #16.
+- Stacked PR zinciri #1→#16 mevcut. Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16.
 - Fiziksel SUCCESS ile doğrulanan kritik gate'ler arasında RC-1304→1344 Golden Lifecycle, RC-1345→1361 Release Cleanliness, RC-1375→1404 Final Traceability, RC-1405→1420 Local Core Cost Architecture ve RC-1437 Runtime Assets vardır; bunlar global DONE değildir.
-- RC-1436 alt-kanıtlarında ASC/MC, Placidus, Solar Events, Planetary Hours, Nakshatra/Pada ve Lahiri Ayanamsha independent oracle gate'leri fiziksel SUCCESS ile doğrulanmıştır.
-- `RC1436 Mean Lunar Node Independent Oracle` exact `dbb6a8fc...` dalgasında fiziksel SUCCESS verdi. Mean-node alt-kanıtı VERIFIED kabul edilebilir; true-node bundan ayrı kalır.
-- `Feature Entitlement Contract` stale-validator düzeltmesi sonrası exact `dbb6a8fc...` dalgasında fiziksel SUCCESS verdi.
 
-## RC-1436 — independent astronomy accuracy proof
+## RC-1436 independent astronomy accuracy
 
-Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budgets.json` içinden okunur ve test geçsin diye gevşetilmez. Global manifest halen `proven=false`; bütün applicable accuracy sınıfları tamamlanmadan RC-1436 DONE değildir.
+Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budgets.json` içinden okunur ve test geçirmek için gevşetilmez. Global manifest halen `proven=false`.
 
-### DE440s / geocentric longitude
+Fiziksel SUCCESS ile doğrulanan alt-kanıtlar:
 
-- DE440s runtime geometric geocentric **J2000-ecliptic** state üretir ve `EclipticReferenceFrame.j2000Geometric` ile explicit taşınır (`37b2ff4f7fc2adbcc022a37095a3c84e942e611e`, `74300d755efbf3fd020a5443130dfdf9ba93ccbb`).
-- `2953598cb6b147be8b8970754a044029eb9eb033`: independent CSPICE `ECLIPJ2000` geocentric longitude materializer.
-- `40bee6682e7f6f7fefedf007f94b89f3e1ba0bf5`: packaged `De440sEphemerisProvider` için 10 body × 5 epoch = 50 vaka regression; Sun `0.01°`, Moon `0.02°`, planet `0.02°` canonical budgetları manifestten okunur.
-- `928fb7e1d630e21fd070d20ff614c383767ed714`: dedicated independent-oracle CI.
-- Exact `dbb6a8fc...` run `34536179064` production regression'a ulaşmadan materializer'da kırıldı. Kök neden accuracy değildi: oracle yalnız `de440s.bsp` furnish edip `unitim(JDTDT -> ET)` çağırıyordu; CSPICE DELTET zaman sabitleri kernel pool'da yoktu.
-- `685b2bffbf3e7dfbfacca33477090d3360bc78aa`: resmi NAIF `naif0012.tls` DELTET/leap-second semantiğini taşıyan pinned minimal LSK `tools/data/kernels/naif0012_minimal.tls` repository'ye eklendi.
-- `68bd838eef5c046c7d7072d4cb4f534929d7c210`: materializer LSK + BSP furnish edecek şekilde düzeltildi; evidence artık time-kernel path/SHA/source provenance taşır.
-- `b2fbf08887ef995890cfbe2cb1ed6af9eaa8e10c`: dedicated CI LSK değişikliklerinde tetiklenir ve time-kernel SHA/path/source provenance'ını fail-closed doğrular.
-- Yeni DE440s gate `34544686457` oluşturuldu; bu checkpoint anında pending. Fiziksel SUCCESS olmadan Sun/Moon/planet longitude VERIFIED değildir.
+- ASC/MC — independent Swiss, canonical `0.05°`.
+- Placidus 12 cusp — independent Swiss, canonical `0.05°`.
+- Sunrise/sunset — independent Swiss, canonical `60 s`.
+- Planetary hours — 25 boundary, canonical `60 s`.
+- Nakshatra/Pada — packaged DE440s + Vedic frame normalization + Swiss/Lahiri, canonical `0.02° / 0.02°`.
+- Lahiri/Chitrapaksha — packaged 1895→2105 table + independent Swiss, canonical `0.02°`.
+- Mean lunar node — independent Swiss, canonical `0.02°`.
+- DE440s geocentric longitude — run `34544790040` fiziksel SUCCESS; Sun `0.01°`, Moon `0.02°`, gezegenler `0.02°`. LSK/DELTET provenance fix zinciri `685b2bff...`, `68bd838e...`, `b2fbf088...` ile korunur.
 
-### Mean lunar node
+### True lunar node — current work
 
-- Canonical `nodeLongitudeMaxAbsErrorDegrees=0.02`; değiştirilmemiştir.
-- `b7efefa25170e90ba5d547bd006b30ffeaaa04e7`: pinned Swiss `MEAN_NODE` materializer.
-- `7ec392e0959dc5d761529a5bcf9a6b6c390286e8`: production mean-node canonical budget regression.
-- `85b20622f2e9e5559f37dd2eb322db0a8dc6466d`: dedicated gate; fiziksel SUCCESS doğrulandı.
-- Flutter Quality `34536178954` test failure'larından biri `evidence/rc1436/mean_lunar_node_swiss_oracle.json` dosyasının branch'te fiziksel bulunmamasıydı; algoritma/test assertion failure değildi.
-- `491605bc66829426b7ba976f4fea65f7d073ec88`: dedicated SUCCESS ile aynı pinned Swiss semantics/version (`2.10.03`) kullanılarak canonical mean-node evidence repository'ye fiziksel eklendi.
-- True-node alt-kanıtı açık: mevcut leading-periodic approximation bazı epochlarda independent Swiss true-node'a karşı `0.02°` sınırını aşabiliyor; tolerans büyütülmedi ve VERIFIED yapılmadı.
+Eski `LunarNodeCalculator.trueAscendingNodeDegrees` yalnız leading periodic terms kullanıyordu ve independent Swiss TRUE_NODE ile bazı epochlarda canonical `0.02°` bütçeyi aşıyordu. Tolerans büyütülmedi.
 
-### Diğer VERIFIED RC-1436 alt-kanıtları
+Bu çalıştırmada:
 
-- ASC/MC: independent Swiss, canonical `0.05°`, multi-century/cross-hemisphere; SUCCESS.
-- Placidus: 12 cusp, canonical `0.05°`, polar fail-closed korunur; SUCCESS.
-- Sunrise/sunset: independent Swiss `swe.rise_trans`, canonical `60 s`; SUCCESS.
-- Planetary hours: 25 unique boundary, canonical `60 s`; SUCCESS.
-- Nakshatra/Pada: J2000→tropical-of-date Vedic frame normalization + pinned Swiss/Lahiri oracle; canonical `0.02° / 0.02°`; SUCCESS.
-- Lahiri/Chitrapaksha: packaged 1895→2105 tabulation + interpolation regression + reproducibility verifier; canonical `0.02°`; dedicated run `34525091663` SUCCESS.
+- `5686d7820311426a0a6f615fd2a08f03633f3d6a`: production/high-accuracy `trueAscendingNodeFromEphemerisDegrees` eklendi. Moon'un fiziksel ephemeris konumları mean ecliptic/equinox-of-date frame'ine taşınıp central-difference velocity ile `h = r × v` osculating orbital plane çıkarılır; ascending node `atan2(h.x, -h.y)` ile hesaplanır. Legacy analytical API compatibility için korunur fakat RC-1436 high-accuracy path değildir.
+- `d7a2e85b5cdc5dad74810f4516edefa532e0d9a2`: pinned Swiss TRUE_NODE independent materializer.
+- `4be463482bbab72c1250039e66b5f3205963e73c`: 1900/2000/2026/2050/2100 physical oracle evidence.
+- `7b8b4e00f6e55dc3b85cd0718ee3ace9e0379025` + `c6a7597ad70c998d343a84a883f30b2b9df25ffd`: packaged DE440s production regression; canonical `nodeLongitudeMaxAbsErrorDegrees=0.02` budgetunu manifestten okur.
+- `f6bbf354817575261379e76aa8c98cf0a69ffb2f`: dedicated `RC1436 True Lunar Node Independent Oracle` workflow.
+- Exact `f6bbf354...` üzerinde dedicated run `34553042823` fiziksel olarak oluşturuldu; checkpoint anında `queued`. SUCCESS gelmeden true-node VERIFIED değildir.
 
-## Flutter Quality kök neden kaydı
+## Flutter Quality
 
-Exact `dbb6a8fc...` Flutter Quality run `34536178954`: Analyze SUCCESS, Test FAILURE. Diagnostics artifact fiziksel incelendi. Yalnız iki yeni oracle testinin checked-in evidence bulamaması failure üretti:
-
-1. `de440s_geocentric_longitude_oracle_test.dart` — DE440s evidence yoktu; dedicated materializer da eksik LSK nedeniyle üretememişti. LSK kök nedeni yukarıdaki üç commit ile düzeltildi; dedicated gate'in SUCCESS + canonical evidence üretimi beklenir.
-2. `mean_lunar_node_independent_oracle_test.dart` — mean-node evidence yoktu. `491605bc...` ile fiziksel canonical evidence eklendi.
-
-Analyzer kırmızı değildir; requirement toleransı veya production algorithm test geçirmek için değiştirilmemiştir.
+Önceki missing-evidence failures için mean-node evidence fiziksel eklendi ve DE440s longitude dedicated gate artık SUCCESS verdi. Yeni exact `f6bbf354...` Flutter Quality run `34553041562` checkpoint anında queued; fiziksel sonuç gelmeden global quality green kabul edilmez.
 
 ## Açık blocker'lar
 
+- True-node dedicated gate fiziksel SUCCESS bekliyor; astronomy manifest bundan ve diğer applicable accuracy sınıflarından önce `proven=true` olamaz.
 - Daily-message strict editorial release audit kapanmadan RC-1425/1426/1433/1434 release-DONE değildir.
-- Astronomy manifest `proven=false`; DE440s geocentric longitude exact-head SUCCESS/evidence ve high-accuracy true-node proof açık olduğundan RC-1436 DONE değildir.
-- `requirements/reference_manifests/rc1439_reference_images.json` status `NOT_PROVEN`, `images=[]`; physical reference-dependent UI release gate'leri açıktır.
+- `requirements/reference_manifests/rc1439_reference_images.json` halen physical reference evidence gerektirir.
 - Exact AKİLES provenance/independent authoritative values açık.
 - Encrypted persistence/key management/migrations, full airplane-mode production instrumentation/device evidence, rendered TR/EN UI/PDF, accessibility/performance, real entitlement/ad/rewarded verifier ve remaining Vedic/Panchanga/Dasha/Varga/Gochara/BaZi proof zincirleri açık.
 - RC-1442 exact clean-checkout artifact + tested commit SHA + artifact SHA eşleşmesi bütün 1.442 RC DONE/unblocked olmadan kapanamaz.
@@ -79,9 +61,9 @@ Analyzer kırmızı değildir; requirement toleransı veya production algorithm 
 
 ## Sonraki devam noktası
 
-1. Exact HEAD'de `RC1436 DE440s Geocentric Longitude Independent Oracle` run sonucunu fiziksel doğrula. SUCCESS ise generated evidence'ın branch'te fiziksel commit edildiğini doğrula; değilse aynı canonical bütçeleri koruyarak yeni kök nedeni düzelt.
-2. Flutter Quality'yi yeni exact HEAD'de doğrula; artık mean-node evidence mevcut ve DE440s evidence canonical gate tarafından üretildikten sonra iki missing-evidence failure da kapanmalıdır.
-3. True ascending lunar node hesabını canonical `0.02°` bütçeye taşı ve ayrı independent Swiss/ephemeris oracle ile kanıtla; mean ve true semantiğini birleştirme.
+1. Exact HEAD'de `RC1436 True Lunar Node Independent Oracle` run `34553042823` sonucunu fiziksel doğrula. Kırmızıysa `0.02°` bütçeyi değiştirmeden root-cause düzelt; yeşilse true-node alt-kanıtını VERIFIED kabul et.
+2. Exact HEAD Flutter Quality run sonucunu doğrula ve kalan test failure varsa aynı çalıştırmada kök nedenini gider.
+3. Astronomy accuracy manifestte henüz independent proof taşımayan applicable sınıfları tek tek kapat; hiçbirini birleştirip kaybetme.
 4. RC-1362→1374 airplane-mode gate'ini gerçek production capability/device instrumentation'a genişlet.
 5. Daily-message strict audit, RC-1439 physical references, encrypted persistence/accessibility/performance ve packaged dataset/license zincirlerini bağımsız ilerlet.
 6. Yalnız requirement-specific evidence + exact-head SUCCESS varsa matrix state yükselt; global blocker varken DONE verme.
