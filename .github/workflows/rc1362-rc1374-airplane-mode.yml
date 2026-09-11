@@ -7,8 +7,12 @@ on:
     paths:
       - 'lib/src/offline/offline_core_capabilities.dart'
       - 'test/offline/offline_core_capabilities_rc1362_rc1374_test.dart'
+      - 'integration_test/offline_calculation_capabilities_test.dart'
       - 'requirements/contracts/rc1362_rc1374_airplane_mode_contract.json'
       - 'tools/offline/validate_airplane_release_evidence.py'
+      - 'tools/offline/validate_airplane_capability_evidence.py'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
       - '.github/workflows/rc1362-rc1374-airplane-mode.yml'
   workflow_dispatch:
 
@@ -33,11 +37,15 @@ jobs:
           assert list(d['requirements']) == expected
           print('RC1362_RC1374_CONTRACT_OK')
           PY
-      - name: Compile airplane evidence validator
-        run: python -m py_compile tools/offline/validate_airplane_release_evidence.py
+      - name: Compile airplane evidence validators
+        run: |
+          python -m py_compile \
+            tools/offline/validate_airplane_release_evidence.py \
+            tools/offline/validate_airplane_capability_evidence.py
       - uses: subosito/flutter-action@v2
         with: {flutter-version: '3.44.7', channel: stable, cache: true}
       - run: flutter pub get
+      - run: flutter analyze integration_test/offline_calculation_capabilities_test.dart
       - run: flutter test test/offline/offline_core_capabilities_rc1362_rc1374_test.dart
 
   airplane-release-launch:
@@ -45,9 +53,10 @@ jobs:
     # API-35 software emulation has already produced ADB Broken pipe failures
     # after a successful release build. macos-13 provides accelerated x86_64
     # emulation and makes this a product startup test rather than a host test.
-    # This job proves exact release-artifact startup provenance only. It must
-    # remain fail-closed and MUST NOT claim the ten RC-1363..1372 production
-    # capabilities were exercised end to end.
+    # The release launch below proves exact release-artifact startup provenance.
+    # The integration harness then exercises five production calculation cores
+    # on the same radio-disabled Android emulator. That second proof is partial:
+    # it is NOT exact-release-APK evidence and MUST NOT be promoted to DONE.
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +65,7 @@ jobs:
       - run: flutter pub get
       - name: Build release APK
         run: flutter build apk --release
-      - name: Install release APK, enable airplane mode, launch and record exact provenance
+      - name: Install release APK, enable airplane mode, launch and exercise calculation cores
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -68,6 +77,8 @@ jobs:
             APK=build/app/outputs/flutter-apk/app-release.apk
             EVIDENCE_DIR=evidence/runtime/airplane-mode
             MANIFEST="$EVIDENCE_DIR/startup-smoke.json"
+            CAPABILITY_MANIFEST="$EVIDENCE_DIR/device-calculation-smoke.json"
+            CAPABILITY_LOG="$EVIDENCE_DIR/device-calculation-smoke.log"
             PACKAGE=com.ruhcode.ruh_code
             mkdir -p "$EVIDENCE_DIR"
             test -s "$APK"
@@ -81,7 +92,6 @@ jobs:
             adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null
             adb shell svc wifi disable
             adb shell svc data disable
-            # Record explicit fail-closed settings alongside the Android radio commands.
             adb shell settings put global wifi_on 0
             adb shell settings put global mobile_data 0
 
@@ -140,7 +150,6 @@ jobs:
                     'pid': int(os.environ['PID']),
                     'crashDetected': False,
                 },
-                # Startup evidence is intentionally not capability evidence.
                 'exercisedCapabilities': [],
                 'endToEndCapabilitiesComplete': False,
                 'verifiableAsDone': False,
@@ -155,21 +164,88 @@ jobs:
               "$MANIFEST" --expected-commit "$GITHUB_SHA"
             echo "RC1362_AIRPLANE_RELEASE_STARTUP_OK pid=$PID sha256=$APK_SHA"
 
-      - name: Revalidate persisted airplane startup manifest
+            # Exercise actual production calculation classes on Android while
+            # airplane mode remains enabled. integration_test installs a test
+            # artifact, so this is deliberately separate from release evidence.
+            flutter test integration_test/offline_calculation_capabilities_test.dart \
+              -d "$DEVICE_SERIAL" --reporter expanded 2>&1 | tee "$CAPABILITY_LOG"
+
+            AIRPLANE_AFTER="$(adb shell settings get global airplane_mode_on | tr -d '\r')"
+            WIFI_AFTER="$(adb shell settings get global wifi_on | tr -d '\r')"
+            DATA_AFTER="$(adb shell settings get global mobile_data | tr -d '\r')"
+            test "$AIRPLANE_AFTER" = "1"
+            test "$WIFI_AFTER" = "0"
+            test "$DATA_AFTER" = "0"
+
+            export CAPABILITY_MANIFEST
+            python - <<'PY'
+            import json, os
+            from pathlib import Path
+
+            payload = {
+                'schemaVersion': 1,
+                'evidenceScope': 'device-calculation-smoke',
+                'commitSha': os.environ['GITHUB_SHA'],
+                'releaseArtifact': False,
+                'testTarget': 'integration_test/offline_calculation_capabilities_test.dart',
+                'device': {
+                    'kind': 'emulator',
+                    'serial': os.environ['DEVICE_SERIAL'],
+                    'model': os.environ['DEVICE_MODEL'],
+                    'apiLevel': os.environ['API_LEVEL'],
+                },
+                'networkState': {
+                    'airplaneModeEnabled': True,
+                    'wifiDisabled': True,
+                    'mobileDataDisabled': True,
+                },
+                'testCommandSucceeded': True,
+                'exercisedCapabilities': [
+                    'westernChart',
+                    'vedic',
+                    'numerology',
+                    'bazi',
+                    'planetaryHours',
+                ],
+                'remainingCapabilities': [
+                    'records',
+                    'pdfExport',
+                    'csvExport',
+                    'csvRestore',
+                    'professionalClientManagement',
+                ],
+                'endToEndCapabilitiesComplete': False,
+                'verifiableAsDone': False,
+            }
+            Path(os.environ['CAPABILITY_MANIFEST']).write_text(
+                json.dumps(payload, indent=2, sort_keys=True) + '\n',
+                encoding='utf-8',
+            )
+            PY
+            python tools/offline/validate_airplane_capability_evidence.py \
+              "$CAPABILITY_MANIFEST" --expected-commit "$GITHUB_SHA"
+            echo 'RC1363_RC1367_AIRPLANE_DEVICE_CALCULATION_OK'
+
+      - name: Revalidate persisted airplane manifests
         run: |
           set -euo pipefail
           python tools/offline/validate_airplane_release_evidence.py \
             evidence/runtime/airplane-mode/startup-smoke.json \
             --expected-commit "$GITHUB_SHA"
+          python tools/offline/validate_airplane_capability_evidence.py \
+            evidence/runtime/airplane-mode/device-calculation-smoke.json \
+            --expected-commit "$GITHUB_SHA"
           shasum -a 256 -c evidence/runtime/airplane-mode/apk.sha256
 
-      - name: Upload exact airplane startup evidence
+      - name: Upload exact airplane startup and partial capability evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rc1362-rc1374-airplane-startup-${{ github.sha }}
+          name: rc1362-rc1374-airplane-evidence-${{ github.sha }}
           path: |
             evidence/runtime/airplane-mode/startup-smoke.json
+            evidence/runtime/airplane-mode/device-calculation-smoke.json
+            evidence/runtime/airplane-mode/device-calculation-smoke.log
             evidence/runtime/airplane-mode/apk.sha256
             evidence/runtime/airplane-mode/release-logcat.txt
           if-no-files-found: error
@@ -196,15 +272,15 @@ jobs:
           p=Path('requirements/requirement_state.csv')
           with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
           fields=list(rows[0].keys()); found=set()
-          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|tools/offline/validate_airplane_release_evidence.py|.github/workflows/rc1362-rc1374-airplane-mode.yml'
+          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|integration_test/offline_calculation_capabilities_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|tools/offline/validate_airplane_release_evidence.py|tools/offline/validate_airplane_capability_evidence.py|.github/workflows/rc1362-rc1374-airplane-mode.yml'
           for r in rows:
             if r['rc_id'] not in targets: continue
             found.add(r['rc_id'])
             if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
             r['evidence_links']=links
             r['blocked']='YES'
-            r['blocker']='Exact release APK airplane-mode startup provenance exists, but production instrumentation must exercise Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client flows end-to-end before VERIFIED/DONE.'
-            r['notes']='Offline core contract is fail-closed; startup manifest binds commit SHA, APK SHA-256, emulator identity, radio state, PID and crash result while explicitly refusing end-to-end/DONE claims.'
+            r['blocker']='Exact release APK startup provenance exists and Android calculation harness covers RC-1363..1367, but exact-release instrumentation must still exercise all ten Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client flows end-to-end before VERIFIED/DONE.'
+            r['notes']='Offline core contract remains fail-closed. Calculation-device evidence explicitly sets releaseArtifact=false and verifiableAsDone=false; it cannot substitute for exact-release end-to-end proof.'
           if found != targets: raise SystemExit(f'RC1362_RC1374_FAIL missing={sorted(targets-found)}')
           with p.open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
