@@ -1,0 +1,46 @@
+{
+  "body": "TRUE_NODE",
+  "cases": [
+    {
+      "id": "1900-01-01",
+      "jdTt": 2415020.5,
+      "longitudeDegrees": 260.2624292490008,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2000-01-01T12",
+      "jdTt": 2451545.0,
+      "longitudeDegrees": 123.95719898027723,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2026-01-01",
+      "jdTt": 2461041.5,
+      "longitudeDegrees": 340.95227049641755,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2050-01-01",
+      "jdTt": 2469807.5,
+      "longitudeDegrees": 239.49487103767697,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2100-01-01",
+      "jdTt": 2488069.5,
+      "longitudeDegrees": 349.8345355640869,
+      "returnedFlags": 1620
+    }
+  ],
+  "coverage": {
+    "caseCount": 5,
+    "firstJdTt": 2415020.5,
+    "lastJdTt": 2488069.5
+  },
+  "provider": "Swiss Ephemeris via pyswisseph",
+  "providerVersion": "2.10.03",
+  "reference": "geocentric true/osculating ascending lunar node, mean ecliptic/equinox of date",
+  "requestedFlags": 84,
+  "status": "INDEPENDENT_TRUE_LUNAR_NODE_ORACLE_CAPTURED",
+  "timeScale": "TT"
+}
