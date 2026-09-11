@@ -8,6 +8,7 @@ on:
       - 'lib/src/offline/offline_core_capabilities.dart'
       - 'test/offline/offline_core_capabilities_rc1362_rc1374_test.dart'
       - 'requirements/contracts/rc1362_rc1374_airplane_mode_contract.json'
+      - 'tools/offline/validate_airplane_release_evidence.py'
       - '.github/workflows/rc1362-rc1374-airplane-mode.yml'
   workflow_dispatch:
 
@@ -32,6 +33,8 @@ jobs:
           assert list(d['requirements']) == expected
           print('RC1362_RC1374_CONTRACT_OK')
           PY
+      - name: Compile airplane evidence validator
+        run: python -m py_compile tools/offline/validate_airplane_release_evidence.py
       - uses: subosito/flutter-action@v2
         with: {flutter-version: '3.44.7', channel: stable, cache: true}
       - run: flutter pub get
@@ -40,8 +43,11 @@ jobs:
   airplane-release-launch:
     # Linux hosted runners currently expose no /dev/kvm in this workflow and
     # API-35 software emulation has already produced ADB Broken pipe failures
-    # after a successful 97.6 MB release build. macos-13 provides accelerated
-    # x86_64 emulation and makes this a product test rather than a host test.
+    # after a successful release build. macos-13 provides accelerated x86_64
+    # emulation and makes this a product startup test rather than a host test.
+    # This job proves exact release-artifact startup provenance only. It must
+    # remain fail-closed and MUST NOT claim the ten RC-1363..1372 production
+    # capabilities were exercised end to end.
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
@@ -50,7 +56,7 @@ jobs:
       - run: flutter pub get
       - name: Build release APK
         run: flutter build apk --release
-      - name: Install release APK, enable airplane mode, launch and assert survival
+      - name: Install release APK, enable airplane mode, launch and record exact provenance
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -60,25 +66,114 @@ jobs:
           script: |
             set -euo pipefail
             APK=build/app/outputs/flutter-apk/app-release.apk
+            EVIDENCE_DIR=evidence/runtime/airplane-mode
+            MANIFEST="$EVIDENCE_DIR/startup-smoke.json"
+            PACKAGE=com.ruhcode.ruh_code
+            mkdir -p "$EVIDENCE_DIR"
             test -s "$APK"
-            shasum -a 256 "$APK" | tee /tmp/ruhcode-release-sha256.txt
+
+            APK_SHA="$(shasum -a 256 "$APK" | awk '{print $1}')"
+            test "${#APK_SHA}" -eq 64
+            printf '%s  %s\n' "$APK_SHA" "$APK" > "$EVIDENCE_DIR/apk.sha256"
+
             adb install -r "$APK"
             adb shell settings put global airplane_mode_on 1
             adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null
-            adb shell svc wifi disable || true
-            adb shell svc data disable || true
+            adb shell svc wifi disable
+            adb shell svc data disable
+            # Record explicit fail-closed settings alongside the Android radio commands.
+            adb shell settings put global wifi_on 0
+            adb shell settings put global mobile_data 0
+
             AIRPLANE="$(adb shell settings get global airplane_mode_on | tr -d '\r')"
+            WIFI="$(adb shell settings get global wifi_on | tr -d '\r')"
+            DATA="$(adb shell settings get global mobile_data | tr -d '\r')"
             test "$AIRPLANE" = "1"
-            adb shell monkey -p com.ruhcode.ruh_code -c android.intent.category.LAUNCHER 1
+            test "$WIFI" = "0"
+            test "$DATA" = "0"
+
+            adb logcat -c
+            adb shell monkey -p "$PACKAGE" -c android.intent.category.LAUNCHER 1
             sleep 8
-            PID="$(adb shell pidof com.ruhcode.ruh_code | tr -d '\r')"
+            PID="$(adb shell pidof "$PACKAGE" | tr -d '\r')"
             test -n "$PID"
-            if adb logcat -d -t 600 | grep -E 'FATAL EXCEPTION|Process: com\.ruhcode\.ruh_code.*has died'; then
+            case "$PID" in (*[!0-9]*) echo "Invalid PID: $PID"; exit 1;; esac
+
+            adb logcat -d -t 1200 > "$EVIDENCE_DIR/release-logcat.txt"
+            if grep -E 'FATAL EXCEPTION|Process: com\.ruhcode\.ruh_code.*has died' "$EVIDENCE_DIR/release-logcat.txt"; then
               echo 'RC1362_RC1374_FAIL: release app crashed in airplane mode'
               exit 1
             fi
-            echo "RC1362_AIRPLANE_RELEASE_STARTUP_OK pid=$PID"
-            cat /tmp/ruhcode-release-sha256.txt
+
+            DEVICE_SERIAL="$(adb get-serialno | tr -d '\r')"
+            DEVICE_MODEL="$(adb shell getprop ro.product.model | tr -d '\r')"
+            API_LEVEL="$(adb shell getprop ro.build.version.sdk | tr -d '\r')"
+            test -n "$DEVICE_SERIAL"
+            test -n "$DEVICE_MODEL"
+            test -n "$API_LEVEL"
+
+            export APK_SHA PID DEVICE_SERIAL DEVICE_MODEL API_LEVEL MANIFEST PACKAGE
+            python - <<'PY'
+            import json, os
+            from pathlib import Path
+
+            payload = {
+                'schemaVersion': 1,
+                'evidenceScope': 'startup-smoke',
+                'commitSha': os.environ['GITHUB_SHA'],
+                'releaseArtifact': True,
+                'artifactPath': 'build/app/outputs/flutter-apk/app-release.apk',
+                'apkSha256': os.environ['APK_SHA'],
+                'device': {
+                    'kind': 'emulator',
+                    'serial': os.environ['DEVICE_SERIAL'],
+                    'model': os.environ['DEVICE_MODEL'],
+                    'apiLevel': os.environ['API_LEVEL'],
+                },
+                'networkState': {
+                    'airplaneModeEnabled': True,
+                    'wifiDisabled': True,
+                    'mobileDataDisabled': True,
+                },
+                'app': {
+                    'package': os.environ['PACKAGE'],
+                    'pid': int(os.environ['PID']),
+                    'crashDetected': False,
+                },
+                # Startup evidence is intentionally not capability evidence.
+                'exercisedCapabilities': [],
+                'endToEndCapabilitiesComplete': False,
+                'verifiableAsDone': False,
+            }
+            Path(os.environ['MANIFEST']).write_text(
+                json.dumps(payload, indent=2, sort_keys=True) + '\n',
+                encoding='utf-8',
+            )
+            PY
+
+            python tools/offline/validate_airplane_release_evidence.py \
+              "$MANIFEST" --expected-commit "$GITHUB_SHA"
+            echo "RC1362_AIRPLANE_RELEASE_STARTUP_OK pid=$PID sha256=$APK_SHA"
+
+      - name: Revalidate persisted airplane startup manifest
+        run: |
+          set -euo pipefail
+          python tools/offline/validate_airplane_release_evidence.py \
+            evidence/runtime/airplane-mode/startup-smoke.json \
+            --expected-commit "$GITHUB_SHA"
+          shasum -a 256 -c evidence/runtime/airplane-mode/apk.sha256
+
+      - name: Upload exact airplane startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc1362-rc1374-airplane-startup-${{ github.sha }}
+          path: |
+            evidence/runtime/airplane-mode/startup-smoke.json
+            evidence/runtime/airplane-mode/apk.sha256
+            evidence/runtime/airplane-mode/release-logcat.txt
+          if-no-files-found: error
+          retention-days: 30
 
   record-implementation:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -101,15 +196,15 @@ jobs:
           p=Path('requirements/requirement_state.csv')
           with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
           fields=list(rows[0].keys()); found=set()
-          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|.github/workflows/rc1362-rc1374-airplane-mode.yml'
+          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|tools/offline/validate_airplane_release_evidence.py|.github/workflows/rc1362-rc1374-airplane-mode.yml'
           for r in rows:
             if r['rc_id'] not in targets: continue
             found.add(r['rc_id'])
             if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
             r['evidence_links']=links
             r['blocked']='YES'
-            r['blocker']='Release APK airplane-mode startup smoke exists, but production instrumentation must exercise Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client flows end-to-end before VERIFIED/DONE.'
-            r['notes']='Offline core capability contract is fail-closed and CI boots exact release APK with airplane mode enabled.'
+            r['blocker']='Exact release APK airplane-mode startup provenance exists, but production instrumentation must exercise Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client flows end-to-end before VERIFIED/DONE.'
+            r['notes']='Offline core contract is fail-closed; startup manifest binds commit SHA, APK SHA-256, emulator identity, radio state, PID and crash result while explicitly refusing end-to-end/DONE claims.'
           if found != targets: raise SystemExit(f'RC1362_RC1374_FAIL missing={sorted(targets-found)}')
           with p.open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
