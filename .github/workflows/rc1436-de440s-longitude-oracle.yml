@@ -8,6 +8,7 @@ on:
       - 'lib/src/calculation_core/ephemeris/**'
       - 'test/calculation_core/de440s_geocentric_longitude_oracle_test.dart'
       - 'tools/data/materialize_de440s_geocentric_longitude_oracle.py'
+      - 'tools/data/kernels/naif0012_minimal.tls'
       - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
       - '.github/workflows/rc1436-de440s-longitude-oracle.yml'
   pull_request:
@@ -17,6 +18,7 @@ on:
       - 'lib/src/calculation_core/ephemeris/**'
       - 'test/calculation_core/de440s_geocentric_longitude_oracle_test.dart'
       - 'tools/data/materialize_de440s_geocentric_longitude_oracle.py'
+      - 'tools/data/kernels/naif0012_minimal.tls'
       - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
       - '.github/workflows/rc1436-de440s-longitude-oracle.yml'
 
@@ -53,6 +55,7 @@ jobs:
           assert data['provider'] == 'NAIF CSPICE via SpiceyPy'
           assert data['oracle']['referenceFrame'] == 'ECLIPJ2000'
           assert data['oracle']['observerNaifId'] == 399
+          assert data['oracle']['timeApi'] == 'unitim(JDTDT -> ET)'
           coverage = data['coverage']
           assert coverage == {
               'bodyCount': 10,
@@ -64,6 +67,11 @@ jobs:
           kernel = Path(data['kernel']['path'])
           assert kernel.is_file() and kernel.stat().st_size == data['kernel']['sizeBytes']
           assert hashlib.sha256(kernel.read_bytes()).hexdigest() == data['kernel']['sha256']
+          time_kernel = Path(data['timeKernel']['path'])
+          assert time_kernel.as_posix() == 'tools/data/kernels/naif0012_minimal.tls'
+          assert time_kernel.is_file() and time_kernel.stat().st_size >= 500
+          assert hashlib.sha256(time_kernel.read_bytes()).hexdigest() == data['timeKernel']['sha256']
+          assert data['timeKernel']['source'] == 'NAIF naif0012.tls'
           cases = data['cases']
           assert len(cases) == 50
           assert len({c['id'] for c in cases}) == 50
