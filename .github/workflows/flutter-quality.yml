@@ -26,13 +26,16 @@ jobs:
       - name: Resolve dependencies
         run: flutter pub get
       - name: Analyze
-        run: flutter analyze --fatal-infos
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter analyze --fatal-infos 2>&1 | tee flutter-analyze.log
       - name: Test
         shell: bash
         run: |
           set -o pipefail
           flutter test --reporter expanded 2>&1 | tee flutter-test.log
-      - name: Surface Flutter test diagnostics
+      - name: Surface Flutter diagnostics
         if: failure()
         shell: bash
         run: |
@@ -40,37 +43,47 @@ jobs:
           from pathlib import Path
           import re
 
-          path = Path('flutter-test.log')
-          if not path.exists():
-              print('::error title=Flutter test diagnostics::flutter-test.log was not produced')
-              raise SystemExit(0)
-
-          lines = path.read_text(encoding='utf-8', errors='replace').splitlines()
+          candidates = [
+              ('analyze', Path('flutter-analyze.log')),
+              ('test', Path('flutter-test.log')),
+          ]
           needles = re.compile(
-              r'(FAILED|Test failed|EXCEPTION CAUGHT|Expected:|Actual:|Which:|Error:|Exception:|Failure|\[E\])',
+              r'(FAILED|Test failed|EXCEPTION CAUGHT|Expected:|Actual:|Which:|Error:|Exception:|Failure|warning|info|\[E\])',
               re.IGNORECASE,
           )
-          hits = [i for i, line in enumerate(lines) if needles.search(line)]
-          emitted = set()
-          blocks = []
-          for i in hits[:20]:
-              start = max(0, i - 3)
-              end = min(len(lines), i + 6)
-              block = '\n'.join(lines[start:end]).strip()
-              if block and block not in emitted:
-                  emitted.add(block)
-                  blocks.append(block)
-          if not blocks:
-              blocks = ['\n'.join(lines[-120:]).strip() or 'flutter test failed without textual output']
-          for idx, block in enumerate(blocks[:10], start=1):
-              escaped = block.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
-              print(f'::error title=Flutter test failure {idx}::{escaped}')
+          emitted_any = False
+          for kind, path in candidates:
+              if not path.exists():
+                  continue
+              lines = path.read_text(encoding='utf-8', errors='replace').splitlines()
+              hits = [i for i, line in enumerate(lines) if needles.search(line)]
+              emitted = set()
+              blocks = []
+              for i in hits[:20]:
+                  start = max(0, i - 3)
+                  end = min(len(lines), i + 6)
+                  block = '\n'.join(lines[start:end]).strip()
+                  if block and block not in emitted:
+                      emitted.add(block)
+                      blocks.append(block)
+              if not blocks:
+                  tail = '\n'.join(lines[-120:]).strip()
+                  if tail:
+                      blocks = [tail]
+              for idx, block in enumerate(blocks[:10], start=1):
+                  emitted_any = True
+                  escaped = block.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+                  print(f'::error title=Flutter {kind} failure {idx}::{escaped}')
+          if not emitted_any:
+              print('::error title=Flutter diagnostics::No analyzer or test diagnostics were produced')
           PY
-      - name: Upload Flutter test diagnostics
+      - name: Upload Flutter diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: flutter-test-diagnostics
-          path: flutter-test.log
+          name: flutter-quality-diagnostics
+          path: |
+            flutter-analyze.log
+            flutter-test.log
           if-no-files-found: error
           retention-days: 7
