@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,7 +26,8 @@ void main() {
     expect(budget, 0.02);
 
     final kernel = File('assets/data/ephemeris/de440s.bsp').readAsBytesSync();
-    ServicesBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMessageHandler(
       'flutter/assets',
       (ByteData? message) async {
         final key = utf8.decode(message!.buffer.asUint8List());
@@ -36,7 +36,7 @@ void main() {
       },
     );
     addTearDown(() {
-      ServicesBinding.instance.defaultBinaryMessenger
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMessageHandler('flutter/assets', null);
     });
 
