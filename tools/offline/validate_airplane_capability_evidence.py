@@ -2,11 +2,11 @@
 """Validate partial Android airplane-mode capability evidence fail-closed.
 
 This evidence is intentionally weaker than the exact release APK proof required
-by RC-1362..RC-1374. It records production calculation code exercised on an
-Android emulator/device while radios are disabled, but it MUST NOT be promoted
-to VERIFIED/DONE because flutter integration_test builds a test artifact rather
-than exercising the exact release APK and because five non-calculation flows are
-still absent.
+by RC-1362..RC-1374. It records production code exercised on an Android
+emulator/device while radios are disabled, but it MUST NOT be promoted to
+VERIFIED/DONE because flutter integration_test builds a test artifact rather
+than exercising the exact release APK and because PDF export still lacks the
+approved production Unicode render chain.
 """
 
 from __future__ import annotations
@@ -24,13 +24,13 @@ EXERCISED = [
     "numerology",
     "bazi",
     "planetaryHours",
-]
-REMAINING = [
     "records",
-    "pdfExport",
     "csvExport",
     "csvRestore",
     "professionalClientManagement",
+]
+REMAINING = [
+    "pdfExport",
 ]
 
 
@@ -42,8 +42,8 @@ def require(condition: bool, message: str) -> None:
 def validate(payload: dict, expected_commit: str | None) -> None:
     require(payload.get("schemaVersion") == 1, "schemaVersion must be 1")
     require(
-        payload.get("evidenceScope") == "device-calculation-smoke",
-        "scope must be device-calculation-smoke",
+        payload.get("evidenceScope") == "device-capability-smoke",
+        "scope must be device-capability-smoke",
     )
 
     commit = payload.get("commitSha", "")
@@ -75,7 +75,7 @@ def validate(payload: dict, expected_commit: str | None) -> None:
     require(payload.get("remainingCapabilities") == REMAINING, "remaining capability set drifted")
     require(
         payload.get("endToEndCapabilitiesComplete") is False,
-        "partial calculation evidence must remain incomplete",
+        "partial capability evidence must remain incomplete",
     )
     require(payload.get("verifiableAsDone") is False, "partial evidence must not claim DONE")
 
@@ -90,7 +90,7 @@ def main() -> None:
     payload = json.loads(args.manifest.read_text(encoding="utf-8"))
     require(isinstance(payload, dict), "manifest root must be an object")
     validate(payload, args.expected_commit)
-    print("RC1363_RC1367_DEVICE_CALCULATION_EVIDENCE_OK")
+    print("RC1363_RC1372_DEVICE_CAPABILITY_EVIDENCE_OK")
 
 
 if __name__ == "__main__":
