@@ -64,6 +64,13 @@ Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository 
 - Exact `bf9646947908caf048db043c3172a4a40583185f` üzerinde `RC-0099 RC-0101 Vedic D16 D20 D24` run **`34687096050` fiziksel SUCCESS** verdi. Önceki cancelled koşular artık tek kanıt değildir; non-cancelled CI evidence elde edildi.
 - Bu SUCCESS yalnız ilgili calculation/validator zincirinin kanıtıdır; global release blocker'ları nedeniyle RC-0099→0101 otomatik DONE yapılmaz.
 
+## Calculation CI evidence isolation
+
+- Exact `cf0f8b2095f06b9e7e68dce7cf3207a729c1c943` yeniden denetlendi. Flutter Quality, RC1436 Lahiri, Materialize PDF Font Assets ve PDF Structural fiziksel SUCCESS durumundayken çok sayıda eski calculation/requirement workflow'u `cancelled` kaldı; cancellation hiçbir requirement için SUCCESS/TESTED/VERIFIED/DONE kabul edilmedi.
+- `6488eee6b9eaf02ffdfd74ca5dfd2ff7bff173be`: `.github/workflows/rc0105-rc0110-vimshottari-dasha.yml` PR/dispatch evidence koşularını global `requirement-matrix-writers` kilidinden ayırdı. Yalnız `main` push promotion matrix yazarı global kilitte kalır; validator/test/tolerans değiştirilmedi. Bu SHA üzerinde Vimshottari run `34721331566` artık anında `cancelled` olmak yerine `queued` durumuna geçti; queued SUCCESS değildir.
+- `e2240f63c137da818a6945aecd261bfdfc5fe97f`: aynı kanıtlanmış concurrency modeli `.github/workflows/rc0120-shadbala.yml` için uygulandı. Shadbala run `34721430339` yeni exact SHA üzerinde `queued`; henüz fiziksel SUCCESS değildir. RC-0120'nin klasik formül/reference/UI/device/release blocker'ları aynen korunur.
+- Aynı fan-out'ta RC-0092/0093 Navamsa/Hora, RC-0096/0098 Varga, RC-0111/0117 Gochara/Panchanga ve çok sayıda legacy requirement workflow'u hâlâ `cancelled`; ortak concurrency izolasyonu kalan dosyalara requirement kapsamı değiştirilmeden kademeli uygulanmalıdır.
+
 ## RC-1439 physical references
 
 `requirements/reference_manifests/rc1439_reference_images.json` gerçek project-owner/user-supplied fiziksel PNG/JPG referansları ister. Generated/placeholder/synthetic referans kabul edilmez. Kaynak olmadığı için external blocker açık kalır; diğer işler devam eder.
@@ -76,13 +83,9 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Son CI / devam noktası
 
-- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`47e969a1eb8e3f6ee69ecac2b948d69655ce41eb`**.
-- Airplane analyzer repair zinciri: `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` + `cf2034b205f5cc02d4fd388cedd3599b11d88693`.
-- Exact `d2ef...` Flutter Quality run `34709594021` production PDF regression testindeki ikinci redundant import yüzünden FAILURE verdi; root cause `cf2034...` ile giderildi.
-- Exact `d2ef...` RC1436 Lahiri run `34709593948` independent Swiss oracle dataset verification'ı başarıyla tamamladı fakat `subosito/flutter-action` version belirtilmediği için setup exit 35 ile kırıldı. `792fc47550f629d4a1066aa4928c15707c1951d7` workflow'u project canonical Flutter **3.44.7** sürümüne pinledi; oracle/test toleransları değiştirilmedi.
-- Exact `845b419b77ef91af4afe885b7acbc3eb1381bb65` üzerinde `Materialize PDF Font Assets` run `34709919503` job oluşturulmadan workflow-level FAILURE verdi. `47e969a1eb8e3f6ee69ecac2b948d69655ce41eb` riskli job-level expression'ı kaldırdı; materialization + offline check + exact hash + Flutter regression + no-op commit yolu aynen korunuyor.
-- `47e969...` için ilk kontrolde FAILURE sayısı **0**, ancak 83 workflow hâlâ queued idi; queued/pending SUCCESS değildir. PR #16 raw GitHub state ile `mergeable=true`, `mergeable_state=unstable` olarak doğrulandı; önceki transient `mergeable=false` connector görünümü conflict kanıtı değildir.
-- Sonraki tetiklemede ilk iş Flutter Quality, RC1436 Lahiri, Materialize PDF Font Assets ve RC1362-RC1374 Airplane Mode exact-head sonuçlarını fiziksel olarak kontrol etmektir; kırmızıysa log kök nedenini aynı turda düzelt.
+- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`e2240f63c137da818a6945aecd261bfdfc5fe97f`**.
+- Exact `e2240f...` fan-out'unda RC-0120 Shadbala run `34721430339` queued; Flutter Quality `34721430289`, PDF Structural `34721430347`, Lahiri `34721430349` ve birçok gate de queued/pending. Queued/pending SUCCESS değildir.
+- Öncelik: exact-head RC-0105→0110 Vimshottari ve RC-0120 Shadbala non-cancelled physical resultlerini almak; kırmızıysa validator/test kök nedenini aynı turda düzeltmek. Ardından aynı global writer-lock anti-pattern'ini taşıyan cancelled calculation workflow'larını D16 modeline geçirmek.
 - 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u kanıtlanmış olur; yine de RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 üretim akışının instrumentation ile gerçekten egzersiz edildiği ayrı evidence şartı devam eder.
 - Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
 - Daily Message final UI/device proof; Android Keystore + encrypted database + plaintext→encrypted migration; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
