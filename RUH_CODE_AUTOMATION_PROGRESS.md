@@ -69,7 +69,10 @@ Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository 
 - Exact `cf0f8b2095f06b9e7e68dce7cf3207a729c1c943` yeniden denetlendi. Flutter Quality, RC1436 Lahiri, Materialize PDF Font Assets ve PDF Structural fiziksel SUCCESS durumundayken çok sayıda eski calculation/requirement workflow'u `cancelled` kaldı; cancellation hiçbir requirement için SUCCESS/TESTED/VERIFIED/DONE kabul edilmedi.
 - `6488eee6b9eaf02ffdfd74ca5dfd2ff7bff173be`: `.github/workflows/rc0105-rc0110-vimshottari-dasha.yml` PR/dispatch evidence koşularını global `requirement-matrix-writers` kilidinden ayırdı. Yalnız `main` push promotion matrix yazarı global kilitte kalır; validator/test/tolerans değiştirilmedi. Bu SHA üzerinde Vimshottari run `34721331566` artık anında `cancelled` olmak yerine `queued` durumuna geçti; queued SUCCESS değildir.
 - `e2240f63c137da818a6945aecd261bfdfc5fe97f`: aynı kanıtlanmış concurrency modeli `.github/workflows/rc0120-shadbala.yml` için uygulandı. Shadbala run `34721430339` yeni exact SHA üzerinde `queued`; henüz fiziksel SUCCESS değildir. RC-0120'nin klasik formül/reference/UI/device/release blocker'ları aynen korunur.
-- Aynı fan-out'ta RC-0092/0093 Navamsa/Hora, RC-0096/0098 Varga, RC-0111/0117 Gochara/Panchanga ve çok sayıda legacy requirement workflow'u hâlâ `cancelled`; ortak concurrency izolasyonu kalan dosyalara requirement kapsamı değiştirilmeden kademeli uygulanmalıdır.
+- `d86fd7640c0ddd5b74711d770942ea95704e03e5`: `.github/workflows/rc0096-rc0098-varga-d7-d10-d12.yml` aynı modele taşındı; D7/D10/D12 validator, Flutter regression ve TESTED-only blocker mantığı değiştirilmedi.
+- `95057799742af2e3ad1cc332045e11c94514ca26`: `.github/workflows/rc0092-rc0093-varga-d9-d2.yml` Navamsa/Hora PR/dispatch evidence koşuları global matrix writer lock'tan ayrıldı; D9/D2 requirement kapsamı ve blocker'lar aynen korundu.
+- `f9f710e773515e27b2338b311d7ef4bfa1ef0af4`: `.github/workflows/rc0111-rc0117-gochara-panchanga.yml` aynı fail-safe concurrency modeline geçirildi; explicit-TT Gochara/Panchanga validator/test ve TESTED-only promotion kuralları zayıflatılmadı.
+- Fan-out'ta hâlâ RC-0080/0081, RC-0082/0083, RC-0084/0085, RC-0088/0089, RC-0121, RC-0123 ve diğer legacy workflow'larda cancellation görülüyor; kalan dosyalar requirement kapsamı değiştirilmeden kademeli izole edilmelidir.
 
 ## RC-1439 physical references
 
@@ -83,9 +86,9 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Son CI / devam noktası
 
-- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`e2240f63c137da818a6945aecd261bfdfc5fe97f`**.
+- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`f9f710e773515e27b2338b311d7ef4bfa1ef0af4`**.
 - Exact `e2240f...` fan-out'unda RC-0120 Shadbala run `34721430339` queued; Flutter Quality `34721430289`, PDF Structural `34721430347`, Lahiri `34721430349` ve birçok gate de queued/pending. Queued/pending SUCCESS değildir.
-- Öncelik: exact-head RC-0105→0110 Vimshottari ve RC-0120 Shadbala non-cancelled physical resultlerini almak; kırmızıysa validator/test kök nedenini aynı turda düzeltmek. Ardından aynı global writer-lock anti-pattern'ini taşıyan cancelled calculation workflow'larını D16 modeline geçirmek.
+- Öncelik: exact-head RC-0105→0110 Vimshottari, RC-0120 Shadbala, RC-0092→0093, RC-0096→0098 ve RC-0111→0117 non-cancelled physical resultlerini almak; kırmızıysa validator/test kök nedenini aynı turda düzeltmek. Ardından aynı global writer-lock anti-pattern'ini taşıyan cancelled calculation workflow'larını D16 modeline geçirmek.
 - 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u kanıtlanmış olur; yine de RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 üretim akışının instrumentation ile gerçekten egzersiz edildiği ayrı evidence şartı devam eder.
 - Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
 - Daily Message final UI/device proof; Android Keystore + encrypted database + plaintext→encrypted migration; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
