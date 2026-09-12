@@ -6,7 +6,6 @@ import 'package:ruh_code/src/pdf/pdf_data_contract.dart';
 import 'package:ruh_code/src/pdf/pdf_font_release_manifest.dart';
 import 'package:ruh_code/src/pdf/pdf_local_renderer.dart';
 import 'package:ruh_code/src/pdf/pdf_report_contract.dart';
-import 'package:ruh_code/src/pdf/pdf_service.dart';
 import 'package:ruh_code/src/pdf/production_combined_pdf_service.dart';
 
 void main() {
