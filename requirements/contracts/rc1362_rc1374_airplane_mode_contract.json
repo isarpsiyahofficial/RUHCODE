@@ -22,16 +22,23 @@
     "lib/src/data/local/core_repositories.dart",
     "lib/src/backup/local_database_backup_exporter.dart",
     "lib/src/backup/local_database_backup_import_store.dart",
-    "lib/src/backup/single_table_csv_exporter.dart"
+    "lib/src/backup/single_table_csv_exporter.dart",
+    "lib/src/pdf/production_combined_pdf_service.dart",
+    "lib/src/pdf/pdf_font_release_manifest.dart",
+    "assets/fonts/pdf/NotoSans-Regular.ttf",
+    "assets/fonts/pdf/NotoSans-Bold.ttf",
+    "assets/fonts/pdf/font_release_provenance.json"
   ],
   "testEvidence": [
     "test/offline/offline_core_capabilities_rc1362_rc1374_test.dart",
+    "test/pdf/production_combined_pdf_service_test.dart",
     "integration_test/offline_calculation_capabilities_test.dart",
+    "integration_test/offline_pdf_export_capability_test.dart",
     "tools/offline/validate_airplane_release_evidence.py",
     "tools/offline/validate_airplane_capability_evidence.py",
     ".github/workflows/rc1362-rc1374-airplane-mode.yml"
   ],
   "startupEvidenceRule": "The release startup manifest must bind the checked-out commit SHA to the APK SHA-256, emulator/device identity, airplane/Wi-Fi/mobile-data state, running package PID and crash result. Startup evidence must explicitly keep exercisedCapabilities empty, endToEndCapabilitiesComplete=false and verifiableAsDone=false.",
-  "partialCapabilityEvidenceRule": "The Android integration harness may prove Western/Vedic/Numerology/BaZi/Planetary Hours plus production sqflite records, canonical CSV export/restore and professional-client persistence execute while airplane mode, Wi-Fi and mobile data are disabled. Because Flutter integration_test installs a test artifact rather than exercising the exact release APK, and the approved production PDF render chain is still absent, its manifest must set releaseArtifact=false, list only pdfExport as remaining, and keep endToEndCapabilitiesComplete=false and verifiableAsDone=false.",
-  "lifecycleRule": "VERIFIED/DONE requires production instrumentation that exercises all ten listed production capabilities end-to-end on the exact release artifact and records exact artifact/device evidence. Neither release startup smoke nor the partial capability integration harness may substitute for that final proof."
+  "deviceCapabilityEvidenceRule": "The Android integration harness must exercise Western/Vedic/Numerology/BaZi/Planetary Hours plus production sqflite records, canonical CSV export/restore, professional-client persistence and production PDF export through the verified packaged Unicode font/render chain while airplane mode, Wi-Fi and mobile data are disabled. The manifest may set endToEndCapabilitiesComplete=true only when all ten capability paths pass and remainingCapabilities is empty. Because Flutter integration_test installs a test artifact rather than exercising the exact release APK, it must still set releaseArtifact=false and verifiableAsDone=false.",
+  "lifecycleRule": "VERIFIED/DONE requires production instrumentation that exercises all ten listed production capabilities end-to-end on the exact release artifact and records exact artifact/device evidence. Neither release startup smoke nor the test-artifact capability integration harness may substitute for that final proof."
 }
