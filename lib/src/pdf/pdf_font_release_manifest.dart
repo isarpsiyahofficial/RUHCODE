@@ -1,9 +1,11 @@
 /// Release-time provenance and readiness contract for packaged PDF fonts.
 ///
 /// PDF rendering is intentionally fail-closed until the exact font binaries are
-/// committed as application assets and their SHA-256 values are pinned. Keeping
-/// this state in production code prevents a test-only renderer or an unverified
-/// system font from silently becoming the release PDF path.
+/// committed as application assets. The approved SHA-256 values may be pinned
+/// earlier from an independently verified materialization run, but that alone
+/// never makes the renderer release-ready. Keeping both facts in production
+/// code prevents a test-only renderer or an unverified system font from silently
+/// becoming the release PDF path.
 final class PdfFontReleaseManifest {
   const PdfFontReleaseManifest._();
 
@@ -29,12 +31,18 @@ final class PdfFontReleaseManifest {
   static const String boldAssetPath = 'assets/fonts/pdf/NotoSans-Bold.ttf';
   static const String licenseAssetPath = 'assets/fonts/pdf/OFL.txt';
 
-  /// These values must only be replaced with lowercase 64-hex SHA-256 digests
-  /// calculated from the exact binaries committed at [regularAssetPath] and
-  /// [boldAssetPath]. Empty values deliberately keep production rendering off.
-  static const String regularSha256 = '';
-  static const String boldSha256 = '';
+  /// Exact SHA-256 digests physically verified by the pinned materializer.
+  ///
+  /// These hashes identify the only approved Regular/Bold payloads. They do not
+  /// imply that those payloads are already present in the repository or release
+  /// bundle; [binariesPackaged] remains the independent packaging truth gate.
+  static const String regularSha256 =
+      '478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823';
+  static const String boldSha256 =
+      '1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913';
 
+  /// This flips to true only in the same change that commits the exact verified
+  /// TTF assets into the application bundle. Hash knowledge alone is not enough.
   static const bool binariesPackaged = false;
 
   static bool get isReleaseReady =>
