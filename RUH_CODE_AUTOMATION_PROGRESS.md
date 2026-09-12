@@ -21,7 +21,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budgets.json` içinden okunur ve test geçirmek için gevşetilmez. Global manifest halen `proven=false`.
 
-Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swiss `0.05°`, Placidus 12 cusp `0.05°`, sunrise/sunset `60 s`, planetary hours `60 s`, Nakshatra/Pada `0.02° / 0.02°`, Lahiri `0.02°`, mean/true lunar node `0.02°` ve DE440s Sun `0.01°`, Moon/planet `0.02°` bulunur. Flutter Quality run `34586952087` exact `3c9c87339d05c9298ee3b9c654441c5a522a27cf` üzerinde SUCCESS verdi. Global RC-1436 yine DONE değildir.
+Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swiss `0.05°`, Placidus 12 cusp `0.05°`, sunrise/sunset `60 s`, planetary hours `60 s`, Nakshatra/Pada `0.02° / 0.02°`, Lahiri `0.02°`, mean/true lunar node `0.02°` ve DE440s Sun `0.01°`, Moon/planet `0.02°` bulunur. Global RC-1436 yine DONE değildir.
 
 ## Daily Message
 
@@ -42,32 +42,20 @@ Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-136
 
 Approved packaged Unicode font binary + exact SHA-256 zinciri olmadan PDF byte rendering fail-closed kalır. Placeholder, system-font fallback veya hash bypass yoktur.
 
-- `dac7363d6cb3b242de9404a649b3c06afabca885`: canonical Noto Sans/OFL-1.1 font release manifesti.
-- `37b0c482682f22c51562b2398e974f2427c06d0c`: unverified font state'in release-ready olamayacağını kilitleyen regression testi.
-- `dea6e3806def235ec5bb1f2a14d37fc2c5fe32b5`: `createProductionCombinedPdfService(...)`; manifest READY değilse unavailable, READY ise gerçek `PdfAssetFontBundleProvider + PdfCombinedReportService`.
-- `7a935911f9e0704146c7d342764c746bae14023d`: `RuhCodeRuntime.create()` canonical factory + `rootBundle` yoluna bağlandı.
-- `24af1da2e44bc00e85ab6fcc54e8adfcc6fa694b`: production composition fail-closed regression testi.
-- Immutable Noto provenance sabitleri korunur: upstream commit `66c4b351c58f99ace5a6265d329080d74b057909`, Regular blob `f27f4ff59562d58480f1cb94194393484b8da9e9`, Bold blob `aae7546dc1905b228aff70cde8c818b82f3a2bc4`, OFL blob `9651ea7d51c39a7778cc327a423fb200350aa948`.
-- Exact approved font binary'leri halen repository asset'i olarak fiziksel doğrulanmış değildir; `regularSha256`/`boldSha256` ve `binariesPackaged=true` ancak materializer + offline hash + Flutter manifest regression + binary commit kanıtı sonrası yükseltilebilir. RC-1369 TESTED/VERIFIED/DONE değildir.
+- Immutable Noto provenance: upstream commit `66c4b351c58f99ace5a6265d329080d74b057909`, Regular blob `f27f4ff59562d58480f1cb94194393484b8da9e9`, Bold blob `aae7546dc1905b228aff70cde8c818b82f3a2bc4`, OFL blob `9651ea7d51c39a7778cc327a423fb200350aa948`.
+- `PDF Structural Contract` run `34682276041` fiziksel SUCCESS ile immutable materialization + offline re-check + Flutter font manifest regression zincirini doğruladı.
+- Fiziksel doğrulanmış exact SHA-256: Regular `478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823`; Bold `1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913`.
+- `19bf57008201cdf93f952db9dab9a02c60c168a1`: exact doğrulanmış SHA-256 değerleri executable `PdfFontReleaseManifest` içine pinlendi; packaging truth ayrı gate olarak bırakıldı.
+- `f4f2ab03720d2e4181585f25d23cd9995f279ec8`: regression testi hash provenance ile binary packaging readiness'i ayıracak şekilde güçlendirildi.
+- `a4513007c7aa29e4210237fb1ea91878146024fd`: exact pinned upstream OFL-1.1 lisans metni repository asset'i olarak eklendi.
+- `297d294c88b1aa051bfe76a44b1b151ed5478626`: kayıtlı `PDF Structural Contract`, exact target branch head üzerinde materialize+offline verify+Flutter regression+structural testlerin tamamı geçtikten sonra verified TTF/OFL/provenance/manifest değişikliklerini branch'e commit edecek şekilde bağlandı. İkinci koşuda diff yoksa no-op olur.
+- Binary TTF dosyaları branch HEAD'de fiziksel görünmeden `binariesPackaged=true`, `isReleaseReady=true` veya RC-1369 TESTED/VERIFIED/DONE denmeyecektir.
 
-## Son CI/root-cause durumu
+## Vedic D16/D20/D24 CI kanıtı
 
-Önceki iki validator repair'i korunuyor:
-
-- `635f7c4b0777ca39087e86b051c2af507bb16ec1` — combined PDF UI runtime validator gerçek production composition'a hizalı.
-- `052f78d4db85252455df551a41f634af51fc7d48` — RC-0099→0101 validator mevcut `RC-0092-RC-0104 fail closed on invalid provenance` regression adına hizalı.
-- `Requirements Contract` run `34666414716` fiziksel SUCCESS verdi; bu repair kanıtlanmıştır.
-- D16/D20/D24 için önceki kanıt run'ları cancellation nedeniyle SUCCESS sayılamaz.
-
-Bu çalıştırmada requirement/test kapsamını zayıflatmadan üç yeni CI iyileştirmesi uygulandı:
-
-1. `4384addeace00598c7e81b8b3711c8dfed7b3216` — `RC-0099 RC-0101 Vedic D16 D20 D24` workflow concurrency düzeltildi. Yalnız `main` push promotion işi `requirements/requirement_state.csv` yazdığı için global `requirement-matrix-writers` kilidinde kalır; PR/dispatch evidence run'ları workflow+ref bazında izole edilir ve `cancel-in-progress=false` korunur. D16/D20/D24 validator/test/toleransları değiştirilmedi.
-2. `17d75f1ee4fe5cc5f68aa68a7d9d5f5a680c0f12` — kayıtlı `PDF Structural Contract` workflow'una immutable font materialization, offline `--check` ve `pdf_font_release_manifest_test.dart` regression adımları eklendi. Existing PDF structural evidence/test adımları korunur.
-3. `70678f91bd18ed3c09184cd2ec209860e29e11bd` — dedicated `Materialize PDF Font Assets` workflow binary commit öncesi materializer + offline hash verification + `git diff --check` + exact SHA-256 çıktı + Flutter 3.44.7 `pdf_font_release_manifest_test.dart` koşullarının tamamını zorunlu hale getirir. Yalnız bunlar yeşilse TTF/OFL/provenance/manifest commit edilir; bot commit mesajı loop guard ile tekrar materialization tetiklemez.
-
-Stacked PR davranışı nedeniyle `pull_request` event'inde workflow tanımı base branch sürümünden okunur. Bu nedenle head üzerinde yeni/değiştirilmiş workflow adımlarının fiziksel SUCCESS verdiği varsayılmayacaktır. Exact `70678f91bd18ed3c09184cd2ec209860e29e11bd` üzerinde geniş PR fan-out fiziksel olarak oluştu; son kontrolde `UI Contracts` run `34682091671`, `RC1362-RC1374 Airplane Mode` `34682091696`, `Professional PDF Contract` `34682091730`, `Requirements Contract` `34682091329`, `Flutter Quality` `34682091463` ve çok sayıda diğer gate queued/pending durumdaydı. Bazı legacy calculation workflow'ları yine `cancelled`; bunların hiçbiri SUCCESS değildir.
-
-Yeni Vedic concurrency ve PDF materializer workflow'ları fiziksel run üretip SUCCESS vermeden TESTED/VERIFIED/DONE yükseltmesi yapılmayacaktır. Binary TTF commit'i fiziksel olarak branch HEAD'e gelmeden `binariesPackaged=true` denmeyecektir.
+- `4384addeace00598c7e81b8b3711c8dfed7b3216` PR/dispatch evidence koşularını global requirement-matrix writer concurrency kuyruğundan ayırdı; validator/test/tolerans değiştirilmedi.
+- Exact `bf9646947908caf048db043c3172a4a40583185f` üzerinde `RC-0099 RC-0101 Vedic D16 D20 D24` run **`34687096050` fiziksel SUCCESS** verdi. Önceki cancelled koşular artık tek kanıt değildir; non-cancelled CI evidence elde edildi.
+- Bu SUCCESS yalnız ilgili calculation/validator zincirinin kanıtıdır; global release blocker'ları nedeniyle RC-0099→0101 otomatik DONE yapılmaz.
 
 ## RC-1439 physical references
 
@@ -77,15 +65,15 @@ Yeni Vedic concurrency ve PDF materializer workflow'ları fiziksel run üretip S
 
 Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android Keystore-backed gerçek key lifecycle, encrypted DB adapter, plaintext→encrypted migration ve release-binary persistence proof tamamlanmadan security DONE verilmez.
 
-## Açık blocker'lar / devam noktası
+## Son CI / devam noktası
 
-1. Exact `70678f91bd18ed3c09184cd2ec209860e29e11bd` ve sonrasındaki branch head üzerinde queued gate sonuçlarını fiziksel doğrula; kırmızıysa ilk gerçek failing step/log üzerinden root cause'u düzelt. `cancelled` sonucu kabul etme.
-2. D16/D20/D24 workflow'unun yeni concurrency tanımıyla non-cancelled physical SUCCESS üretmesini doğrula. Stacked PR base-workflow semantiği nedeniyle yeni tanım mevcut PR run'ında uygulanmıyorsa base/merge sonrası ilk gerçek run evidence'ını bekle; kanıtsız yükseltme yapma.
-3. PDF font materializer'ın immutable kaynaklardan Regular/Bold/OFL binary'lerini üretip offline hash + Flutter manifest regression sonrası branch'e gerçek binary commit yapmasını doğrula. Binary yokken placeholder/system fallback/hash gevşetmesi kullanma.
-4. Manifest READY olduktan sonra production factory'nin gerçek renderer dalını unit/widget + Android üzerinde doğrula; RC-1369 `pdfExport`u airplane harness'e 10. capability olarak ekle. Integration evidence exact-release E2E yerine sayılmasın.
-5. On capability partial device harness green olduktan sonra exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
-6. Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
-7. RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
-8. RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
+- PR #16 active branch head bu checkpoint öncesinde `297d294c88b1aa051bfe76a44b1b151ed5478626`; PR open ve son kontrolde mergeable idi.
+- Exact `297d...` üzerinde `PDF Structural Contract` run `34692424997`, `RC1362-RC1374 Airplane Mode` run `34692425614`, Flutter Quality ve geniş release fan-out oluştu; son kontrolde ilgili yeni PDF run queued idi. Queued/pending/cancelled sonuçlar SUCCESS sayılmaz.
+- Sonraki tetiklemede önce `34692424997` fiziksel sonucunu ve branch head'i doğrula. SUCCESS + bot commit oluştuysa TTF binary/provenance dosyalarının gerçekten HEAD'de bulunduğunu, manifest `binariesPackaged=true` olduğunu ve exact hash'lerin eşleştiğini kontrol et.
+- Font packaging fiziksel tamamlanınca production factory'nin gerçek renderer dalını unit/widget + Android üzerinde doğrula; RC-1369 `pdfExport`u airplane harness'e 10. capability olarak ekle. Integration evidence exact-release E2E yerine sayılmasın.
+- Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
+- Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
+- RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
+- RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
 **FINAL: NO.**
