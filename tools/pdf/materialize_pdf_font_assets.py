@@ -4,6 +4,7 @@
 The download source is an immutable upstream commit. Every payload is verified
 against its canonical Git blob SHA-1 before it can enter the application asset
 bundle. Exact SHA-256 values are then written into PdfFontReleaseManifest.
+The offline --check mode never trusts the network and re-verifies packaged bytes.
 """
 
 from __future__ import annotations
