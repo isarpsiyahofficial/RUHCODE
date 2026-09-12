@@ -49,6 +49,8 @@ Approved packaged Unicode font binary + exact SHA-256 zinciri olmadan PDF byte r
 - `f4f2ab03720d2e4181585f25d23cd9995f279ec8`: regression testi hash provenance ile binary packaging readiness'i ayıracak şekilde güçlendirildi.
 - `a4513007c7aa29e4210237fb1ea91878146024fd`: exact pinned upstream OFL-1.1 lisans metni repository asset'i olarak eklendi.
 - `297d294c88b1aa051bfe76a44b1b151ed5478626`: kayıtlı `PDF Structural Contract`, exact target branch head üzerinde materialize+offline verify+Flutter regression+structural testlerin tamamı geçtikten sonra verified TTF/OFL/provenance/manifest değişikliklerini branch'e commit edecek şekilde bağlandı. İkinci koşuda diff yoksa no-op olur.
+- Bu persistence gate'in ilk fiziksel run'ı `34692424997` FAILURE verdi. Kök neden download/hash değildi: `update_manifest()` yalnız tek satırlı Dart const SHA alanlarını eşleştiriyordu; formatter SHA değerlerini iki satıra böldüğü için `manifest update was not exact` ile fail-closed durdu.
+- `20b0c851b717e918aff9316009680afac2ab0d0e`: materializer parser/update mantığı Dart formatter line wrapping'den bağımsız whitespace-tolerant exact replacement kullanacak şekilde düzeltildi. Match sayısı yine tam `(1,1,1)` olmak zorunda; requirement/hash doğrulaması gevşetilmedi. Yeni exact-head fan-out başladı; queued/pending/cancelled sonuçlar SUCCESS değildir.
 - Binary TTF dosyaları branch HEAD'de fiziksel görünmeden `binariesPackaged=true`, `isReleaseReady=true` veya RC-1369 TESTED/VERIFIED/DONE denmeyecektir.
 
 ## Vedic D16/D20/D24 CI kanıtı
@@ -67,9 +69,9 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Son CI / devam noktası
 
-- PR #16 active branch head bu checkpoint öncesinde `297d294c88b1aa051bfe76a44b1b151ed5478626`; PR open ve son kontrolde mergeable idi.
-- Exact `297d...` üzerinde `PDF Structural Contract` run `34692424997`, `RC1362-RC1374 Airplane Mode` run `34692425614`, Flutter Quality ve geniş release fan-out oluştu; son kontrolde ilgili yeni PDF run queued idi. Queued/pending/cancelled sonuçlar SUCCESS sayılmaz.
-- Sonraki tetiklemede önce `34692424997` fiziksel sonucunu ve branch head'i doğrula. SUCCESS + bot commit oluştuysa TTF binary/provenance dosyalarının gerçekten HEAD'de bulunduğunu, manifest `binariesPackaged=true` olduğunu ve exact hash'lerin eşleştiğini kontrol et.
+- PR #16 active branch canonical code HEAD bu checkpoint öncesinde `20b0c851b717e918aff9316009680afac2ab0d0e`; progress checkpoint bu commitin üstüne yazılır. PR open ve mergeable idi.
+- Exact `20b0...` için geniş PR fan-out oluştu; birçok gate queued/pending, bazı legacy calculation gate'leri concurrency nedeniyle cancelled durumda. `cancelled` SUCCESS değildir.
+- Sonraki tetiklemede önce `20b0...` dalgasındaki `PDF Structural Contract` fiziksel sonucunu ve branch head'i doğrula. SUCCESS + bot commit oluştuysa TTF binary/provenance dosyalarının gerçekten HEAD'de bulunduğunu, manifest `binariesPackaged=true` olduğunu ve exact hash'lerin eşleştiğini kontrol et.
 - Font packaging fiziksel tamamlanınca production factory'nin gerçek renderer dalını unit/widget + Android üzerinde doğrula; RC-1369 `pdfExport`u airplane harness'e 10. capability olarak ekle. Integration evidence exact-release E2E yerine sayılmasın.
 - Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
 - Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
