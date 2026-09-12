@@ -84,41 +84,45 @@ def verify_payload(name: str, payload: bytes) -> dict[str, object]:
 def parse_manifest_hashes(text: str) -> tuple[str, str, bool]:
     def value(name: str) -> str:
         match = re.search(
-            rf"static const String {name} =\s*'([a-f0-9]*)';", text
+            rf"static const String {name}\s*=\s*'([a-f0-9]*)';", text
         )
         if not match:
             raise RuntimeError(f"manifest field not found: {name}")
         return match.group(1)
 
     packaged_match = re.search(
-        r"static const bool binariesPackaged = (true|false);", text
+        r"static const bool binariesPackaged\s*=\s*(true|false);", text
     )
     if not packaged_match:
         raise RuntimeError("manifest field not found: binariesPackaged")
     return value("regularSha256"), value("boldSha256"), packaged_match.group(1) == "true"
 
 
+def replace_manifest_string(text: str, name: str, value: str) -> tuple[str, int]:
+    """Replace one formatted Dart const string without depending on line wrapping."""
+    return re.subn(
+        rf"(static const String {name}\s*=\s*)'[a-f0-9]*';",
+        rf"\1'{value}';",
+        text,
+    )
+
+
 def update_manifest(regular_hash: str, bold_hash: str) -> None:
     if regular_hash == bold_hash:
         raise RuntimeError("Regular and Bold assets unexpectedly have identical SHA-256")
     text = MANIFEST.read_text(encoding="utf-8")
-    text, regular_count = re.subn(
-        r"static const String regularSha256 = '[a-f0-9]*';",
-        f"static const String regularSha256 = '{regular_hash}';",
-        text,
-    )
-    text, bold_count = re.subn(
-        r"static const String boldSha256 = '[a-f0-9]*';",
-        f"static const String boldSha256 = '{bold_hash}';",
-        text,
-    )
+    text, regular_count = replace_manifest_string(text, "regularSha256", regular_hash)
+    text, bold_count = replace_manifest_string(text, "boldSha256", bold_hash)
     text, packaged_count = re.subn(
-        r"static const bool binariesPackaged = (?:true|false);",
-        "static const bool binariesPackaged = true;",
+        r"(static const bool binariesPackaged\s*=\s*)(?:true|false);",
+        r"\1true;",
         text,
     )
     if (regular_count, bold_count, packaged_count) != (1, 1, 1):
-        raise RuntimeError("manifest update was not exact; refusing to continue")
+        raise RuntimeError(
+            "manifest update was not exact; refusing to continue "
+            f"(regular={regular_count}, bold={bold_count}, packaged={packaged_count})"
+        )
     MANIFEST.write_text(text, encoding="utf-8")
 
 
