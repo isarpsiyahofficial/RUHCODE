@@ -43,7 +43,7 @@ final class PdfFontReleaseManifest {
 
   /// This flips to true only in the same change that commits the exact verified
   /// TTF assets into the application bundle. Hash knowledge alone is not enough.
-  static const bool binariesPackaged = false;
+  static const bool binariesPackaged = true;
 
   static bool get isReleaseReady =>
       binariesPackaged &&
