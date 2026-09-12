@@ -8,8 +8,11 @@ on:
       - 'lib/src/offline/offline_core_capabilities.dart'
       - 'test/offline/offline_core_capabilities_rc1362_rc1374_test.dart'
       - 'integration_test/offline_calculation_capabilities_test.dart'
+      - 'integration_test/offline_pdf_export_capability_test.dart'
       - 'lib/src/data/local/**'
       - 'lib/src/backup/**'
+      - 'lib/src/pdf/**'
+      - 'assets/fonts/pdf/**'
       - 'requirements/contracts/rc1362_rc1374_airplane_mode_contract.json'
       - 'tools/offline/validate_airplane_release_evidence.py'
       - 'tools/offline/validate_airplane_capability_evidence.py'
@@ -47,15 +50,16 @@ jobs:
       - uses: subosito/flutter-action@v2
         with: {flutter-version: '3.44.7', channel: stable, cache: true}
       - run: flutter pub get
-      - run: flutter analyze integration_test/offline_calculation_capabilities_test.dart
+      - run: flutter analyze integration_test/offline_calculation_capabilities_test.dart integration_test/offline_pdf_export_capability_test.dart
       - run: flutter test test/offline/offline_core_capabilities_rc1362_rc1374_test.dart
+      - run: flutter test test/pdf/production_combined_pdf_service_test.dart
 
   airplane-release-launch:
     # macOS provides accelerated Android emulation. The release launch proves
-    # exact release-artifact startup provenance. The integration harness then
-    # exercises production capability code on the same radio-disabled emulator.
-    # That second proof remains partial because integration_test installs a test
-    # artifact and PDF export still has a production render-chain blocker.
+    # exact release-artifact startup provenance. Integration tests then exercise
+    # all ten production capability paths on the same radio-disabled emulator.
+    # The capability proof remains distinct from exact-release instrumentation:
+    # integration_test installs a test artifact after release-startup evidence.
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
@@ -78,6 +82,7 @@ jobs:
             MANIFEST="$EVIDENCE_DIR/startup-smoke.json"
             CAPABILITY_MANIFEST="$EVIDENCE_DIR/device-capability-smoke.json"
             CAPABILITY_LOG="$EVIDENCE_DIR/device-capability-smoke.log"
+            PDF_CAPABILITY_LOG="$EVIDENCE_DIR/device-pdf-capability-smoke.log"
             PACKAGE=com.ruhcode.ruh_code
             mkdir -p "$EVIDENCE_DIR"
             test -s "$APK"
@@ -165,10 +170,15 @@ jobs:
 
             # Exercise actual production calculation, sqflite record,
             # professional-client and CSV export/restore classes on Android while
-            # airplane mode remains enabled. This is intentionally separate from
-            # exact release APK evidence.
+            # airplane mode remains enabled.
             flutter test integration_test/offline_calculation_capabilities_test.dart \
               -d "$DEVICE_SERIAL" --reporter expanded 2>&1 | tee "$CAPABILITY_LOG"
+
+            # RC-1369: exercise the production PDF factory, packaged verified
+            # Noto Sans assets, local renderer and PDF byte generation while the
+            # same Android device remains fully offline.
+            flutter test integration_test/offline_pdf_export_capability_test.dart \
+              -d "$DEVICE_SERIAL" --reporter expanded 2>&1 | tee "$PDF_CAPABILITY_LOG"
 
             AIRPLANE_AFTER="$(adb shell settings get global airplane_mode_on | tr -d '\r')"
             WIFI_AFTER="$(adb shell settings get global wifi_on | tr -d '\r')"
@@ -187,7 +197,10 @@ jobs:
                 'evidenceScope': 'device-capability-smoke',
                 'commitSha': os.environ['GITHUB_SHA'],
                 'releaseArtifact': False,
-                'testTarget': 'integration_test/offline_calculation_capabilities_test.dart',
+                'testTargets': [
+                    'integration_test/offline_calculation_capabilities_test.dart',
+                    'integration_test/offline_pdf_export_capability_test.dart',
+                ],
                 'device': {
                     'kind': 'emulator',
                     'serial': os.environ['DEVICE_SERIAL'],
@@ -210,11 +223,10 @@ jobs:
                     'csvExport',
                     'csvRestore',
                     'professionalClientManagement',
-                ],
-                'remainingCapabilities': [
                     'pdfExport',
                 ],
-                'endToEndCapabilitiesComplete': False,
+                'remainingCapabilities': [],
+                'endToEndCapabilitiesComplete': True,
                 'verifiableAsDone': False,
             }
             Path(os.environ['CAPABILITY_MANIFEST']).write_text(
@@ -224,7 +236,7 @@ jobs:
             PY
             python tools/offline/validate_airplane_capability_evidence.py \
               "$CAPABILITY_MANIFEST" --expected-commit "$GITHUB_SHA"
-            echo 'RC1363_RC1368_RC1370_RC1372_AIRPLANE_DEVICE_CAPABILITY_OK'
+            echo 'RC1363_RC1372_ALL_TEN_AIRPLANE_DEVICE_CAPABILITIES_OK'
 
       - name: Revalidate persisted airplane manifests
         run: |
@@ -237,7 +249,7 @@ jobs:
             --expected-commit "$GITHUB_SHA"
           shasum -a 256 -c evidence/runtime/airplane-mode/apk.sha256
 
-      - name: Upload exact airplane startup and partial capability evidence
+      - name: Upload exact airplane startup and capability evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -246,6 +258,7 @@ jobs:
             evidence/runtime/airplane-mode/startup-smoke.json
             evidence/runtime/airplane-mode/device-capability-smoke.json
             evidence/runtime/airplane-mode/device-capability-smoke.log
+            evidence/runtime/airplane-mode/device-pdf-capability-smoke.log
             evidence/runtime/airplane-mode/apk.sha256
             evidence/runtime/airplane-mode/release-logcat.txt
           if-no-files-found: error
@@ -272,15 +285,15 @@ jobs:
           p=Path('requirements/requirement_state.csv')
           with p.open(encoding='utf-8',newline='') as f: rows=list(csv.DictReader(f))
           fields=list(rows[0].keys()); found=set()
-          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|integration_test/offline_calculation_capabilities_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|tools/offline/validate_airplane_release_evidence.py|tools/offline/validate_airplane_capability_evidence.py|.github/workflows/rc1362-rc1374-airplane-mode.yml'
+          links='lib/src/offline/offline_core_capabilities.dart|test/offline/offline_core_capabilities_rc1362_rc1374_test.dart|integration_test/offline_calculation_capabilities_test.dart|integration_test/offline_pdf_export_capability_test.dart|requirements/contracts/rc1362_rc1374_airplane_mode_contract.json|tools/offline/validate_airplane_release_evidence.py|tools/offline/validate_airplane_capability_evidence.py|.github/workflows/rc1362-rc1374-airplane-mode.yml'
           for r in rows:
             if r['rc_id'] not in targets: continue
             found.add(r['rc_id'])
             if r['status']=='NOT_STARTED': r['status']='IMPLEMENTED'
             r['evidence_links']=links
             r['blocked']='YES'
-            r['blocker']='Exact release APK startup provenance exists and Android device harness covers nine offline capabilities, but production PDF rendering and exact-release instrumentation for all ten flows remain required before VERIFIED/DONE.'
-            r['notes']='Offline core contract remains fail-closed. Device capability evidence explicitly sets releaseArtifact=false and verifiableAsDone=false; it cannot substitute for exact-release end-to-end proof.'
+            r['blocker']='Android device harness covers all ten offline production capability paths including PDF export, but exact-release instrumentation for all ten flows remains required before VERIFIED/DONE.'
+            r['notes']='Offline core contract remains fail-closed. Device capability evidence sets releaseArtifact=false and verifiableAsDone=false; it cannot substitute for exact-release end-to-end proof.'
           if found != targets: raise SystemExit(f'RC1362_RC1374_FAIL missing={sorted(targets-found)}')
           with p.open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=fields,lineterminator='\n'); w.writeheader(); w.writerows(rows)
@@ -290,5 +303,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add requirements/requirement_state.csv
-          git commit -m 'requirements(rc1362-rc1374): record airplane-mode core IMPLEMENTED'
+          git commit -m 'requirements(rc1362-rc1374): record ten-capability airplane core IMPLEMENTED'
           git push origin HEAD:main
