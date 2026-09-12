@@ -7,8 +7,10 @@ on:
       - '.github/workflows/materialize-rc1436-jpl-golden.yml'
       - 'tools/data/materialize_jpl_horizons_golden.py'
       - 'tools/data/materialize_jpl_horizons_coverage.py'
+      - 'tools/data/materialize_de440s_spice_oracle.py'
       - 'test/calculation_core/de440s_jpl_horizons_accuracy_test.dart'
       - 'test/calculation_core/de440s_jpl_horizons_coverage_test.dart'
+      - 'test/calculation_core/de440s_naif_spice_oracle_test.dart'
       - 'lib/src/calculation_core/ephemeris/**'
       - 'assets/data/ephemeris/**'
 
@@ -16,7 +18,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: materialize-rc1436-jpl-golden
+  group: materialize-rc1436-jpl-golden-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -25,67 +27,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install independent NAIF SPICE reader
+        run: python -m pip install --disable-pip-version-check 'spiceypy==6.0.0'
       - name: Capture official NASA/JPL Horizons Earth/SSB J2000 vector
         run: python tools/data/materialize_jpl_horizons_golden.py
-      - name: Capture official NASA/JPL multi-epoch and multi-body coverage
+      - name: Capture official NASA/JPL Horizons multi-epoch coverage
         run: python tools/data/materialize_jpl_horizons_coverage.py
-      - name: Validate evidence shape and provenance
+      - name: Capture independent NAIF SPICE states from exact packaged DE440s
+        run: python tools/data/materialize_de440s_spice_oracle.py
+      - name: Validate evidence provenance
         run: |
           python - <<'PY'
-          import hashlib, json, math
+          import hashlib, json
           from pathlib import Path
-
-          single = Path('evidence/rc1436/jpl_horizons_earth_ssb_j2000.json')
-          d = json.loads(single.read_text(encoding='utf-8'))
-          assert d['status'] == 'OFFICIAL_GOLDEN_CAPTURED'
-          assert d['source']['provider'] == 'NASA/JPL Horizons API'
-          assert d['source']['endpoint'] == 'https://ssd.jpl.nasa.gov/api/horizons.api'
-          assert len(d['source']['rawResponseSha256']) == 64
-          q = d['source']['query']
-          assert q['COMMAND'] == "'399'" and q['CENTER'] == "'@0'"
-          assert q['TLIST'] == "'2451545.0'" and q['TLIST_TYPE'] == "'JD'"
-          assert q['TIME_TYPE'] == "'TDB'" and q['REF_SYSTEM'] == "'ICRF'"
-          assert q['REF_PLANE'] == "'FRAME'" and q['VEC_TABLE'] == "'2'"
-          assert q['VEC_CORR'] == "'NONE'" and q['OUT_UNITS'] == "'KM-S'"
-          v = d['vector']
-          values = [v[k] for k in ('xKm','yKm','zKm','vxKmPerSecond','vyKmPerSecond','vzKmPerSecond')]
-          assert all(math.isfinite(x) for x in values) and sum(abs(x) for x in values[:3]) > 0
-          print('single evidence sha256=', hashlib.sha256(single.read_bytes()).hexdigest())
-
-          coverage = Path('evidence/rc1436/jpl_horizons_de440s_coverage.json')
-          c = json.loads(coverage.read_text(encoding='utf-8'))
-          assert c['status'] == 'OFFICIAL_GOLDEN_COVERAGE_CAPTURED'
-          assert c['provider'] == 'NASA/JPL Horizons API'
-          assert c['endpoint'] == 'https://ssd.jpl.nasa.gov/api/horizons.api'
-          vectors = c['vectors']
-          assert len(vectors) >= 5
-          assert len({item['id'] for item in vectors}) == len(vectors)
-          assert {399, 10, 301}.issubset({item['targetNaifId'] for item in vectors})
-          assert {2415020.5, 2451545.0, 2488069.5}.issubset({item['epoch']['jdTdb'] for item in vectors})
-          for item in vectors:
-              assert item['centerNaifId'] == 0
-              assert item['referenceSystem'] == 'ICRF'
-              assert item['referencePlane'] == 'FRAME'
-              assert item['corrections'] == 'NONE'
-              assert item['units'] == 'KM-S'
-              src = item['source']
-              assert src['apiSignature']['source'] == 'NASA/JPL Horizons API'
-              assert len(src['rawResponseSha256']) == 64
-              qq = src['query']
-              assert qq['COMMAND'] == f"'{item['targetNaifId']}'"
-              assert qq['CENTER'] == "'@0'" and qq['TIME_TYPE'] == "'TDB'"
-              assert qq['REF_SYSTEM'] == "'ICRF'" and qq['REF_PLANE'] == "'FRAME'"
-              assert qq['VEC_TABLE'] == "'2'" and qq['VEC_CORR'] == "'NONE'"
-              assert qq['OUT_UNITS'] == "'KM-S'"
-              state = item['state']
-              values = [state[k] for k in ('xKm','yKm','zKm','vxKmPerSecond','vyKmPerSecond','vzKmPerSecond')]
-              assert all(math.isfinite(x) for x in values)
-              assert sum(abs(x) for x in values[:3]) > 0
-          print('coverage evidence sha256=', hashlib.sha256(coverage.read_bytes()).hexdigest())
+          single=Path('evidence/rc1436/jpl_horizons_earth_ssb_j2000.json')
+          coverage=Path('evidence/rc1436/jpl_horizons_de440s_coverage.json')
+          oracle=Path('evidence/rc1436/de440s_naif_spice_oracle.json')
+          s=json.loads(single.read_text()); c=json.loads(coverage.read_text()); o=json.loads(oracle.read_text())
+          assert s['status']=='OFFICIAL_GOLDEN_CAPTURED' and s['source']['provider']=='NASA/JPL Horizons API'
+          assert c['status']=='OFFICIAL_GOLDEN_COVERAGE_CAPTURED' and c['provider']=='NASA/JPL Horizons API'
+          assert len(c['vectors'])>=5 and {399,10,301}.issubset({x['targetNaifId'] for x in c['vectors']})
+          assert o['status']=='INDEPENDENT_DE440S_ORACLE_CAPTURED' and o['provider']=='NAIF CSPICE via SpiceyPy'
+          assert len(o['vectors'])>=5 and {399,10,301}.issubset({x['targetNaifId'] for x in o['vectors']})
+          kernel=Path(o['kernel']['path'])
+          assert hashlib.sha256(kernel.read_bytes()).hexdigest()==o['kernel']['sha256']
+          assert o['kernel']['sizeBytes']==kernel.stat().st_size
+          print('Horizons and independent same-kernel SPICE evidence provenance OK')
           PY
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -95,23 +67,28 @@ jobs:
           cache: true
       - name: Resolve locked dependencies
         run: flutter pub get
-      - name: Compare packaged DE440s against official JPL J2000 golden
+      - name: Check official Horizons Earth J2000 cross-source golden
         run: flutter test test/calculation_core/de440s_jpl_horizons_accuracy_test.dart --reporter expanded
-      - name: Compare packaged DE440s against official JPL coverage set
+      - name: Check explicit DE440s versus Horizons-DE441 cross-model budget
         run: flutter test test/calculation_core/de440s_jpl_horizons_coverage_test.dart --reporter expanded
-      - name: Commit canonical golden evidence
+      - name: Enforce strict same-DE440s accuracy against independent NAIF SPICE
+        run: flutter test test/calculation_core/de440s_naif_spice_oracle_test.dart --reporter expanded
+      - name: Commit canonical RC-1436 evidence to triggering branch
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
         run: |
           files=(
             'evidence/rc1436/jpl_horizons_earth_ssb_j2000.json'
             'evidence/rc1436/jpl_horizons_de440s_coverage.json'
+            'evidence/rc1436/de440s_naif_spice_oracle.json'
           )
           for evidence in "${files[@]}"; do test -s "$evidence"; done
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- "${files[@]}"
           if git diff --cached --quiet -- "${files[@]}"; then
-            echo 'Canonical JPL evidence is tracked and unchanged.'
+            echo 'Canonical RC-1436 evidence is tracked and unchanged.'
             exit 0
           fi
-          git commit -m 'data(rc1436): capture verified multi-vector JPL coverage'
-          git push origin HEAD:main
+          git commit -m 'data(rc1436): capture Horizons and independent DE440s oracle evidence'
+          git push origin "HEAD:${TARGET_BRANCH}"

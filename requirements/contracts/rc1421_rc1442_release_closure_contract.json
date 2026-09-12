@@ -1,0 +1,50 @@
+{
+  "contractVersion": 1,
+  "requirementRange": "RC-1421..RC-1442",
+  "requirements": {
+    "RC-1421": ["lib/src/application/daily/today_temporal_contract.dart", "lib/src/application/daily/daily_today_core.dart", "test/application/today_temporal_contract_rc1421_rc1435_test.dart"],
+    "RC-1422": ["lib/src/application/daily/today_temporal_contract.dart", "test/application/today_temporal_contract_rc1421_rc1435_test.dart"],
+    "RC-1423": ["lib/src/application/daily/today_temporal_contract.dart", "test/application/today_temporal_contract_rc1421_rc1435_test.dart", "test/content/daily_message_catalog_test.dart"],
+    "RC-1424": ["requirements/content_manifests/daily_messages.json", "tools/content/validate_daily_message_contract.py"],
+    "RC-1425": ["requirements/content_manifests/daily_messages.json", "tools/content/validate_daily_message_release_horizon.py"],
+    "RC-1426": ["requirements/content_manifests/daily_messages.json", "tools/content/validate_daily_message_catalog.py"],
+    "RC-1427": ["lib/src/content/daily_messages/daily_message_catalog.dart", "tools/content/validate_daily_message_contract.py", "lib/src/application/daily/today_temporal_contract.dart"],
+    "RC-1428": ["lib/src/application/daily/today_temporal_contract.dart", "test/application/today_temporal_contract_rc1421_rc1435_test.dart"],
+    "RC-1429": ["requirements/reference_manifests/rc1439_reference_images.json"],
+    "RC-1430": ["requirements/reference_manifests/astronomy_accuracy_budgets.json"],
+    "RC-1431": ["requirements/reference_manifests/rc1439_reference_images.json", "tools/requirements/validate_rc1439_reference_images.py"],
+    "RC-1432": ["lib/src/ui/navigation/main_navigation_shell.dart", "lib/src/ui/actions/ruh_action_ids.dart"],
+    "RC-1433": ["requirements/content_manifests/daily_messages.json", "tools/content/validate_daily_message_release_horizon.py", ".github/workflows/daily-message-contract.yml"],
+    "RC-1434": ["requirements/content_manifests/daily_messages.json", "tools/content/validate_daily_message_catalog.py"],
+    "RC-1435": ["lib/src/application/daily/today_temporal_contract.dart", "test/application/today_temporal_contract_rc1421_rc1435_test.dart"],
+    "RC-1436": ["requirements/reference_manifests/astronomy_accuracy_budgets.json", "tools/astronomy/validate_accuracy_budget_contract.py"],
+    "RC-1437": ["requirements/reference_manifests/astronomy_accuracy_budgets.json", ".github/workflows/materialize-rc1437-city-catalog.yml", ".github/workflows/materialize-rc1437-de440s.yml", ".github/workflows/materialize-rc1437-eop.yml"],
+    "RC-1438": ["requirements/reference_manifests/rc1439_reference_images.json"],
+    "RC-1439": ["requirements/reference_manifests/rc1439_reference_images.json", "tools/requirements/validate_rc1439_reference_images.py"],
+    "RC-1440": ["lib/src/ui/actions/ruh_action_ids.dart", "lib/src/ui/navigation/main_navigation_shell.dart"],
+    "RC-1441": ["lib/src/ui/navigation/main_navigation_shell.dart", "lib/src/ui/actions/ruh_action_ids.dart"],
+    "RC-1442": ["tools/release/validate_final_traceability.py", "governance/local_core_cost_contract.json", "pubspec.lock"]
+  },
+  "releaseBlockers": {
+    "RC-1425": "Daily-message release audit must prove the complete rolling release window in physical packaged assets.",
+    "RC-1426": "TR and EN independent editorial release audit must be complete; schema/declared counts alone are insufficient.",
+    "RC-1429": "Approved static visual-source inventory is not yet independently proven complete.",
+    "RC-1430": "Dynamic renderer golden-image coverage is not yet globally green.",
+    "RC-1431": "Canonical physical UI reference images are not yet bundled and verified.",
+    "RC-1433": "Rolling ten-year release horizon must be proven against the exact release-date catalog.",
+    "RC-1434": "Exact one-TR/one-EN-per-date release audit must be complete.",
+    "RC-1435": "1890-2110 policy exists, but every applicable engine/provider must prove this range or expose a narrower fail-closed range.",
+    "RC-1436": "Accuracy budget manifest explicitly remains unproven until independent physical golden datasets pass all tolerances.",
+    "RC-1437": "All packaged ephemeris/timezone/city/EOP datasets require version/checksum/offline/release and legal evidence.",
+    "RC-1438": "Complete approved-source inventory for logo/symbol/mandala/tarot/icon/font assets remains required.",
+    "RC-1439": "Reference-image manifest currently has no verified physical screen references.",
+    "RC-1441": "Full rendered device/text-scale/screen-reader/contrast accessibility release evidence remains required.",
+    "RC-1442": "Exact clean-checkout release artifact from the tested commit remains required."
+  },
+  "policy": {
+    "structuralEvidenceIsNotDone": true,
+    "releaseModeRequiresNoBlockers": true,
+    "exactOrderedRequirementSet": true,
+    "noRequirementMayBeMergedOrDropped": true
+  }
+}

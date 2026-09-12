@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
 import '../backup/backup_application_service.dart';
@@ -19,11 +20,10 @@ import '../entitlements/local_entitlement_time_anchor.dart';
 import '../entitlements/professional_repository_bundle.dart';
 import '../pdf/combined_professional_pdf_application_service.dart';
 import '../pdf/combined_professional_pdf_delivery_service.dart';
-import '../pdf/pdf_combined_report.dart';
 import '../pdf/pdf_platform_gateway.dart';
 import '../pdf/persisted_calculation_pdf_source.dart';
 import '../pdf/persisted_combined_pdf_projection.dart';
-import '../pdf/unavailable_pdf_service.dart';
+import '../pdf/production_combined_pdf_service.dart';
 import '../pdf/western_natal_persistence_service.dart';
 
 final class RuhCodeRuntime {
@@ -60,13 +60,14 @@ final class RuhCodeRuntime {
   final LocalDatabaseProfessionalPdfSnapshotSource professionalPdfSnapshotSource;
 
   /// Combined-report application boundary. Catalog and preflight preview are
-  /// production-wired now. Byte rendering remains explicitly fail-closed until
-  /// the approved Unicode font/render chain is available.
+  /// production-wired now. Byte rendering is selected by the canonical font
+  /// release manifest and remains fail-closed until exact packaged font hashes
+  /// make that manifest release-ready.
   final CombinedProfessionalPdfApplicationService combinedProfessionalPdf;
 
   /// Native Save As/share delivery boundary for the exact sealed combined
   /// preview token. It still calls [combinedProfessionalPdf] before delivery,
-  /// therefore rendering remains fail-closed while approved fonts are absent.
+  /// therefore unverified font assets can never bypass the render gate.
   final CombinedProfessionalPdfDeliveryService combinedProfessionalPdfDelivery;
 
   /// The single production persistence boundary for verified Western natal
@@ -134,9 +135,7 @@ final class RuhCodeRuntime {
       recordCatalog: professionalPdfSnapshotSource,
       snapshotSource: professionalPdfSnapshotSource,
       projectionSource: combinedProjectionSource,
-      pdfService: const UnavailablePdfService<PdfCombinedReportProjection>(
-        'Combined PDF byte rendering is unavailable until the approved Unicode font/render chain is production-ready.',
-      ),
+      pdfService: createProductionCombinedPdfService(bundle: rootBundle),
     );
     final combinedProfessionalPdfDelivery = CombinedProfessionalPdfDeliveryService(
       application: combinedProfessionalPdf,

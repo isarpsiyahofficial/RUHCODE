@@ -1,0 +1,69 @@
+{
+  "status": "INDEPENDENT_NAKSHATRA_PADA_ORACLE_CAPTURED",
+  "provider": "Swiss Ephemeris via pyswisseph",
+  "providerVersion": "2.10.03",
+  "providerBinary": {
+    "sha256": "9663f57768a61c7c736290c732c0d856654972197edb3b2f84ca6d7e77c718f3"
+  },
+  "method": {
+    "moonApi": "swe.calc_ut",
+    "ephemerisFlag": "FLG_MOSEPH",
+    "siderealMode": "SIDM_LAHIRI",
+    "positionFlags": [
+      "FLG_SIDEREAL",
+      "FLG_TRUEPOS",
+      "FLG_NONUT"
+    ],
+    "coordinateSemantics": "geocentric true-position mean-ecliptic sidereal longitude; analytical Moshier backend independent from packaged DE440s"
+  },
+  "accuracyBudget": {
+    "source": "requirements/reference_manifests/astronomy_accuracy_budgets.json",
+    "nakshatraLongitudeMaxAbsErrorDegrees": 0.02,
+    "padaLongitudeMaxAbsErrorDegrees": 0.02
+  },
+  "coverage": {
+    "supportedDateRangeCases": [1900, 2000, 2026, 2050, 2100]
+  },
+  "cases": [
+    {
+      "id": "equinox_1900",
+      "calendarUtc": {"year": 1900, "month": 3, "day": 20, "decimalHour": 12.0},
+      "julianDayUt1": 2415099.0,
+      "julianDayTt": 2415098.9999798546,
+      "oracle": {"siderealMoonLongitudeDegrees": 203.00939161016174, "lahiriAyanamshaDegrees": 22.463531483489895, "nakshatraIndexZeroBased": 15, "padaOneBased": 1},
+      "returnFlags": 67156
+    },
+    {
+      "id": "j2000",
+      "calendarUtc": {"year": 2000, "month": 1, "day": 1, "decimalHour": 12.0},
+      "julianDayUt1": 2451545.0,
+      "julianDayTt": 2451545.0007387605,
+      "oracle": {"siderealMoonLongitudeDegrees": 199.4707395953463, "lahiriAyanamshaDegrees": 23.857092353708822, "nakshatraIndexZeroBased": 14, "padaOneBased": 4},
+      "returnFlags": 67156
+    },
+    {
+      "id": "istanbul_release_2026",
+      "calendarUtc": {"year": 2026, "month": 9, "day": 10, "decimalHour": 12.0},
+      "julianDayUt1": 2461294.0,
+      "julianDayTt": 2461294.000796571,
+      "oracle": {"siderealMoonLongitudeDegrees": 135.31384095473865, "lahiriAyanamshaDegrees": 24.229961887144214, "nakshatraIndexZeroBased": 10, "padaOneBased": 1},
+      "returnFlags": 67156
+    },
+    {
+      "id": "solstice_2050",
+      "calendarUtc": {"year": 2050, "month": 6, "day": 21, "decimalHour": 0.0},
+      "julianDayUt1": 2469978.5,
+      "julianDayTt": 2469978.500864787,
+      "oracle": {"siderealMoonLongitudeDegrees": 84.58127224024106, "lahiriAyanamshaDegrees": 24.562154392402192, "nakshatraIndexZeroBased": 6, "padaOneBased": 2},
+      "returnFlags": 67156
+    },
+    {
+      "id": "late_range_2100",
+      "calendarUtc": {"year": 2100, "month": 12, "day": 1, "decimalHour": 6.0},
+      "julianDayUt1": 2488403.75,
+      "julianDayTt": 2488403.7510834136,
+      "oracle": {"siderealMoonLongitudeDegrees": 219.6448692870719, "lahiriAyanamshaDegrees": 25.26705721269616, "nakshatraIndexZeroBased": 16, "padaOneBased": 2},
+      "returnFlags": 67156
+    }
+  ]
+}

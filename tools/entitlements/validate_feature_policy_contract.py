@@ -143,7 +143,7 @@ checks = (
         'Rolling the wall clock back cannot resurrect the expired grant.',
     ]),
     (ACCESS_GUARD_TEST, [
-        'UI route and service surfaces use the same EntitlementService result',
+        'UI menu route and service surfaces use the same EntitlementService result',
         'runService never executes a locked action',
         'runService executes exactly once when access is allowed',
         'invented feature IDs fail closed before entitlement lookup',

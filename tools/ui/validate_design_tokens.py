@@ -26,10 +26,25 @@ if data.get('touch', {}).get('minimumTargetDp', 0) < 48:
 if data.get('navigation', {}).get('items') != ['TODAY','TOOLS','RECORDS','PROFILE']:
     print('ERROR: bottom navigation contract drift', file=sys.stderr)
     raise SystemExit(1)
-spacing = list(data.get('spacingDp', {}).values())
-if sorted(spacing) != [4,8,12,16,24,32]:
-    print('ERROR: spacing grid drift', file=sys.stderr)
+spacing = data.get('spacingDp', {})
+core_spacing_keys = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl']
+core_spacing = [spacing.get(key) for key in core_spacing_keys]
+if core_spacing != [4, 8, 12, 16, 24, 32]:
+    print('ERROR: core spacing grid drift', file=sys.stderr)
     raise SystemExit(1)
+semantic_spacing = {
+    'paragraph': 12,
+    'section': 24,
+    'cardPadding': 16,
+    'screenEdgePadding': 16,
+    'pdfEdgePadding': 16,
+    'chartLegendGap': 8,
+    'chartLegendItemGap': 12,
+}
+for key, expected in semantic_spacing.items():
+    if spacing.get(key) != expected:
+        print(f'ERROR: semantic spacing drift {key}={spacing.get(key)!r}, expected {expected}', file=sys.stderr)
+        raise SystemExit(1)
 font_ids = {
     data.get('typography', {}).get('uiFontAssetId'),
     data.get('typography', {}).get('reportSerifAssetId'),
@@ -117,7 +132,7 @@ for token in non_text_tokens:
             raise SystemExit(1)
 
 print(
-    'Design tokens OK: colors=11 spacing=6 minTouch=48dp nav=4 fontContracts=3 '
+    'Design tokens OK: coreSpacing=6 semanticSpacing=7 minTouch=48dp nav=4 fontContracts=3 '
     f'normalContrastPairs={len(required_pairs)} normalMin={normal_minimum:.1f}:1 '
     f'nonTextAccents={len(non_text_tokens)}'
 )

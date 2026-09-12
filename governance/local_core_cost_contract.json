@@ -4,14 +4,14 @@
   "costTarget": "zero_ongoing_backend_or_paid_api_cost_for_core",
   "localCoreCapabilities": {
     "astrologyCalculation": ["lib/src/calculation_core/"],
-    "userData": ["lib/src/storage/"],
+    "userData": ["lib/src/data/"],
     "interpretationCatalog": ["lib/src/interpretation/", "assets/content/"],
     "pdf": ["lib/src/pdf/"],
     "csvBackupRestore": ["lib/src/backup/"],
-    "search": ["lib/src/search/", "lib/src/professional/professional_search.dart"],
+    "search": ["lib/src/data/professional_search.dart"],
     "professionalClientManagement": ["lib/src/professional/"],
     "dailyPersonalization": ["lib/src/application/daily/"],
-    "notificationScheduling": ["lib/src/notifications/"],
+    "notificationScheduling": ["lib/src/application/engagement_policy.dart"],
     "cityTimezoneData": ["assets/data/cities/", "lib/src/location/"]
   },
   "allowedOptionalNetwork": [

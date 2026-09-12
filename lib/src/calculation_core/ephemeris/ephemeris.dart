@@ -15,6 +15,13 @@ enum AstroBody {
 
 enum ApparentMotion { direct, stationary, retrograde }
 
+/// Reference frame carried by an [EclipticState].
+///
+/// `tropicalOfDate` is retained as the default for existing analytical/test
+/// providers. Packaged DE440s states are explicitly `j2000Geometric` so a
+/// consumer that requires an of-date zodiac cannot silently mix frames.
+enum EclipticReferenceFrame { tropicalOfDate, j2000Geometric }
+
 final class EphemerisCoverage {
   const EphemerisCoverage({
     required this.startJdTt,
@@ -60,6 +67,7 @@ final class EclipticState {
     required this.longitudeSpeedDegreesPerDay,
     required this.sourceId,
     required this.dataVersion,
+    this.referenceFrame = EclipticReferenceFrame.tropicalOfDate,
   }) {
     validate();
   }
@@ -72,6 +80,7 @@ final class EclipticState {
   final double longitudeSpeedDegreesPerDay;
   final String sourceId;
   final String dataVersion;
+  final EclipticReferenceFrame referenceFrame;
 
   void validate() {
     if (!jdTt.isFinite) {
@@ -111,8 +120,9 @@ abstract interface class EphemerisProvider {
 
   /// Returns an exact, versioned geocentric ecliptic state at TT Julian Day.
   ///
-  /// Implementations must reject requests outside packaged coverage and must
-  /// never silently use network data, a different body, a nearby date, or a
-  /// zero/default position as a fallback.
+  /// Implementations must identify the reference frame carried by the state,
+  /// reject requests outside packaged coverage, and never silently use network
+  /// data, a different body, a nearby date, or a zero/default position as a
+  /// fallback.
   EclipticState stateAt({required AstroBody body, required double jdTt});
 }

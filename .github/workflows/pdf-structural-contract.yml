@@ -5,38 +5,83 @@ on:
     branches: [main]
     paths:
       - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'lib/src/pdf/pdf_font_release_manifest.dart'
       - 'test/pdf/pdf_output_inspector_test.dart'
+      - 'test/pdf/pdf_font_release_manifest_test.dart'
       - 'evidence/pdf/local_renderer_contract.json'
       - 'tools/pdf/validate_pdf_output_inspector.py'
+      - 'tools/pdf/materialize_pdf_font_assets.py'
+      - 'assets/fonts/pdf/PROVENANCE.md'
+      - 'assets/fonts/pdf/OFL.txt'
+      - 'assets/fonts/pdf/font_release_provenance.json'
       - '.github/workflows/pdf-structural-contract.yml'
       - 'pubspec.yaml'
   pull_request:
     paths:
       - 'lib/src/pdf/pdf_output_inspector.dart'
+      - 'lib/src/pdf/pdf_font_release_manifest.dart'
       - 'test/pdf/pdf_output_inspector_test.dart'
+      - 'test/pdf/pdf_font_release_manifest_test.dart'
       - 'evidence/pdf/local_renderer_contract.json'
       - 'tools/pdf/validate_pdf_output_inspector.py'
+      - 'tools/pdf/materialize_pdf_font_assets.py'
+      - 'assets/fonts/pdf/PROVENANCE.md'
+      - 'assets/fonts/pdf/OFL.txt'
+      - 'assets/fonts/pdf/font_release_provenance.json'
       - '.github/workflows/pdf-structural-contract.yml'
       - 'pubspec.yaml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   pdf-structural-contract:
     runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout exact target branch head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Materialize immutable PDF font assets
+        run: python tools/pdf/materialize_pdf_font_assets.py
+      - name: Re-verify materialized PDF font assets offline
+        run: python tools/pdf/materialize_pdf_font_assets.py --check
       - name: Validate PDF structural evidence contract
         run: python tools/pdf/validate_pdf_output_inspector.py
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.44.7'
           channel: stable
           cache: true
       - name: Resolve Flutter dependencies
         run: flutter pub get
+      - name: Run PDF font release regression tests against materialized assets
+        run: flutter test test/pdf/pdf_font_release_manifest_test.dart
       - name: Run PDF structural regression tests
         run: flutter test test/pdf/pdf_output_inspector_test.dart
+      - name: Persist verified font assets after all PDF gates pass
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            assets/fonts/pdf/NotoSans-Regular.ttf \
+            assets/fonts/pdf/NotoSans-Bold.ttf \
+            assets/fonts/pdf/OFL.txt \
+            assets/fonts/pdf/font_release_provenance.json \
+            lib/src/pdf/pdf_font_release_manifest.dart
+          if git diff --cached --quiet; then
+            echo "Verified PDF font assets already match the pinned release contract."
+            exit 0
+          fi
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "feat(pdf): materialize verified Noto Sans assets"
+          git push origin "HEAD:${TARGET_BRANCH}"

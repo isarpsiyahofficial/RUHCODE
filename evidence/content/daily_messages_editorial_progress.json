@@ -1,6 +1,6 @@
 {
   "contract": "ruh-code-daily-message-editorial-progress-v1",
-  "status": "EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT",
+  "status": "EDITORIAL_RELEASE_AUDIT_VERIFIED_DEVICE_PROOF_PENDING",
   "done": false,
   "requirements": ["RC-1424", "RC-1425", "RC-1426", "RC-1427", "RC-1433", "RC-1434"],
   "sources": [
@@ -111,10 +111,21 @@
     "ok": true,
     "catalogSha256": "6ad0fc34b3ee8146bad0f8f86126de9491cd806e779b2530988ea307685373bf"
   },
+  "verifiedCi": {
+    "strictEditorialRunId": 34568048635,
+    "strictEditorialHead": "fae0a1e9d85b6ada49304549542f3ef67bc78ae7",
+    "strictEditorialConclusion": "success",
+    "packagedLoaderTests": "success",
+    "rollingTenYearHorizon": "success",
+    "releaseCatalogAudit": "success",
+    "apkPackagingRunId": 34560868637,
+    "apkPackagingHead": "604ae5cb8f0122a49c1817373d090c943c7234d5",
+    "apkPackagingConclusion": "success",
+    "apkAssetVerification": "success"
+  },
   "remainingBeforeDone": [
-    "obtain exact visible CI SUCCESS for the rolling ten-year release-horizon validator and packaged asset loader tests",
     "wire the already loaded exact-date catalog into the final approved Today/Daily Message UI states without random fallback",
-    "prove release APK contains and can open the packaged catalog on device/offline",
+    "prove on a real Android device or emulator in airplane mode that the release APK can open and serve the packaged exact-date catalog without network fallback",
     "retain rolling future-stock maintenance so every actual release date stays at least ten full years ahead"
   ]
 }

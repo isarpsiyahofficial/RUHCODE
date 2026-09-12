@@ -31,6 +31,7 @@ void main() {
             MajorAspect.square: 0,
             MajorAspect.trine: 0,
             MajorAspect.opposition: 0,
+            MajorAspect.quincunx: 0,
           },
         ),
       );

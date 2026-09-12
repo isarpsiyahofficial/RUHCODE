@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/ephemeris/de440s_asset_loader.dart';
 import 'package:ruh_code/src/calculation_core/ephemeris/de440s_daf_parser.dart';
-import 'package:ruh_code/src/calculation_core/ephemeris/spk_accuracy_contract.dart';
 import 'package:ruh_code/src/calculation_core/ephemeris/spk_body_graph_evaluator.dart';
 import 'package:ruh_code/src/calculation_core/ephemeris/spk_type2_evaluator.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('packaged DE440s matches official multi-epoch/multi-body Horizons coverage', () async {
+  test('packaged DE440s stays within explicit DE440/DE441 cross-model Horizons budget', () async {
     final evidenceFile = File(
       'evidence/rc1436/jpl_horizons_de440s_coverage.json',
     );
@@ -41,7 +41,16 @@ void main() {
     final kernel = await const De440sAssetLoader().loadPackaged();
     final index = De440sDafIndex.parse(kernel.bytes);
     final graph = SpkBodyGraphEvaluator(SpkType2Evaluator(kernel.bytes, index));
-    const contract = SpkStateAccuracyContract();
+
+    // Horizons currently uses the long-range DE441 solution for these major
+    // bodies, while Ruh Code intentionally packages DE440s. JPL documents that
+    // DE440 and DE441 are different fitted solutions and that their Moon states
+    // diverge more than planetary states. Therefore Horizons is retained as an
+    // authoritative cross-model sanity/provenance check, not the centimetre
+    // evaluator oracle. The strict same-kernel oracle lives in
+    // de440s_naif_spice_oracle_test.dart and keeps the release accuracy contract.
+    const maxCrossModelPositionAxisErrorKm = 0.020; // 20 m
+    const maxCrossModelVelocityAxisErrorKmPerSecond = 0.000001; // 1 mm/s
 
     double finiteNumber(Map<String, dynamic> map, String key) {
       final value = map[key];
@@ -97,28 +106,45 @@ void main() {
       final state = vector['state'];
       expect(state, isA<Map<String, dynamic>>());
       final stateMap = state as Map<String, dynamic>;
-      final expected = SpkCartesianState(
-        xKm: finiteNumber(stateMap, 'xKm'),
-        yKm: finiteNumber(stateMap, 'yKm'),
-        zKm: finiteNumber(stateMap, 'zKm'),
-        vxKmPerSecond: finiteNumber(stateMap, 'vxKmPerSecond'),
-        vyKmPerSecond: finiteNumber(stateMap, 'vyKmPerSecond'),
-        vzKmPerSecond: finiteNumber(stateMap, 'vzKmPerSecond'),
-      );
-      final actual = graph.evaluate(
+      final expected = <double>[
+        finiteNumber(stateMap, 'xKm'),
+        finiteNumber(stateMap, 'yKm'),
+        finiteNumber(stateMap, 'zKm'),
+        finiteNumber(stateMap, 'vxKmPerSecond'),
+        finiteNumber(stateMap, 'vyKmPerSecond'),
+        finiteNumber(stateMap, 'vzKmPerSecond'),
+      ];
+      final actualState = graph.evaluate(
         targetId: target,
         observerId: 0,
         etSeconds: etSeconds,
       );
-      final result = contract.compare(actual: actual, expected: expected);
+      final actual = <double>[
+        actualState.xKm,
+        actualState.yKm,
+        actualState.zKm,
+        actualState.vxKmPerSecond,
+        actualState.vyKmPerSecond,
+        actualState.vzKmPerSecond,
+      ];
+      var positionError = 0.0;
+      var velocityError = 0.0;
+      for (var i = 0; i < 3; i++) {
+        positionError = math.max(positionError, (actual[i] - expected[i]).abs());
+      }
+      for (var i = 3; i < 6; i++) {
+        velocityError = math.max(velocityError, (actual[i] - expected[i]).abs());
+      }
       expect(
-        result.passed,
-        isTrue,
-        reason: '$id failed official Horizons accuracy: '
-            'position=${result.maxPositionAxisErrorKm} km, '
-            'velocity=${result.maxVelocityAxisErrorKmPerSecond} km/s.',
+        positionError,
+        lessThanOrEqualTo(maxCrossModelPositionAxisErrorKm),
+        reason: '$id exceeded explicit DE440s-vs-Horizons(DE441) cross-model position budget.',
       );
-      contract.requireWithinTolerance(actual: actual, expected: expected);
+      expect(
+        velocityError,
+        lessThanOrEqualTo(maxCrossModelVelocityAxisErrorKmPerSecond),
+        reason: '$id exceeded explicit DE440s-vs-Horizons(DE441) cross-model velocity budget.',
+      );
     }
 
     expect(targets, containsAll(<int>[399, 10, 301]));

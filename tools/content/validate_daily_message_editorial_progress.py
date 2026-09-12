@@ -88,11 +88,12 @@ def main() -> None:
     allowed_pairs = {
         ('EDITORIAL_IN_PROGRESS', 'EDITORIAL_CONTENT_IN_PROGRESS'),
         ('EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT', 'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT'),
+        ('EDITORIAL_RELEASE_AUDIT_VERIFIED_DEVICE_PROOF_PENDING', 'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT'),
     }
     require((lifecycle, manifest_status) in allowed_pairs,
             f'daily-message lifecycle mismatch: evidence={lifecycle!r} manifest={manifest_status!r}')
     require(evidence.get('done') is False,
-            'daily-message editorial progress evidence cannot be DONE before strict release audit is recorded')
+            'daily-message editorial progress evidence cannot be DONE before all remaining release/device proof is recorded')
     require(manifest.get('locales') == ['tr', 'en'], 'daily-message locale contract drifted')
 
     start = parse_iso(manifest['initial_coverage_start'])
@@ -158,7 +159,7 @@ def main() -> None:
     print(
         'daily-message editorial coverage OK: '
         f'all {total}/{expected_total} records are contiguous and ledger-backed; '
-        'strict release audit is now required before DONE'
+        'strict release audit/device lifecycle state remains fail-closed until all remaining proof is complete'
     )
 
 
