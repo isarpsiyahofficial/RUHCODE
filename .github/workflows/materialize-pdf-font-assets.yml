@@ -8,6 +8,7 @@ on:
       - .github/workflows/materialize-pdf-font-assets.yml
       - tools/pdf/materialize_pdf_font_assets.py
       - lib/src/pdf/pdf_font_release_manifest.dart
+      - test/pdf/pdf_font_release_manifest_test.dart
       - pubspec.yaml
       - assets/fonts/pdf/PROVENANCE.md
   pull_request:
@@ -15,6 +16,7 @@ on:
       - .github/workflows/materialize-pdf-font-assets.yml
       - tools/pdf/materialize_pdf_font_assets.py
       - lib/src/pdf/pdf_font_release_manifest.dart
+      - test/pdf/pdf_font_release_manifest_test.dart
       - pubspec.yaml
       - assets/fonts/pdf/PROVENANCE.md
   workflow_dispatch:
@@ -30,6 +32,7 @@ jobs:
   materialize:
     if: ${{ !contains(github.event.head_commit.message || '', 'feat(pdf): materialize verified Noto Sans assets') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
     steps:
@@ -38,6 +41,10 @@ jobs:
         with:
           ref: ${{ env.TARGET_BRANCH }}
           fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: Materialize pinned upstream font assets
         run: python3 tools/pdf/materialize_pdf_font_assets.py
@@ -57,6 +64,18 @@ jobs:
             assets/fonts/pdf/NotoSans-Bold.ttf
           cat assets/fonts/pdf/font_release_provenance.json
 
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
+
+      - name: Prove materialized assets satisfy release manifest contract
+        run: flutter test test/pdf/pdf_font_release_manifest_test.dart
+
       - name: Commit verified release assets
         if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         shell: bash
@@ -74,5 +93,11 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            assets/fonts/pdf/NotoSans-Regular.ttf \
+            assets/fonts/pdf/NotoSans-Bold.ttf \
+            assets/fonts/pdf/OFL.txt \
+            assets/fonts/pdf/font_release_provenance.json \
+            lib/src/pdf/pdf_font_release_manifest.dart
           git commit -m "feat(pdf): materialize verified Noto Sans assets"
           git push origin "HEAD:${TARGET_BRANCH}"
