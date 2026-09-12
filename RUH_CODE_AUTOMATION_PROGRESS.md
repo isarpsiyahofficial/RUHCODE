@@ -21,7 +21,7 @@ Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md
 
 Canonical toleranslar `requirements/reference_manifests/astronomy_accuracy_budgets.json` içinden okunur ve test geçirmek için gevşetilmez. Global manifest halen `proven=false`.
 
-Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swiss `0.05°`, Placidus 12 cusp `0.05°`, sunrise/sunset `60 s`, planetary hours `60 s`, Nakshatra/Pada `0.02° / 0.02°`, Lahiri `0.02°`, mean/true lunar node `0.02°` ve DE440s Sun `0.01°`, Moon/planet `0.02°` bulunur. Flutter Quality run `34586952087` exact `3c9c87339d05f921e458376d2e3d986c52f74` değil, canonical PR zincirindeki ilgili exact head üzerinde SUCCESS verdi; requirement yalnız fiziksel workflow evidence ile yükseltilir. Global RC-1436 yine DONE değildir.
+Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swiss `0.05°`, Placidus 12 cusp `0.05°`, sunrise/sunset `60 s`, planetary hours `60 s`, Nakshatra/Pada `0.02° / 0.02°`, Lahiri `0.02°`, mean/true lunar node `0.02°` ve DE440s Sun `0.01°`, Moon/planet `0.02°` bulunur. Flutter Quality run `34586952087` exact `3c9c87339d05c9298ee3b9c654441c5a522a27cf` üzerinde SUCCESS verdi. Global RC-1436 yine DONE değildir.
 
 ## Daily Message
 
@@ -61,7 +61,9 @@ Uygulanan repair commit'leri:
 - `635f7c4b0777ca39087e86b051c2af507bb16ec1` — combined PDF UI runtime validator'ı gerçek production composition'a hizalandı; `production_combined_pdf_service.dart` ve `createProductionCombinedPdfService(bundle: rootBundle)` artık binding evidence olarak aranıyor. Fail-closed font şartı kaldırılmadı.
 - `052f78d4db85252455df551a41f634af51fc7d48` — RC-0099→0101 validator'ı mevcut ve daha geniş `RC-0092-RC-0104 fail closed on invalid provenance` regression adıyla hizalandı; D16/D20/D24 hesap kuralları/toleransları değiştirilmedi.
 
-Yeni exact head `052f78d4db85252455df551a41f634af51fc7d48`. Yeni CI dalgası fiziksel olarak oluştu. `Requirements Contract` run `34666327804` queued. Birçok gate queued/pending; legacy workflow'lardaki `cancelled` sonuçlar SUCCESS sayılmaz. Aynı exact head üzerinde `RC-0099 RC-0101 Vedic D16 D20 D24` run `34666327631` concurrency/cancellation nedeniyle cancelled oldu; bu yüzden TESTED/VERIFIED yükseltmesi yapılmadı ve sonraki tetiklemede yeni fiziksel non-cancelled run aranmalıdır.
+Repair exact head `052f78d4db85252455df551a41f634af51fc7d48` üzerinde yeni CI dalgası fiziksel olarak oluştu. `Requirements Contract` run `34666327804` queued idi. Legacy workflow'lardaki `cancelled` sonuçlar SUCCESS sayılmaz. Aynı exact head üzerindeki `RC-0099 RC-0101 Vedic D16 D20 D24` run `34666327631` concurrency/cancellation nedeniyle cancelled oldu; bu yüzden TESTED/VERIFIED yükseltmesi yapılmadı ve sonraki tetiklemede yeni fiziksel non-cancelled run aranmalıdır.
+
+Bu progress checkpoint commit'i yalnız continuation state kaydıdır; test/evidence yerine sayılmaz ve CI sonucu yükseltmez.
 
 ## RC-1439 physical references
 
@@ -73,13 +75,12 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Açık blocker'lar / devam noktası
 
-1. Exact `052f78d4db85252455df551a41f634af51fc7d48` üzerindeki `Requirements Contract` run `34666327804` sonucunu fiziksel doğrula; kırmızıysa ilk gerçek failing step/log üzerinden root cause'u düzelt.
-2. RC-0099→0101 Varga workflow'u için concurrency-cancelled run yerine non-cancelled physical run elde et; validator + Flutter Varga testleri SUCCESS olmadan TESTED/VERIFIED yükseltme.
-3. Approved/reproducible Noto Sans Regular/Bold binary'lerini truthful source/license provenance ile repository asset'i olarak ekle; exact SHA-256'ları manifestte pinle ve `pubspec.yaml` packaging zincirini doğrula. Placeholder/system fallback/hash gevşetmesi kullanma.
-4. Manifest READY olduktan sonra production factory'nin gerçek renderer dalını unit/widget + Android üzerinde doğrula; RC-1369 `pdfExport`u airplane harness'e 10. capability olarak ekle. Integration evidence exact-release E2E yerine sayılmasın.
-5. On capability partial device harness green olduktan sonra exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
-6. Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
-7. RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
-8. RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
+1. Son progress checkpoint sonrasındaki exact branch head üzerinde `Requirements Contract` ve Varga D16/D20/D24 workflow sonuçlarını fiziksel doğrula; kırmızıysa ilk gerçek failing step/log üzerinden root cause'u düzelt. `cancelled` sonucu kabul etme.
+2. Approved/reproducible Noto Sans Regular/Bold binary'lerini truthful source/license provenance ile repository asset'i olarak ekle; exact SHA-256'ları manifestte pinle ve `pubspec.yaml` packaging zincirini doğrula. Placeholder/system fallback/hash gevşetmesi kullanma.
+3. Manifest READY olduktan sonra production factory'nin gerçek renderer dalını unit/widget + Android üzerinde doğrula; RC-1369 `pdfExport`u airplane harness'e 10. capability olarak ekle. Integration evidence exact-release E2E yerine sayılmasın.
+4. On capability partial device harness green olduktan sonra exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
+5. Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
+6. RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
+7. RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
 **FINAL: NO.**
