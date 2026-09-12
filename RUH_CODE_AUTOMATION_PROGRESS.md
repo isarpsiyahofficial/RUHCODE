@@ -2,7 +2,7 @@
 
 Bağlayıcı kaynaklar: `RUH_CODE_MASTER_INDEX.md`, `RUH_CODE_MASTER_SARTNAME.md`, `RUH_CODE_MASTER_SARTNAME_EK_RC1421_RC1442.md`, `RUH_CODE_MASTER_TODO.md`.
 
-**Kural:** `IMPLEMENTED`, `DONE` değildir. `DONE` yalnız requirement-specific kanıt ile; calculation/interpretation/UI/TR-EN/offline/Free-PRO/backup/PDF/security/accessibility/performance/clean-checkout/lifecycle/device ve exact-release kapıları gereken kapsamda yeşil olduğunda verilir. Canonical lifecycle `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE`; exact kapsam `RC-0001→RC-1442`, toplam **1.442 requirement**. `cancelled` hiçbir zaman SUCCESS sayılmaz.
+**Kural:** `IMPLEMENTED`, `DONE` değildir. `DONE` yalnız requirement-specific kanıt ile; calculation/interpretation/UI/TR-EN/offline/Free-PRO/backup/PDF/security/accessibility/performance/clean-checkout/lifecycle/device ve exact-release kapıları gereken kapsamda yeşil olduğunda verilir. Canonical lifecycle `NOT_STARTED / IMPLEMENTED / TESTED / VERIFIED / DONE`; exact kapsam `RC-0001→RC-1442`, toplam **1.442 requirement**. `cancelled`, `action_required`, queued veya pending hiçbir zaman SUCCESS sayılmaz.
 
 ## Canonical durum
 
@@ -32,26 +32,28 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swis
 
 ## RC-1362→1374 airplane-mode lifecycle
 
-Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-1363→1372 Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client gerçek offline akışlarını ve RC-1374 E2E evidence'ı ayrı ayrı ister. Startup smoke, partial integration harness veya host-only test exact-release E2E yerine geçmez.
+Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-1363→1372 Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client gerçek offline akışlarını ve RC-1374 E2E evidence'ı ayrı ayrı ister. Startup smoke veya test-artifact integration harness exact-release E2E yerine geçmez.
 
 - Startup manifest `evidenceScope=startup-smoke`, `exercisedCapabilities=[]`, `endToEndCapabilitiesComplete=false`, `verifiableAsDone=false` taşır.
-- Android production capability harness şu anda Western/Vedic/Numerology/BaZi/PlanetaryHours/records/csvExport/csvRestore/professionalClientManagement = **9 capability** kapsar; `remainingCapabilities=[pdfExport]`, `releaseArtifact=false`, `endToEndCapabilitiesComplete=false`, `verifiableAsDone=false` korunur.
-- Exact `7752a3c1906b0c731bb770e7a1032bbd1424d271` dalgasındaki airplane workflow run `34631134664` için `contract-and-unit` job fiziksel SUCCESS verdi; emulator/release-launch zinciri tamamlanmadan tüm airplane hattı VERIFIED değildir.
+- Önceki Android production capability harness Western/Vedic/Numerology/BaZi/PlanetaryHours/records/csvExport/csvRestore/professionalClientManagement = **9 capability** kapsıyordu; tek eksik `pdfExport` idi.
+- `c592db67139449b3cf091985b484e387f7c71e60` GitHub Actions bot commit'i verified Noto Sans Regular/Bold TTF'lerini, `font_release_provenance.json` dosyasını ve executable manifestte `binariesPackaged=true` durumunu branch'e fiziksel olarak yazdı.
+- `cbfcbd7c8f109664e05d171c6d81005252c64c8d`: production PDF service regression testi artık fail-closed unavailable service beklemiyor; verified packaged fontlarla gerçek `PdfCombinedReportService` composition ve gerçek PDF byte rendering bekliyor.
+- `c1bd88f043ac9ca9e8bcd6b2bc0bb80ed2265daa`: Android integration test olarak `integration_test/offline_pdf_export_capability_test.dart` eklendi; gerçek production factory + packaged font assets + local renderer ile RC-1369 PDF generation yolunu egzersiz ediyor.
+- `9e5fc8296db8e48194e5de7dec58055f7a41053f`: airplane capability evidence validator artık exact 10 capability setini zorunlu tutuyor; `remainingCapabilities=[]` ve `endToEndCapabilitiesComplete=true` yalnız test-artifact harness kapsamı için kabul ediliyor, `releaseArtifact=false` ve `verifiableAsDone=false` zorunluluğu korunuyor.
+- `f4511eadec72ae43d5e1ecca7ea7c8764368ada8`: RC1362-RC1374 workflow'u iki integration target'ı aynı radio-disabled Android emulator'da çalıştıracak, PDF capability log'unu ayrıca artifact'e koyacak ve 10/10 capability manifesti üretecek şekilde güncellendi.
+- `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e`: airplane-mode binding contract production/test evidence listesi verified PDF assets/runtime/testleri içerecek şekilde güncellendi; lifecycle rule exact-release instrumentation gerekliliğini koruyor.
+- Bu yeni 10-capability zinciri henüz fiziksel CI SUCCESS ile doğrulanmadı. Kodun bulunması tek başına TESTED/VERIFIED/DONE değildir.
 
-## RC-1369 PDF font/render blocker
+## RC-1369 PDF font/render durumu
 
-Approved packaged Unicode font binary + exact SHA-256 zinciri olmadan PDF byte rendering fail-closed kalır. Placeholder, system-font fallback veya hash bypass yoktur.
+Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository branch HEAD'de fiziksel olarak mevcuttur.
 
 - Immutable Noto provenance: upstream commit `66c4b351c58f99ace5a6265d329080d74b057909`, Regular blob `f27f4ff59562d58480f1cb94194393484b8da9e9`, Bold blob `aae7546dc1905b228aff70cde8c818b82f3a2bc4`, OFL blob `9651ea7d51c39a7778cc327a423fb200350aa948`.
-- `PDF Structural Contract` run `34682276041` fiziksel SUCCESS ile immutable materialization + offline re-check + Flutter font manifest regression zincirini doğruladı.
-- Fiziksel doğrulanmış exact SHA-256: Regular `478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823`; Bold `1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913`.
-- `19bf57008201cdf93f952db9dab9a02c60c168a1`: exact doğrulanmış SHA-256 değerleri executable `PdfFontReleaseManifest` içine pinlendi; packaging truth ayrı gate olarak bırakıldı.
-- `f4f2ab03720d2e4181585f25d23cd9995f279ec8`: regression testi hash provenance ile binary packaging readiness'i ayıracak şekilde güçlendirildi.
-- `a4513007c7aa29e4210237fb1ea91878146024fd`: exact pinned upstream OFL-1.1 lisans metni repository asset'i olarak eklendi.
-- `297d294c88b1aa051bfe76a44b1b151ed5478626`: kayıtlı `PDF Structural Contract`, exact target branch head üzerinde materialize+offline verify+Flutter regression+structural testlerin tamamı geçtikten sonra verified TTF/OFL/provenance/manifest değişikliklerini branch'e commit edecek şekilde bağlandı. İkinci koşuda diff yoksa no-op olur.
-- Bu persistence gate'in ilk fiziksel run'ı `34692424997` FAILURE verdi. Kök neden download/hash değildi: `update_manifest()` yalnız tek satırlı Dart const SHA alanlarını eşleştiriyordu; formatter SHA değerlerini iki satıra böldüğü için `manifest update was not exact` ile fail-closed durdu.
-- `20b0c851b717e918aff9316009680afac2ab0d0e`: materializer parser/update mantığı Dart formatter line wrapping'den bağımsız whitespace-tolerant exact replacement kullanacak şekilde düzeltildi. Match sayısı yine tam `(1,1,1)` olmak zorunda; requirement/hash doğrulaması gevşetilmedi. Yeni exact-head fan-out başladı; queued/pending/cancelled sonuçlar SUCCESS değildir.
-- Binary TTF dosyaları branch HEAD'de fiziksel görünmeden `binariesPackaged=true`, `isReleaseReady=true` veya RC-1369 TESTED/VERIFIED/DONE denmeyecektir.
+- Fiziksel doğrulanmış SHA-256: Regular `478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823`; Bold `1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913`.
+- `PDF Structural Contract` run `34682276041` immutable materialization + offline re-check + Flutter manifest regression zincirini fiziksel SUCCESS ile doğruladı.
+- İlk persistence run `34692424997` formatter line-wrap parser uyumsuzluğu nedeniyle fail-closed FAILURE verdi; `20b0c851b717e918aff9316009680afac2ab0d0e` parserı whitespace-tolerant exact replacement'e taşıdı.
+- Ardından GitHub Actions bot commit'i **`c592db67139449b3cf091985b484e387f7c71e60`** gerçek `NotoSans-Regular.ttf` (621572 bytes), `NotoSans-Bold.ttf` (631484 bytes), `font_release_provenance.json` ve `binariesPackaged=true` değişikliğini branch'e yazdı.
+- Font packaging blocker'ı artık açık değildir; açık kanıt RC-1369 production rendering'in unit/Android airplane-mode fiziksel SUCCESS ve sonrasında exact-release E2E kanıtıdır.
 
 ## Vedic D16/D20/D24 CI kanıtı
 
@@ -69,10 +71,10 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Son CI / devam noktası
 
-- PR #16 active branch canonical code HEAD bu checkpoint öncesinde `20b0c851b717e918aff9316009680afac2ab0d0e`; progress checkpoint bu commitin üstüne yazılır. PR open ve mergeable idi.
-- Exact `20b0...` için geniş PR fan-out oluştu; birçok gate queued/pending, bazı legacy calculation gate'leri concurrency nedeniyle cancelled durumda. `cancelled` SUCCESS değildir.
-- Sonraki tetiklemede önce `20b0...` dalgasındaki `PDF Structural Contract` fiziksel sonucunu ve branch head'i doğrula. SUCCESS + bot commit oluştuysa TTF binary/provenance dosyalarının gerçekten HEAD'de bulunduğunu, manifest `binariesPackaged=true` olduğunu ve exact hash'lerin eşleştiğini kontrol et.
-- Font packaging fiziksel tamamlanınca production factory'nin gerçek renderer dalını unit/widget + Android üzerinde doğrula; RC-1369 `pdfExport`u airplane harness'e 10. capability olarak ekle. Integration evidence exact-release E2E yerine sayılmasın.
+- PR #16 active branch güncel code HEAD bu checkpoint öncesinde `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e`; progress checkpoint bunun üstüne yazılır.
+- Bot font commit'i `c592db...` doğrudan bot aktörüyle oluştuğu için o SHA üzerindeki çok sayıda workflow sonucu `action_required` oldu; bunlar SUCCESS sayılmaz.
+- Yeni user-authored PDF/airplane commit zinciri PR workflow fan-out'unu yeniden tetiklemelidir. Sonraki tetiklemede exact latest HEAD workflow run'larını kontrol et; özellikle Flutter Quality, PDF Structural/Professional PDF ve `RC1362-RC1374 Airplane Mode` contract-and-unit + macOS Android job sonuçlarını fiziksel olarak doğrula.
+- 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u kanıtlanmış olur; yine de RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 üretim akışının instrumentation ile gerçekten egzersiz edildiği ayrı evidence şartı devam eder.
 - Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
 - Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
 - RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
