@@ -18,7 +18,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: requirement-matrix-writers
+  # Only main-push promotion jobs write requirement_state.csv and therefore need
+  # the global writer lock. PR/dispatch evidence runs are isolated per workflow
+  # and ref so they can start promptly instead of sitting behind unrelated
+  # requirement-matrix writers and being cancelled before producing evidence.
+  group: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'requirement-matrix-writers' || format('{0}-{1}', github.workflow, github.ref) }}
   cancel-in-progress: false
 
 jobs:
