@@ -56,6 +56,7 @@ Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository 
 - İlk persistence run `34692424997` formatter line-wrap parser uyumsuzluğu nedeniyle fail-closed FAILURE verdi; `20b0c851b717e918aff9316009680afac2ab0d0e` parserı whitespace-tolerant exact replacement'e taşıdı.
 - Ardından GitHub Actions bot commit'i **`c592db67139449b3cf091985b484e387f7c71e60`** gerçek `NotoSans-Regular.ttf` (621572 bytes), `NotoSans-Bold.ttf` (631484 bytes), `font_release_provenance.json` ve `binariesPackaged=true` değişikliğini branch'e yazdı.
 - Font packaging blocker'ı artık açık değildir; açık kanıt RC-1369 production rendering'in unit/Android airplane-mode fiziksel SUCCESS ve sonrasında exact-release E2E kanıtıdır.
+- `47e969a1eb8e3f6ee69ecac2b948d69655ce41eb` font materialization workflow'undaki workflow-level job koşulunu kaldırdı; materializer artık idempotent şekilde her uygun tetikte gerçek provenance/hash/regression zincirini çalıştırır ve cached/paketlenmiş varlıklar aynıysa commit üretmeden SUCCESS'e çıkmalıdır. Requirement/hash şartları gevşetilmedi.
 
 ## Vedic D16/D20/D24 CI kanıtı
 
@@ -75,11 +76,13 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Son CI / devam noktası
 
-- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`792fc47550f629d4a1066aa4928c15707c1951d7`**.
+- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`47e969a1eb8e3f6ee69ecac2b948d69655ce41eb`**.
 - Airplane analyzer repair zinciri: `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` + `cf2034b205f5cc02d4fd388cedd3599b11d88693`.
 - Exact `d2ef...` Flutter Quality run `34709594021` production PDF regression testindeki ikinci redundant import yüzünden FAILURE verdi; root cause `cf2034...` ile giderildi.
 - Exact `d2ef...` RC1436 Lahiri run `34709593948` independent Swiss oracle dataset verification'ı başarıyla tamamladı fakat `subosito/flutter-action` version belirtilmediği için setup exit 35 ile kırıldı. `792fc47550f629d4a1066aa4928c15707c1951d7` workflow'u project canonical Flutter **3.44.7** sürümüne pinledi; oracle/test toleransları değiştirilmedi.
-- Bu yeni HEAD'in fiziksel CI fan-out'u henüz kanıtlanmadan repair commit'leri SUCCESS sayılmaz. Sonraki tetiklemede ilk iş Flutter Quality, RC1436 Lahiri ve RC1362-RC1374 Airplane Mode exact-head sonuçlarını kontrol etmektir; kırmızıysa log kök nedenini aynı turda düzelt.
+- Exact `845b419b77ef91af4afe885b7acbc3eb1381bb65` üzerinde `Materialize PDF Font Assets` run `34709919503` job oluşturulmadan workflow-level FAILURE verdi. `47e969a1eb8e3f6ee69ecac2b948d69655ce41eb` riskli job-level expression'ı kaldırdı; materialization + offline check + exact hash + Flutter regression + no-op commit yolu aynen korunuyor.
+- `47e969...` için ilk kontrolde FAILURE sayısı **0**, ancak 83 workflow hâlâ queued idi; queued/pending SUCCESS değildir. PR #16 raw GitHub state ile `mergeable=true`, `mergeable_state=unstable` olarak doğrulandı; önceki transient `mergeable=false` connector görünümü conflict kanıtı değildir.
+- Sonraki tetiklemede ilk iş Flutter Quality, RC1436 Lahiri, Materialize PDF Font Assets ve RC1362-RC1374 Airplane Mode exact-head sonuçlarını fiziksel olarak kontrol etmektir; kırmızıysa log kök nedenini aynı turda düzelt.
 - 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u kanıtlanmış olur; yine de RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 üretim akışının instrumentation ile gerçekten egzersiz edildiği ayrı evidence şartı devam eder.
 - Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
 - Daily Message final UI/device proof; Android Keystore + encrypted database + plaintext→encrypted migration; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
