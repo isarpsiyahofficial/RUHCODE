@@ -42,7 +42,9 @@ Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-136
 - `9e5fc8296db8e48194e5de7dec58055f7a41053f`: airplane capability evidence validator artık exact 10 capability setini zorunlu tutuyor; `remainingCapabilities=[]` ve `endToEndCapabilitiesComplete=true` yalnız test-artifact harness kapsamı için kabul ediliyor, `releaseArtifact=false` ve `verifiableAsDone=false` zorunluluğu korunuyor.
 - `f4511eadec72ae43d5e1ecca7ea7c8764368ada8`: RC1362-RC1374 workflow'u iki integration target'ı aynı radio-disabled Android emulator'da çalıştıracak, PDF capability log'unu ayrıca artifact'e koyacak ve 10/10 capability manifesti üretecek şekilde güncellendi.
 - `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e`: airplane-mode binding contract production/test evidence listesi verified PDF assets/runtime/testleri içerecek şekilde güncellendi; lifecycle rule exact-release instrumentation gerekliliğini koruyor.
-- Bu yeni 10-capability zinciri henüz fiziksel CI SUCCESS ile doğrulanmadı. Kodun bulunması tek başına TESTED/VERIFIED/DONE değildir.
+- Exact `22ef7b22689c1fc3f533b45d7bcea5b1da30856d` üzerindeki Airplane Mode run `34703946487` contract/analyzer aşamasında `integration_test/offline_pdf_export_capability_test.dart` içindeki redundant import nedeniyle kırıldı; production hesaplama/PDF davranışı henüz failure nedeni değildi.
+- `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` bu redundant import'u kaldırdı. Bu SHA üzerinde Flutter Quality ikinci bir independent redundant-import hatasını `test/pdf/production_combined_pdf_service_test.dart` içinde yakaladı; `cf2034b205f5cc02d4fd388cedd3599b11d88693` onu da kaldırdı.
+- Bu iki analyzer repair commit'i fiziksel CI SUCCESS almadan RC-1369/RC-1362→1374 TESTED/VERIFIED/DONE yükseltilmez.
 
 ## RC-1369 PDF font/render durumu
 
@@ -69,14 +71,18 @@ Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository 
 
 Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android Keystore-backed gerçek key lifecycle, encrypted DB adapter, plaintext→encrypted migration ve release-binary persistence proof tamamlanmadan security DONE verilmez.
 
+2026-09-12 doğrulamasında bu durum tekrar kod seviyesinde görüldü: `lib/src/data/local/sqflite_local_database.dart` plain `openDatabase(path, ...)` kullanıyor. `EncryptedJsonDocumentStore`/policy abstraction'larının varlığı primary SQLite DB'nin encrypted olduğunu kanıtlamaz. Encrypted persistence requirement'ı açık kalır ve kanıtsız DONE yapılmaz.
+
 ## Son CI / devam noktası
 
-- PR #16 active branch güncel code HEAD bu checkpoint öncesinde `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e`; progress checkpoint bunun üstüne yazılır.
-- Bot font commit'i `c592db...` doğrudan bot aktörüyle oluştuğu için o SHA üzerindeki çok sayıda workflow sonucu `action_required` oldu; bunlar SUCCESS sayılmaz.
-- Yeni user-authored PDF/airplane commit zinciri PR workflow fan-out'unu yeniden tetiklemelidir. Sonraki tetiklemede exact latest HEAD workflow run'larını kontrol et; özellikle Flutter Quality, PDF Structural/Professional PDF ve `RC1362-RC1374 Airplane Mode` contract-and-unit + macOS Android job sonuçlarını fiziksel olarak doğrula.
+- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`792fc47550f629d4a1066aa4928c15707c1951d7`**.
+- Airplane analyzer repair zinciri: `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` + `cf2034b205f5cc02d4fd388cedd3599b11d88693`.
+- Exact `d2ef...` Flutter Quality run `34709594021` production PDF regression testindeki ikinci redundant import yüzünden FAILURE verdi; root cause `cf2034...` ile giderildi.
+- Exact `d2ef...` RC1436 Lahiri run `34709593948` independent Swiss oracle dataset verification'ı başarıyla tamamladı fakat `subosito/flutter-action` version belirtilmediği için setup exit 35 ile kırıldı. `792fc47550f629d4a1066aa4928c15707c1951d7` workflow'u project canonical Flutter **3.44.7** sürümüne pinledi; oracle/test toleransları değiştirilmedi.
+- Bu yeni HEAD'in fiziksel CI fan-out'u henüz kanıtlanmadan repair commit'leri SUCCESS sayılmaz. Sonraki tetiklemede ilk iş Flutter Quality, RC1436 Lahiri ve RC1362-RC1374 Airplane Mode exact-head sonuçlarını kontrol etmektir; kırmızıysa log kök nedenini aynı turda düzelt.
 - 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u kanıtlanmış olur; yine de RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 üretim akışının instrumentation ile gerçekten egzersiz edildiği ayrı evidence şartı devam eder.
 - Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
-- Daily Message final UI/device proof; encryption/key-management/migrations; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
+- Daily Message final UI/device proof; Android Keystore + encrypted database + plaintext→encrypted migration; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
 - RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
 - RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
