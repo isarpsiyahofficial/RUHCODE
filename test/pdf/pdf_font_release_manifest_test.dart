@@ -3,24 +3,33 @@ import 'package:ruh_code/src/pdf/pdf_font_release_manifest.dart';
 
 void main() {
   group('PdfFontReleaseManifest', () {
-    test('is either truthful fail-closed or fully hash-pinned', () {
+    test('pins the exact approved payload hashes independently of packaging', () {
+      expect(
+        PdfFontReleaseManifest.regularSha256,
+        '478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823',
+      );
+      expect(
+        PdfFontReleaseManifest.boldSha256,
+        '1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913',
+      );
+      expect(
+        PdfFontReleaseManifest.regularSha256,
+        matches(RegExp(r'^[a-f0-9]{64}$')),
+      );
+      expect(
+        PdfFontReleaseManifest.boldSha256,
+        matches(RegExp(r'^[a-f0-9]{64}$')),
+      );
+      expect(
+        PdfFontReleaseManifest.regularSha256,
+        isNot(PdfFontReleaseManifest.boldSha256),
+      );
+    });
+
+    test('stays fail-closed until the exact binaries are packaged', () {
       if (PdfFontReleaseManifest.binariesPackaged) {
-        expect(
-          PdfFontReleaseManifest.regularSha256,
-          matches(RegExp(r'^[a-f0-9]{64}$')),
-        );
-        expect(
-          PdfFontReleaseManifest.boldSha256,
-          matches(RegExp(r'^[a-f0-9]{64}$')),
-        );
-        expect(
-          PdfFontReleaseManifest.regularSha256,
-          isNot(PdfFontReleaseManifest.boldSha256),
-        );
         expect(PdfFontReleaseManifest.isReleaseReady, isTrue);
       } else {
-        expect(PdfFontReleaseManifest.regularSha256, isEmpty);
-        expect(PdfFontReleaseManifest.boldSha256, isEmpty);
         expect(PdfFontReleaseManifest.isReleaseReady, isFalse);
         expect(
           PdfFontReleaseManifest.blockingReason,
