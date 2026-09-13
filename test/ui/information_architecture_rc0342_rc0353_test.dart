@@ -2,18 +2,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/ui/navigation/information_architecture.dart';
 
 void main() {
-  test('primary navigation stays deliberately small and bilingual', () {
-    expect(RuhInformationArchitecture.primaryNavigation.length, 5);
+  test('primary navigation is the canonical four-tab bilingual shell', () {
+    expect(RuhInformationArchitecture.primaryNavigation.length, 4);
     expect(
       RuhInformationArchitecture.primaryNavigation
           .map((item) => item.destination)
-          .toSet(),
-      PrimaryDestination.values.toSet(),
+          .toList(growable: false),
+      const <PrimaryDestination>[
+        PrimaryDestination.today,
+        PrimaryDestination.tools,
+        PrimaryDestination.records,
+        PrimaryDestination.profile,
+      ],
     );
-    for (final item in RuhInformationArchitecture.primaryNavigation) {
-      expect(item.trLabel.trim(), isNotEmpty);
-      expect(item.enLabel.trim(), isNotEmpty);
-    }
+    expect(
+      RuhInformationArchitecture.primaryNavigation.map((item) => item.trLabel),
+      const <String>['Bugün', 'Araçlar', 'Kayıtlar', 'Profil'],
+    );
+    expect(
+      RuhInformationArchitecture.primaryNavigation.map((item) => item.enLabel),
+      const <String>['Today', 'Tools', 'Records', 'Profile'],
+    );
+    expect(
+      RuhInformationArchitecture.primaryNavigation.any(
+        (item) => item.trLabel == 'Hesapla' || item.enLabel == 'Calculate',
+      ),
+      isFalse,
+    );
   });
 
   test('calculation and reflective systems remain separate domains', () {
