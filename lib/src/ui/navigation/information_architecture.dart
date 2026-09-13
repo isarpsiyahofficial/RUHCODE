@@ -1,8 +1,11 @@
 /// Product information architecture for RC-0342..RC-0353.
 ///
 /// The UI may render these definitions differently on phone/tablet, but it
-/// must preserve the same simple-vs-expert visibility rules.
-enum PrimaryDestination { today, discover, calculate, records, profile }
+/// must preserve the same simple-vs-expert visibility rules. The canonical
+/// primary navigation follows the binding implementation plan:
+/// Bugün · Araçlar · Kayıtlar · Profil. Feature systems live under Araçlar;
+/// there is no ambiguous top-level Hesapla/Calculate destination.
+enum PrimaryDestination { today, tools, records, profile }
 
 enum ToolDomain {
   westernAstrology,
@@ -52,19 +55,14 @@ abstract final class RuhInformationArchitecture {
       enLabel: 'Today',
     ),
     NavigationDefinition(
-      destination: PrimaryDestination.discover,
-      trLabel: 'Keşfet',
-      enLabel: 'Discover',
-    ),
-    NavigationDefinition(
-      destination: PrimaryDestination.calculate,
-      trLabel: 'Hesapla',
-      enLabel: 'Calculate',
+      destination: PrimaryDestination.tools,
+      trLabel: 'Araçlar',
+      enLabel: 'Tools',
     ),
     NavigationDefinition(
       destination: PrimaryDestination.records,
-      trLabel: 'Kayıtlarım',
-      enLabel: 'My Records',
+      trLabel: 'Kayıtlar',
+      enLabel: 'Records',
     ),
     NavigationDefinition(
       destination: PrimaryDestination.profile,
