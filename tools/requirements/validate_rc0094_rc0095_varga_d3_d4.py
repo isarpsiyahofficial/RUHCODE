@@ -23,7 +23,7 @@ required = {
     TEST: [
         'RC-0094 Drekkana D3 maps thirds to 1st 5th 9th signs',
         'RC-0095 Chaturthamsa D4 maps quarters to 1st 4th 7th 10th signs',
-        'RC-0092-RC-0098 fail closed on invalid provenance',
+        'RC-0092-RC-0104 fail closed on invalid provenance',
     ],
 }
 
