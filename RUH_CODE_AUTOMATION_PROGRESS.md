@@ -63,9 +63,9 @@ Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-136
 - `863fef4efd254a1d50a0fa67037972146a9b6031` RC-0080/0081 Independent Vedic Engine, `194b7c76cd1faf51e0c624ac42f98d6e29d24502` RC-0082/0083 Ayanamsha, `49ea0b30e1e2eaab794d1eab515546f82167a03b` RC-0088/0089 Nakshatra/Pada ve `4700ab9ceb7d023c4b16b51e7d2cae1c1f968cce` RC-0121 Planet Strength PR/dispatch evidence koşularını global `requirement-matrix-writers` kilidinden ayırdı.
 - `5f2389b3a2516ba9ceae1ef364a25ffb3af8144b` RC-0086/0087 Rahu/Ketu, `34e9b4c43fa4b29d4571c0e6e776d84e174ca7c8` RC-0102→0104 D30/D60/Systematic Varga, `378a23a83f1b9af3811217c64796b99db5327637` RC-0118 Yoga ve `b3e1b149308e6a09be519f3511d1e447621637cb` RC-0119 Ashtakavarga evidence koşularını aynı fail-safe concurrency modeline taşıdı. Yalnız `main` promotion writer global lock'ta kalır; validators/tests/blockers değişmedi.
 - `88b062eb2982afecaaade449f02c446b79d394a4` RC-0084/0085 Lagna/Grahas, `7e95ec8be59c421510c6bc5edf83c78768aef37a` RC-0094/0095 D3/D4, `5c4b61721d062e95db2ab5806637438508b42d79` RC-0112/0114 Panchanga Vara ve `a1f62f3eef75fc0fd15967222ba0dd6fbc572384` RC-0123 Muhurta PR/dispatch evidence koşularını global writer lock'tan ayırdı. Mevcut validators/tests/promotion blocker'ları aynen korundu.
-- Exact `a1f62f3...` fan-out'unda RC-0094/0095 ve RC-0112/0114 `pending`, RC-0123 `queued`; yani önceki anlık `cancelled` davranışı kalktı ancak bunlar SUCCESS değildir. RC-0084/0085 de exact `88b062...` üzerinde `queued` görülmüştür; fiziksel SUCCESS beklenmektedir.
+- Exact `4178709f15b5245943c27bb663f3bcc90d93436d` fan-out'unda RC-0082/0083, RC-0086/0087, RC-0092/0093, RC-0096→0098, RC-0099→0101, RC-0105→0110, RC-0112/0114, RC-0119, RC-0120 ve RC-0123 fiziksel SUCCESS verdi. Bu sonuçlar yalnız ilgili workflow evidence kapsamını kanıtlar; independent golden/UI/device/release blocker'ları nedeniyle otomatik VERIFIED/DONE yükseltmesi yapılmaz.
 - Matrix yeniden okundu: kod veya queued/pending CI lifecycle yükseltmesi değildir; yalnız kanıtlanan işler yükseltilir.
-- Vedic legacy cancellation zincirinde RC-0090/0091 exact workflow/path sonucu ve kalan fiziksel sonuçlar sonraki kontrolde çözülmelidir. RC-0122 latest fan-out'ta `pending` olduğundan bu turda gereksiz orchestration değişikliği yapılmadı.
+- Vedic legacy cancellation zincirinde RC-0090/0091 exact workflow/path sonucu ve kalan fiziksel sonuçlar sonraki kontrolde çözülmelidir. RC-0122 latest fan-out'ta `pending` olduğundan gereksiz orchestration değişikliği yapılmadı.
 
 ## RC-1439 physical references
 
@@ -77,10 +77,15 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 
 ## Son CI / devam noktası
 
-- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`a1f62f3eef75fc0fd15967222ba0dd6fbc572384`**.
-- Bu turda dört legacy Vedic evidence workflow'u gerçek commitlerle izole edildi: RC-0084/0085, RC-0094/0095, RC-0112/0114 ve RC-0123. Exact-head fan-out bunların cancellation yerine queued/pending durumuna geçtiğini doğruladı; SUCCESS sonucu gelmeden VERIFIED/DONE yükseltmesi yoktur.
-- Yeni isolated workflow'ların exact-head run sonuçlarını fiziksel oku; kırmızıysa validator/test kök nedenini düzelt. RC-0090/0091 path/statusunu Actions metadata üzerinden çöz ve gerçekten aynı global-lock problemi varsa aynı fail-safe modeli uygula.
-- Genel fan-out'ta Vedic dışı çok sayıda eski requirement workflow'u da global-lock/cancellation davranışı göstermektedir; dependency sırası ve gerçek writer semantiği doğrulanarak kademeli ele alınmalıdır, toplu kör patch yapılmamalıdır.
+- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16.
+- Exact `4178709f15b5245943c27bb663f3bcc90d93436d` fan-out'unda çok sayıda kritik gate fiziksel SUCCESS verdi; bununla birlikte RC-0011/0012, RC-0013, RC-0017, RC-0018, RC-0019 ve başka erken calculation workflow'ları aynı global `requirement-matrix-writers` kilidi nedeniyle `cancelled` kalıyordu.
+- `269916029276cc542802d53ef591b86b44fb0483` RC-0011/0012 Location Identity PR/dispatch evidence koşularını workflow+ref bazında izole etti.
+- `011cc4d8f236f903c9cc7d12622ea9a4174967bf` RC-0013 Common Astronomy Core PR/dispatch evidence koşularını aynı fail-safe modele taşıdı.
+- `216b6a77910470983c327c7d72d1a19ab1117d9d` RC-0017 Julian Time Core PR/dispatch evidence koşularını izole etti.
+- `945b91fb8645052df60cc8abba8cb03f8b04552c` RC-0018 ASC/MC PR/dispatch evidence koşularını izole etti.
+- Bu değişikliklerde yalnız `main` promotion writer global lock'ta kaldı; validator, calculation formülü, tolerans, matrix blocker veya promotion semantiği gevşetilmedi.
+- Exact `945b91fb8645052df60cc8abba8cb03f8b04552c` için ilk kontrolde workflow run listesi henüz oluşmamıştı. Bu nedenle yeni dört isolation değişikliği SUCCESS/VERIFIED/DONE sayılmaz; sonraki tetiklemede exact-head physical run sonuçları okunmalı ve gerçek FAILURE varsa aynı turda kök nedeni düzeltilmelidir.
+- Dependency sırasındaki sonraki aynı-desene sahip workflow RC-0019 Real House Cusps (`.github/workflows/rc0019-house-cusps.yml`) ve ardından RC-0020/0021 grubudur. Blind toplu patch yapılmamalı; writer semantiği her workflow'da doğrulanmalıdır.
 - 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u güçlenir; RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 production akışının ayrı instrumentation evidence'ı şarttır.
 - Sonraki büyük blocker zinciri: Android Keystore + encrypted primary database + plaintext→encrypted migration + release-binary persistence proof; Daily Message final UI/device proof; accessibility/performance; AKİLES provenance; remaining independent calculation/golden evidence.
 - RC-1439 external blocker'ını açık tut; synthetic görsel kullanma.
