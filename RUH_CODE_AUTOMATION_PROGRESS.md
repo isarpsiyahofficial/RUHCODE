@@ -64,8 +64,10 @@ Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-136
 - `5f2389b3a2516ba9ceae1ef364a25ffb3af8144b` RC-0086/0087 Rahu/Ketu, `34e9b4c43fa4b29d4571c0e6e776d84e174ca7c8` RC-0102→0104 D30/D60/Systematic Varga, `378a23a83f1b9af3811217c64796b99db5327637` RC-0118 Yoga ve `b3e1b149308e6a09be519f3511d1e447621637cb` RC-0119 Ashtakavarga evidence koşularını aynı fail-safe concurrency modeline taşıdı. Yalnız `main` promotion writer global lock'ta kalır; validators/tests/blockers değişmedi.
 - `88b062eb2982afecaaade449f02c446b79d394a4` RC-0084/0085 Lagna/Grahas, `7e95ec8be59c421510c6bc5edf83c78768aef37a` RC-0094/0095 D3/D4, `5c4b61721d062e95db2ab5806637438508b42d79` RC-0112/0114 Panchanga Vara ve `a1f62f3eef75fc0fd15967222ba0dd6fbc572384` RC-0123 Muhurta PR/dispatch evidence koşularını global writer lock'tan ayırdı. Mevcut validators/tests/promotion blocker'ları aynen korundu.
 - Exact `4178709f15b5245943c27bb663f3bcc90d93436d` fan-out'unda RC-0082/0083, RC-0086/0087, RC-0092/0093, RC-0096→0098, RC-0099→0101, RC-0105→0110, RC-0112/0114, RC-0119, RC-0120 ve RC-0123 fiziksel SUCCESS verdi. Bu sonuçlar yalnız ilgili workflow evidence kapsamını kanıtlar; independent golden/UI/device/release blocker'ları nedeniyle otomatik VERIFIED/DONE yükseltmesi yapılmaz.
-- Matrix yeniden okundu: kod veya queued/pending CI lifecycle yükseltmesi değildir; yalnız kanıtlanan işler yükseltilir.
-- Vedic legacy cancellation zincirinde RC-0090/0091 exact workflow/path sonucu ve kalan fiziksel sonuçlar sonraki kontrolde çözülmelidir. RC-0122 latest fan-out'ta `pending` olduğundan gereksiz orchestration değişikliği yapılmadı.
+- Exact `522367ce59d704ac8265145c8d8b23be96f442f1` üzerinde RC-0094/0095 run `34750773958` gerçek FAILURE verdi. Kök neden calculation değil; validator `RC-0092-RC-0098 fail closed on invalid provenance` eski test başlığını ararken canonical regression `RC-0092-RC-0104 fail closed on invalid provenance` olarak genişlemişti.
+- `ba8743a94a3a8c70089a635360de0bcafef905f7` RC-0094/0095 validator locatorını mevcut genişletilmiş provenance regressionına hizaladı; D3/D4 formülü, toleransı, test kapsamı ve blocker'ları gevşetilmedi. Yeni physical SUCCESS henüz kanıtlanmadı.
+- `ee67ec8931dbfd67e33cb174bc048909e562ab16` RC-0090/0091 Rashi/Whole Sign PR/dispatch evidence koşularını global writer lock'tan ayırdı. Matrixte RC-0090/0091 hâlâ TESTED + blocked=YES; independent Lagna/ayanamsha golden, UI ve device/release kanıtları açık.
+- Matrix yeniden okundu: RC-0094/0095 hâlâ NOT_STARTED; validator düzeltmesi ve CI koşusu tek başına lifecycle yükseltmesi değildir.
 
 ## RC-1439 physical references
 
@@ -78,14 +80,14 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 ## Son CI / devam noktası
 
 - Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16.
-- Exact `4178709f15b5245943c27bb663f3bcc90d93436d` fan-out'unda çok sayıda kritik gate fiziksel SUCCESS verdi; bununla birlikte RC-0011/0012, RC-0013, RC-0017, RC-0018, RC-0019 ve başka erken calculation workflow'ları aynı global `requirement-matrix-writers` kilidi nedeniyle `cancelled` kalıyordu.
-- `269916029276cc542802d53ef591b86b44fb0483` RC-0011/0012 Location Identity PR/dispatch evidence koşularını workflow+ref bazında izole etti.
-- `011cc4d8f236f903c9cc7d12622ea9a4174967bf` RC-0013 Common Astronomy Core PR/dispatch evidence koşularını aynı fail-safe modele taşıdı.
-- `216b6a77910470983c327c7d72d1a19ab1117d9d` RC-0017 Julian Time Core PR/dispatch evidence koşularını izole etti.
-- `945b91fb8645052df60cc8abba8cb03f8b04552c` RC-0018 ASC/MC PR/dispatch evidence koşularını izole etti.
-- Bu değişikliklerde yalnız `main` promotion writer global lock'ta kaldı; validator, calculation formülü, tolerans, matrix blocker veya promotion semantiği gevşetilmedi.
-- Exact `945b91fb8645052df60cc8abba8cb03f8b04552c` için ilk kontrolde workflow run listesi henüz oluşmamıştı. Bu nedenle yeni dört isolation değişikliği SUCCESS/VERIFIED/DONE sayılmaz; sonraki tetiklemede exact-head physical run sonuçları okunmalı ve gerçek FAILURE varsa aynı turda kök nedeni düzeltilmelidir.
-- Dependency sırasındaki sonraki aynı-desene sahip workflow RC-0019 Real House Cusps (`.github/workflows/rc0019-house-cusps.yml`) ve ardından RC-0020/0021 grubudur. Blind toplu patch yapılmamalı; writer semantiği her workflow'da doğrulanmalıdır.
+- Exact `522367ce59d704ac8265145c8d8b23be96f442f1` üzerinde RC-0011/0012, RC-0013 ve RC-0018 physical SUCCESS verdi; RC-0017/0019/0020/0021 gibi bazı erken-core workflow'lar yeni fan-outlarda hâlâ global writer/cancellation etkisi gösteriyordu.
+- `73f6ed79f53680d7bfeabd35caf289b617cdbaf6` RC-0019 Real House Cusps PR/dispatch evidence koşularını workflow+ref bazında izole etti.
+- `4a56ddf0f0851e21aba0e0a1ee1b4cc0bc061ac7` RC-0020 Real Solar Events PR/dispatch evidence koşularını aynı fail-safe modele taşıdı.
+- `dbed6c52e32a6e222014faef84283693026ea01e` RC-0021 Real Moon Phase PR/dispatch evidence koşularını aynı fail-safe modele taşıdı.
+- `ee67ec8931dbfd67e33cb174bc048909e562ab16` RC-0090/0091 Rashi/Whole Sign evidence koşularını izole etti.
+- Exact `ee67ec8931dbfd67e33cb174bc048909e562ab16` ilk fan-out kontrolünde RC-0019 `pending`, RC-0020 eski koşu `cancelled`; RC-0020 isolation bundan sonra `4a56dd...` ile commit edildi. Queued/pending SUCCESS değildir; sonraki tetiklemede exact latest-head sonuçları fiziksel olarak okunmalıdır.
+- Aynı fan-out legacy cancellation sorununu başka workflow'larda da gösteriyor (ör. RC-0023, RC-0052/0053, RC-0054/0056, RC-0062/0063→0067, RC-0069/0070, RC-0071/0072). Bunlar dependency sırasıyla, writer semantiği tek tek doğrulanarak ele alınmalıdır; blind toplu patch yapılmamalıdır.
+- Requirement matrixte RC-0017/0018/0019/0020/0021 = TESTED + blocked=YES; RC-0090/0091 = TESTED + blocked=YES; RC-0094/0095 = NOT_STARTED. Kod/CI varlığı DONE değildir.
 - 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u güçlenir; RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 production akışının ayrı instrumentation evidence'ı şarttır.
 - Sonraki büyük blocker zinciri: Android Keystore + encrypted primary database + plaintext→encrypted migration + release-binary persistence proof; Daily Message final UI/device proof; accessibility/performance; AKİLES provenance; remaining independent calculation/golden evidence.
 - RC-1439 external blocker'ını açık tut; synthetic görsel kullanma.
