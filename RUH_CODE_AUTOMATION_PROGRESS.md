@@ -35,44 +35,37 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swis
 Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-1363→1372 Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client gerçek offline akışlarını ve RC-1374 E2E evidence'ı ayrı ayrı ister. Startup smoke veya test-artifact integration harness exact-release E2E yerine geçmez.
 
 - Startup manifest `evidenceScope=startup-smoke`, `exercisedCapabilities=[]`, `endToEndCapabilitiesComplete=false`, `verifiableAsDone=false` taşır.
-- Önceki Android production capability harness Western/Vedic/Numerology/BaZi/PlanetaryHours/records/csvExport/csvRestore/professionalClientManagement = **9 capability** kapsıyordu; tek eksik `pdfExport` idi.
-- `c592db67139449b3cf091985b484e387f7c71e60` GitHub Actions bot commit'i verified Noto Sans Regular/Bold TTF'lerini, `font_release_provenance.json` dosyasını ve executable manifestte `binariesPackaged=true` durumunu branch'e fiziksel olarak yazdı.
-- `cbfcbd7c8f109664e05d171c6d81005252c64c8d`: production PDF service regression testi artık fail-closed unavailable service beklemiyor; verified packaged fontlarla gerçek `PdfCombinedReportService` composition ve gerçek PDF byte rendering bekliyor.
-- `c1bd88f043ac9ca9e8bcd6b2bc0bb80ed2265daa`: Android integration test olarak `integration_test/offline_pdf_export_capability_test.dart` eklendi; gerçek production factory + packaged font assets + local renderer ile RC-1369 PDF generation yolunu egzersiz ediyor.
-- `9e5fc8296db8e48194e5de7dec58055f7a41053f`: airplane capability evidence validator artık exact 10 capability setini zorunlu tutuyor; `remainingCapabilities=[]` ve `endToEndCapabilitiesComplete=true` yalnız test-artifact harness kapsamı için kabul ediliyor, `releaseArtifact=false` ve `verifiableAsDone=false` zorunluluğu korunuyor.
-- `f4511eadec72ae43d5e1ecca7ea7c8764368ada8`: RC1362-RC1374 workflow'u iki integration target'ı aynı radio-disabled Android emulator'da çalıştıracak, PDF capability log'unu ayrıca artifact'e koyacak ve 10/10 capability manifesti üretecek şekilde güncellendi.
-- `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e`: airplane-mode binding contract production/test evidence listesi verified PDF assets/runtime/testleri içerecek şekilde güncellendi; lifecycle rule exact-release instrumentation gerekliliğini koruyor.
-- Exact `22ef7b22689c1fc3f533b45d7bcea5b1da30856d` üzerindeki Airplane Mode run `34703946487` contract/analyzer aşamasında `integration_test/offline_pdf_export_capability_test.dart` içindeki redundant import nedeniyle kırıldı; production hesaplama/PDF davranışı henüz failure nedeni değildi.
-- `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` bu redundant import'u kaldırdı. Bu SHA üzerinde Flutter Quality ikinci bir independent redundant-import hatasını `test/pdf/production_combined_pdf_service_test.dart` içinde yakaladı; `cf2034b205f5cc02d4fd388cedd3599b11d88693` onu da kaldırdı.
-- Bu iki analyzer repair commit'i fiziksel CI SUCCESS almadan RC-1369/RC-1362→1374 TESTED/VERIFIED/DONE yükseltilmez.
+- Android production capability harness artık Western/Vedic/Numerology/BaZi/PlanetaryHours/records/pdfExport/csvExport/csvRestore/professionalClientManagement = **10 capability** kapsayacak şekilde kodlandı; bu coverage exact-release APK kanıtı yerine geçmez.
+- `c592db67139449b3cf091985b484e387f7c71e60` verified Noto Sans Regular/Bold TTF'lerini, `font_release_provenance.json` ve `binariesPackaged=true` durumunu branch'e fiziksel yazdı.
+- `cbfcbd7c8f109664e05d171c6d81005252c64c8d` production PDF service regressionını gerçek `PdfCombinedReportService` composition/byte rendering'e taşıdı.
+- `c1bd88f043ac9ca9e8bcd6b2bc0bb80ed2265daa` `integration_test/offline_pdf_export_capability_test.dart` ile production factory + packaged fonts + local renderer yolunu ekledi.
+- `9e5fc8296db8e48194e5de7dec58055f7a41053f` airplane evidence validatorını exact 10 capability setine sabitledi; test-artifact için `releaseArtifact=false` ve `verifiableAsDone=false` zorunluluğu korunur.
+- `f4511eadec72ae43d5e1ecca7ea7c8764368ada8` airplane workflow'unu iki integration target + radio-disabled emulator + 10/10 manifest üretimine taşıdı.
+- `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e` binding contract production/test evidence listesini verified PDF assets/runtime/testlerle güncelledi; exact-release instrumentation zorunluluğu korunur.
+- Airplane run `34703946487` redundant import nedeniyle analyzer'da kırıldı; `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` ve ardından `cf2034b205f5cc02d4fd388cedd3599b11d88693` iki redundant import failure'ını kaldırdı. Bu repair zinciri fiziksel exact-head Android SUCCESS almadan RC-1362→1374 VERIFIED/DONE değildir.
 
 ## RC-1369 PDF font/render durumu
 
-Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository branch HEAD'de fiziksel olarak mevcuttur.
+Approved packaged Unicode font binary + exact SHA-256 zinciri repository branch HEAD'de fiziksel olarak mevcuttur.
 
 - Immutable Noto provenance: upstream commit `66c4b351c58f99ace5a6265d329080d74b057909`, Regular blob `f27f4ff59562d58480f1cb94194393484b8da9e9`, Bold blob `aae7546dc1905b228aff70cde8c818b82f3a2bc4`, OFL blob `9651ea7d51c39a7778cc327a423fb200350aa948`.
-- Fiziksel doğrulanmış SHA-256: Regular `478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823`; Bold `1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913`.
-- `PDF Structural Contract` run `34682276041` immutable materialization + offline re-check + Flutter manifest regression zincirini fiziksel SUCCESS ile doğruladı.
-- İlk persistence run `34692424997` formatter line-wrap parser uyumsuzluğu nedeniyle fail-closed FAILURE verdi; `20b0c851b717e918aff9316009680afac2ab0d0e` parserı whitespace-tolerant exact replacement'e taşıdı.
-- Ardından GitHub Actions bot commit'i **`c592db67139449b3cf091985b484e387f7c71e60`** gerçek `NotoSans-Regular.ttf` (621572 bytes), `NotoSans-Bold.ttf` (631484 bytes), `font_release_provenance.json` ve `binariesPackaged=true` değişikliğini branch'e yazdı.
-- Font packaging blocker'ı artık açık değildir; açık kanıt RC-1369 production rendering'in unit/Android airplane-mode fiziksel SUCCESS ve sonrasında exact-release E2E kanıtıdır.
-- `47e969a1eb8e3f6ee69ecac2b948d69655ce41eb` font materialization workflow'undaki workflow-level job koşulunu kaldırdı; materializer artık idempotent şekilde her uygun tetikte gerçek provenance/hash/regression zincirini çalıştırır ve cached/paketlenmiş varlıklar aynıysa commit üretmeden SUCCESS'e çıkmalıdır. Requirement/hash şartları gevşetilmedi.
+- Fiziksel SHA-256: Regular `478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823`; Bold `1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913`.
+- `PDF Structural Contract` run `34682276041` immutable materialization + offline re-check + Flutter manifest regression zincirini fiziksel SUCCESS doğruladı.
+- `20b0c851b717e918aff9316009680afac2ab0d0e` materializer parserını formatter whitespace/line-wrap'a dayanıklı exact replacement'e taşıdı; ardından `c592db...` gerçek binary/provenance commit'ini üretti.
+- `47e969a1eb8e3f6ee69ecac2b948d69655ce41eb` font materialization workflow'unu idempotent hale getirdi.
+- Font packaging blocker'ı kapalıdır; açık kanıt production rendering Android airplane physical SUCCESS + exact-release E2E'dir.
 
-## Vedic D16/D20/D24 CI kanıtı
+## Vedic calculation CI evidence
 
-- `4384addeace00598c7e81b8b3711c8dfed7b3216` PR/dispatch evidence koşularını global requirement-matrix writer concurrency kuyruğundan ayırdı; validator/test/tolerans değiştirilmedi.
-- Exact `bf9646947908caf048db043c3172a4a40583185f` üzerinde `RC-0099 RC-0101 Vedic D16 D20 D24` run **`34687096050` fiziksel SUCCESS** verdi. Önceki cancelled koşular artık tek kanıt değildir; non-cancelled CI evidence elde edildi.
-- Bu SUCCESS yalnız ilgili calculation/validator zincirinin kanıtıdır; global release blocker'ları nedeniyle RC-0099→0101 otomatik DONE yapılmaz.
-
-## Calculation CI evidence isolation
-
-- Exact `cf0f8b2095f06b9e7e68dce7cf3207a729c1c943` yeniden denetlendi. Flutter Quality, RC1436 Lahiri, Materialize PDF Font Assets ve PDF Structural fiziksel SUCCESS durumundayken çok sayıda eski calculation/requirement workflow'u `cancelled` kaldı; cancellation hiçbir requirement için SUCCESS/TESTED/VERIFIED/DONE kabul edilmedi.
-- `6488eee6b9eaf02ffdfd74ca5dfd2ff7bff173be`: `.github/workflows/rc0105-rc0110-vimshottari-dasha.yml` PR/dispatch evidence koşularını global `requirement-matrix-writers` kilidinden ayırdı. Yalnız `main` push promotion matrix yazarı global kilitte kalır; validator/test/tolerans değiştirilmedi. Bu SHA üzerinde Vimshottari run `34721331566` artık anında `cancelled` olmak yerine `queued` durumuna geçti; queued SUCCESS değildir.
-- `e2240f63c137da818a6945aecd261bfdfc5fe97f`: aynı kanıtlanmış concurrency modeli `.github/workflows/rc0120-shadbala.yml` için uygulandı. Shadbala run `34721430339` yeni exact SHA üzerinde `queued`; henüz fiziksel SUCCESS değildir. RC-0120'nin klasik formül/reference/UI/device/release blocker'ları aynen korunur.
-- `d86fd7640c0ddd5b74711d770942ea95704e03e5`: `.github/workflows/rc0096-rc0098-varga-d7-d10-d12.yml` aynı modele taşındı; D7/D10/D12 validator, Flutter regression ve TESTED-only blocker mantığı değiştirilmedi.
-- `95057799742af2e3ad1cc332045e11c94514ca26`: `.github/workflows/rc0092-rc0093-varga-d9-d2.yml` Navamsa/Hora PR/dispatch evidence koşuları global matrix writer lock'tan ayrıldı; D9/D2 requirement kapsamı ve blocker'lar aynen korundu.
-- `f9f710e773515e27b2338b311d7ef4bfa1ef0af4`: `.github/workflows/rc0111-rc0117-gochara-panchanga.yml` aynı fail-safe concurrency modeline geçirildi; explicit-TT Gochara/Panchanga validator/test ve TESTED-only promotion kuralları zayıflatılmadı.
-- Fan-out'ta hâlâ RC-0080/0081, RC-0082/0083, RC-0084/0085, RC-0088/0089, RC-0121, RC-0123 ve diğer legacy workflow'larda cancellation görülüyor; kalan dosyalar requirement kapsamı değiştirilmeden kademeli izole edilmelidir.
+- `4384addeace00598c7e81b8b3711c8dfed7b3216` D16/D20/D24 PR/dispatch evidence koşularını global requirement-matrix writer kuyruğundan ayırdı; exact `bf9646947908caf048db043c3172a4a40583185f` üzerinde run `34687096050` fiziksel SUCCESS verdi. Global release/golden/UI blocker'ları nedeniyle RC-0099→0101 DONE değildir.
+- `6488eee6b9eaf02ffdfd74ca5dfd2ff7bff173be` RC-0105→0110 Vimshottari workflow'unu aynı modele taşıdı. Exact `d3235da1435565774803cbc7d0e102a589df3db0` üzerinde run `34721530173` fiziksel SUCCESS verdi; independent golden/UI/device/release blocker'ları korunur.
+- `f9f710e773515e27b2338b311d7ef4bfa1ef0af4` RC-0111→0117 Gochara/Panchanga workflow'unu izole etti. Exact `d3235...` üzerinde run `34721530902` fiziksel SUCCESS verdi; TESTED-only kapsamın ötesi kanıtlanmış sayılmaz.
+- `e2240f63c137da818a6945aecd261bfdfc5fe97f` RC-0120 Shadbala, `d86fd7640c0ddd5b74711d770942ea95704e03e5` RC-0096→0098 D7/D10/D12 ve `95057799742af2e3ad1cc332045e11c94514ca26` RC-0092→0093 D9/D2 evidence koşularını global writer lock'tan ayırdı; requirement/toleranslar değiştirilmedi.
+- RC-0092/0093 run `34721531101` cancellation'dan çıkıp gerçek FAILURE üretti. Kök neden calculation değildi: `tools/requirements/validate_rc0092_rc0093_varga_d9_d2.py` production'da bulunmayan eski prose/comment locator tokenlarını (`fixed signs from the ninth`, `Sun Hora is Leo`, vb.) ve eski test başlığını arıyordu.
+- `e49bfe3e3a87e7b41f5421ea03e6d2094e74684b` RC-0092/0093 validatorını gerçek production invariants'a sabitledi: exact D9/D2 builder wiring, `_navamsaRashi` movable/fixed/dual mapping, `_horaRashi` odd/even Sun/Moon mapping, normalized longitude/provenance fail-closed guards ve mevcut semantic boundary regressions. Requirement/formül/tolerans gevşetilmedi. Yeni physical SUCCESS bekleniyor.
+- `863fef4efd254a1d50a0fa67037972146a9b6031` RC-0080/0081 Independent Vedic Engine, `194b7c76cd1faf51e0c624ac42f98d6e29d24502` RC-0082/0083 Ayanamsha, `49ea0b30e1e2eaab794d1eab515546f82167a03b` RC-0088/0089 Nakshatra/Pada ve `4700ab9ceb7d023c4b16b51e7d2cae1c1f968cce` RC-0121 Planet Strength PR/dispatch evidence koşularını global `requirement-matrix-writers` kilidinden ayırdı. Yalnız `main` promotion writer global kilitte kalır; validators/tests/blockers değişmedi.
+- Matrix yeniden okundu: RC-0080/0081 ve RC-0088/0089 `TESTED + blocked=YES`; RC-0092/0093 `TESTED + blocked=YES`; RC-0082/0083 mevcut branch matrixinde halen `NOT_STARTED` ve ancak gerçek gate/promotion kanıtı sonrası yükseltilebilir. Kanıtsız lifecycle yükseltmesi yapılmadı.
+- Hâlâ cancelled legacy gate'ler arasında RC-0086/0087, RC-0102→0104, RC-0118, RC-0119 ve Western/astronomy tarafındaki daha eski workflow'lar bulunuyor; path'leri Actions metadata'dan kesin çözülerek aynı fail-safe modelle kademeli izole edilmelidir.
 
 ## RC-1439 physical references
 
@@ -80,19 +73,17 @@ Approved packaged Unicode font binary + exact SHA-256 zinciri artık repository 
 
 ## Security/persistence açık durumu
 
-Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android Keystore-backed gerçek key lifecycle, encrypted DB adapter, plaintext→encrypted migration ve release-binary persistence proof tamamlanmadan security DONE verilmez.
-
-2026-09-12 doğrulamasında bu durum tekrar kod seviyesinde görüldü: `lib/src/data/local/sqflite_local_database.dart` plain `openDatabase(path, ...)` kullanıyor. `EncryptedJsonDocumentStore`/policy abstraction'larının varlığı primary SQLite DB'nin encrypted olduğunu kanıtlamaz. Encrypted persistence requirement'ı açık kalır ve kanıtsız DONE yapılmaz.
+Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android Keystore-backed gerçek key lifecycle, encrypted DB adapter, plaintext→encrypted migration ve release-binary persistence proof tamamlanmadan security DONE verilmez. `EncryptedJsonDocumentStore`/policy abstraction'larının varlığı primary SQLite DB'nin encrypted olduğunu kanıtlamaz.
 
 ## Son CI / devam noktası
 
-- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu checkpoint öncesindeki canonical code HEAD **`f9f710e773515e27b2338b311d7ef4bfa1ef0af4`**.
-- Exact `e2240f...` fan-out'unda RC-0120 Shadbala run `34721430339` queued; Flutter Quality `34721430289`, PDF Structural `34721430347`, Lahiri `34721430349` ve birçok gate de queued/pending. Queued/pending SUCCESS değildir.
-- Öncelik: exact-head RC-0105→0110 Vimshottari, RC-0120 Shadbala, RC-0092→0093, RC-0096→0098 ve RC-0111→0117 non-cancelled physical resultlerini almak; kırmızıysa validator/test kök nedenini aynı turda düzeltmek. Ardından aynı global writer-lock anti-pattern'ini taşıyan cancelled calculation workflow'larını D16 modeline geçirmek.
-- 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u kanıtlanmış olur; yine de RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 üretim akışının instrumentation ile gerçekten egzersiz edildiği ayrı evidence şartı devam eder.
-- Ardından exact release APK production UI/application yollarını exact artifact SHA + device/network/per-capability evidence ile egzersiz et.
-- Daily Message final UI/device proof; Android Keystore + encrypted database + plaintext→encrypted migration; accessibility/performance; AKİLES provenance; remaining calculation/Vedic/Panchanga/Dasha/Varga/Gochara/BaZi kanıtlarını bağımsız ilerlet.
-- RC-1439 external blocker'ı açık tut; synthetic görsel kullanma.
+- Aktif branch `agent/rc1421-rc1442-release-closure`, PR #16. Bu progress checkpoint öncesindeki canonical code HEAD **`4700ab9ceb7d023c4b16b51e7d2cae1c1f968cce`**.
+- Exact `d3235...` üzerinde Flutter Quality, Materialize PDF Font Assets, Lahiri oracle, RC-0105→0110 Vimshottari ve RC-0111→0117 Gochara/Panchanga fiziksel SUCCESS verdi; RC-0092/0093 stale-validator FAILURE'ı bu turda kök nedeninden düzeltildi.
+- `4700ab9...` için Actions fan-out progress kaydı yazıldığı anda henüz oluşmamıştı; queued/pending/nonexistent physical SUCCESS değildir. İlk sonraki iş, yeni HEAD'de RC-0092/0093 + RC-0080/81 + RC-0082/83 + RC-0088/89 + RC-0121 exact-run sonuçlarını okumak ve kırmızıysa kök nedeni aynı turda düzeltmektir.
+- Ardından RC-0086/0087, RC-0102→0104, RC-0118, RC-0119 ve kalan cancelled workflow'ların global writer-lock anti-patternini kaldır.
+- 10-capability Android harness SUCCESS verirse RC-1369 test-artifact airplane proof'u güçlenir; RC-1362→1374 VERIFIED/DONE için exact release APK üzerinde tüm 10 production akışının ayrı instrumentation evidence'ı şarttır.
+- Sonraki büyük blocker zinciri: Android Keystore + encrypted primary database + plaintext→encrypted migration + release-binary persistence proof; Daily Message final UI/device proof; accessibility/performance; AKİLES provenance; remaining independent calculation/golden evidence.
+- RC-1439 external blocker'ını açık tut; synthetic görsel kullanma.
 - RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
 **FINAL: NO.**
