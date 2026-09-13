@@ -24,7 +24,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: requirement-matrix-writers
+  # Only main-push promotion jobs write requirement_state.csv. PR/dispatch
+  # evidence runs are isolated per workflow and ref to avoid unrelated writers.
+  group: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'requirement-matrix-writers' || format('{0}-{1}', github.workflow, github.ref) }}
   cancel-in-progress: false
 
 jobs:
