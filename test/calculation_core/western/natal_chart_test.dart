@@ -3,6 +3,7 @@ import 'package:ruh_code/src/calculation_core/ephemeris/ephemeris.dart';
 import 'package:ruh_code/src/calculation_core/western/equal_house_systems.dart';
 import 'package:ruh_code/src/calculation_core/western/natal_aspects.dart';
 import 'package:ruh_code/src/calculation_core/western/natal_chart.dart';
+import 'package:ruh_code/src/calculation_core/western/natal_placements.dart';
 
 EclipticState state(AstroBody body, double longitude) => EclipticState(
       body: body,
@@ -16,7 +17,7 @@ EclipticState state(AstroBody body, double longitude) => EclipticState(
     );
 
 void main() {
-  test('assembles placements, houses and aspects from one provenance snapshot', () {
+  test('assembles placements, houses, rulers and aspects from one provenance snapshot', () {
     final chart = WesternNatalChartAssembler.build(
       states: [
         state(AstroBody.sun, 0),
@@ -38,6 +39,11 @@ void main() {
       isTrue,
     );
     expect(chart.placements.forBody(AstroBody.sun).houseNumber, 10);
+    expect(chart.houseRulers.rulers, hasLength(12));
+    expect(chart.houseRulers.forHouse(1).cuspSign, TropicalZodiacSign.cancer);
+    expect(chart.houseRulers.forHouse(1).ruler, AstroBody.moon);
+    expect(chart.houseRulers.forHouse(10).cuspSign, TropicalZodiacSign.aries);
+    expect(chart.houseRulers.forHouse(10).ruler, AstroBody.mars);
   });
 
   test('all derived natal collections preserve the exact placement body set', () {
@@ -62,6 +68,8 @@ void main() {
       chart.aspectGrid.rows.every((row) => row.length == placementBodies.length),
       isTrue,
     );
+    expect(chart.houseRulers.rulers.map((item) => item.houseNumber).toSet(),
+        Set<int>.from(List<int>.generate(12, (index) => index + 1)));
   });
 
   test('custom orb policy is propagated through chart assembly', () {
