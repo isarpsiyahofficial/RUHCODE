@@ -27,6 +27,7 @@ required_tokens = [
     'static NumerologyAlphabet pythagorean(', 'static NumerologyAlphabet chaldean(',
     "if (!alphabet.id.startsWith('pythagorean'))",
     "'Ç':'C'", "'Ğ':'G'", "'İ':'I'", "'Ş':'S'", "'Ü':'U'",
+    '_balanceInitialTotal(',
 ]
 for token in required_tokens:
     if token not in prod:
@@ -36,9 +37,23 @@ if "id: 'chaldean-latin'" not in prod or "'F':8" not in prod:
     fail('Chaldean table is missing or no longer structurally distinct')
 
 text = TEST.read_text(encoding='utf-8')
+# Every binding requirement must have an explicit marker. Nearby or grouped
+# requirements must never be accepted as a substitute for a missing RC.
 for i in range(166, 185):
     marker = f'RC-{i:04d}'
-    if marker not in text and not any(f'RC-{j:04d}' in text for j in range(max(166, i-2), min(184, i+2)+1)):
-        fail(f'test evidence does not cover {marker}')
+    if marker not in text:
+        fail(f'test evidence does not explicitly cover {marker}')
+
+for required_fixture in (
+    "expect(ada.balance, 4)",
+    "expect(ipek.balance, 1)",
+    "expect(r.karmicLessons, <int>{3, 4, 6, 8})",
+    "expect(r.hiddenPassion, <int>{5})",
+    "expect(r.pinnacles, <int>[8, 2, 1, 8])",
+    "expect(r.challenges, <int>[6, 0, 6, 6])",
+    "expect(c.values['F'], 8)",
+):
+    if required_fixture not in text:
+        fail(f'exact regression fixture missing: {required_fixture}')
 
 print('RC0166_RC0184_OK')
