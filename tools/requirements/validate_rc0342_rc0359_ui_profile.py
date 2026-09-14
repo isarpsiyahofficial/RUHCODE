@@ -19,14 +19,18 @@ if c.get('requirement_range')!='RC-0342..RC-0359': raise SystemExit('RC0342_RC03
 ia=IA.read_text(encoding='utf-8')
 profile=PROFILE.read_text(encoding='utf-8')
 for token in [
-    'enum PrimaryDestination', 'today, discover, calculate, records, profile',
+    'enum PrimaryDestination { today, tools, records, profile }',
     'enum ExperienceMode', 'professionalOnly: true', 'visibleToolDomains',
-    "trLabel: 'Batı Astrolojisi'", "trLabel: 'Vedik Astroloji'",
+    "trLabel: 'Bugün'", "trLabel: 'Araçlar'", "trLabel: 'Kayıtlar'", "trLabel: 'Profil'",
+    "enLabel: 'Today'", "enLabel: 'Tools'", "enLabel: 'Records'", "enLabel: 'Profile'",
+    "trLabel: 'Batı Astrolojisi'", "trLabel: 'Vedik Astrolojisi'",
     "trLabel: 'Çin Astrolojisi'", "trLabel: 'Numeroloji'",
     "trLabel: 'Spiritüel Araçlar'", "trLabel: 'Kişisel Gelişim'",
     'static const onboarding', 'optionalBirthProfile',
 ]:
     if token not in ia: raise SystemExit(f'RC0342_RC0359_FAIL: IA token {token!r}')
+for legacy in ('PrimaryDestination.discover', 'PrimaryDestination.calculate'):
+    if legacy in ia: raise SystemExit(f'RC0342_RC0359_FAIL: legacy primary destination {legacy!r}')
 for token in [
     'enum BirthTimeKnowledge', 'known, unknown', 'BirthTimeValue.unknown',
     'BirthTimeDependency', 'requireLocalBirthDateTime',
