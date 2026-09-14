@@ -17,7 +17,7 @@ EclipticState state(AstroBody body, double longitude) => EclipticState(
     );
 
 void main() {
-  test('assembles placements, houses, rulers and aspects from one provenance snapshot', () {
+  test('assembles placements, houses, rulers, degree tables and aspects from one provenance snapshot', () {
     final chart = WesternNatalChartAssembler.build(
       states: [
         state(AstroBody.sun, 0),
@@ -44,6 +44,19 @@ void main() {
     expect(chart.houseRulers.forHouse(1).ruler, AstroBody.moon);
     expect(chart.houseRulers.forHouse(10).cuspSign, TropicalZodiacSign.aries);
     expect(chart.houseRulers.forHouse(10).ruler, AstroBody.mars);
+
+    expect(chart.planetDegreeTable, hasLength(3));
+    final sunDegree = chart.planetDegreeTable.singleWhere((row) => row.body == AstroBody.sun);
+    expect(sunDegree.longitudeDegrees, 0);
+    expect(sunDegree.sign, TropicalZodiacSign.aries);
+    expect(sunDegree.degreeInSign, 0);
+    expect(sunDegree.houseNumber, 10);
+
+    expect(chart.houseDegreeTable, hasLength(12));
+    expect(chart.houseDegreeTable.map((row) => row.houseNumber), orderedEquals(List<int>.generate(12, (index) => index + 1)));
+    expect(chart.houseDegreeTable.first.cuspLongitudeDegrees, 90);
+    expect(chart.houseDegreeTable.first.sign, TropicalZodiacSign.cancer);
+    expect(chart.houseDegreeTable.first.degreeInSign, 0);
   });
 
   test('all derived natal collections preserve the exact placement body set', () {
@@ -59,15 +72,19 @@ void main() {
 
     final placementBodies = chart.placements.placements.map((item) => item.body).toSet();
     final gridBodies = chart.aspectGrid.bodies.toSet();
+    final degreeTableBodies = chart.planetDegreeTable.map((item) => item.body).toSet();
     final dignityBodies = chart.dignities.assessments.map((item) => item.body).toSet();
 
     expect(gridBodies, placementBodies);
+    expect(degreeTableBodies, placementBodies);
     expect(dignityBodies, placementBodies);
     expect(chart.aspectGrid.rows, hasLength(placementBodies.length));
     expect(
       chart.aspectGrid.rows.every((row) => row.length == placementBodies.length),
       isTrue,
     );
+    expect(chart.houseDegreeTable.map((item) => item.houseNumber).toSet(),
+        Set<int>.from(List<int>.generate(12, (index) => index + 1)));
     expect(chart.houseRulers.rulers.map((item) => item.houseNumber).toSet(),
         Set<int>.from(List<int>.generate(12, (index) => index + 1)));
   });
