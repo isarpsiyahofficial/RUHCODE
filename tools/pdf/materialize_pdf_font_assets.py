@@ -118,3 +118,126 @@ def parse_manifest_hashes(text: str) -> tuple[str, str, bool]:
     packaged_match = re.search(
         r"static const bool binariesPackaged\s*=\s*(true|false);", text
     )
+    if not packaged_match:
+        raise RuntimeError("manifest field not found: binariesPackaged")
+    return value("regularSha256"), value("boldSha256"), packaged_match.group(1) == "true"
+
+
+def replace_manifest_string(text: str, name: str, value: str) -> tuple[str, int]:
+    """Replace one formatted Dart const string without depending on line wrapping."""
+    return re.subn(
+        rf"(static const String {name}\s*=\s*)'[a-f0-9]*';",
+        rf"\1'{value}';",
+        text,
+    )
+
+
+def update_manifest(regular_hash: str, bold_hash: str) -> None:
+    if regular_hash == bold_hash:
+        raise RuntimeError("Regular and Bold assets unexpectedly have identical SHA-256")
+    text = MANIFEST.read_text(encoding="utf-8")
+    text, regular_count = replace_manifest_string(text, "regularSha256", regular_hash)
+    text, bold_count = replace_manifest_string(text, "boldSha256", bold_hash)
+    text, packaged_count = re.subn(
+        r"(static const bool binariesPackaged\s*=\s*)(?:true|false);",
+        r"\1true;",
+        text,
+    )
+    if (regular_count, bold_count, packaged_count) != (1, 1, 1):
+        raise RuntimeError(
+            "manifest update was not exact; refusing to continue "
+            f"(regular={regular_count}, bold={bold_count}, packaged={packaged_count})"
+        )
+    MANIFEST.write_text(text, encoding="utf-8")
+
+
+def materialize() -> None:
+    ASSET_DIR.mkdir(parents=True, exist_ok=True)
+    verified: dict[str, dict[str, object]] = {}
+    with tempfile.TemporaryDirectory(prefix="ruh-code-fonts-") as tmp:
+        temp_dir = Path(tmp)
+        for name, source in SOURCES.items():
+            payload = fetch(str(source["url"]))
+            evidence = verify_payload(name, payload)
+            (temp_dir / name).write_bytes(payload)
+            verified[name] = evidence
+        for name in SOURCES:
+            (ASSET_DIR / name).write_bytes((temp_dir / name).read_bytes())
+
+    regular_hash = str(verified["NotoSans-Regular.ttf"]["sha256"])
+    bold_hash = str(verified["NotoSans-Bold.ttf"]["sha256"])
+    update_manifest(regular_hash, bold_hash)
+
+    provenance = {
+        "schemaVersion": 1,
+        "family": "Noto Sans",
+        "license": "OFL-1.1",
+        "upstreamRepository": f"https://github.com/{UPSTREAM_REPOSITORY}",
+        "upstreamRevision": UPSTREAM_REVISION,
+        "files": verified,
+        "releaseReady": True,
+    }
+    PROVENANCE_JSON.write_text(
+        json.dumps(provenance, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    check()
+
+
+def check() -> None:
+    text = MANIFEST.read_text(encoding="utf-8")
+    regular_hash, bold_hash, packaged = parse_manifest_hashes(text)
+    if not packaged:
+        raise RuntimeError("PdfFontReleaseManifest.binariesPackaged is false")
+    if not re.fullmatch(r"[a-f0-9]{64}", regular_hash):
+        raise RuntimeError("regularSha256 is not pinned")
+    if not re.fullmatch(r"[a-f0-9]{64}", bold_hash):
+        raise RuntimeError("boldSha256 is not pinned")
+    if regular_hash == bold_hash:
+        raise RuntimeError("Regular and Bold SHA-256 values must differ")
+
+    evidence: dict[str, dict[str, object]] = {}
+    for name in SOURCES:
+        path = ASSET_DIR / name
+        if not path.is_file():
+            raise RuntimeError(f"missing release asset: {path.relative_to(ROOT)}")
+        payload = path.read_bytes()
+        evidence[name] = verify_payload(name, payload)
+
+    if evidence["NotoSans-Regular.ttf"]["sha256"] != regular_hash:
+        raise RuntimeError("Regular asset SHA-256 does not match release manifest")
+    if evidence["NotoSans-Bold.ttf"]["sha256"] != bold_hash:
+        raise RuntimeError("Bold asset SHA-256 does not match release manifest")
+
+    if not PROVENANCE_JSON.is_file():
+        raise RuntimeError("missing font_release_provenance.json")
+    provenance = json.loads(PROVENANCE_JSON.read_text(encoding="utf-8"))
+    if provenance.get("upstreamRevision") != UPSTREAM_REVISION:
+        raise RuntimeError("provenance upstream revision mismatch")
+    if provenance.get("files") != evidence:
+        raise RuntimeError("provenance evidence does not match packaged assets")
+    if provenance.get("releaseReady") is not True:
+        raise RuntimeError("provenance is not releaseReady=true")
+
+    print(
+        "Verified PDF fonts: "
+        f"regular={regular_hash} bold={bold_hash} revision={UPSTREAM_REVISION}"
+    )
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="verify already-materialized assets without network access",
+    )
+    args = parser.parse_args()
+    if args.check:
+        check()
+    else:
+        materialize()
+
+
+if __name__ == "__main__":
+    main()
