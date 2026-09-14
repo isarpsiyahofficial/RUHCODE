@@ -6,9 +6,11 @@ on:
     paths:
       - 'RUH_CODE_MASTER_SARTNAME.md'
       - 'lib/src/calculation_core/western/degree_tables.dart'
+      - 'lib/src/calculation_core/western/natal_chart.dart'
       - 'lib/src/calculation_core/western/natal_placements.dart'
       - 'lib/src/calculation_core/western/equal_house_systems.dart'
       - 'test/calculation_core/western/degree_tables_test.dart'
+      - 'test/calculation_core/western/natal_chart_test.dart'
       - 'requirements/contracts/rc0052_rc0053_degree_tables_contract.json'
       - 'tools/requirements/validate_rc0052_rc0053_degree_tables.py'
       - '.github/workflows/rc0052-rc0053-degree-tables.yml'
@@ -19,7 +21,9 @@ permissions:
   contents: write
 
 concurrency:
-  group: requirement-matrix-writers
+  # Only main-push promotion jobs write requirement_state.csv. PR/dispatch
+  # evidence runs are isolated per workflow and ref to avoid unrelated writers.
+  group: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'requirement-matrix-writers' || format('{0}-{1}', github.workflow, github.ref) }}
   cancel-in-progress: false
 
 jobs:
@@ -39,7 +43,7 @@ jobs:
       - name: Validate exact degree-table contracts
         run: python tools/requirements/validate_rc0052_rc0053_degree_tables.py
       - name: Execute compiled degree-table regressions
-        run: flutter test test/calculation_core/western/degree_tables_test.dart
+        run: flutter test test/calculation_core/western/degree_tables_test.dart test/calculation_core/western/natal_chart_test.dart
       - name: Promote proven requirements to TESTED
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
@@ -54,14 +58,14 @@ jobs:
           p=Path('requirements/requirement_state.csv')
           rows=list(csv.DictReader(p.open(encoding='utf-8', newline=''))); fields=list(rows[0].keys())
           targets={'RC-0052','RC-0053'}
-          links='requirements/contracts/rc0052_rc0053_degree_tables_contract.json|tools/requirements/validate_rc0052_rc0053_degree_tables.py|lib/src/calculation_core/western/degree_tables.dart|lib/src/calculation_core/western/natal_placements.dart|lib/src/calculation_core/western/equal_house_systems.dart|test/calculation_core/western/degree_tables_test.dart|.github/workflows/rc0052-rc0053-degree-tables.yml'
+          links='requirements/contracts/rc0052_rc0053_degree_tables_contract.json|tools/requirements/validate_rc0052_rc0053_degree_tables.py|lib/src/calculation_core/western/degree_tables.dart|lib/src/calculation_core/western/natal_chart.dart|lib/src/calculation_core/western/natal_placements.dart|lib/src/calculation_core/western/equal_house_systems.dart|test/calculation_core/western/degree_tables_test.dart|test/calculation_core/western/natal_chart_test.dart|.github/workflows/rc0052-rc0053-degree-tables.yml'
           for r in rows:
             if r['rc_id'] not in targets: continue
             if r['status'] not in ('VERIFIED','DONE'): r['status']='TESTED'
             r['evidence_links']=links
             r['blocked']='YES'
             r['blocker']='Product/UI table rendering, TR/EN formatting, accessibility and release evidence remain required before VERIFIED/DONE.'
-            r['notes']='Machine gate proves deterministic planet and 12-house degree table models from validated Western calculation snapshots with compiled regressions. TESTED only.'
+            r['notes']='Machine gate proves deterministic planet and 12-house degree table models are exposed through the canonical Western natal chart snapshot with compiled regressions. TESTED only.'
           with p.open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
           PY
