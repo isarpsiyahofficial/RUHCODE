@@ -109,4 +109,14 @@ Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android
 - RC-1439 external blocker'ını açık tut; synthetic görsel kullanma.
 - RC-0001→RC-1442 tamamı DONE, bütün zorunlu release gate'leri green ve exact release artifact doğrulanmış olmadan FINAL deme.
 
+## 2026-09-14 RC-0022 / RC-0030 / RC-0062 evidence isolation checkpoint
+
+- Baseline `70e28150fbf311cda47ee157fbbb21dadf695fcb` Actions taramasında RC-0022 Astronomy Interpretation Boundary, RC-0030 Western Sun/Moon/Ascendant ve RC-0062 Natal Chart koşularının evidence başlamadan legacy global writer cancellation davranışı gösterdiği doğrulandı.
+- Bağlayıcı şartname semantiği workflow değişikliğinden önce yeniden doğrulandı: RC-0022 = calculation/interpretation mimari ayrımı; RC-0030 = Western Güneş/Ay/Yükselen; RC-0062 = Natal Chart. Shifted-semantic gate canlandırılmadı.
+- `8c84694dfce2e229cc000b3fec65a9236916358d` RC-0022, `481e42a024f51f76bec185c6f35dd2ece9949b5c` RC-0030 ve `59413253f6c77565bb96ec1dc0d449310db33a1c` RC-0062 PR/dispatch evidence koşularını workflow+ref bazında izole etti. Yalnız `main` push matrix-promotion writer global `requirement-matrix-writers` kilidinde kalır.
+- Validator, calculation formülü, tolerans, regression kapsamı, blocker ve TESTED-only promotion semantiği değiştirilmedi.
+- Checkpoint anında exact-head yeni koşular henüz fiziksel SUCCESS olarak materialize olmadı. `queued/pending/no-run-visible` SUCCESS değildir; bu nedenle RC-0022/0030/0062 VERIFIED/DONE yapılmadı.
+- Sıradaki continuation: yeni exact-head physical Actions sonuçlarını tekrar oku; FAILURE varsa cancellation'dan ayrı gerçek validator/test kök nedenini aynı turda düzelt. Ardından binding semantiği doğrulanmış RC-0063+ ve kalan legacy cancellation gate'lerini dependency sırasıyla ele al; shifted-semantic workflow'u kör biçimde canlandırma.
+- Exact-release 10-capability airplane APK E2E, Android Keystore-backed encrypted primary DB + plaintext migration, Daily Message real-device/UI, accessibility/performance, AKİLES provenance, RC-1439 physical references ve remaining independent calculation/golden kanıtları açık blocker olarak korunur.
+
 **FINAL: NO.**
