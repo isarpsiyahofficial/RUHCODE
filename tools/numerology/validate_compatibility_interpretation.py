@@ -33,7 +33,14 @@ def main() -> None:
     ):
         require(token in source, f"compatibility interpretation source missing token: {token}")
 
-    require("hidden percentage" in calculation, "calculation layer must explicitly reject hidden compatibility scoring")
+    # Calculation/content separation must remain explicit. The calculation
+    # engine may expose transparent exact-match/difference values, but it must
+    # reject invented percentage scoring or hidden weighting.
+    for token in ("synthetic percentage", "hidden weighting system"):
+        require(
+            token in calculation,
+            f"calculation layer must explicitly reject hidden compatibility scoring: {token}",
+        )
 
     for token in (
         "TR and EN content stay separate from calculation values",
