@@ -23,7 +23,7 @@ for token in [
     'enum ExperienceMode', 'professionalOnly: true', 'visibleToolDomains',
     "trLabel: 'Bugün'", "trLabel: 'Araçlar'", "trLabel: 'Kayıtlar'", "trLabel: 'Profil'",
     "enLabel: 'Today'", "enLabel: 'Tools'", "enLabel: 'Records'", "enLabel: 'Profile'",
-    "trLabel: 'Batı Astrolojisi'", "trLabel: 'Vedik Astrolojisi'",
+    "trLabel: 'Batı Astrolojisi'", "trLabel: 'Vedik Astroloji'",
     "trLabel: 'Çin Astrolojisi'", "trLabel: 'Numeroloji'",
     "trLabel: 'Spiritüel Araçlar'", "trLabel: 'Kişisel Gelişim'",
     'static const onboarding', 'optionalBirthProfile',
