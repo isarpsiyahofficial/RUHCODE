@@ -2,6 +2,7 @@ import '../ephemeris/ephemeris.dart';
 import 'aspect_grid.dart';
 import 'equal_house_systems.dart';
 import 'essential_dignities.dart';
+import 'house_rulers.dart';
 import 'natal_aspects.dart';
 import 'natal_placements.dart';
 
@@ -15,6 +16,7 @@ final class WesternNatalChart {
     required this.aspects,
     required this.aspectGrid,
     required this.dignities,
+    required this.houseRulers,
   });
 
   final double jdTt;
@@ -25,6 +27,7 @@ final class WesternNatalChart {
   final NatalAspectSet aspects;
   final NatalAspectGrid aspectGrid;
   final EssentialDignitySet dignities;
+  final HouseRulerSet houseRulers;
 }
 
 abstract final class WesternNatalChartAssembler {
@@ -55,6 +58,7 @@ abstract final class WesternNatalChartAssembler {
       aspects: aspects,
     );
     final dignities = WesternEssentialDignities.build(placements: placements);
+    final houseRulers = WesternHouseRulers.build(houses: houses);
 
     _validateDerivedBodySets(
       placements: placements,
@@ -71,6 +75,7 @@ abstract final class WesternNatalChartAssembler {
       aspects: aspects,
       aspectGrid: aspectGrid,
       dignities: dignities,
+      houseRulers: houseRulers,
     );
   }
 
