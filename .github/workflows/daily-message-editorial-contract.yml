@@ -7,6 +7,10 @@ on:
       - 'assets/content/daily_messages/**'
       - 'requirements/content_manifests/daily_messages.json'
       - 'evidence/content/daily_messages_editorial_progress.json'
+      - 'lib/src/content/daily_messages/**'
+      - 'test/content/daily_message_catalog_test.dart'
+      - 'test/content/daily_message_asset_loader_test.dart'
+      - 'pubspec.yaml'
       - 'tools/content/daily_message_schema.py'
       - 'tools/content/build_daily_message_catalog.py'
       - 'tools/content/append_daily_message_batch.py'
@@ -26,6 +30,10 @@ on:
       - 'assets/content/daily_messages/**'
       - 'requirements/content_manifests/daily_messages.json'
       - 'evidence/content/daily_messages_editorial_progress.json'
+      - 'lib/src/content/daily_messages/**'
+      - 'test/content/daily_message_catalog_test.dart'
+      - 'test/content/daily_message_asset_loader_test.dart'
+      - 'pubspec.yaml'
       - 'tools/content/daily_message_schema.py'
       - 'tools/content/build_daily_message_catalog.py'
       - 'tools/content/append_daily_message_batch.py'
@@ -52,6 +60,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
       - name: Validate daily-message structural lifecycle contract
         run: python tools/content/validate_daily_message_contract.py
       - name: Validate committed editorial coverage ledger
@@ -68,6 +84,12 @@ jobs:
         run: python -m unittest tools/content/test_validate_daily_message_catalog.py
       - name: Test sharded editorial pipeline
         run: python -m unittest tools/content/test_daily_message_shards.py
+      - name: Test packaged offline Daily Message catalog loader
+        run: >-
+          flutter test
+          test/content/daily_message_catalog_test.dart
+          test/content/daily_message_asset_loader_test.dart
+          --reporter expanded
       - name: Compile deterministic complete catalog
         run: >-
           python tools/content/build_daily_message_catalog.py

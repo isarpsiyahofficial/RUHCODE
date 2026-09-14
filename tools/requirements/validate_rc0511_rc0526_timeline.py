@@ -23,9 +23,32 @@ if contract.get('promotion_ceiling') != 'IMPLEMENTED':
 source = SOURCE.read_text(encoding='utf-8')
 for token in [
     'ProfessionalTimeline', 'TimelineWindow.next30Days', 'TimelineWindow.next3Months', 'TimelineWindow.next1Year',
-    'highImportanceOnly', 'TimelinePlanet.saturn', 'TimelineTopic.relationship', 'TimelineTopic.career',
-    'TimelineLanguagePolicy', 'TimelineFilterPreset', 'TimelinePresetLibrary'
+    'highImportanceOnly', 'TimelineLanguagePolicy', 'TimelineFilterPreset', 'TimelinePresetLibrary'
 ]:
     if token not in source:
         raise SystemExit(f'RC0511_RC0526_FAIL: missing production token {token}')
+
+# Enum members are validated semantically rather than by requiring a particular
+# call-site spelling such as TimelinePlanet.saturn inside the production file.
+def enum_has_member(enum_name: str, member: str) -> bool:
+    match = re.search(rf'enum\s+{re.escape(enum_name)}\s*\{{([^}}]+)\}}', source, flags=re.DOTALL)
+    if not match:
+        return False
+    members = [item.strip() for item in match.group(1).split(',') if item.strip()]
+    return member in members
+
+for enum_name, member in [
+    ('TimelinePlanet', 'saturn'),
+    ('TimelineTopic', 'relationship'),
+    ('TimelineTopic', 'career'),
+]:
+    if not enum_has_member(enum_name, member):
+        raise SystemExit(f'RC0511_RC0526_FAIL: missing production enum member {enum_name}.{member}')
+
+# The regressions must exercise the filters, not merely declare enum members.
+test = TEST.read_text(encoding='utf-8')
+for token in ['TimelinePlanet.saturn', 'TimelineTopic.relationship', 'TimelineTopic.career', 'highImportanceOnly: true']:
+    if token not in test:
+        raise SystemExit(f'RC0511_RC0526_FAIL: missing regression filter token {token}')
+
 print('RC0511_RC0526_OK')

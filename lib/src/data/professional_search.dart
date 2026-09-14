@@ -124,7 +124,7 @@ final class ProfessionalSearchCoordinator {
     int pageSize = 50,
   }) {
     if (offset < 0) throw ArgumentError('offset cannot be negative');
-    final boundedSize = pageSize.clamp(1, maxPageSize) as int;
+    final boundedSize = pageSize.clamp(1, maxPageSize);
     return source.query(query: query, offset: offset, limit: boundedSize);
   }
 }

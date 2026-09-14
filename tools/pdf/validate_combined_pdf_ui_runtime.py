@@ -114,7 +114,8 @@ def main() -> None:
         'combinedProfessionalPdfDelivery',
         'CombinedProfessionalPdfDeliveryService',
         'NativePdfPlatformGateway',
-        'UnavailablePdfService<PdfCombinedReportProjection>',
+        'production_combined_pdf_service.dart',
+        'createProductionCombinedPdfService(bundle: rootBundle)',
     ]:
         require(token in runtime, f'Missing combined runtime token: {token}')
 

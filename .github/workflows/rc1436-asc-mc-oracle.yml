@@ -1,0 +1,25 @@
+name: RC1436 ASC MC Independent Oracle
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  asc-mc-independent-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned independent oracle
+        run: python -m pip install --disable-pip-version-check pyswisseph==2.10.3.2
+      - name: Regenerate independent ASC MC evidence
+        run: python tools/astronomy/materialize_asc_mc_swiss_oracle.py --output /tmp/asc_mc_swiss_oracle.json
+      - name: Verify committed evidence is reproducible
+        run: python tools/astronomy/verify_asc_mc_swiss_oracle.py --actual /tmp/asc_mc_swiss_oracle.json
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test production ASC MC against canonical budgets
+        run: flutter test test/calculation_core/asc_mc_independent_oracle_test.dart

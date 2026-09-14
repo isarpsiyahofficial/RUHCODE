@@ -20,8 +20,9 @@ for token in ['ProfileRelationship { self, partner, family, client }','ownerId',
     if token not in storage: raise SystemExit(f'RC0360_RC0371_FAIL: storage token {token!r}')
 for token in ['enum RuntimeDependency { localOnly, remoteRequired }','westernCalculation','vedicCalculation','baziCalculation','numerologyCalculation','profileReadWrite','pdfGeneration','premiumVerification','cloudSync','launchNetworkAllowList => const {}','abstract interface class PremiumEntitlementVerifier','signedAssertionId']:
     if token not in runtime: raise SystemExit(f'RC0360_RC0371_FAIL: runtime token {token!r}')
-if 'local premium booleans are deliberately not accepted here' not in guard or 'EntitlementService' not in guard:
-    raise SystemExit('RC0360_RC0371_FAIL: canonical entitlement guard evidence missing')
+for token in ['final class FeatureAccessGuard', 'EntitlementService', 'local premium booleans are deliberately not accepted']:
+    if token not in guard:
+        raise SystemExit(f'RC0360_RC0371_FAIL: canonical entitlement guard evidence missing {token!r}')
 text='\n'.join(p.read_text(encoding='utf-8') for p in TESTS)
 for token in ['cross-owner profile or client-note access fails closed','core product capabilities are explicitly offline','premium assertion requires verifier provenance']:
     if token not in text: raise SystemExit(f'RC0360_RC0371_FAIL: test token {token!r}')

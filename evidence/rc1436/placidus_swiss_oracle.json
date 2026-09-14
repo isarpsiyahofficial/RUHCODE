@@ -1,0 +1,78 @@
+{
+  "status": "INDEPENDENT_PLACIDUS_ORACLE_CAPTURED",
+  "provider": "Swiss Ephemeris via pyswisseph",
+  "providerVersion": "2.10.03",
+  "providerBinary": {
+    "sha256": "9663f57768a61c7c736290c732c0d856654972197edb3b2f84ca6d7e77c718f3"
+  },
+  "method": {
+    "housesApi": "swe.houses_ex",
+    "ephemerisFlag": "FLG_MOSEPH",
+    "houseSystem": "P",
+    "independence": "Production Placidus solver does not import or execute Swiss Ephemeris.",
+    "timeScaleNote": "julianDayUt1 is passed to the independent house oracle; julianDayTt is derived independently with swe.deltat for the production ASC/MC input."
+  },
+  "accuracyBudget": {
+    "source": "requirements/reference_manifests/astronomy_accuracy_budgets.json",
+    "houseCuspLongitudeMaxAbsErrorDegrees": 0.05
+  },
+  "coverage": {
+    "crossLatitude": true,
+    "crossLongitude": true,
+    "crossHemisphere": true,
+    "highLatitudeNonPolar": true,
+    "supportedDateRangeCases": [1900, 2000, 2026, 2050, 2100]
+  },
+  "cases": [
+    {
+      "id": "istanbul_2026",
+      "calendarUtc": {"year": 2026, "month": 9, "day": 10, "decimalHour": 5.0},
+      "julianDayUt1": 2461293.7083333335,
+      "julianDayTt": 2461293.7091299053,
+      "longitudeDegreesEast": 28.9784,
+      "latitudeDegreesNorth": 41.0082,
+      "houseSystem": "Placidus",
+      "oracle": {"cuspsDegrees": [182.556671863174,208.755320973835,239.290231002631,272.964094774785,306.528524648168,336.785428250429,2.556671863174,28.755320973835,59.290231002631,92.964094774785,126.528524648168,156.785428250429],"ascendantDegrees":182.55667186317353,"midheavenDegrees":92.96409477478507}
+    },
+    {
+      "id": "new_york_2000",
+      "calendarUtc": {"year": 2000, "month": 1, "day": 1, "decimalHour": 12.0},
+      "julianDayUt1": 2451545.0,
+      "julianDayTt": 2451545.0007387605,
+      "longitudeDegreesEast": -74.006,
+      "latitudeDegreesNorth": 40.7128,
+      "houseSystem": "Placidus",
+      "oracle": {"cuspsDegrees": [274.241983570242,314.072328636747,355.584456083945,28.469009778496,53.237944402545,73.914419483794,94.241983570242,134.072328636747,175.584456083945,208.469009778496,233.237944402545,253.914419483794],"ascendantDegrees":274.24198357024164,"midheavenDegrees":208.46900977849552}
+    },
+    {
+      "id": "sydney_2050",
+      "calendarUtc": {"year": 2050, "month": 6, "day": 21, "decimalHour": 0.0},
+      "julianDayUt1": 2469978.5,
+      "julianDayTt": 2469978.500864787,
+      "longitudeDegreesEast": 151.2093,
+      "latitudeDegreesNorth": -33.8688,
+      "houseSystem": "Placidus",
+      "oracle": {"cuspsDegrees": [137.331319967476,180.816070038166,216.011038267454,242.664116584764,265.400332569699,288.495670616579,317.331319967476,0.816070038166,36.011038267454,62.664116584764,85.400332569699,108.495670616579],"ascendantDegrees":137.33131996747642,"midheavenDegrees":62.66411658476377}
+    },
+    {
+      "id": "reykjavik_1900",
+      "calendarUtc": {"year": 1900, "month": 3, "day": 20, "decimalHour": 18.0},
+      "julianDayUt1": 2415099.25,
+      "julianDayTt": 2415099.249979864,
+      "longitudeDegreesEast": -21.9426,
+      "latitudeDegreesNorth": 64.1466,
+      "houseSystem": "Placidus",
+      "oracle": {"cuspsDegrees": [166.150582331041,184.002929648857,209.755846945933,247.655412690732,292.33848097455,323.604679197412,346.150582331041,4.002929648856,29.755846945933,67.655412690732,112.33848097455,143.604679197412],"ascendantDegrees":166.15058233104108,"midheavenDegrees":67.6554126907321}
+    },
+    {
+      "id": "quito_2100",
+      "calendarUtc": {"year": 2100, "month": 12, "day": 1, "decimalHour": 6.0},
+      "julianDayUt1": 2488403.75,
+      "julianDayTt": 2488403.7510834136,
+      "longitudeDegreesEast": -78.4678,
+      "latitudeDegreesNorth": -0.1807,
+      "houseSystem": "Placidus",
+      "oracle": {"cuspsDegrees": [170.980014800489,203.492743790805,234.114860577772,262.398085349455,290.059101729064,319.272716360347,350.980014800489,23.492743790805,54.114860577772,82.398085349455,110.059101729064,139.272716360347],"ascendantDegrees":170.98001480048924,"midheavenDegrees":82.39808534945476}
+    }
+  ]
+}

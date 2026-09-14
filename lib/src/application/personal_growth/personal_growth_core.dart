@@ -89,6 +89,41 @@ final class AstrologyContextLink {
   final String systemId; final String periodId; final String sourceId; final String version;
 }
 
+/// Deterministic summary used to compare retained personal-growth periods.
+/// Date bounds are inclusive local YYYY-MM-DD keys and do not depend on astrology.
+final class GrowthPeriodMetrics {
+  const GrowthPeriodMetrics({
+    required this.startDateKey,
+    required this.endDateKey,
+    required this.journalCount,
+    required this.moodEnergyCount,
+    required this.checkInCount,
+    required this.averageMood,
+    required this.averageEnergy,
+  });
+
+  final String startDateKey;
+  final String endDateKey;
+  final int journalCount;
+  final int moodEnergyCount;
+  final int checkInCount;
+  final double? averageMood;
+  final double? averageEnergy;
+}
+
+final class GrowthPeriodComparison {
+  const GrowthPeriodComparison({required this.first, required this.second});
+  final GrowthPeriodMetrics first;
+  final GrowthPeriodMetrics second;
+
+  double? get moodDelta => first.averageMood == null || second.averageMood == null
+      ? null
+      : second.averageMood! - first.averageMood!;
+  double? get energyDelta => first.averageEnergy == null || second.averageEnergy == null
+      ? null
+      : second.averageEnergy! - first.averageEnergy!;
+}
+
 final class GrowthSnapshot {
   GrowthSnapshot({
     required Iterable<PersonalJournalEntry> journal,
@@ -119,6 +154,42 @@ final class GrowthSnapshot {
 
   List<PersonalJournalEntry> journalForDate(String localDateKey) { _date(localDateKey); return List.unmodifiable(journal.where((e) => e.localDateKey == localDateKey)); }
   List<MoodEnergyEntry> moodEnergyForDate(String localDateKey) { _date(localDateKey); return List.unmodifiable(moodEnergy.where((e) => e.localDateKey == localDateKey)); }
+  List<DailyCheckIn> checkInsForDate(String localDateKey, {CheckInKind? kind}) {
+    _date(localDateKey);
+    return List.unmodifiable(checkIns.where((e) => e.localDateKey == localDateKey && (kind == null || e.kind == kind)));
+  }
+
+  GrowthPeriodMetrics summarizePeriod({required String startDateKey, required String endDateKey}) {
+    _dateRange(startDateKey, endDateKey);
+    bool inRange(String key) => key.compareTo(startDateKey) >= 0 && key.compareTo(endDateKey) <= 0;
+    final journalInRange = journal.where((e) => inRange(e.localDateKey)).toList(growable: false);
+    final moodInRange = moodEnergy.where((e) => inRange(e.localDateKey)).toList(growable: false);
+    final checkInsInRange = checkIns.where((e) => inRange(e.localDateKey)).toList(growable: false);
+    double? average(Iterable<int> values) {
+      final items = values.toList(growable: false);
+      if (items.isEmpty) return null;
+      return items.reduce((a, b) => a + b) / items.length;
+    }
+    return GrowthPeriodMetrics(
+      startDateKey: startDateKey,
+      endDateKey: endDateKey,
+      journalCount: journalInRange.length,
+      moodEnergyCount: moodInRange.length,
+      checkInCount: checkInsInRange.length,
+      averageMood: average(moodInRange.map((e) => e.mood)),
+      averageEnergy: average(moodInRange.map((e) => e.energy)),
+    );
+  }
+
+  GrowthPeriodComparison compareHistoricalPeriods({
+    required String firstStartDateKey,
+    required String firstEndDateKey,
+    required String secondStartDateKey,
+    required String secondEndDateKey,
+  }) => GrowthPeriodComparison(
+    first: summarizePeriod(startDateKey: firstStartDateKey, endDateKey: firstEndDateKey),
+    second: summarizePeriod(startDateKey: secondStartDateKey, endDateKey: secondEndDateKey),
+  );
 }
 
 void _text(String value, String field) { if (value.trim().isEmpty) throw ArgumentError('$field cannot be blank'); }
@@ -128,4 +199,8 @@ void _date(String value) {
   if (!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) throw ArgumentError('date must use YYYY-MM-DD');
   final p = value.split('-').map(int.parse).toList(); final d = DateTime.utc(p[0], p[1], p[2]);
   if (d.year != p[0] || d.month != p[1] || d.day != p[2]) throw ArgumentError('date must be valid');
+}
+void _dateRange(String startDateKey, String endDateKey) {
+  _date(startDateKey); _date(endDateKey);
+  if (startDateKey.compareTo(endDateKey) > 0) throw ArgumentError('start date must not be after end date');
 }

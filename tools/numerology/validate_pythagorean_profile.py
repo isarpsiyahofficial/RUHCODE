@@ -31,7 +31,11 @@ def main() -> None:
     require(required_calculations <= calculations, 'Missing required Pythagorean calculations.')
 
     requirements = set(data.get('requirements', []))
-    for rc in ('RC-0161', 'RC-0162', 'RC-0166', 'RC-0167', 'RC-0168', 'RC-0169', 'RC-0170', 'RC-0171', 'RC-0174', 'RC-0182', 'RC-0183', 'RC-0362'):
+    # RC-0329 is the binding QA requirement that every numerology engine be
+    # tested according to its own rules. RC-0362 is the unrelated secure
+    # personal-data-storage requirement and must never be used as numerology
+    # evidence.
+    for rc in ('RC-0161', 'RC-0162', 'RC-0166', 'RC-0167', 'RC-0168', 'RC-0169', 'RC-0170', 'RC-0171', 'RC-0174', 'RC-0182', 'RC-0183', 'RC-0329'):
         require(rc in requirements, f'Missing requirement mapping: {rc}')
 
     source = SOURCE.read_text(encoding='utf-8')

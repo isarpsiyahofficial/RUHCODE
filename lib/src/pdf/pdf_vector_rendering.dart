@@ -143,9 +143,10 @@ final class PdfWesternChartVectorBuilder {
     for (var index = 0; index < points.length; index++) {
       final point = points[index];
       final position = coordinates[index];
+      final pdfSafeLabel = _pdfSvgLabel(point.label);
       svg
         ..writeln('<circle cx="${_n(position.x)}" cy="${_n(position.y)}" r="10" fill="white" stroke="#111" stroke-width="1.2"/>')
-        ..writeln('<text x="${_n(position.x)}" y="${_n(position.y + 4)}" text-anchor="middle" font-size="11">${_escape(point.label)}</text>');
+        ..writeln('<text x="${_n(position.x)}" y="${_n(position.y + 4)}" text-anchor="middle" font-size="11">${_escape(pdfSafeLabel)}</text>');
     }
 
     svg.writeln('</svg>');
@@ -197,7 +198,7 @@ final class PdfVedicChartVectorBuilder {
       ..writeln('<line x1="570" y1="30" x2="30" y2="570" stroke="#333" stroke-width="1.2"/>');
     for (var index = 0; index < 12; index++) {
       final position = positions[index];
-      svg.writeln('<text x="${_n(position.x)}" y="${_n(position.y)}" text-anchor="middle" font-size="15">${_escape(houseLabels[index])}</text>');
+      svg.writeln('<text x="${_n(position.x)}" y="${_n(position.y)}" text-anchor="middle" font-size="15">${_escape(_pdfSvgLabel(houseLabels[index]))}</text>');
     }
     svg.writeln('</svg>');
     final graphic = PdfVectorGraphic(
@@ -243,6 +244,32 @@ abstract final class PdfStructuredTableRules {
 }
 
 String _n(double value) => value.toStringAsFixed(2);
+
+/// package:pdf's SVG text path defaults to a Latin-1 built-in font. Planetary
+/// Unicode glyphs therefore cannot be emitted as SVG <text> safely without an
+/// embedded SVG font. Use deterministic ASCII abbreviations so the chart stays
+/// 100% vector and remains saveable on every clean checkout/runtime.
+String _pdfSvgLabel(String value) {
+  const aliases = <String, String>{
+    '☉': 'Su',
+    '☽': 'Mo',
+    '☿': 'Me',
+    '♀': 'Ve',
+    '♂': 'Ma',
+    '♃': 'Ju',
+    '♄': 'Sa',
+    '♅': 'Ur',
+    '♆': 'Ne',
+    '♇': 'Pl',
+    '☊': 'No',
+    '☋': 'So',
+  };
+  final normalized = aliases[value.trim()] ?? value.trim();
+  if (normalized.runes.any((rune) => rune > 0xff)) {
+    throw FormatException('PDF SVG text label is not Latin-1 safe: $value');
+  }
+  return normalized;
+}
 
 String _escape(String value) => value
     .replaceAll('&', '&amp;')

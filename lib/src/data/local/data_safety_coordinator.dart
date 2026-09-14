@@ -32,11 +32,11 @@ final class LocalDataSnapshot {
     required this.schemaVersion,
     required Map<String, Map<String, Map<String, Object?>>> tables,
   })  : createdAt = createdAt.toUtc(),
-        tables = Map.unmodifiable({
+        tables = Map<String, Map<String, Map<String, Object?>>>.unmodifiable({
           for (final entry in tables.entries)
-            entry.key: Map.unmodifiable({
+            entry.key: Map<String, Map<String, Object?>>.unmodifiable({
               for (final record in entry.value.entries)
-                record.key: Map.unmodifiable(Map<String, Object?>.from(record.value)),
+                record.key: Map<String, Object?>.unmodifiable(record.value),
             }),
         }) {
     if (id.trim().isEmpty) throw ArgumentError('snapshot id must not be empty');

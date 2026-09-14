@@ -3,6 +3,7 @@ import 'package:ruh_code/src/calculation_core/ephemeris/ephemeris.dart';
 import 'package:ruh_code/src/calculation_core/western/equal_house_systems.dart';
 import 'package:ruh_code/src/calculation_core/western/natal_aspects.dart';
 import 'package:ruh_code/src/calculation_core/western/natal_chart.dart';
+import 'package:ruh_code/src/calculation_core/western/natal_placements.dart';
 
 EclipticState state(AstroBody body, double longitude) => EclipticState(
       body: body,
@@ -16,7 +17,7 @@ EclipticState state(AstroBody body, double longitude) => EclipticState(
     );
 
 void main() {
-  test('assembles placements, houses and aspects from one provenance snapshot', () {
+  test('assembles placements, houses, rulers, degree tables and aspects from one provenance snapshot', () {
     final chart = WesternNatalChartAssembler.build(
       states: [
         state(AstroBody.sun, 0),
@@ -38,6 +39,24 @@ void main() {
       isTrue,
     );
     expect(chart.placements.forBody(AstroBody.sun).houseNumber, 10);
+    expect(chart.houseRulers.rulers, hasLength(12));
+    expect(chart.houseRulers.forHouse(1).cuspSign, TropicalZodiacSign.cancer);
+    expect(chart.houseRulers.forHouse(1).ruler, AstroBody.moon);
+    expect(chart.houseRulers.forHouse(10).cuspSign, TropicalZodiacSign.aries);
+    expect(chart.houseRulers.forHouse(10).ruler, AstroBody.mars);
+
+    expect(chart.planetDegreeTable, hasLength(3));
+    final sunDegree = chart.planetDegreeTable.singleWhere((row) => row.body == AstroBody.sun);
+    expect(sunDegree.longitudeDegrees, 0);
+    expect(sunDegree.sign, TropicalZodiacSign.aries);
+    expect(sunDegree.degreeInSign, 0);
+    expect(sunDegree.houseNumber, 10);
+
+    expect(chart.houseDegreeTable, hasLength(12));
+    expect(chart.houseDegreeTable.map((row) => row.houseNumber), orderedEquals(List<int>.generate(12, (index) => index + 1)));
+    expect(chart.houseDegreeTable.first.cuspLongitudeDegrees, 90);
+    expect(chart.houseDegreeTable.first.sign, TropicalZodiacSign.cancer);
+    expect(chart.houseDegreeTable.first.degreeInSign, 0);
   });
 
   test('all derived natal collections preserve the exact placement body set', () {
@@ -53,15 +72,21 @@ void main() {
 
     final placementBodies = chart.placements.placements.map((item) => item.body).toSet();
     final gridBodies = chart.aspectGrid.bodies.toSet();
+    final degreeTableBodies = chart.planetDegreeTable.map((item) => item.body).toSet();
     final dignityBodies = chart.dignities.assessments.map((item) => item.body).toSet();
 
     expect(gridBodies, placementBodies);
+    expect(degreeTableBodies, placementBodies);
     expect(dignityBodies, placementBodies);
     expect(chart.aspectGrid.rows, hasLength(placementBodies.length));
     expect(
       chart.aspectGrid.rows.every((row) => row.length == placementBodies.length),
       isTrue,
     );
+    expect(chart.houseDegreeTable.map((item) => item.houseNumber).toSet(),
+        Set<int>.from(List<int>.generate(12, (index) => index + 1)));
+    expect(chart.houseRulers.rulers.map((item) => item.houseNumber).toSet(),
+        Set<int>.from(List<int>.generate(12, (index) => index + 1)));
   });
 
   test('custom orb policy is propagated through chart assembly', () {
@@ -74,6 +99,7 @@ void main() {
           MajorAspect.sextile: 1,
           MajorAspect.square: 1,
           MajorAspect.trine: 1,
+          MajorAspect.quincunx: 1,
           MajorAspect.opposition: 1,
         },
       ),

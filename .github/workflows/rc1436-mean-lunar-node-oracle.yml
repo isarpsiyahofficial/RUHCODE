@@ -1,0 +1,82 @@
+name: RC1436 Mean Lunar Node Independent Oracle
+
+on:
+  push:
+    paths:
+      - 'lib/src/calculation_core/ephemeris/lunar_node_calculator.dart'
+      - 'tools/data/materialize_mean_lunar_node_swiss_oracle.py'
+      - 'test/calculation_core/mean_lunar_node_independent_oracle_test.dart'
+      - 'evidence/rc1436/mean_lunar_node_swiss_oracle.json'
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - '.github/workflows/rc1436-mean-lunar-node-oracle.yml'
+  pull_request:
+    paths:
+      - 'lib/src/calculation_core/ephemeris/lunar_node_calculator.dart'
+      - 'tools/data/materialize_mean_lunar_node_swiss_oracle.py'
+      - 'test/calculation_core/mean_lunar_node_independent_oracle_test.dart'
+      - 'evidence/rc1436/mean_lunar_node_swiss_oracle.json'
+      - 'requirements/reference_manifests/astronomy_accuracy_budgets.json'
+      - '.github/workflows/rc1436-mean-lunar-node-oracle.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rc1436-mean-lunar-node-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  mean-lunar-node-independent-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned independent Swiss oracle
+        run: python -m pip install --disable-pip-version-check pyswisseph==2.10.3.2
+      - name: Materialize independent mean lunar node oracle
+        run: python tools/data/materialize_mean_lunar_node_swiss_oracle.py
+      - name: Validate canonical oracle shape and coverage
+        run: |
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          p=Path('evidence/rc1436/mean_lunar_node_swiss_oracle.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d['status']=='INDEPENDENT_MEAN_LUNAR_NODE_ORACLE_CAPTURED'
+          assert d['body']=='MEAN_NODE'
+          assert d['timeScale']=='TT'
+          assert d['coverage']=={'caseCount':5,'firstJdTt':2415020.5,'lastJdTt':2488069.5}
+          assert len(d['cases'])==5
+          assert {c['jdTt'] for c in d['cases']}=={2415020.5,2451545.0,2461041.5,2469807.5,2488069.5}
+          for c in d['cases']:
+            x=c['longitudeDegrees']
+            assert isinstance(x,(int,float)) and math.isfinite(x) and 0.0 <= x < 360.0
+          print('Mean lunar node oracle evidence shape OK')
+          PY
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - name: Enforce production mean-node accuracy budget
+        run: flutter test test/calculation_core/mean_lunar_node_independent_oracle_test.dart --reporter expanded
+      - name: Commit canonical mean-node evidence to triggering branch
+        if: github.event_name == 'push'
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          evidence='evidence/rc1436/mean_lunar_node_swiss_oracle.json'
+          test -s "$evidence"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$evidence"
+          if git diff --cached --quiet -- "$evidence"; then
+            echo 'Canonical mean-node evidence is tracked and unchanged.'
+            exit 0
+          fi
+          git commit -m 'data(rc1436): capture independent mean lunar node evidence'
+          git push origin "HEAD:${TARGET_BRANCH}"

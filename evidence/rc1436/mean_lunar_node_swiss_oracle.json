@@ -1,0 +1,46 @@
+{
+  "body": "MEAN_NODE",
+  "cases": [
+    {
+      "id": "1900-01-01",
+      "jdTt": 2415020.5,
+      "longitudeDegrees": 259.15646326122186,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2000-01-01T12",
+      "jdTt": 2451545.0,
+      "longitudeDegrees": 125.04455504444444,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2026-01-01",
+      "jdTt": 2461041.5,
+      "longitudeDegrees": 342.1692530496338,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2050-01-01",
+      "jdTt": 2469807.5,
+      "longitudeDegrees": 237.97691534194536,
+      "returnedFlags": 1620
+    },
+    {
+      "id": "2100-01-01",
+      "jdTt": 2488069.5,
+      "longitudeDegrees": 350.93678961178546,
+      "returnedFlags": 1620
+    }
+  ],
+  "coverage": {
+    "caseCount": 5,
+    "firstJdTt": 2415020.5,
+    "lastJdTt": 2488069.5
+  },
+  "provider": "Swiss Ephemeris via pyswisseph",
+  "providerVersion": "2.10.03",
+  "reference": "geocentric mean ascending lunar node, mean ecliptic/equinox of date",
+  "requestedFlags": 84,
+  "status": "INDEPENDENT_MEAN_LUNAR_NODE_ORACLE_CAPTURED",
+  "timeScale": "TT"
+}

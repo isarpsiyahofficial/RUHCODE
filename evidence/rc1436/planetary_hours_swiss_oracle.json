@@ -1,0 +1,94 @@
+{
+  "status": "INDEPENDENT_PLANETARY_HOUR_BOUNDARY_ORACLE_CAPTURED",
+  "provider": "Swiss Ephemeris via pyswisseph",
+  "providerVersion": "2.10.03",
+  "providerBinary": {
+    "sha256": "9663f57768a61c7c736290c732c0d856654972197edb3b2f84ca6d7e77c718f3"
+  },
+  "method": {
+    "riseSetApi": "swe.rise_trans",
+    "body": "SUN",
+    "ephemerisFlag": "FLG_MOSEPH",
+    "boundaryDefinition": "13 daylight boundaries divide independent sunrise-to-sunset into 12 equal temporal hours; 12 following boundaries divide sunset-to-next-sunrise into 12 equal temporal hours, for 25 unique boundaries total.",
+    "independence": "Swiss Ephemeris supplies all three solar anchors; production PlanetaryHours and SolarEvents are not imported or executed by the oracle materializer."
+  },
+  "accuracyBudget": {
+    "source": "requirements/reference_manifests/astronomy_accuracy_budgets.json",
+    "planetaryHourBoundaryMaxAbsErrorSeconds": 60
+  },
+  "coverage": {
+    "crossLatitude": true,
+    "crossLongitude": true,
+    "crossHemisphere": true,
+    "crossTimezone": true,
+    "highLatitudeNonPolar": true,
+    "supportedDateRangeCases": [1900, 2000, 2026, 2050, 2100]
+  },
+  "cases": [
+    {
+      "id": "istanbul_2026",
+      "civilDate": {"year": 2026, "month": 9, "day": 10},
+      "latitudeDegreesNorth": 41.0082,
+      "longitudeDegreesEast": 28.9784,
+      "utcOffsetMinutesForCivilDateSelection": 180,
+      "oracle": {
+        "sunriseJulianDayUt": 2461293.6522506997,
+        "sunsetJulianDayUt": 2461294.1821182906,
+        "nextSunriseJulianDayUt": 2461294.652937357,
+        "boundaryUtcMinutesFromCivilDateMidnight": [219.24100756645203,282.82511852681637,346.4092294871807,409.99334044754505,473.5774514079094,537.1615623682737,600.7456733286381,664.3297836184502,727.9138945788145,791.4980055391788,855.0821164995432,918.6662274599075,982.2503384202719,1038.748626485467,1095.246914550662,1151.7452019453049,1208.2434900105,1264.741778075695,1321.2400661408901,1377.7383542060852,1434.2366422712803,1490.7349303364754,1547.2332177311182,1603.7315057963133,1660.2297938615084]
+      }
+    },
+    {
+      "id": "new_york_2000",
+      "civilDate": {"year": 2000, "month": 6, "day": 21},
+      "latitudeDegreesNorth": 40.7128,
+      "longitudeDegreesEast": -74.006,
+      "utcOffsetMinutesForCivilDateSelection": -240,
+      "oracle": {
+        "sunriseJulianDayUt": 2451716.89220021,
+        "sunsetJulianDayUt": 2451717.521520345,
+        "nextSunriseJulianDayUt": 2451717.892367922,
+        "boundaryUtcMinutesFromCivilDateMidnight": [564.7683025896549,640.2867188304663,715.8051350712776,791.323551312089,866.8419675529003,942.3603837937117,1017.878800034523,1093.397215604782,1168.9156318455935,1244.4340480864048,1319.9524643272161,1395.4708805680275,1470.9892968088388,1515.491006076336,1559.992715343833,1604.49442461133,1648.996133878827,1693.4978431463242,1737.999551743269,1782.501261010766,1827.002970278263,1871.5046795457602,1916.0063888132572,1960.5080980807543,2005.0098073482513]
+      }
+    },
+    {
+      "id": "sydney_2050",
+      "civilDate": {"year": 2050, "month": 12, "day": 1},
+      "latitudeDegreesNorth": -33.8688,
+      "longitudeDegreesEast": 151.2093,
+      "utcOffsetMinutesForCivilDateSelection": 660,
+      "oracle": {
+        "sunriseJulianDayUt": 2470141.275725851,
+        "sunsetJulianDayUt": 2470141.868984331,
+        "nextSunriseJulianDayUt": 2470142.275632844,
+        "boundaryUtcMinutesFromCivilDateMidnight": [-322.95477479696274,-251.7637574672699,-180.5727394670248,-109.38172213733196,-38.19070413708687,33.00031319260597,104.19133052229881,175.3823485225439,246.57336585223675,317.76438385248184,388.9554011821747,460.1464191824198,531.3374365121126,580.135258063674,628.9330796152353,677.7309011667967,726.528722718358,775.3265442699194,824.1243658214808,872.9221873730421,921.7200089246035,970.5178304761648,1019.3156520277262,1068.1134735792875,1116.9112951308489]
+      }
+    },
+    {
+      "id": "reykjavik_1900",
+      "civilDate": {"year": 1900, "month": 4, "day": 15},
+      "latitudeDegreesNorth": 64.1466,
+      "longitudeDegreesEast": -21.9426,
+      "utcOffsetMinutesForCivilDateSelection": 0,
+      "oracle": {
+        "sunriseJulianDayUt": 2415124.748156582,
+        "sunsetJulianDayUt": 2415125.375319985,
+        "nextSunriseJulianDayUt": 2415125.745693897,
+        "boundaryUtcMinutesFromCivilDateMidnight": [357.34547808766365,432.6050866395235,507.86469519138336,583.124303072691,658.3839116245508,733.6435201764107,808.9031280577183,884.1627366095781,959.422345161438,1034.6819537132978,1109.9415622651577,1185.2011701464653,1260.4607786983252,1304.9056479334831,1349.3505178391933,1393.7953870743513,1438.2402563095093,1482.6851255446672,1527.1299947798252,1571.5748646855354,1616.0197339206934,1660.4646031558514,1704.9094730615616,1749.3543422967196,1793.7992115318775]
+      }
+    },
+    {
+      "id": "quito_2100",
+      "civilDate": {"year": 2100, "month": 3, "day": 20},
+      "latitudeDegreesNorth": -0.1807,
+      "longitudeDegreesEast": -78.4678,
+      "utcOffsetMinutesForCivilDateSelection": -300,
+      "oracle": {
+        "sunriseJulianDayUt": 2488147.970663417,
+        "sunsetJulianDayUt": 2488148.4754348737,
+        "nextSunriseJulianDayUt": 2488148.9704626305,
+        "boundaryUtcMinutesFromCivilDateMidnight": [677.7553206682205,738.3278956264257,798.900470584631,859.4730448722839,920.0456198304892,980.6181947886944,1041.1907690763474,1101.7633440345526,1162.3359189927578,1222.908493950963,1283.4810689091682,1344.0536431968212,1404.6262181550264,1464.0295491367579,1523.432879447937,1582.8362104296684,1642.2395414113998,1701.6428723931313,1761.0462033748627,1820.4495336860418,1879.8528646677732,1939.2561956495047,1998.6595259606838,2058.0628569424152,2117.4661879241467]
+      }
+    }
+  ]
+}

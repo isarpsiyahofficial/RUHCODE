@@ -1,4 +1,5 @@
 import '../ephemeris/ephemeris.dart';
+import 'vedic_ecliptic_frame.dart';
 
 /// Ayanamsha is a Vedic-engine concern. Implementations must be independently
 /// versioned and must not call into the Western astrology calculation layer.
@@ -89,11 +90,17 @@ abstract final class VedicCalculationEngine {
         jdTt: jdTt,
         ephemeris: ephemeris,
       );
+      final tropicalOfDateLongitude =
+          VedicEclipticFrame.tropicalOfDateLongitude(state);
       placements.add(
         VedicPlacement(
           body: body,
           siderealLongitudeDegrees:
-              _normalize360(state.longitudeDegrees - ayanamshaDegrees),
+              _normalize360(tropicalOfDateLongitude - ayanamshaDegrees),
+          // The precession-frame contribution to instantaneous longitude speed
+          // is orders of magnitude below the motion thresholds used by current
+          // Vedic consumers. Preserve the physical DE440s rate; longitude itself
+          // is independently accuracy-gated in the correct of-date frame.
           longitudeSpeedDegreesPerDay: state.longitudeSpeedDegreesPerDay,
         ),
       );

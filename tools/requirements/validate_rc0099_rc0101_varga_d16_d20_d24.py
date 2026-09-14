@@ -30,7 +30,7 @@ required = {
         'RC-0100 Vimshamsa D20 advances every 1.5 degrees',
         'RC-0101 Chaturvimshamsa D24 starts Leo for odd signs and Cancer for even signs',
         'RC-0101 Chaturvimshamsa D24 advances every 1.25 degrees',
-        'RC-0092-RC-0101 fail closed on invalid provenance',
+        'RC-0092-RC-0104 fail closed on invalid provenance',
     ],
 }
 

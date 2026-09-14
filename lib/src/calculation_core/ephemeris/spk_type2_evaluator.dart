@@ -166,32 +166,25 @@ final class SpkType2Evaluator {
       }
     }
 
-    // Clenshaw evaluation for sum(c_k T_k(tau)).
+    // Coupled Clenshaw evaluation computes the Chebyshev series and its first
+    // derivative in one backward recurrence. Keeping both recurrences in the
+    // same numerical path avoids the extra rounding growth of an explicit
+    // U-polynomial summation, which is measurable for lunar states at the
+    // sub-millimetre/second accuracy budget used by the release gate.
     var b1 = 0.0;
     var b2 = 0.0;
+    var db1 = 0.0;
+    var db2 = 0.0;
     for (var k = coefficients.length - 1; k >= 1; k--) {
       final b0 = 2 * tau * b1 - b2 + coefficients[k];
+      final db0 = 2 * b1 + 2 * tau * db1 - db2;
       b2 = b1;
       b1 = b0;
+      db2 = db1;
+      db1 = db0;
     }
     final position = coefficients[0] + tau * b1 - b2;
-
-    // Derivative: dT_k/dtau = k U_{k-1}(tau). Evaluate U recurrence.
-    var derivativeTau = 0.0;
-    if (coefficients.length > 1) {
-      var uPrevious = 1.0; // U_0
-      derivativeTau += coefficients[1];
-      if (coefficients.length > 2) {
-        var uCurrent = 2 * tau; // U_1
-        derivativeTau += 2 * coefficients[2] * uCurrent;
-        for (var k = 3; k < coefficients.length; k++) {
-          final uNext = 2 * tau * uCurrent - uPrevious;
-          derivativeTau += k * coefficients[k] * uNext;
-          uPrevious = uCurrent;
-          uCurrent = uNext;
-        }
-      }
-    }
+    final derivativeTau = b1 + tau * db1 - db2;
     return _AxisValue(position, derivativeTau / radius);
   }
 

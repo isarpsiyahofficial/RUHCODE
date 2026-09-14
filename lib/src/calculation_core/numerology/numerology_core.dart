@@ -156,14 +156,45 @@ abstract final class PythagoreanNumerologyCore {
     int reduced(List<int> v) => NumerologyReducer.reduce(v.fold(0, (a,b) => a+b), profile);
     final present = frequencies.keys.toSet();
     final maxFreq = frequencies.values.reduce((a,b) => a > b ? a : b);
+    final balanceInitialTotal = _balanceInitialTotal(
+      fullName: fullName,
+      alphabet: alphabet,
+    );
     return NumerologyNameResult(
       expression: reduced(values),
       soulUrge: reduced(vowelValues),
       personality: reduced(consonantValues),
-      balance: NumerologyReducer.reduce(values.first, profile),
+      // RC-0172 Balance Number is derived from the initials of every name
+      // component, not from the first letter of the entire normalized name.
+      balance: NumerologyReducer.reduce(balanceInitialTotal, profile),
       karmicLessons: {for (var i=1; i<=9; i++) if (!present.contains(i)) i},
       hiddenPassion: {for (final e in frequencies.entries) if (e.value == maxFreq) e.key},
     );
+  }
+
+  static int _balanceInitialTotal({
+    required String fullName,
+    required NumerologyAlphabet alphabet,
+  }) {
+    final components = fullName.trim().split(RegExp(r'[\s-]+'));
+    var total = 0;
+    var initialCount = 0;
+    for (final component in components) {
+      if (component.isEmpty) continue;
+      final normalizedComponent = NumerologyNameNormalizer.normalizeLatinTrEn(component);
+      if (normalizedComponent.isEmpty) continue;
+      final initial = normalizedComponent[0];
+      final value = alphabet.values[initial];
+      if (value == null) {
+        throw StateError('Missing Pythagorean mapping for balance initial $initial');
+      }
+      total += value;
+      initialCount++;
+    }
+    if (initialCount == 0) {
+      throw ArgumentError('Name must contain a supported initial.');
+    }
+    return total;
   }
 
   static int maturity({required int lifePath, required int expression, required NumerologyMethodProfile profile}) =>

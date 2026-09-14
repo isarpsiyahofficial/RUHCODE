@@ -1,0 +1,129 @@
+{
+  "status": "INDEPENDENT_SOLAR_EVENTS_ORACLE_CAPTURED",
+  "provider": "Swiss Ephemeris via pyswisseph",
+  "providerVersion": "2.10.03",
+  "providerBinary": {
+    "sha256": "9663f57768a61c7c736290c732c0d856654972197edb3b2f84ca6d7e77c718f3"
+  },
+  "method": {
+    "riseSetApi": "swe.rise_trans",
+    "body": "SUN",
+    "ephemerisFlag": "FLG_MOSEPH",
+    "atmosphere": {
+      "pressureMbar": 0.0,
+      "temperatureC": 0.0
+    },
+    "eventSelection": "Independent oracle events are selected by explicit fixed UTC offset so the event belongs to the requested civil date; the production solar algorithm is not consulted.",
+    "independence": "Production SolarEvents uses an internal NOAA/Meeus implementation and does not import or execute Swiss Ephemeris."
+  },
+  "accuracyBudget": {
+    "source": "requirements/reference_manifests/astronomy_accuracy_budgets.json",
+    "sunriseSunsetMaxAbsErrorSeconds": 60
+  },
+  "coverage": {
+    "crossLatitude": true,
+    "crossLongitude": true,
+    "crossHemisphere": true,
+    "crossTimezone": true,
+    "highLatitudeNonPolar": true,
+    "supportedDateRangeCases": [
+      1900,
+      2000,
+      2026,
+      2050,
+      2100
+    ]
+  },
+  "cases": [
+    {
+      "id": "istanbul_2026",
+      "civilDate": {
+        "year": 2026,
+        "month": 9,
+        "day": 10
+      },
+      "latitudeDegreesNorth": 41.0082,
+      "longitudeDegreesEast": 28.9784,
+      "utcOffsetMinutesForCivilDateSelection": 180,
+      "julianDayUtcMidnight": 2461293.5,
+      "oracle": {
+        "sunriseJulianDayUt": 2461293.6522506997,
+        "sunsetJulianDayUt": 2461294.1821182906,
+        "sunriseUtcMinutesFromCivilDateMidnight": 219.24100756645203,
+        "sunsetUtcMinutesFromCivilDateMidnight": 982.2503384202719
+      }
+    },
+    {
+      "id": "new_york_2000",
+      "civilDate": {
+        "year": 2000,
+        "month": 6,
+        "day": 21
+      },
+      "latitudeDegreesNorth": 40.7128,
+      "longitudeDegreesEast": -74.006,
+      "utcOffsetMinutesForCivilDateSelection": -240,
+      "julianDayUtcMidnight": 2451716.5,
+      "oracle": {
+        "sunriseJulianDayUt": 2451716.89220021,
+        "sunsetJulianDayUt": 2451717.521520345,
+        "sunriseUtcMinutesFromCivilDateMidnight": 564.7683026641607,
+        "sunsetUtcMinutesFromCivilDateMidnight": 1470.989296734333
+      }
+    },
+    {
+      "id": "sydney_2050",
+      "civilDate": {
+        "year": 2050,
+        "month": 12,
+        "day": 1
+      },
+      "latitudeDegreesNorth": -33.8688,
+      "longitudeDegreesEast": 151.2093,
+      "utcOffsetMinutesForCivilDateSelection": 660,
+      "julianDayUtcMidnight": 2470141.5,
+      "oracle": {
+        "sunriseJulianDayUt": 2470141.275725851,
+        "sunsetJulianDayUt": 2470141.868984331,
+        "sunriseUtcMinutesFromCivilDateMidnight": -322.9547744989395,
+        "sunsetUtcMinutesFromCivilDateMidnight": 531.3374366611242
+      }
+    },
+    {
+      "id": "reykjavik_1900",
+      "civilDate": {
+        "year": 1900,
+        "month": 4,
+        "day": 15
+      },
+      "latitudeDegreesNorth": 64.1466,
+      "longitudeDegreesEast": -21.9426,
+      "utcOffsetMinutesForCivilDateSelection": 0,
+      "julianDayUtcMidnight": 2415124.5,
+      "oracle": {
+        "sunriseJulianDayUt": 2415124.748156582,
+        "sunsetJulianDayUt": 2415125.375319985,
+        "sunriseUtcMinutesFromCivilDateMidnight": 357.34547793865204,
+        "sunsetUtcMinutesFromCivilDateMidnight": 1260.4607784748077
+      }
+    },
+    {
+      "id": "quito_2100",
+      "civilDate": {
+        "year": 2100,
+        "month": 3,
+        "day": 20
+      },
+      "latitudeDegreesNorth": -0.1807,
+      "longitudeDegreesEast": -78.4678,
+      "utcOffsetMinutesForCivilDateSelection": -300,
+      "julianDayUtcMidnight": 2488147.5,
+      "oracle": {
+        "sunriseJulianDayUt": 2488147.970663417,
+        "sunsetJulianDayUt": 2488148.4754348737,
+        "sunriseUtcMinutesFromCivilDateMidnight": 677.7553204447031,
+        "sunsetUtcMinutesFromCivilDateMidnight": 1404.6262181550264
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+name: RC1436 Planetary Hours Independent Oracle
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  planetary-hours-independent-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned independent oracle
+        run: python -m pip install --disable-pip-version-check pyswisseph==2.10.3.2
+      - name: Preserve committed planetary-hour evidence
+        run: cp evidence/rc1436/planetary_hours_swiss_oracle.json /tmp/planetary_hours_swiss_oracle_expected.json
+      - name: Regenerate independent planetary-hour evidence
+        run: python tools/data/materialize_planetary_hours_swiss_oracle.py
+      - name: Verify committed evidence is reproducible
+        run: python tools/data/verify_planetary_hours_swiss_oracle.py --expected /tmp/planetary_hours_swiss_oracle_expected.json --actual evidence/rc1436/planetary_hours_swiss_oracle.json
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Test production planetary-hour boundaries against canonical budget
+        run: flutter test test/calculation_core/planetary_hours_independent_oracle_test.dart

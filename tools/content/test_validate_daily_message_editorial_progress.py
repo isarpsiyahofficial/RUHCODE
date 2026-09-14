@@ -100,36 +100,44 @@ class DailyMessageEditorialProgressLeapTest(unittest.TestCase):
 
             validator.main()
 
+    def _configure_complete(self, root: Path, evidence_status: str) -> None:
+        manifest = root / 'manifest.json'
+        evidence = root / 'evidence.json'
+        shards = root / 'shards'
+        manifest.write_text(json.dumps({
+            'status': 'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT',
+            'locales': ['tr', 'en'],
+            'initial_coverage_start': '2036-12-30',
+            'initial_coverage_end': '2036-12-31',
+            'initial_total_records': 4,
+            'required_leap_dates': [],
+        }), encoding='utf-8')
+        evidence.write_text(json.dumps({
+            'status': evidence_status,
+            'done': False,
+            'currentReviewedCoverage': {
+                'tr': {'start': '2036-12-30', 'end': '2036-12-31', 'records': 2},
+                'en': {'start': '2036-12-30', 'end': '2036-12-31', 'records': 2},
+                'totalRecords': 4,
+            },
+        }), encoding='utf-8')
+        for locale in ('tr', 'en'):
+            write_csv(shards / f'{locale}/2036-12.csv', locale, ['2036-12-30', '2036-12-31'])
+        validator.MANIFEST = manifest
+        validator.EVIDENCE = evidence
+        validator.SHARDS = shards
+        validator.ROOT = root
+
     def test_complete_pending_release_audit_requires_exact_full_coverage(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            manifest = root / 'manifest.json'
-            evidence = root / 'evidence.json'
-            shards = root / 'shards'
-            manifest.write_text(json.dumps({
-                'status': 'EDITORIAL_CONTENT_COMPLETE_PENDING_RELEASE_AUDIT',
-                'locales': ['tr', 'en'],
-                'initial_coverage_start': '2036-12-30',
-                'initial_coverage_end': '2036-12-31',
-                'initial_total_records': 4,
-                'required_leap_dates': [],
-            }), encoding='utf-8')
-            evidence.write_text(json.dumps({
-                'status': 'EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT',
-                'done': False,
-                'currentReviewedCoverage': {
-                    'tr': {'start': '2036-12-30', 'end': '2036-12-31', 'records': 2},
-                    'en': {'start': '2036-12-30', 'end': '2036-12-31', 'records': 2},
-                    'totalRecords': 4,
-                },
-            }), encoding='utf-8')
-            for locale in ('tr', 'en'):
-                write_csv(shards / f'{locale}/2036-12.csv', locale, ['2036-12-30', '2036-12-31'])
+            self._configure_complete(root, 'EDITORIAL_COMPLETE_PENDING_RELEASE_AUDIT')
+            validator.main()
 
-            validator.MANIFEST = manifest
-            validator.EVIDENCE = evidence
-            validator.SHARDS = shards
-            validator.ROOT = root
+    def test_verified_release_audit_pending_device_proof_is_valid_non_done_state(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self._configure_complete(root, 'EDITORIAL_RELEASE_AUDIT_VERIFIED_DEVICE_PROOF_PENDING')
             validator.main()
 
 

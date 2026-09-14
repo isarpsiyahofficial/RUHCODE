@@ -18,8 +18,7 @@ data = json.loads(TOKENS_JSON.read_text(encoding='utf-8'))
 dart = DART_TOKENS.read_text(encoding='utf-8')
 app = APP_THEME.read_text(encoding='utf-8')
 
-# The Dart bridge must carry the exact canonical color values. This deliberately
-# avoids interpreting color names semantically; equality is byte-for-byte RGB.
+# The Dart bridge must carry the exact canonical light color values.
 for name, hex_color in data.get('colors', {}).items():
     expected = '0xFF' + hex_color.lstrip('#').upper()
     pattern = rf'static\s+const\s+Color\s+{re.escape(name)}\s*=\s*Color\({expected}\);'
@@ -30,16 +29,46 @@ for name, hex_color in data.get('colors', {}).items():
         )
         raise SystemExit(1)
 
+# Dark colors are semantically prefixed in Dart so they cannot collide with the
+# light palette while still being checked byte-for-byte against canonical JSON.
+for name, hex_color in data.get('darkColors', {}).items():
+    expected = '0xFF' + hex_color.lstrip('#').upper()
+    dart_name = 'dark' + name[0].upper() + name[1:]
+    pattern = rf'static\s+const\s+Color\s+{re.escape(dart_name)}\s*=\s*Color\({expected}\);'
+    if not re.search(pattern, dart):
+        print(
+            f'ERROR: Dart dark runtime token {dart_name} does not exactly match canonical {hex_color}',
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+
 for name, value in data.get('radiusDp', {}).items():
     dart_name = 'radius' + name[0].upper() + name[1:]
     if not re.search(rf'static\s+const\s+double\s+{dart_name}\s*=\s*{value}(?:\.0)?\s*;', dart):
         print(f'ERROR: Dart radius token drift: {name}={value}', file=sys.stderr)
         raise SystemExit(1)
+
+# Core spacing tokens retain the historic spacingXs/Sm/Md/Lg/Xl/Xxl names.
+# RC-1277..1282 semantic geometry intentionally has different runtime names and
+# must be validated against those exact names rather than being misclassified
+# as another core spacing tier.
+semantic_spacing_names = {
+    'paragraph': 'paragraphSpacing',
+    'section': 'sectionSpacing',
+    'cardPadding': 'cardPadding',
+    'screenEdgePadding': 'screenEdgePadding',
+    'pdfEdgePadding': 'pdfEdgePadding',
+    'chartLegendGap': 'chartLegendGap',
+    'chartLegendItemGap': 'chartLegendItemGap',
+}
 for name, value in data.get('spacingDp', {}).items():
-    dart_name = 'spacing' + name[0].upper() + name[1:]
-    if not re.search(rf'static\s+const\s+double\s+{dart_name}\s*=\s*{value}(?:\.0)?\s*;', dart):
-        print(f'ERROR: Dart spacing token drift: {name}={value}', file=sys.stderr)
+    dart_name = semantic_spacing_names.get(name)
+    if dart_name is None:
+        dart_name = 'spacing' + name[0].upper() + name[1:]
+    if not re.search(rf'static\s+const\s+double\s+{re.escape(dart_name)}\s*=\s*{value}(?:\.0)?\s*;', dart):
+        print(f'ERROR: Dart spacing token drift: {name}={value} expected runtime {dart_name}', file=sys.stderr)
         raise SystemExit(1)
+
 minimum_touch = data.get('touch', {}).get('minimumTargetDp')
 if not re.search(
     rf'static\s+const\s+double\s+minimumTouchTarget\s*=\s*{minimum_touch}(?:\.0)?\s*;', dart
@@ -84,6 +113,6 @@ if violations:
     raise SystemExit(1)
 
 print(
-    'Runtime theme tokens OK: canonical JSON == Dart bridge; RuhCodeApp uses centralized theme; '
-    'no raw Flutter color literals found outside token bridge'
+    'Runtime theme tokens OK: canonical light/dark JSON == Dart bridge; core and semantic spacing mapped exactly; '
+    'RuhCodeApp uses centralized theme; no raw Flutter color literals found outside token bridge'
 )
