@@ -35,27 +35,16 @@ Fiziksel SUCCESS ile doğrulanan alt-kanıtlar arasında ASC/MC independent Swis
 Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-1363→1372 Western/Vedic/Numerology/BaZi/planetary-hours/records/PDF/CSV/professional-client gerçek offline akışlarını ve RC-1374 E2E evidence'ı ayrı ayrı ister. Startup smoke veya test-artifact integration harness exact-release E2E yerine geçmez.
 
 - Android production capability harness artık Western/Vedic/Numerology/BaZi/PlanetaryHours/records/pdfExport/csvExport/csvRestore/professionalClientManagement = **10 capability** kapsayacak şekilde kodlandı; bu coverage exact-release APK kanıtı yerine geçmez.
-- `c592db67139449b3cf091985b484e387f7c71e60` verified Noto Sans Regular/Bold TTF'lerini, `font_release_provenance.json` ve `binariesPackaged=true` durumunu branch'e fiziksel yazdı.
-- `cbfcbd7c8f109664e05d171c6d81005252c64c8d` production PDF service regressionını gerçek `PdfCombinedReportService` composition/byte rendering'e taşıdı.
-- `c1bd88f043ac9ca9e8bcd6b2bc0bb80ed2265daa` production factory + packaged fonts + local renderer kullanan `offline_pdf_export_capability_test.dart` testini ekledi.
-- `9e5fc8296db8e48194e5de7dec58055f7a41053f` airplane evidence validatorını exact 10 capability setine sabitledi; test-artifact için `releaseArtifact=false` ve `verifiableAsDone=false` zorunluluğu korunur.
-- `f4511eadec72ae43d5e1ecca7ea7c8764368ada8` airplane workflow'unu iki integration target + radio-disabled emulator + 10/10 manifest üretimine taşıdı.
-- `ae1976d174c89bd3ecaa2d9a2a72f1045a7a235e` binding contract evidence listesini verified PDF assets/runtime/testlerle güncelledi; exact-release instrumentation zorunluluğu korunur.
-- Airplane run `34703946487` redundant import nedeniyle analyzer'da kırıldı; `d2ef609d39e2a68b0422ee8e6031c80a7d231cbd` ve `cf2034b205f5cc02d4fd388cedd3599b11d88693` iki analyzer failure'ını kaldırdı. Exact-release 10-capability physical E2E hâlâ açık blocker'dır.
+- Verified PDF font/runtime zinciri branch'te korunur; exact-release production Android rendering kanıtı ayrıca gereklidir.
+- Exact-release 10-capability physical E2E hâlâ açık blocker'dır.
 
-## RC-1369 PDF font/render durumu
+## Vedic / Western / early-core evidence özeti
 
-- Immutable Noto provenance: upstream `66c4b351c58f99ace5a6265d329080d74b057909`, Regular blob `f27f4ff59562d58480f1cb94194393484b8da9e9`, Bold blob `aae7546dc1905b228aff70cde8c818b82f3a2bc4`, OFL blob `9651ea7d51c39a7778cc327a423fb200350aa948`.
-- Fiziksel SHA-256: Regular `478c558ea716033cd60c03438f628dfa75694dcf6b5f6d505a2f05fd2b4f3823`; Bold `1df075a380fc7cb898acf64c1f7b3b4dd780de3caa860178bf929de35817a913`.
-- `PDF Structural Contract` run `34682276041` materialization + offline re-check + Flutter manifest regression zincirini fiziksel SUCCESS doğruladı.
-- `20b0c851b717e918aff9316009680afac2ab0d0e` formatter line-wrap parser uyumsuzluğunu düzeltti; `c592db...` gerçek binary/provenance commit'ini üretti; `47e969a1eb8e3f6ee69ecac2b948d69655ce41eb` materializerı idempotent hale getirdi.
-- Font packaging blocker'ı kapalıdır; production Android rendering + exact-release E2E kanıtı açıktır.
-
-## Vedic calculation CI evidence
-
-- Vedic evidence/workflow izolasyonları, semantic validator düzeltmeleri ve fiziksel SUCCESS kayıtları git geçmişinde korunur. RC-0080→0123 calculation/contract kanıtlarının önemli bölümü yeşildir; independent golden/UI/device/release blocker'ları nedeniyle toplu VERIFIED/DONE değildir.
-- RC-0092/0093 canonical D9/D2 validatorı ve regression zinciri fiziksel SUCCESS vermiştir; RC-0094/0095 validator locatorı stale provenance başlığından canonical genişletilmiş başlığa hizalanmıştır.
-- RC-0090/0091 Rashi/Whole Sign evidence koşuları global writer lock'tan ayrılmıştır. Matrix lifecycle yalnız requirement-specific bütün kanıtlar tamamlanınca ilerletilir.
+- RC-0006, RC-0014/0015/0016, RC-0019/0020/0021, RC-0022→0030, RC-0031→0079 ve Vedic RC-0080→0123 hattındaki correct-semantic evidence workflow'larının önemli bölümü legacy global writer cancellation kuyruğundan dependency sırasıyla ayrıldı; yalnız `main` promotion writer global lock'ta kalır.
+- Shifted-semantic RC-0036 House Cusp Degrees, RC-0041→0049 generic-aspect ve RC-0050 Applying/Separating stale promotion zincirleri canlandırılmadı; yanlış requirement promotion riski fail-closed temizlendi.
+- RC-0036 gerçek House Rulers calculation katmanı ve regressions eklendi. RC-0052/0053 canonical degree-table sonuçları `WesternNatalChart` içine bağlandı.
+- UI Profile validator canonical `today/tools/records/profile` ve TR/EN `Bugün/Today · Araçlar/Tools · Kayıtlar/Records · Profil/Profile` mimarisine hizalandı; legacy `discover/calculate` primary destination geri dönüşü reddedilir.
+- Kod/CI varlığı tek başına DONE değildir; independent golden/UI/device/release blocker'ları korunur.
 
 ## RC-1439 physical references
 
@@ -65,29 +54,22 @@ Bağlayıcı contract RC-1362 device/emulator airplane mode egzersizi ile RC-136
 
 Production persistence hâlâ standart `sqflite/openDatabase` kullanır. Android Keystore-backed gerçek key lifecycle, encrypted DB adapter, plaintext→encrypted migration ve release-binary persistence proof tamamlanmadan security DONE verilmez. `EncryptedJsonDocumentStore`/policy abstraction'larının varlığı primary SQLite DB'nin encrypted olduğunu kanıtlamaz.
 
-## Western / early-core continuation özeti
-
-- RC-0006, RC-0014/0015/0016, RC-0019/0020/0021, RC-0022→0030, RC-0031→0079 ve ilgili correct-semantic evidence workflow'larında legacy global writer cancellation zincirleri dependency sırasıyla izole edildi; yalnız `main` promotion writer global lock'ta kalır.
-- Shifted-semantic RC-0036 House Cusp Degrees, RC-0041→0049 generic-aspect ve RC-0050 Applying/Separating stale promotion zincirleri canlandırılmadı; yanlış requirement promotion riski fail-closed temizlendi.
-- RC-0036 gerçek House Rulers calculation katmanı ve regressions eklendi. RC-0052/0053 canonical degree-table sonuçları `WesternNatalChart` içine bağlandı.
-- UI Profile validator canonical `today/tools/records/profile` ve TR/EN `Bugün/Today · Araçlar/Tools · Kayıtlar/Records · Profil/Profile` mimarisine hizalandı; legacy `discover/calculate` primary destination geri dönüşü reddedilir.
-- Kod/CI varlığı tek başına DONE değildir; requirement matrix blocker'ları korunur.
-
 ## Planetary hours / Chinese continuation özeti
 
 - RC-0127→0134 Planetary Hour Structure, RC-0135 Guidance, RC-0136 Weekday Guidance ve RC-0137→0141 Chinese Zodiac evidence workflow'ları doğru semantik doğrulamasından sonra workflow+ref izolasyonuna taşındı.
 - Bu izolasyonlar validators/calculation/tests/blocker kapsamını gevşetmedi. Fiziksel SUCCESS görülmeyen queued/pending koşullar lifecycle promotion için kullanılmaz.
 
-## 2026-09-14 RC-0158→RC-0165 calculation-boundary checkpoint
+## 2026-09-14 RC-0158→RC-0171 calculation-boundary checkpoint
 
 - Requirement matrix yeniden okundu: RC-0142→0157 BaZi/Four Pillars hattı TESTED+blocked iken RC-0158 ve devamındaki Zi Wei/Numerology sınırları NOT_STARTED+blocked durumundaydı. Kod/CI varlığı otomatik lifecycle promotion değildir.
-- Binding spec semantiği yeniden doğrulandı: RC-0158 BaZi future-compatibility extension altyapısı; RC-0159 Zi Wei Dou Shu'nun gelecekte ayrı engine olabilmesi; RC-0160 Zi Wei'nin BaZi alt özelliği sayılamaması; RC-0161 numerolojinin tek sistem olmaması; RC-0162 Pythagorean, RC-0163 Chaldean, RC-0164 Lo Shu ayrı modüller; RC-0165 aktif numeroloji sisteminin kullanıcıya/sonuca görünür olması.
-- `94311d27dfa71b346b44c9e20829bed7de0437ba` `lib/src/calculation_core/zi_wei/zi_wei_engine.dart` ile bağımsız `ZiWeiDouShuEngine<I,O>` namespace/contract'ını ve fail-closed `engineId/version/sourceId` provenance envelope'ını ekledi. BaZi importu veya BaZi mode/output reuse yoktur; RC-0159/0160 mimari ayrımı fiziksel kod sınırı haline getirildi.
-- `6b516289ee2a82bb09040ca27340b065f6cf5e4a` Zi Wei boundary regressionını ekledi: bağımsız engine identity/calculate contract'ı ve boş provenance reddi test edilir.
-- `e85c1f21919eafed190ce1d7c411cfe931e71a92` mevcut `BaziCompatibilityEngine` rule/version/source extension point'ini doğrudan RC-0158 regressionına bağladı; versioned kuralların core'u değiştirmeden eklenebilmesi, duplicate rule identity ve invalid score fail-closed davranışı kilitlendi.
-- `5c01ed7c25c11670c4e9395d09d30184a382b7c1` mevcut numerology architecture'ını RC-0161→0165 regressions ile kilitledi: Pythagorean/Chaldean/Lo Shu ayrı registered systems kalır, calculator davranışları birbirine karışmaz, active `systemId/displayName/version/sourceId` sonuç envelope'ında görünür ve duplicate/missing-provenance fail-closed çalışır.
-- Exact `5c01ed7c25c11670c4e9395d09d30184a382b7c1` Actions taramasında FAILURE=0 ve CANCELLED=0; ancak 88 workflow hâlâ `queued`. Queued SUCCESS değildir. Bu nedenle RC-0158→0165 VERIFIED/DONE yapılmadı ve requirement matrix elle yükseltilmedi.
-- Sıradaki dependency işi: exact-head physical test/CI sonuçlarını yeniden oku; gerçek failure çıkarsa kök nedeni düzelt. Ardından RC-0166+ numerology calculation gereksinimlerini binding spec ile tek tek karşılaştır; mevcut algoritmaları varsa direct regression/evidence ile kilitle, eksik calculation varsa canonical ayrı-system sınırlarını bozmadan uygula.
+- Binding spec semantiği yeniden doğrulandı: RC-0158 BaZi future-compatibility extension altyapısı; RC-0159 Zi Wei Dou Shu'nun gelecekte ayrı engine olabilmesi; RC-0160 Zi Wei'nin BaZi alt özelliği sayılamaması; RC-0161 numerolojinin tek sistem olmaması; RC-0162 Pythagorean, RC-0163 Chaldean, RC-0164 Lo Shu ayrı modüller; RC-0165 aktif numeroloji sisteminin görünür olması; RC-0166→0171 Life Path, Expression/Destiny, Soul Urge, Personality, Birthday ve Maturity hesaplarıdır.
+- `94311d27dfa71b346b44c9e20829bed7de0437ba` bağımsız `ZiWeiDouShuEngine<I,O>` namespace/contract'ını ve fail-closed provenance envelope'ını ekledi; BaZi importu/mode-output reuse yoktur.
+- `6b516289ee2a82bb09040ca27340b065f6cf5e4a` Zi Wei boundary regressionını ekledi.
+- `e85c1f21919eafed190ce1d7c411cfe931e71a92` mevcut `BaziCompatibilityEngine` rule/version/source extension point'ini RC-0158 regressionına bağladı; duplicate rule identity ve invalid score fail-closed davranışı kilitlendi.
+- `5c01ed7c25c11670c4e9395d09d30184a382b7c1` Pythagorean/Chaldean/Lo Shu ayrı registered systems, active system identity/provenance görünürlüğü ve duplicate/missing-provenance fail-closed regressionsını ekledi.
+- `8292756fa3f706d13b5a7e6744d905acbe1be1ed` var olan Pythagorean calculation motorunu RC-0166→0171'e doğrudan bağlayan requirement regressionını ekledi. Elle doğrulanabilir `2000-01-01 + AB` fixture'ında Life Path=4, Expression=3, Soul Urge=1, Personality=2, Birthday=1, Maturity=7 ve altı ayrı provenance trace'i kilitlenir; Türkçe karakter normalizationının sessiz silme yapmadığı ayrıca kontrol edilir.
+- Exact `5c01ed7c25c11670c4e9395d09d30184a382b7c1` Actions taramasında FAILURE=0 ve CANCELLED=0 fakat 88 workflow queued idi. Exact `8292756fa3f706d13b5a7e6744d905acbe1be1ed` üzerinde sorgu anında FAILURE=0 ve 82 workflow queued. Queued SUCCESS değildir; RC-0158→0171 VERIFIED/DONE yapılmadı ve matrix elle yükseltilmedi.
+- Sıradaki dependency işi: exact-head physical CI/test sonuçlarını yeniden oku; gerçek failure çıkarsa kök nedeni düzelt. Ardından RC-0172→0185 Balance/Karmic Lessons/Karmic Debt/Hidden Passion/Personal cycles/Pinnacles/Challenges/compatibility/TR-EN normalization/Chaldean table/Lo Shu requirementsını mevcut canonical modüllerle tek tek eşleştir; eksik olanı uygula, mevcut olanı requirement-specific regression/evidence ile kilitle.
 
 ## Açık release blocker'ları
 
