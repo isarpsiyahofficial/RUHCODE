@@ -11,7 +11,11 @@
   },
   "release": {
     "release_ref_before_final_gates_forbidden": true,
+    "closed_requirements_report_required": true,
     "exact_commit_sha_required": true,
+    "delivered_apk_commit_trace_required": true,
+    "debug_apk_final_delivery_forbidden": true,
+    "release_build_separate_test_required": true,
     "workflow_run_identity_required": true,
     "artifact_sha256_required": true,
     "signing_identity_or_certificate_digest_required": true,
