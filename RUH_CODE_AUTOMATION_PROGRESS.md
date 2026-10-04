@@ -103,3 +103,8 @@ Exact starting PR #17 head: `dc949a6f8fa370074667e74b3196174ace70f65b`. Physical
 Physical exact-head CI run `37181546868` passed the RC-0755→0773 contract validator and the first two transactional tests, then three snapshot tests failed at runtime because nested `Map.unmodifiable` inference produced `UnmodifiableMapView<dynamic,dynamic>` at the typed snapshot boundary. The snapshot constructor now preserves explicit nested generic types at every immutable map layer; persistence semantics, schema, transaction behavior and fail-closed restore behavior are unchanged.
 
 RC-0185→0186 Lo Shu is physically green on the starting head. No lifecycle promotion is made in this checkpoint until the resulting exact-head CI is physically green. Professional Timeline/PDF, Spiritual Tools/Journal, PDF Vector Rendering, Backup CSV and other critical release gates remain red. **FINAL: NO.**
+
+
+## 2026-10-04 stale-validator/import recovery checkpoint
+
+Exact starting PR #17 head: `41914063f239fe51152fe57ebd9ac315d0a2c325`. Physical exact-head CI proves Numerology Core, RC-0212→0223 Spiritual Tools, RC-0224→0229 Spiritual Journal, Professional PDF Contract and Flutter Quality are red while multiple independent gates remain green. This checkpoint fixes only verified stale harness failures: the Chaldean validator ignores Dart line comments when enforcing the no-Pythagorean-call boundary; spiritual regression tests import the canonical `ruh_code` package declared by pubspec; and the PDF validator follows the production TR/EN locale-family policy including regional tags. No production requirement is weakened and no lifecycle state is promoted until CI on the resulting exact head is physically green. **FINAL: NO.**
