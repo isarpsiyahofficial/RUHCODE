@@ -31,7 +31,7 @@ def main() -> None:
 
     source = SOURCE.read_text(encoding='utf-8')
     require('LoShuGridEngine' in source, 'Missing Lo Shu engine.')
-    require('<int>[4, 9, 2]' in source, 'Canonical top Lo Shu row missing.')
+    require('[4, 9, 2]' in source and '[3, 5, 7]' in source and '[8, 1, 6]' in source, 'Canonical Lo Shu grid rows missing.')
     require('if (digit == 0)' in source, 'Zero handling must remain explicit.')
     require('PythagoreanProfileEngine' not in source, 'Lo Shu must not depend on Pythagorean profile math.')
     require('ChaldeanNameEngine' not in source, 'Lo Shu must not depend on Chaldean name math.')
