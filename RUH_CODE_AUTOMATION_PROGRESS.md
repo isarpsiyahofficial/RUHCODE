@@ -78,3 +78,12 @@ Authoritative independent production golden/reference corpora; exact AKİLES pro
 5. RC-0001→RC-1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL deme.
 
 **FINAL: NO.**
+
+
+## 2026-10-04 CI recovery checkpoint
+
+Exact active PR #17 branch parent: `7917448425cb740c995fe7e62ad37b48eddbc2c4`. Physical PR fan-out proved RC-0342→0359 UI Profile, RC-1105→1130 Offline Dependency Governance, RC-1131→1142 Release Governance, Numerology Golden and Western Aspect Grid green, while critical gates remain red.
+
+This checkpoint repairs four fail-closed regressions without promoting lifecycle state: the Pythagorean structural validator now maps the profile to binding RC-0329 (numerology engines tested by their own rules) instead of unrelated RC-0362 (secure personal-data storage); compatibility validation binds to the production prohibition on both synthetic percentages and hidden weighting; the Western natal-chart custom orb fixture supplies the required quincunx orb; and RC-0158→0165 regression names RC-0161/0162/0163/0164 individually for exact traceability.
+
+RC-0774→0848 async verified-restore regression fix is already present in parent `7917448425cb740c995fe7e62ad37b48eddbc2c4`; Backup CSV still has additional failures and must be re-read after this commit. Numerology Core, Numerology Compatibility Content, Western Natal Aspects, System Boundaries, Spiritual Tools, Transactional Data Safety, PDF Release Boundary, Backup CSV and Flutter Quality remain non-final until exact-head CI is green. No RC is promoted by this checkpoint. **FINAL: NO.**
