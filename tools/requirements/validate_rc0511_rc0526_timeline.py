@@ -30,4 +30,6 @@ for token in [
         raise SystemExit(f'RC0511_RC0526_FAIL: missing production token {token}')
 if not re.search(r'enum\s+TimelinePlanet\s*\{[^}]*\bsaturn\b[^}]*\}', source, flags=re.DOTALL):
     raise SystemExit('RC0511_RC0526_FAIL: TimelinePlanet enum is missing saturn')
+if not re.search(r'enum\s+TimelineTopic\s*\{[^}]*\brelationship\b[^}]*\bcareer\b[^}]*\}', source, flags=re.DOTALL):
+    raise SystemExit('RC0511_RC0526_FAIL: TimelineTopic enum is missing relationship/career')
 print('RC0511_RC0526_OK')

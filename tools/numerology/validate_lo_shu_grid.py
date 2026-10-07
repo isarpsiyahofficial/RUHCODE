@@ -37,7 +37,7 @@ def main() -> None:
     require('ChaldeanNameEngine' not in source, 'Lo Shu must not depend on Chaldean name math.')
 
     tests = TEST.read_text(encoding='utf-8')
-    require('year: 2028, month: 2, day: 29' in tests, 'Leap-day Lo Shu regression missing.')
+    require('CivilDate(2028, 2, 29)' in tests, 'Leap-day Lo Shu regression missing.')
     require('countOf(2), 4' in tests, 'Leap-day digit-frequency regression is not exact.')
 
     print('Lo Shu structural contract: OK')
