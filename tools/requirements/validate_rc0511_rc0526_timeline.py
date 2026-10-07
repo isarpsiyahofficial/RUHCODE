@@ -23,9 +23,11 @@ if contract.get('promotion_ceiling') != 'IMPLEMENTED':
 source = SOURCE.read_text(encoding='utf-8')
 for token in [
     'ProfessionalTimeline', 'TimelineWindow.next30Days', 'TimelineWindow.next3Months', 'TimelineWindow.next1Year',
-    'highImportanceOnly', 'TimelinePlanet.saturn', 'TimelineTopic.relationship', 'TimelineTopic.career',
+    'highImportanceOnly', 'TimelineTopic.relationship', 'TimelineTopic.career',
     'TimelineLanguagePolicy', 'TimelineFilterPreset', 'TimelinePresetLibrary'
 ]:
     if token not in source:
         raise SystemExit(f'RC0511_RC0526_FAIL: missing production token {token}')
+if not re.search(r'enum\s+TimelinePlanet\s*\{[^}]*\bsaturn\b[^}]*\}', source, flags=re.DOTALL):
+    raise SystemExit('RC0511_RC0526_FAIL: TimelinePlanet enum is missing saturn')
 print('RC0511_RC0526_OK')
