@@ -62,7 +62,7 @@ def main() -> None:
     require(evidence.get("contract_id") == "NUM-PYTHAGOREAN-PERSONAL-CYCLES-V2", "unexpected contract id")
     require(evidence.get("engine_version") == "2", "unexpected engine version")
     require(evidence.get("done") is False, "source-level evidence must not claim DONE")
-    for rc in ("RC-0174", "RC-0362", "RC-0364", "RC-0365", "RC-0366"):
+    for rc in ("RC-0174", "RC-0176", "RC-0177", "RC-0178", "RC-0329", "RC-0337", "RC-1436"):
         require(rc in evidence.get("requirements", []), f"missing requirement mapping: {rc}")
 
     invariants = " ".join(evidence.get("invariants", []))
