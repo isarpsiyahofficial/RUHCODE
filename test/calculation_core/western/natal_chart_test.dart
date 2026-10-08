@@ -74,6 +74,7 @@ void main() {
           MajorAspect.sextile: 1,
           MajorAspect.square: 1,
           MajorAspect.trine: 1,
+          MajorAspect.quincunx: 1,
           MajorAspect.opposition: 1,
         },
       ),

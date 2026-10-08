@@ -3,7 +3,6 @@ import 'package:ruh_code/src/backup/backup_import_coordinator.dart';
 import 'package:ruh_code/src/backup/backup_package_codec.dart';
 import 'package:ruh_code/src/backup/backup_package_manifest.dart';
 import 'package:ruh_code/src/backup/backup_schema_validator.dart';
-import 'package:ruh_code/src/backup/backup_service.dart';
 import 'package:ruh_code/src/backup/verified_backup_restore.dart';
 
 void main() {
@@ -16,8 +15,8 @@ void main() {
       verifier: _Verifier(false),
     );
 
-    expect(
-      () => verified.apply(preview: _validPreview(), mode: BackupImportMode.merge),
+    await expectLater(
+      verified.apply(preview: _validPreview(), mode: BackupImportMode.merge),
       throwsA(isA<VerifiedBackupRestoreException>()),
     );
     expect(store.snapshotCount, 1);
@@ -56,8 +55,8 @@ void main() {
       ],
     );
 
-    expect(
-      () => verified.apply(preview: invalid, mode: BackupImportMode.replace),
+    await expectLater(
+      verified.apply(preview: invalid, mode: BackupImportMode.replace),
       throwsStateError,
     );
     expect(store.snapshotCount, 0);

@@ -74,6 +74,6 @@ abstract final class PdfReportFileName {
         .replaceAll(RegExp(r'[\u0000-\u001F]'), '')
         .replaceAll(RegExp(r'\s+'), '_')
         .replaceAll(RegExp(r'_+'), '_');
-    return withoutReserved.replaceAll(RegExp(r'[. ]+$'), '');
+    return withoutReserved.replaceAll(RegExp(r'[_ .]+$'), '');
   }
 }

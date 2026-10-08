@@ -78,3 +78,37 @@ Authoritative independent production golden/reference corpora; exact AKİLES pro
 5. RC-0001→RC-1442 tamamı DONE ve bütün release gate'leri green olmadan FINAL deme.
 
 **FINAL: NO.**
+
+
+## 2026-10-04 CI recovery checkpoint
+
+Exact active PR #17 branch parent: `7917448425cb740c995fe7e62ad37b48eddbc2c4`. Physical PR fan-out proved RC-0342→0359 UI Profile, RC-1105→1130 Offline Dependency Governance, RC-1131→1142 Release Governance, Numerology Golden and Western Aspect Grid green, while critical gates remain red.
+
+This checkpoint repairs four fail-closed regressions without promoting lifecycle state: the Pythagorean structural validator now maps the profile to binding RC-0329 (numerology engines tested by their own rules) instead of unrelated RC-0362 (secure personal-data storage); compatibility validation binds to the production prohibition on both synthetic percentages and hidden weighting; the Western natal-chart custom orb fixture supplies the required quincunx orb; and RC-0158→0165 regression names RC-0161/0162/0163/0164 individually for exact traceability.
+
+RC-0774→0848 async verified-restore regression fix is already present in parent `7917448425cb740c995fe7e62ad37b48eddbc2c4`; Backup CSV still has additional failures and must be re-read after this commit. Numerology Core, Numerology Compatibility Content, Western Natal Aspects, System Boundaries, Spiritual Tools, Transactional Data Safety, PDF Release Boundary, Backup CSV and Flutter Quality remain non-final until exact-head CI is green. No RC is promoted by this checkpoint. **FINAL: NO.**
+
+
+## 2026-10-04 RC-0185 compile-recovery checkpoint
+
+Exact starting PR #17 head: `6ee8d932ff68e0c35a414f34d8a76ac1a411a10f`. Physical exact-head CI run `37176549225` proved the RC-0185→0186 gate failed at compile time because the regression fixture still passed `DateTime.utc(1990, 7, 28)` after the production Lo Shu API was tightened to canonical `CivilDate`. The production engine already counts birth-date digits directly and exposes the canonical Lo Shu grid; the regression now imports the existing civil-calendar type and passes `CivilDate(1990, 7, 28)` without changing production semantics or weakening the requirement.
+
+No lifecycle promotion is made by this checkpoint. RC-0185→0186 remains non-final until CI on the resulting exact head is physically green; RC-0186 also remains only a future-system boundary. Other critical red gates observed on the starting head include RC-0755→0773 Transactional Data Safety, RC-0212→0223 Spiritual Tools, RC-0360→0371 Storage Runtime, Professional PDF Contract, RC-0230→0247 Personal Growth, and Flutter Quality. **FINAL: NO.**
+
+
+## 2026-10-04 Numerology + transactional data-safety CI recovery checkpoint
+
+Exact starting PR #17 head: `dc949a6f8fa370074667e74b3196174ace70f65b`. Physical exact-head CI run `37181547099` failed before numerology tests because the structural validator searched for property-style tokens `NumerologyAlphabet.pythagorean` / `NumerologyAlphabet.chaldean`, while production exposes typed static factory methods. The validator is aligned to the existing factory signatures without weakening any numerical requirement.
+
+Physical exact-head CI run `37181546868` passed the RC-0755→0773 contract validator and the first two transactional tests, then three snapshot tests failed at runtime because nested `Map.unmodifiable` inference produced `UnmodifiableMapView<dynamic,dynamic>` at the typed snapshot boundary. The snapshot constructor now preserves explicit nested generic types at every immutable map layer; persistence semantics, schema, transaction behavior and fail-closed restore behavior are unchanged.
+
+RC-0185→0186 Lo Shu is physically green on the starting head. No lifecycle promotion is made in this checkpoint until the resulting exact-head CI is physically green. Professional Timeline/PDF, Spiritual Tools/Journal, PDF Vector Rendering, Backup CSV and other critical release gates remain red. **FINAL: NO.**
+
+
+## 2026-10-04 stale-validator/import recovery checkpoint
+
+Exact starting PR #17 head: `41914063f239fe51152fe57ebd9ac315d0a2c325`. Physical exact-head CI proves Numerology Core, RC-0212→0223 Spiritual Tools, RC-0224→0229 Spiritual Journal, Professional PDF Contract and Flutter Quality are red while multiple independent gates remain green. This checkpoint fixes only verified stale harness failures: the Chaldean validator ignores Dart line comments when enforcing the no-Pythagorean-call boundary; spiritual regression tests import the canonical `ruh_code` package declared by pubspec; and the PDF validator follows the production TR/EN locale-family policy including regional tags. No production requirement is weakened and no lifecycle state is promoted until CI on the resulting exact head is physically green. **FINAL: NO.**
+
+## 2026-10-05 exact-head CI recovery checkpoint
+
+Exact starting PR #17 head: `df73136949cfac01c15461bf4c392b65e427e33e`. Physical exact-head CI confirms RC-0212→0223 Spiritual Tools, RC-0224→0229 Spiritual Journal and RC-0755→0773 Transactional Data Safety are green. Remaining verified failures addressed in this package are: stale Lo Shu source-token validation despite the canonical 4-9-2/3-5-7/8-1-6 grid; stale RC-0360→0371 entitlement comment matching despite the canonical EntitlementService/FeatureAccessGuard; Latin-1 serialization failure for Western SVG astrology glyph labels; three fatal analyzer diagnostics; and the missing ACTION-PDF-BUILDER-PREVIEW runtime registry row. Production requirements are not weakened: unsupported PDF SVG text now fails closed after known astrology glyphs are converted to deterministic semantic Latin-1 labels. No lifecycle promotion is recorded until CI on the resulting exact head is physically green. **FINAL: NO.**

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ruh_code_app/src/application/spiritual/spiritual_tools_core.dart';
+import 'package:ruh_code/src/application/spiritual/spiritual_tools_core.dart';
 
 void main() {
   SpiritualToolsRegistry registry() => SpiritualToolsRegistry([

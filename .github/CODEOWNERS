@@ -1,0 +1,6 @@
+# RUH CODE ownership policy — RC-1131..RC-1142
+# Calculation-core changes require explicit review by the repository owner.
+/lib/src/calculation_core/ @isarpsiyahofficial
+/test/calculation_core/ @isarpsiyahofficial
+/assets/data/ephemeris/ @isarpsiyahofficial
+/assets/data/eop/ @isarpsiyahofficial

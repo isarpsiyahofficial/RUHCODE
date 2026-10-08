@@ -1,6 +1,5 @@
 import 'backup_import_coordinator.dart';
 import 'backup_package_codec.dart';
-import 'backup_service.dart';
 
 abstract interface class BackupPostImportVerifier {
   Future<bool> verify();
