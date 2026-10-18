@@ -42,7 +42,7 @@ def main() -> None:
 
     require(evidence.get("contract_id") == "NUM-PYTHAGOREAN-COMPATIBILITY-V1", "unexpected contract id")
     require(evidence.get("done") is False, "source-level evidence must not claim DONE")
-    for rc in ("RC-0181", "RC-0369"):
+    for rc in ("RC-0181", "RC-0329"):
         require(rc in evidence.get("requirements", []), f"missing requirement {rc}")
 
     score_semantics = evidence.get("policy", {}).get("score_semantics", "")
