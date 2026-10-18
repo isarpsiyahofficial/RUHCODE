@@ -42,4 +42,32 @@ assert "/lib/src/calculation_core/ @isarpsiyahofficial" in codeowners
 assert "reviewer other than the author" in pr_template
 assert "CI required checks pass before merge" in pr_template
 assert "Exact release artifact provenance" in pr_template
+
+# RC-1132/1136: validation jobs must never become source-writing jobs.
+# Legacy materialization workflows are deliberately out of scope here; they
+# remain separate release blockers and must not be dispatched by this gate.
+import re
+
+
+def require_read_only_validation_workflow(relative_path: str) -> None:
+    workflow = (ROOT / relative_path).read_text(encoding="utf-8")
+    assert re.search(r"(?m)^permissions:\s*\n  contents:\s*read\s*$", workflow), (
+        f"{relative_path}: validation workflow requires contents: read"
+    )
+    assert not re.search(r"(?m)^\s+[a-z-]+:\s*write\s*$", workflow), (
+        f"{relative_path}: write permission is forbidden"
+    )
+    assert not re.search(
+        r"(?i)\bgit\s+(?:push|commit)\b|\bgh\s+api\b|"
+        r"\bactions/github-script\b|\b(?:create|update)[_-](?:commit|ref)\b",
+        workflow,
+    ), f"{relative_path}: source writeback is forbidden"
+
+
+for workflow_path in (
+    ".github/workflows/rc1131-rc1142-release-governance.yml",
+    ".github/workflows/rc0951-rc0964-pdf-validation.yml",
+):
+    require_read_only_validation_workflow(workflow_path)
+
 print("RC-1131..RC-1142 governance contract: PASS")
