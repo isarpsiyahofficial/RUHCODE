@@ -55,6 +55,9 @@ def require_read_only_validation_workflow(relative_path: str) -> None:
     assert re.search(r"(?m)^permissions:\s*\n  contents:\s*read\s*$", workflow), (
         f"{relative_path}: validation workflow requires contents: read"
     )
+    assert len(re.findall(r"(?m)^permissions[ \t]*:", workflow)) == 1, (
+        f"{relative_path}: exactly one top-level permissions block is required"
+    )
     assert not re.search(r"(?m)^[ \t]+permissions[ \t]*:", workflow), (
         f"{relative_path}: job-level permissions override is forbidden"
     )
@@ -62,9 +65,10 @@ def require_read_only_validation_workflow(relative_path: str) -> None:
         f"{relative_path}: write permission is forbidden"
     )
     assert not re.search(
-        r"(?im)\bgit\b[^\r\n;&|]*\b(?:push|commit)\b|"
+        r"(?im)\bgit\b[^\r\n;&|]*\b(?:push|commit|update-ref)\b|"
         r"\bgh\b[^\r\n;&|]*\b(?:api|merge|sync)\b|"
         r"\bgh\b[^\r\n;&|]*\bworkflow\s+run\b|"
+        r"\bgh\b[^\r\n;&|]*\brelease\s+create\b|"
         r"\bactions/github-script\b|\b(?:create|update)[_-](?:commit|ref)\b",
         workflow,
     ), f"{relative_path}: source writeback is forbidden"
