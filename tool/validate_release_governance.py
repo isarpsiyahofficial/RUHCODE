@@ -54,6 +54,9 @@ def require_read_only_validation_workflow(relative_path: str) -> None:
     assert re.search(r"(?m)^permissions:\s*\n  contents:\s*read\s*$", workflow), (
         f"{relative_path}: validation workflow requires contents: read"
     )
+    assert not re.search(r"(?m)^[ \t]+permissions[ \t]*:", workflow), (
+        f"{relative_path}: job-level permissions override is forbidden"
+    )
     assert not re.search(r"(?m)^\s+[a-z-]+:\s*write\s*$", workflow), (
         f"{relative_path}: write permission is forbidden"
     )
