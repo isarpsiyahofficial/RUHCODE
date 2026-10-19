@@ -34,7 +34,8 @@ for key in (
 for key in (
     "release_ref_before_final_gates_forbidden", "closed_requirements_report_required", "exact_commit_sha_required",
     "delivered_apk_commit_trace_required", "debug_apk_final_delivery_forbidden", "release_build_separate_test_required",
-    "workflow_run_identity_required", "artifact_sha256_required", "requirement_matrix_all_done_required",
+    "workflow_run_identity_required", "artifact_sha256_required",
+    "signing_identity_or_certificate_digest_required", "requirement_matrix_all_done_required",
     "critical_gates_green_required", "clean_checkout_required", "exact_artifact_verification_required",
 ):
     assert gov["release"].get(key) is True, f"missing release governance: {key}"
