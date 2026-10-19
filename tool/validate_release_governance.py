@@ -65,10 +65,10 @@ def require_read_only_validation_workflow(relative_path: str) -> None:
         f"{relative_path}: write permission is forbidden"
     )
     assert not re.search(
-        r"(?im)\bgit\b[^\r\n;&|]*\b(?:push|commit|update-ref)\b|"
+        r"(?im)\bgit\b[^\r\n;&|]*\b(?:push|commit|update-ref|tag)\b|"
         r"\bgh\b[^\r\n;&|]*\b(?:api|merge|sync)\b|"
         r"\bgh\b[^\r\n;&|]*\bworkflow\s+run\b|"
-        r"\bgh\b[^\r\n;&|]*\brelease\s+create\b|"
+        r"\bgh\b[^\r\n;&|]*\brelease\s+(?:create|upload|edit|delete)\b|"
         r"\bactions/github-script\b|\b(?:create|update)[_-](?:commit|ref)\b",
         workflow,
     ), f"{relative_path}: source writeback is forbidden"
