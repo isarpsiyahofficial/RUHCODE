@@ -81,4 +81,22 @@ for workflow_path in (
 ):
     require_read_only_validation_workflow(workflow_path)
 
+# RC-1137/1138/1142: signed builds must remain behind exact release gates.
+signed_release = (ROOT / ".github/workflows/rc1442-signed-clean-checkout.yml").read_text(encoding="utf-8")
+required_signed_steps = (
+    "Validate clean-checkout source readiness",
+    "Resolve locked dependencies",
+    "Analyze release source",
+    "Run complete Flutter test suite",
+    "Build signed release APK from clean checkout",
+)
+signed_step_positions = [signed_release.find("      - name: " + step + "\n") for step in required_signed_steps]
+assert all(position >= 0 for position in signed_step_positions), "signed release gate step missing"
+assert signed_step_positions == sorted(signed_step_positions), "signed release gate order changed"
+assert "run: flutter analyze --fatal-infos" in signed_release
+assert "run: flutter test --reporter expanded" in signed_release
+readiness_source = (ROOT / "tools/requirements/validate_rc1442_release_source_readiness.py").read_text(encoding="utf-8")
+assert 'run_strict_validator("tools/requirements/validate_requirement_matrix.py")' in readiness_source
+assert '"release:all-1442-requirements-done"' in readiness_source
+
 print("RC-1131..RC-1142 governance contract: PASS")

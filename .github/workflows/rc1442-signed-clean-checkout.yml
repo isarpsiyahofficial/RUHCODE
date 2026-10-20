@@ -65,6 +65,12 @@ jobs:
       - name: Resolve locked dependencies
         run: flutter pub get --enforce-lockfile
 
+      - name: Analyze release source
+        run: flutter analyze --fatal-infos
+
+      - name: Run complete Flutter test suite
+        run: flutter test --reporter expanded
+
       - name: Build signed release APK from clean checkout
         shell: bash
         env:
