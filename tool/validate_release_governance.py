@@ -95,6 +95,49 @@ assert all(position >= 0 for position in signed_step_positions), "signed release
 assert signed_step_positions == sorted(signed_step_positions), "signed release gate order changed"
 assert "run: flutter analyze --fatal-infos" in signed_release
 assert "run: flutter test --reporter expanded" in signed_release
+# Bind mandatory release commands to their actual steps, not just to free-floating
+# strings elsewhere in the workflow (which could be comments or no-op commands).
+require_read_only_validation_workflow(".github/workflows/rc1442-signed-clean-checkout.yml")
+
+
+def signed_step_body(name: str) -> str:
+    matches = re.findall(
+        r"(?ms)^      - name: " + re.escape(name) + r"\r?\n(.*?)(?=^      - (?:name:|uses:)|\Z)",
+        signed_release,
+    )
+    assert len(matches) == 1, f"{name}: exactly one signed release step required"
+    body = matches[0]
+    assert not re.search(r"(?mi)^\s*(?:continue-on-error|if):", body), (
+        f"{name}: bypassable signed release step"
+    )
+    assert not re.search(r"(?i)(?:\|\|\s*true|;\s*true|\bexit\s+0\b)", body), (
+        f"{name}: error suppression forbidden"
+    )
+    return body
+
+
+readiness_body = signed_step_body("Validate clean-checkout source readiness")
+assert re.search(r"(?m)^        run: \|\s*$", readiness_body)
+assert re.search(r"(?m)^\s+set -euo pipefail\s*$", readiness_body)
+assert re.search(
+    r"(?m)^\s+python3 tools/requirements/validate_rc1442_release_source_readiness\.py\s*\\\s*$",
+    readiness_body,
+)
+assert re.search(
+    r"(?m)^\s+--json-output evidence/rc1442_release_source_readiness\.json\s*$",
+    readiness_body,
+)
+for step_name, command in (
+    ("Resolve locked dependencies", "flutter pub get --enforce-lockfile"),
+    ("Analyze release source", "flutter analyze --fatal-infos"),
+    ("Run complete Flutter test suite", "flutter test --reporter expanded"),
+):
+    step_body = signed_step_body(step_name)
+    assert re.search(r"(?m)^        run: " + re.escape(command) + r"\s*$", step_body), (
+        f"{step_name}: mandatory release command not bound to its step"
+    )
+
+
 readiness_source = (ROOT / "tools/requirements/validate_rc1442_release_source_readiness.py").read_text(encoding="utf-8")
 assert 'run_strict_validator("tools/requirements/validate_requirement_matrix.py")' in readiness_source
 assert '"release:all-1442-requirements-done"' in readiness_source
