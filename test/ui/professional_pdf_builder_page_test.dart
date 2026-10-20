@@ -35,7 +35,7 @@ void main() {
     expect(actions.calls, 0);
   });
 
-  testWidgets('builder invokes application actions with typed selected record and section order', (tester) async {
+  testWidgets('numerology preview and build use handler-supported canonical sections only', (tester) async {
     final actions = _RecordingActions();
     await tester.pumpWidget(
       _app(ProfessionalPdfBuilderPage(actions: actions, records: _RecordActions())),

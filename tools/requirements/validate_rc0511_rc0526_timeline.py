@@ -23,9 +23,21 @@ if contract.get('promotion_ceiling') != 'IMPLEMENTED':
 source = SOURCE.read_text(encoding='utf-8')
 for token in [
     'ProfessionalTimeline', 'TimelineWindow.next30Days', 'TimelineWindow.next3Months', 'TimelineWindow.next1Year',
-    'highImportanceOnly', 'TimelinePlanet.saturn', 'TimelineTopic.relationship', 'TimelineTopic.career',
+    'highImportanceOnly',
     'TimelineLanguagePolicy', 'TimelineFilterPreset', 'TimelinePresetLibrary'
 ]:
     if token not in source:
         raise SystemExit(f'RC0511_RC0526_FAIL: missing production token {token}')
+if not re.search(r'enum\s+TimelinePlanet\s*\{[^}]*\bsaturn\b[^}]*\}', source, flags=re.DOTALL):
+    raise SystemExit('RC0511_RC0526_FAIL: TimelinePlanet enum is missing saturn')
+if not re.search(r'enum\s+TimelineTopic\s*\{[^}]*\brelationship\b[^}]*\bcareer\b[^}]*\}', source, flags=re.DOTALL):
+    raise SystemExit('RC0511_RC0526_FAIL: TimelineTopic enum is missing relationship/career')
+regression = TEST.read_text(encoding='utf-8')
+for token in (
+    'high importance, Saturn, relationship and career filters are independent',
+    'topic: TimelineTopic.relationship',
+    'topic: TimelineTopic.career',
+):
+    if token not in regression:
+        raise SystemExit(f'RC0511_RC0526_FAIL: missing timeline filter regression {token}')
 print('RC0511_RC0526_OK')

@@ -30,11 +30,18 @@ for n in range(230, 248):
 required_prod = [
     'PersonalJournalEntry', 'PersonalGoal', 'GoalTask', 'HabitRecord',
     'ReflectionEntry', 'LifeWheelScore', 'PersonalValue', 'MoodEnergyEntry',
-    'DailyCheckIn', 'CheckInKind.morning', 'CheckInKind.evening', 'PersonalNote',
+    'DailyCheckIn', 'PersonalNote',
     'AstrologyContextLink', 'GrowthSnapshot', 'journalForDate', 'moodEnergyForDate'
 ]
 for token in required_prod:
     if token not in prod: fail(f'production evidence missing token {token}')
+check_in_enum = re.search(r'enum\s+CheckInKind\s*\{([^}]*)\}', prod, flags=re.DOTALL)
+if not check_in_enum:
+    fail('production evidence missing CheckInKind enum')
+check_in_values = {value.strip() for value in check_in_enum.group(1).split(',') if value.strip()}
+for value in ('morning', 'evening'):
+    if value not in check_in_values:
+        fail(f'CheckInKind enum missing {value}')
 
 for token in ('SymbolicContentDisclosure', 'SymbolicContentNature', 'notice', 'policyId', 'version'):
     if token not in disclosure: fail(f'RC-0230 disclosure evidence missing token {token}')

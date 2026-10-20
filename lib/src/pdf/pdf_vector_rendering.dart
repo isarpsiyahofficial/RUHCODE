@@ -145,7 +145,7 @@ final class PdfWesternChartVectorBuilder {
       final position = coordinates[index];
       svg
         ..writeln('<circle cx="${_n(position.x)}" cy="${_n(position.y)}" r="10" fill="white" stroke="#111" stroke-width="1.2"/>')
-        ..writeln('<text x="${_n(position.x)}" y="${_n(position.y + 4)}" text-anchor="middle" font-size="11">${_escape(point.label)}</text>');
+        ..writeln('<text x="${_n(position.x)}" y="${_n(position.y + 4)}" text-anchor="middle" font-size="11">${_escape(_pdfSafeText(point.label))}</text>');
     }
 
     svg.writeln('</svg>');
@@ -197,7 +197,7 @@ final class PdfVedicChartVectorBuilder {
       ..writeln('<line x1="570" y1="30" x2="30" y2="570" stroke="#333" stroke-width="1.2"/>');
     for (var index = 0; index < 12; index++) {
       final position = positions[index];
-      svg.writeln('<text x="${_n(position.x)}" y="${_n(position.y)}" text-anchor="middle" font-size="15">${_escape(houseLabels[index])}</text>');
+      svg.writeln('<text x="${_n(position.x)}" y="${_n(position.y)}" text-anchor="middle" font-size="15">${_escape(_pdfSafeText(houseLabels[index]))}</text>');
     }
     svg.writeln('</svg>');
     final graphic = PdfVectorGraphic(
@@ -250,3 +250,19 @@ String _escape(String value) => value
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;');
+
+String _pdfSafeText(String value) {
+  const replacements = <String, String>{
+    '☉': 'Sun', '☽': 'Moon', '☿': 'Mercury', '♀': 'Venus', '♂': 'Mars',
+    '♃': 'Jupiter', '♄': 'Saturn', '♅': 'Uranus', '♆': 'Neptune', '♇': 'Pluto',
+    '☊': 'North Node', '☋': 'South Node',
+  };
+  var normalized = value;
+  for (final entry in replacements.entries) {
+    normalized = normalized.replaceAll(entry.key, entry.value);
+  }
+  if (normalized.codeUnits.any((unit) => unit > 0xff)) {
+    throw const FormatException('PDF SVG text contains unsupported non-Latin-1 glyphs.');
+  }
+  return normalized;
+}

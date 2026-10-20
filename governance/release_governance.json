@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "binding_requirements": ["RC-1131", "RC-1132", "RC-1133", "RC-1134", "RC-1135", "RC-1136", "RC-1137", "RC-1138", "RC-1139", "RC-1140", "RC-1141", "RC-1142"],
+  "github": {
+    "primary_development_source": true,
+    "daily_work_on_main_forbidden": true,
+    "feature_branch_required": true,
+    "pull_request_required": true,
+    "calculation_core_independent_review_required": true,
+    "merge_when_ci_failed_forbidden": true
+  },
+  "release": {
+    "release_ref_before_final_gates_forbidden": true,
+    "closed_requirements_report_required": true,
+    "exact_commit_sha_required": true,
+    "delivered_apk_commit_trace_required": true,
+    "debug_apk_final_delivery_forbidden": true,
+    "release_build_separate_test_required": true,
+    "workflow_run_identity_required": true,
+    "artifact_sha256_required": true,
+    "signing_identity_or_certificate_digest_required": true,
+    "requirement_matrix_all_done_required": true,
+    "critical_gates_green_required": true,
+    "clean_checkout_required": true,
+    "exact_artifact_verification_required": true
+  },
+  "fail_closed": true
+}

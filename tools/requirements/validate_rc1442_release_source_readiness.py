@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import re
@@ -152,6 +153,32 @@ def main() -> int:
     rc1439_ok, rc1439_out = run_strict_validator("tools/requirements/validate_rc1439_reference_images.py")
     checks.append({"id":"strict:RC-1437","ok":rc1437_ok,"output":rc1437_out})
     checks.append({"id":"strict:RC-1439","ok":rc1439_ok,"output":rc1439_out})
+
+    matrix_ok, matrix_output = run_strict_validator("tools/requirements/validate_requirement_matrix.py")
+    checks.append({"id": "strict:requirement-matrix", "ok": matrix_ok, "output": matrix_output})
+    matrix_rows: list[dict[str, str]] = []
+    if exists("requirements/requirement_state.csv"):
+        try:
+            with (ROOT / "requirements/requirement_state.csv").open(
+                "r", encoding="utf-8", newline=""
+            ) as handle:
+                matrix_rows = list(csv.DictReader(handle))
+        except (OSError, csv.Error):
+            pass
+    done_count = sum(
+        row.get("status") == "DONE" and row.get("blocked") == "NO"
+        for row in matrix_rows
+    )
+    checks.append({
+        "id": "release:all-1442-requirements-done",
+        "ok": matrix_ok and len(matrix_rows) == 1442 and done_count == 1442,
+        "doneCount": done_count,
+        "requiredCount": 1442,
+        "incompleteSample": [
+            row.get("rc_id") for row in matrix_rows
+            if row.get("status") != "DONE" or row.get("blocked") != "NO"
+        ][:20],
+    })
 
     failed=[c for c in checks if not c["ok"]]
     result={"requirement":"RC-1442","status":"READY_FOR_SIGNED_BUILD" if not failed else "NOT_READY",

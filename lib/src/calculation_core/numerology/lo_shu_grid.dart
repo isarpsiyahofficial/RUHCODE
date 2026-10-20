@@ -1,3 +1,5 @@
+import '../time/civil_calendar.dart';
+
 final class LoShuGridResult {
   LoShuGridResult({required Map<int, int> counts})
       : counts = Map.unmodifiable({for (var i = 1; i <= 9; i++) i: counts[i] ?? 0});
@@ -9,17 +11,21 @@ final class LoShuGridResult {
     return counts[digit] ?? 0;
   }
 
+  int countOf(int digit) => this[digit];
+
   List<List<int>> get layout => const [
         [4, 9, 2],
         [3, 5, 7],
         [8, 1, 6],
       ];
+
+  List<List<int>> get canonicalGrid => layout;
 }
 
 /// RC-0185: Lo Shu uses the birth-date digit grid directly. It intentionally
 /// does not use Pythagorean letter values or a reduced Life Path result.
 abstract final class LoShuGridEngine {
-  static LoShuGridResult calculate(DateTime birthDate) {
+  static LoShuGridResult calculate(CivilDate birthDate) {
     final raw = '${birthDate.day.toString().padLeft(2, '0')}'
         '${birthDate.month.toString().padLeft(2, '0')}'
         '${birthDate.year.toString().padLeft(4, '0')}';

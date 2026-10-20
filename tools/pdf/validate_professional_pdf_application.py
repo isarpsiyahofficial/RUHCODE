@@ -178,7 +178,7 @@ def main() -> None:
         require(marker in delivery_test, f'missing PDF delivery regression marker: {marker}')
 
     for marker in (
-        'builder invokes application actions with typed selected record and section order',
+        'numerology preview and build use handler-supported canonical sections only',
         'verified PDF exposes canonical share action when delivery is bound',
         'dismissed PDF share is a normal cancellation state',
         'builder never fakes output when production build actions are absent',

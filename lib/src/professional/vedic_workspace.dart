@@ -95,7 +95,7 @@ final class VedicProfessionalWorkspace {
     }
     if (charts.toSet().length != charts.length) throw ArgumentError('duplicate Varga chart');
     final refs = charts.map((chart) => chartResultRefs[chart]).toList();
-    if (refs.any((ref) => ref == null || ref!.trim().isEmpty)) {
+    if (refs.any((ref) => ref == null || ref.trim().isEmpty)) {
       throw StateError('requested Varga result is unavailable');
     }
     return List.unmodifiable(refs.cast<String>());

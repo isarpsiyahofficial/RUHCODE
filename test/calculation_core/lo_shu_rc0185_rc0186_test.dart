@@ -1,9 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ruh_code/src/calculation_core/numerology/lo_shu_grid.dart';
+import 'package:ruh_code/src/calculation_core/time/civil_calendar.dart';
 
 void main() {
   test('RC-0185 Lo Shu counts birth-date digits without Pythagorean reduction', () {
-    final r = LoShuGridEngine.calculate(DateTime.utc(1990, 7, 28));
+    final r = LoShuGridEngine.calculate(CivilDate(1990, 7, 28));
     expect(r[1], 1);
     expect(r[2], 1);
     expect(r[7], 1);

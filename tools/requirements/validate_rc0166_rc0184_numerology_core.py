@@ -24,7 +24,7 @@ required_tokens = [
     'lifePath(', 'birthday(', 'nameNumbers(', 'maturity(', 'karmicDebtNumbers(',
     'personalYear(', 'personalMonth(', 'personalDay(', 'periods(',
     'NumerologyCompatibilityEngine', 'NumerologyNameNormalizer',
-    'NumerologyAlphabet.pythagorean', 'NumerologyAlphabet.chaldean',
+    'static NumerologyAlphabet pythagorean(', 'static NumerologyAlphabet chaldean(',
     "if (!alphabet.id.startsWith('pythagorean'))",
     "'Ç':'C'", "'Ğ':'G'", "'İ':'I'", "'Ş':'S'", "'Ü':'U'",
 ]

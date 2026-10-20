@@ -29,7 +29,8 @@ def main() -> None:
     source = SOURCE.read_text(encoding='utf-8')
     require('ChaldeanNameEngine' in source, 'Missing Chaldean engine.')
     require('static const Map<String, int> letterValues' in source, 'Missing independent Chaldean table.')
-    require('PythagoreanProfileEngine.letterValue' not in source, 'Chaldean engine must not call the Pythagorean letter table.')
+    executable_source = '\n'.join(line.split('//', 1)[0] for line in source.splitlines())
+    require('PythagoreanProfileEngine.letterValue' not in executable_source, 'Chaldean engine must not call the Pythagorean letter table.')
     for token in ("'A': 1", "'B': 2", "'C': 3", "'D': 4", "'E': 5", "'U': 6", "'O': 7", "'F': 8"):
         require(token in source, f'Missing Chaldean mapping anchor: {token}')
 
